@@ -1,0 +1,5 @@
+singletonObjects:
+  Counter:
+    properties:
+      Value:
+        type: u32
