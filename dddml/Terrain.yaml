@@ -1,0 +1,22 @@
+aggregates:
+  Terrain:
+    id:
+      name: TerrainId
+      type: Point2d
+    properties:
+      TerrainType:
+        type: string
+      Foo:
+        type: uint8[]
+      Bar:
+        type: bytes
+
+valueObjects:
+  Point2d:
+    properties:
+      X:
+        type: int32
+        columnName: x
+      Y:
+        type: int32
+        columnName: y

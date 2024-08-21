@@ -1,0 +1,13 @@
+aggregates:
+  Position:
+    id:
+      name: Player
+      type: address
+    properties:
+      X:
+        type: int32
+      Y:
+        type: int32
+      Description:
+        type: string
+
