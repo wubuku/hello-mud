@@ -15,10 +15,10 @@ library PositionCreateLogic {
   }
 
   function mutate(PositionCreated memory positionCreated) internal pure returns (PositionData memory) {
-    PositionData memory position;
-    position.x = positionCreated.x;
-    position.y = positionCreated.y;
-    position.description = positionCreated.description;
-    return position;
+    PositionData memory positionData;
+    positionData.x = positionCreated.x;
+    positionData.y = positionCreated.y;
+    positionData.description = positionCreated.description;
+    return positionData;
   }
 }
