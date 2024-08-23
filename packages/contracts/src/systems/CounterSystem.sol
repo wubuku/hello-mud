@@ -10,11 +10,11 @@ contract CounterSystem is System {
   event CounterIncreasedEvent(uint32 oldValue);
 
   function counterIncrease() public returns (uint32) {
-    uint32 counter = Counter.get();
-    CounterIncreased memory counterIncreased = CounterIncreaseLogic.verify(counter);
+    uint32 value = Counter.get();
+    CounterIncreased memory counterIncreased = CounterIncreaseLogic.verify(value);
     emit CounterIncreasedEvent(counterIncreased.oldValue);
-    uint32 newValue = CounterIncreaseLogic.mutate(counterIncreased, counter);
-    Counter.set(newValue);
-    return newValue;
+    uint32 updatedValue = CounterIncreaseLogic.mutate(counterIncreased, value);
+    Counter.set(updatedValue);
+    return updatedValue;
   }
 }

@@ -5,6 +5,7 @@ singletonObjects:
         type: u32
     methods:
       Increase:
+        shouldCreateOnDemand: true
         result:
           type: u32
         event:
