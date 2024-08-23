@@ -3,3 +3,12 @@ singletonObjects:
     properties:
       Value:
         type: u32
+    methods:
+      Increase:
+        result:
+          type: u32
+        event:
+          name: CounterIncreased
+          properties:
+            OldValue:
+              type: u32

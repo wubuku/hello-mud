@@ -1,5 +1,9 @@
 aggregates:
   Terrain:
+    metadata:
+      Preprocessors: [ "CRUD_IT" ]
+      CRUD_IT_NO_DELETE: true
+      #CRUD_IT_NO_UPDATE: true
     id:
       name: TerrainId
       type: Point2d

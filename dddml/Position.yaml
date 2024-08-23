@@ -1,5 +1,8 @@
 aggregates:
   Position:
+    metadata:
+      Preprocessors: [ "CRUD_IT" ]
+      CRUD_IT_NO_DELETE: true
     id:
       name: Player
       type: address
