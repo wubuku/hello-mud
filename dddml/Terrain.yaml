@@ -1,7 +1,7 @@
 aggregates:
   Terrain:
     metadata:
-      Preprocessors: [ "CRUD_IT" ]
+      Preprocessors: ["CRUD_IT"]
       CRUD_IT_NO_DELETE: true
       #CRUD_IT_NO_UPDATE: true
     id:
@@ -17,10 +17,12 @@ aggregates:
 
 valueObjects:
   Point2d:
+    # We can conceptually define a reusable DDDML value object here.
+    # Although this object might not be present in the generated MUD code.
     properties:
       X:
         type: int32
-        columnName: x
+        columnName: x # MUD store will use this as "field" name.
       Y:
         type: int32
         columnName: y

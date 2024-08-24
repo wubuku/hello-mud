@@ -2,14 +2,17 @@ singletonObjects:
   Counter:
     properties:
       Value:
-        type: u32
+        type: u32 # We use "u32" here, which is actually mapped to Solidity "unit32".
+        # type: uint32 # Of course, you can also use "uint32" here :)
     methods:
       Increase:
         shouldCreateOnDemand: true
         result:
-          type: u32
+          isObjectReturned: true
+          # type: u32
         event:
           name: CounterIncreased
           properties:
             OldValue:
-              type: u32
+              type: u32 # Or "uint32" if you prefer.
+

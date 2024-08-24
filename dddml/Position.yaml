@@ -8,7 +8,7 @@ aggregates:
       type: address
     properties:
       X:
-        type: int32
+        type: int32 # Or "i32" if you prefer.
       Y:
         type: int32
       Description:
