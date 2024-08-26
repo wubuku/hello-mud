@@ -6,3 +6,5 @@ pragma solidity >=0.8.24;
 import { Position, PositionData } from "./tables/Position.sol";
 import { Terrain, TerrainData } from "./tables/Terrain.sol";
 import { Counter } from "./tables/Counter.sol";
+import { Map, MapData } from "./tables/Map.sol";
+import { MapLocation, MapLocationData } from "./tables/MapLocation.sol";

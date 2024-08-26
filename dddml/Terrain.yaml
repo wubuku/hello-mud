@@ -14,15 +14,3 @@ aggregates:
         type: uint8[]
       Bar:
         type: bytes
-
-valueObjects:
-  Point2d:
-    # We can conceptually define a reusable DDDML value object here.
-    # Although this object might not be present in the generated MUD code.
-    properties:
-      X:
-        type: int32
-        columnName: x # MUD store will use this as "field" name.
-      Y:
-        type: int32
-        columnName: y

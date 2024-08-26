@@ -1,0 +1,20 @@
+singletonObjects:
+  Map:
+    properties:
+      Width:
+        type: u32
+      Height:
+        type: u32
+      Locations:
+        itemType: MapLocation
+
+    entities:
+      MapLocation:
+        id:
+          name: Coordinates
+          type: Point2d
+        properties:
+          Type:
+            type: u32
+          OccupiedBy:
+            type: address

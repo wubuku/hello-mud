@@ -28,5 +28,21 @@ export default defineWorld({
       },
       key: [],
     },
+    Map: {
+      schema: {
+        width: "uint32",
+        height: "uint32",
+      },
+      key: [],
+    },
+    MapLocation: {
+      schema: {
+        x: "int32",
+        y: "int32",
+        type_: "uint32",
+        occupiedBy: "address",
+      },
+      key: ["x", "y"],
+    },
   },
 });
