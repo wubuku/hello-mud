@@ -1,19 +1,52 @@
-# READ ME
+# Developing EVM Dapps using a low-code approach
 
-This is a PoC (Proof of Concept) for developing a dapp based on the MUD framework using a low-code approach.
+English | [中文版](./README_CN.md)
 
-## Why would we do this?
+This is a PoC (Proof of Concept) for developing dapps with MUD framework in a low-code way.
 
-Simply put, it's all about more efficient development.
+
+The core of low-code is “model-driven”.
+We will show how to use a DSL (Domain Specific Language) called DDDML to describe the application's domain model.
+The domain model is then converted into the MUD config (model) file and Solidity contracts to speed up the application development process.
+
+
+## Motivation
+
+Some may ask: why not just use a MUD framework if you're doing things on top of a MUD?
+
+Simply put: for more efficient development.
 
 While MUD is a great development framework, it has some limitations.
 
-First, it is an abstraction at the "programming" level.
-Programming is not the whole story of software development.
-Especially for complex software development, programming is not even the most time-consuming part of the development process.
-A low-code development approach can accelerate the entire development process.
+The most obvious point is that it is tightly coupled with the EVM/Solidity ecosystem;
+we can't use it to develop decentralized applications for other ecosystems.
 
-Second, it is tightly coupled to the EVM/Solidity ecosystem. We can't use it to develop dapps for other ecosystems.
+Also, although MUD claims to be a general-purpose application development framework,
+not just for on-chain game development; 
+in reality, most developers still see it as a FOCG (Fully On-Chain Game) engine.
+For on-chain game development, MUD does not introduce any off-chain hybrid solutions to achieve a higher tickrate for the game.
+It may be that the intention of MUD was to be as on-chain as possible, but it is clear that this is a limitation rather than an advantage.
+
+We believe that adopting a model-driven low-code development approach not only provides greater efficiency, but also can address these shortcomings of MUD.
+
+You may have noticed that MUD also has the concept of "data models,"
+but they are at a different level of abstraction compared to the domain models used in our low-code approach.
+
+The models defined in MUD's config files are lower-level "physical data models."
+They can essentially be seen as part of the program's implementation code.
+
+We all know that programming implementation is not the entirety of software development.
+Especially for complex software development, it is not even the most time-consuming part of the process.
+
+Our low-code development approach uses domain models in the style of DDD (Domain-Driven Design).
+DDD domain models are an organic combination of Object-Oriented Analysis (OOA) models and Object-Oriented Design (OOD) models.
+
+We have designed a highly expressive DSL to describe these domain models.
+We can even use it to build **conceptual** domain models during the requirements analysis phase of software development;
+during the design and coding phases, we build upon the same model, ensuring that all previous efforts are not wasted.
+
+Therefore, our low-code development approach can not only accelerate the entire development process but also improve the quality of the software.
+
 
 [TBD]
 
