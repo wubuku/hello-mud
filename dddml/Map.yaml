@@ -10,6 +10,7 @@ singletonObjects:
 
     entities:
       MapLocation:
+        # This is an internal entity
         id:
           name: Coordinates
           type: Point2d

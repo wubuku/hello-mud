@@ -13,4 +13,15 @@ aggregates:
         type: int32
       Description:
         type: string
-
+    #
+    # Because the CRUD_IT preprocessor generates them automatically,
+    # we don't have to define the methods as follows:
+    #
+    # methods:
+    #   Create:
+    #     isCreationCommand: true
+    #     event:
+    #       name: PositionCreated
+    #   Update:
+    #     event:
+    #       name: PositionUpdated

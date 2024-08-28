@@ -5,7 +5,9 @@ valueObjects:
     properties:
       X:
         type: int32
-        columnName: x # MUD store will use this as "field" name.
+        columnName: x # Will use this as "field" name of MUD store.
+        # Why is it called “columName” and not “fieldName”?
+        # Because DDDML is not just designed for MUD app development.
       Y:
         type: int32
         columnName: y

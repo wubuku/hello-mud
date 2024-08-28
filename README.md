@@ -37,6 +37,9 @@ They can essentially be seen as part of the program's implementation code.
 
 We all know that programming implementation is not the entirety of software development.
 Especially for complex software development, it is not even the most time-consuming part of the process.
+To develop high quality software, we need to put enough effort in the analysis and design phases.
+We also need to ensure that the implementation code reflects the results of the analysis and top-level design,
+and only then will the code have good maintainability.
 
 Our low-code development approach uses domain models in the style of DDD (Domain-Driven Design).
 DDD domain models are an organic combination of Object-Oriented Analysis (OOA) models and Object-Oriented Design (OOD) models.
