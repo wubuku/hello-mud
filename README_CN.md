@@ -84,7 +84,7 @@ wubuku/dddappp-mud:master \
 --enableMultipleMoveProjects
 ```
 
-这个操作会创建（或修改）这个文件：`packages/contracts/mud.config.ts`.
+这个操作会创建（或修改）这个文件：`packages/contracts/mud.config.ts`，以及生成模型中定义的方法对应的业务逻辑实现的 Solidity 脚手架代码。
 
 > **Hint**
 >
@@ -96,7 +96,7 @@ wubuku/dddappp-mud:master \
 > ```
 
 
-使用 MUD 的工具生成代码：
+使用 MUD 的工具生成其他代码：
 
 ```shell
 pnpm mud tablegen

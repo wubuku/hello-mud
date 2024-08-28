@@ -5,14 +5,14 @@ English | [中文版](./README_CN.md)
 This is a PoC (Proof of Concept) for developing dapps with MUD framework in a low-code way.
 
 
-The core of low-code is “model-driven”.
+The core of low-code is “model-driven.”
 We will show how to use a DSL (Domain Specific Language) called DDDML to describe the application's domain model.
 The domain model is then converted into the MUD config (model) file and Solidity contracts to speed up the application development process.
 
 
 ## Motivation
 
-Some may ask: why not just use a MUD framework if you're doing things on top of a MUD?
+Some may ask: why not just use MUD framework directly if you're doing things on top of a MUD?
 
 Simply put: for more efficient development.
 
@@ -90,11 +90,13 @@ wubuku/dddappp-mud:master \
 --enableMultipleMoveProjects
 ```
 
-The above will create (modify) the file `packages/contracts/mud.config.ts`.
+The above will create (modify) the file `packages/contracts/mud.config.ts`,
+as well as scaffold Solidity code for the business logic implementation corresponding to the methods defined in the model.
+
 
 > **Hint**
 >
-> Sometimes you may need to remove old containers and images:
+> Sometimes you may need to remove old containers and images, ensure you are using the latest image:
 >
 > ```shell
 > docker rm $(docker ps -aq --filter "ancestor=wubuku/dddappp-mud:master")
@@ -102,7 +104,7 @@ The above will create (modify) the file `packages/contracts/mud.config.ts`.
 > ```
 
 
-Generate MUD code:
+Generate other code using MUD tools:
 
 ```shell
 pnpm mud tablegen
