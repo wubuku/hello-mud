@@ -39,6 +39,7 @@ contract ArticleSystem is System {
       "Article does not exist"
     );
     ArticleUpdated memory articleUpdated = ArticleUpdateLogic.verify(id, author, title, body, articleData);
+    articleUpdated.id = id;
     emit ArticleUpdatedEvent(articleUpdated.id, articleUpdated.author, articleUpdated.title, articleUpdated.body);
     ArticleData memory updatedArticleData = ArticleUpdateLogic.mutate(articleUpdated, articleData);
     Article.set(id, updatedArticleData);
@@ -51,6 +52,7 @@ contract ArticleSystem is System {
       "Article does not exist"
     );
     ArticleDeleted memory articleDeleted = ArticleDeleteLogic.verify(id, articleData);
+    articleDeleted.id = id;
     emit ArticleDeletedEvent(articleDeleted.id);
     ArticleData memory updatedArticleData = ArticleDeleteLogic.mutate(articleDeleted, articleData);
     Article.set(id, updatedArticleData);

@@ -21,6 +21,8 @@ contract TerrainSystem is System {
       "Terrain already exists"
     );
     TerrainCreated memory terrainCreated = TerrainCreateLogic.verify(x, y, terrainType, foo, bar);
+    terrainCreated.x = x;
+    terrainCreated.y = y;
     emit TerrainCreatedEvent(terrainCreated.x, terrainCreated.y, terrainCreated.terrainType, terrainCreated.foo, terrainCreated.bar);
     TerrainData memory newTerrainData = TerrainCreateLogic.mutate(terrainCreated);
     Terrain.set(x, y, newTerrainData);
@@ -33,6 +35,8 @@ contract TerrainSystem is System {
       "Terrain does not exist"
     );
     TerrainUpdated memory terrainUpdated = TerrainUpdateLogic.verify(x, y, terrainType, foo, bar, terrainData);
+    terrainUpdated.x = x;
+    terrainUpdated.y = y;
     emit TerrainUpdatedEvent(terrainUpdated.x, terrainUpdated.y, terrainUpdated.terrainType, terrainUpdated.foo, terrainUpdated.bar);
     TerrainData memory updatedTerrainData = TerrainUpdateLogic.mutate(terrainUpdated, terrainData);
     Terrain.set(x, y, updatedTerrainData);

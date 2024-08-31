@@ -21,6 +21,7 @@ contract PositionSystem is System {
       "Position already exists"
     );
     PositionCreated memory positionCreated = PositionCreateLogic.verify(player, x, y, description);
+    positionCreated.player = player;
     emit PositionCreatedEvent(positionCreated.player, positionCreated.x, positionCreated.y, positionCreated.description);
     PositionData memory newPositionData = PositionCreateLogic.mutate(positionCreated);
     Position.set(player, newPositionData);
@@ -33,6 +34,7 @@ contract PositionSystem is System {
       "Position does not exist"
     );
     PositionUpdated memory positionUpdated = PositionUpdateLogic.verify(player, x, y, description, positionData);
+    positionUpdated.player = player;
     emit PositionUpdatedEvent(positionUpdated.player, positionUpdated.x, positionUpdated.y, positionUpdated.description);
     PositionData memory updatedPositionData = PositionUpdateLogic.mutate(positionUpdated, positionData);
     Position.set(player, updatedPositionData);
