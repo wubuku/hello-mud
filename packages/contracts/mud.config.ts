@@ -3,6 +3,15 @@ import { defineWorld } from "@latticexyz/world";
 export default defineWorld({
   namespace: "app",
   tables: {
+    Position: {
+      schema: {
+        player: "address",
+        x: "int32",
+        y: "int32",
+        description: "string",
+      },
+      key: ["player"],
+    },
     Terrain: {
       schema: {
         x: "int32",
@@ -13,14 +22,35 @@ export default defineWorld({
       },
       key: ["x", "y"],
     },
-    Position: {
+    ArticleIdGenerator: {
       schema: {
-        player: "address",
-        x: "int32",
-        y: "int32",
-        description: "string",
+        id: "uint64",
       },
-      key: ["player"],
+      key: [],
+    },
+    Article: {
+      schema: {
+        id: "uint64",
+        author: "address",
+        title: "string",
+        body: "string",
+      },
+      key: ["id"],
+    },
+    CommentSeqIdGenerator: {
+      schema: {
+        commentSeqId: "uint64",
+      },
+      key: [],
+    },
+    Comment: {
+      schema: {
+        articleId: "uint64",
+        commentSeqId: "uint64",
+        commenter: "string",
+        body: "string",
+      },
+      key: ["articleId", "commentSeqId"],
     },
     Counter: {
       schema: {

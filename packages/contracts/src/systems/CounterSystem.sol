@@ -19,4 +19,5 @@ contract CounterSystem is System {
     Counter.set(updatedValue);
     return updatedValue;
   }
+
 }

@@ -25,6 +25,7 @@ contract TerrainSystem is System {
     TerrainData memory newTerrainData = TerrainCreateLogic.mutate(terrainCreated);
     Terrain.set(x, y, newTerrainData);
   }
+
   function terrainUpdate(int32 x, int32 y, string memory terrainType, uint8[] memory foo, bytes memory bar) public {
     TerrainData memory terrainData = Terrain.get(x, y);
     require(
@@ -36,4 +37,5 @@ contract TerrainSystem is System {
     TerrainData memory updatedTerrainData = TerrainUpdateLogic.mutate(terrainUpdated, terrainData);
     Terrain.set(x, y, updatedTerrainData);
   }
+
 }

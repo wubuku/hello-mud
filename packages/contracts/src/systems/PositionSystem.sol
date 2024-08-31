@@ -25,6 +25,7 @@ contract PositionSystem is System {
     PositionData memory newPositionData = PositionCreateLogic.mutate(positionCreated);
     Position.set(player, newPositionData);
   }
+
   function positionUpdate(address player, int32 x, int32 y, string memory description) public {
     PositionData memory positionData = Position.get(player);
     require(
@@ -36,4 +37,5 @@ contract PositionSystem is System {
     PositionData memory updatedPositionData = PositionUpdateLogic.mutate(positionUpdated, positionData);
     Position.set(player, updatedPositionData);
   }
+
 }

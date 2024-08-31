@@ -222,3 +222,20 @@ cast logs 'TerrainUpdatedEvent(int32,int32,string,uint8[],bytes)'
 ```
 
 
+
+### Test "Article" contract
+
+Create an article:
+
+```shell
+cast send --private-key __PRIVATE_KEY__ \
+0x8D8b6b8414E1e3DcfD4168561b9be6bD3bF6eC4B \
+'app__articleCreate(address,string,string)' \
+'0x8D8b6b8414E1e3DcfD4168561b9be6bD3bF6eC4B' 'hello' 'world'
+```
+
+View events emitted:
+
+```shell
+cast logs 'ArticleCreatedEvent(uint64,address,string,string)'
+```
