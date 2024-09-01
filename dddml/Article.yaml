@@ -19,8 +19,9 @@ aggregates:
         length: 2000
       Comments:
         itemType: Comment
-      # TODO Tags:
-      #   itemType: u64
+      Tags:
+        itemType: String
+        tableName: ArticleTag
 
     # methods:
     #   AddTag:

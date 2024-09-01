@@ -37,6 +37,13 @@ export default defineWorld({
       },
       key: ["id"],
     },
+    ArticleTagCount: {
+      schema: {
+        articleId: "uint64",
+        count: "uint64",
+      },
+      key: ["articleId"],
+    },
     CommentSeqIdGenerator: {
       schema: {
         commentSeqId: "uint64",
@@ -51,6 +58,14 @@ export default defineWorld({
         body: "string",
       },
       key: ["articleId", "commentSeqId"],
+    },
+    ArticleTag: {
+      schema: {
+        articleId: "uint64",
+        tagIndex: "uint64",
+        tag: "string",
+      },
+      key: ["articleId", "tagIndex"],
     },
     Counter: {
       schema: {
