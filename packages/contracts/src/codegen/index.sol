@@ -14,3 +14,6 @@ import { ArticleTag } from "./tables/ArticleTag.sol";
 import { Counter } from "./tables/Counter.sol";
 import { Map, MapData } from "./tables/Map.sol";
 import { MapLocation, MapLocationData } from "./tables/MapLocation.sol";
+import { ExperienceTable } from "./tables/ExperienceTable.sol";
+import { XpTableLevelCount } from "./tables/XpTableLevelCount.sol";
+import { XpTableLevel, XpTableLevelData } from "./tables/XpTableLevel.sol";

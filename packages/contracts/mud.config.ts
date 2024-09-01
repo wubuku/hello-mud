@@ -89,5 +89,26 @@ export default defineWorld({
       },
       key: ["x", "y"],
     },
+    ExperienceTable: {
+      schema: {
+        reservedBool1: "bool",
+      },
+      key: [],
+    },
+    XpTableLevelCount: {
+      schema: {
+        count: "uint64",
+      },
+      key: [],
+    },
+    XpTableLevel: {
+      schema: {
+        levelIndex: "uint64",
+        levelLevel: "uint16",
+        levelExperience: "uint32",
+        levelDifference: "uint32",
+      },
+      key: ["levelIndex"],
+    },
   },
 });
