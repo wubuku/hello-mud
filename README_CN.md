@@ -144,7 +144,7 @@ cast call \
 > 
 > * `tb` 的 ASCII 的十六进制表示: `0x7462`;
 > * `app`: `0x617070`;
-> * `Couter`: `0x43x6f756e746572`.
+> * `Counter`: `0x436f756e746572`.
 > 
 > 关于 Resource IDs，可以参考此链接的说明：[MUD Resource IDs](https://mud.dev/world/resource-ids).
 

@@ -5,17 +5,33 @@ pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
 import { Article, ArticleData, ArticleIdGenerator } from "../codegen/index.sol";
-import { ArticleCreated, ArticleUpdated, ArticleDeleted } from "./ArticleEvents.sol";
+import { TagAdded, ArticleCreated, ArticleUpdated, ArticleDeleted } from "./ArticleEvents.sol";
+import { ArticleAddTagLogic } from "./ArticleAddTagLogic.sol";
 import { ArticleCreateLogic } from "./ArticleCreateLogic.sol";
 import { ArticleUpdateLogic } from "./ArticleUpdateLogic.sol";
 import { ArticleDeleteLogic } from "./ArticleDeleteLogic.sol";
 
 contract ArticleSystem is System {
+  event TagAddedEvent(uint64 indexed id, string tag);
+
   event ArticleCreatedEvent(uint64 indexed id, address author, string title, string body);
 
   event ArticleUpdatedEvent(uint64 indexed id, address author, string title, string body);
 
   event ArticleDeletedEvent(uint64 indexed id);
+
+  function articleAddTag(uint64 id, string memory tag) public {
+    ArticleData memory articleData = Article.get(id);
+    require(
+      !(articleData.author == address(0) && bytes(articleData.title).length == 0 && bytes(articleData.body).length == 0),
+      "Article does not exist"
+    );
+    TagAdded memory tagAdded = ArticleAddTagLogic.verify(id, tag, articleData);
+    tagAdded.id = id;
+    emit TagAddedEvent(tagAdded.id, tagAdded.tag);
+    ArticleData memory updatedArticleData = ArticleAddTagLogic.mutate(tagAdded, articleData);
+    Article.set(id, updatedArticleData);
+  }
 
   function articleCreate(address author, string memory title, string memory body) public {
     uint64 id = ArticleIdGenerator.get() + 1;

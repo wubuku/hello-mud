@@ -23,11 +23,13 @@ aggregates:
         itemType: String
         tableName: ArticleTag
 
-    # methods:
-    #   AddTag:
-    #     parameters:
-    #       Tag:
-    #         type: u64
+    methods:
+      AddTag:
+        parameters:
+          Tag:
+            type: String
+        event:
+          name: TagAdded
 
     entities:
       Comment:

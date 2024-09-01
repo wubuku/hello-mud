@@ -150,7 +150,7 @@ cast call \
 > 
 > * The ASCII hex of `tb`: `0x7462`;
 > * `app`: `0x617070`;
-> * `Couter`: `0x43x6f756e746572`.
+> * `Counter`: `0x436f756e746572`.
 > 
 > About the Resource IDs, can refer to this link: [MUD Resource IDs](https://mud.dev/world/resource-ids).
 
@@ -239,3 +239,31 @@ View events emitted:
 ```shell
 cast logs 'ArticleCreatedEvent(uint64,address,string,string)'
 ```
+
+Add a tag to the article:
+
+```shell
+cast send --private-key __PRIVATE_KEY__ \
+0x8D8b6b8414E1e3DcfD4168561b9be6bD3bF6eC4B \
+'app__articleAddTag(uint64,string)' \
+'1' 'foo'
+```
+
+View events emitted:
+
+```shell
+cast logs 'TagAddedEvent(uint64,string)'
+```
+
+Queries the record of article-tag count (the second parameter is key tuple):
+
+```shell
+cast call \
+0x8D8b6b8414E1e3DcfD4168561b9be6bD3bF6eC4B \
+'getRecord(bytes32,bytes32[])' \
+0x7462617070000000000000000000000041727469636c65546167436f756e7400 \
+'[0x0000000000000000000000000000000000000000000000000000000000000001]'
+```
+
+> The ASCII hex of `ArticleTagCount`: `41727469636c65546167436f756e74`.
+
