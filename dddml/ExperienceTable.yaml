@@ -6,6 +6,11 @@ singletonObjects:
         # isList: true
         tableName: XpTableLevel
         # Default table name is "ExperienceTableLevel" which is too long.
+        indexColumnName: index
+        columnNames:
+          - level
+          - experience
+          - difference
       ReservedBool1:
         type: bool
         # MUD table requires at least one field.

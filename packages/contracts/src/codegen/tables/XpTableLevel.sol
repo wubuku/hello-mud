@@ -17,9 +17,9 @@ import { EncodedLengths, EncodedLengthsLib } from "@latticexyz/store/src/Encoded
 import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 
 struct XpTableLevelData {
-  uint16 levelLevel;
-  uint32 levelExperience;
-  uint32 levelDifference;
+  uint16 level;
+  uint32 experience;
+  uint32 difference;
 }
 
 library XpTableLevel {
@@ -40,7 +40,7 @@ library XpTableLevel {
    */
   function getKeyNames() internal pure returns (string[] memory keyNames) {
     keyNames = new string[](1);
-    keyNames[0] = "levelIndex";
+    keyNames[0] = "index";
   }
 
   /**
@@ -49,9 +49,9 @@ library XpTableLevel {
    */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
     fieldNames = new string[](3);
-    fieldNames[0] = "levelLevel";
-    fieldNames[1] = "levelExperience";
-    fieldNames[2] = "levelDifference";
+    fieldNames[0] = "level";
+    fieldNames[1] = "experience";
+    fieldNames[2] = "difference";
   }
 
   /**
@@ -69,137 +69,137 @@ library XpTableLevel {
   }
 
   /**
-   * @notice Get levelLevel.
+   * @notice Get level.
    */
-  function getLevelLevel(uint64 levelIndex) internal view returns (uint16 levelLevel) {
+  function getLevel(uint64 index) internal view returns (uint16 level) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
     return (uint16(bytes2(_blob)));
   }
 
   /**
-   * @notice Get levelLevel.
+   * @notice Get level.
    */
-  function _getLevelLevel(uint64 levelIndex) internal view returns (uint16 levelLevel) {
+  function _getLevel(uint64 index) internal view returns (uint16 level) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
     bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
     return (uint16(bytes2(_blob)));
   }
 
   /**
-   * @notice Set levelLevel.
+   * @notice Set level.
    */
-  function setLevelLevel(uint64 levelIndex, uint16 levelLevel) internal {
+  function setLevel(uint64 index, uint16 level) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((levelLevel)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((level)), _fieldLayout);
   }
 
   /**
-   * @notice Set levelLevel.
+   * @notice Set level.
    */
-  function _setLevelLevel(uint64 levelIndex, uint16 levelLevel) internal {
+  function _setLevel(uint64 index, uint16 level) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((levelLevel)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((level)), _fieldLayout);
   }
 
   /**
-   * @notice Get levelExperience.
+   * @notice Get experience.
    */
-  function getLevelExperience(uint64 levelIndex) internal view returns (uint32 levelExperience) {
+  function getExperience(uint64 index) internal view returns (uint32 experience) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
     return (uint32(bytes4(_blob)));
   }
 
   /**
-   * @notice Get levelExperience.
+   * @notice Get experience.
    */
-  function _getLevelExperience(uint64 levelIndex) internal view returns (uint32 levelExperience) {
+  function _getExperience(uint64 index) internal view returns (uint32 experience) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
     bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
     return (uint32(bytes4(_blob)));
   }
 
   /**
-   * @notice Set levelExperience.
+   * @notice Set experience.
    */
-  function setLevelExperience(uint64 levelIndex, uint32 levelExperience) internal {
+  function setExperience(uint64 index, uint32 experience) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((levelExperience)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((experience)), _fieldLayout);
   }
 
   /**
-   * @notice Set levelExperience.
+   * @notice Set experience.
    */
-  function _setLevelExperience(uint64 levelIndex, uint32 levelExperience) internal {
+  function _setExperience(uint64 index, uint32 experience) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((levelExperience)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((experience)), _fieldLayout);
   }
 
   /**
-   * @notice Get levelDifference.
+   * @notice Get difference.
    */
-  function getLevelDifference(uint64 levelIndex) internal view returns (uint32 levelDifference) {
+  function getDifference(uint64 index) internal view returns (uint32 difference) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
     return (uint32(bytes4(_blob)));
   }
 
   /**
-   * @notice Get levelDifference.
+   * @notice Get difference.
    */
-  function _getLevelDifference(uint64 levelIndex) internal view returns (uint32 levelDifference) {
+  function _getDifference(uint64 index) internal view returns (uint32 difference) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
     bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
     return (uint32(bytes4(_blob)));
   }
 
   /**
-   * @notice Set levelDifference.
+   * @notice Set difference.
    */
-  function setLevelDifference(uint64 levelIndex, uint32 levelDifference) internal {
+  function setDifference(uint64 index, uint32 difference) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((levelDifference)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((difference)), _fieldLayout);
   }
 
   /**
-   * @notice Set levelDifference.
+   * @notice Set difference.
    */
-  function _setLevelDifference(uint64 levelIndex, uint32 levelDifference) internal {
+  function _setDifference(uint64 index, uint32 difference) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((levelDifference)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((difference)), _fieldLayout);
   }
 
   /**
    * @notice Get the full data.
    */
-  function get(uint64 levelIndex) internal view returns (XpTableLevelData memory _table) {
+  function get(uint64 index) internal view returns (XpTableLevelData memory _table) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
     (bytes memory _staticData, EncodedLengths _encodedLengths, bytes memory _dynamicData) = StoreSwitch.getRecord(
       _tableId,
@@ -212,9 +212,9 @@ library XpTableLevel {
   /**
    * @notice Get the full data.
    */
-  function _get(uint64 levelIndex) internal view returns (XpTableLevelData memory _table) {
+  function _get(uint64 index) internal view returns (XpTableLevelData memory _table) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
     (bytes memory _staticData, EncodedLengths _encodedLengths, bytes memory _dynamicData) = StoreCore.getRecord(
       _tableId,
@@ -227,14 +227,14 @@ library XpTableLevel {
   /**
    * @notice Set the full data using individual values.
    */
-  function set(uint64 levelIndex, uint16 levelLevel, uint32 levelExperience, uint32 levelDifference) internal {
-    bytes memory _staticData = encodeStatic(levelLevel, levelExperience, levelDifference);
+  function set(uint64 index, uint16 level, uint32 experience, uint32 difference) internal {
+    bytes memory _staticData = encodeStatic(level, experience, difference);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
 
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
     StoreSwitch.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData);
   }
@@ -242,14 +242,14 @@ library XpTableLevel {
   /**
    * @notice Set the full data using individual values.
    */
-  function _set(uint64 levelIndex, uint16 levelLevel, uint32 levelExperience, uint32 levelDifference) internal {
-    bytes memory _staticData = encodeStatic(levelLevel, levelExperience, levelDifference);
+  function _set(uint64 index, uint16 level, uint32 experience, uint32 difference) internal {
+    bytes memory _staticData = encodeStatic(level, experience, difference);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
 
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
     StoreCore.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData, _fieldLayout);
   }
@@ -257,14 +257,14 @@ library XpTableLevel {
   /**
    * @notice Set the full data using the data struct.
    */
-  function set(uint64 levelIndex, XpTableLevelData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.levelLevel, _table.levelExperience, _table.levelDifference);
+  function set(uint64 index, XpTableLevelData memory _table) internal {
+    bytes memory _staticData = encodeStatic(_table.level, _table.experience, _table.difference);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
 
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
     StoreSwitch.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData);
   }
@@ -272,14 +272,14 @@ library XpTableLevel {
   /**
    * @notice Set the full data using the data struct.
    */
-  function _set(uint64 levelIndex, XpTableLevelData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.levelLevel, _table.levelExperience, _table.levelDifference);
+  function _set(uint64 index, XpTableLevelData memory _table) internal {
+    bytes memory _staticData = encodeStatic(_table.level, _table.experience, _table.difference);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
 
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
     StoreCore.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData, _fieldLayout);
   }
@@ -287,14 +287,12 @@ library XpTableLevel {
   /**
    * @notice Decode the tightly packed blob of static data using this table's field layout.
    */
-  function decodeStatic(
-    bytes memory _blob
-  ) internal pure returns (uint16 levelLevel, uint32 levelExperience, uint32 levelDifference) {
-    levelLevel = (uint16(Bytes.getBytes2(_blob, 0)));
+  function decodeStatic(bytes memory _blob) internal pure returns (uint16 level, uint32 experience, uint32 difference) {
+    level = (uint16(Bytes.getBytes2(_blob, 0)));
 
-    levelExperience = (uint32(Bytes.getBytes4(_blob, 2)));
+    experience = (uint32(Bytes.getBytes4(_blob, 2)));
 
-    levelDifference = (uint32(Bytes.getBytes4(_blob, 6)));
+    difference = (uint32(Bytes.getBytes4(_blob, 6)));
   }
 
   /**
@@ -308,15 +306,15 @@ library XpTableLevel {
     EncodedLengths,
     bytes memory
   ) internal pure returns (XpTableLevelData memory _table) {
-    (_table.levelLevel, _table.levelExperience, _table.levelDifference) = decodeStatic(_staticData);
+    (_table.level, _table.experience, _table.difference) = decodeStatic(_staticData);
   }
 
   /**
    * @notice Delete all data for given keys.
    */
-  function deleteRecord(uint64 levelIndex) internal {
+  function deleteRecord(uint64 index) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
     StoreSwitch.deleteRecord(_tableId, _keyTuple);
   }
@@ -324,9 +322,9 @@ library XpTableLevel {
   /**
    * @notice Delete all data for given keys.
    */
-  function _deleteRecord(uint64 levelIndex) internal {
+  function _deleteRecord(uint64 index) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
     StoreCore.deleteRecord(_tableId, _keyTuple, _fieldLayout);
   }
@@ -335,12 +333,8 @@ library XpTableLevel {
    * @notice Tightly pack static (fixed length) data using this table's schema.
    * @return The static data, encoded into a sequence of bytes.
    */
-  function encodeStatic(
-    uint16 levelLevel,
-    uint32 levelExperience,
-    uint32 levelDifference
-  ) internal pure returns (bytes memory) {
-    return abi.encodePacked(levelLevel, levelExperience, levelDifference);
+  function encodeStatic(uint16 level, uint32 experience, uint32 difference) internal pure returns (bytes memory) {
+    return abi.encodePacked(level, experience, difference);
   }
 
   /**
@@ -350,11 +344,11 @@ library XpTableLevel {
    * @return The dynamic (variable length) data, encoded into a sequence of bytes.
    */
   function encode(
-    uint16 levelLevel,
-    uint32 levelExperience,
-    uint32 levelDifference
+    uint16 level,
+    uint32 experience,
+    uint32 difference
   ) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
-    bytes memory _staticData = encodeStatic(levelLevel, levelExperience, levelDifference);
+    bytes memory _staticData = encodeStatic(level, experience, difference);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
@@ -365,9 +359,9 @@ library XpTableLevel {
   /**
    * @notice Encode keys as a bytes32 array using this table's field layout.
    */
-  function encodeKeyTuple(uint64 levelIndex) internal pure returns (bytes32[] memory) {
+  function encodeKeyTuple(uint64 index) internal pure returns (bytes32[] memory) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(levelIndex));
+    _keyTuple[0] = bytes32(uint256(index));
 
     return _keyTuple;
   }

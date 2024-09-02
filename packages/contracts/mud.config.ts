@@ -103,12 +103,12 @@ export default defineWorld({
     },
     XpTableLevel: {
       schema: {
-        levelIndex: "uint64",
-        levelLevel: "uint16",
-        levelExperience: "uint32",
-        levelDifference: "uint32",
+        index: "uint64",
+        level: "uint16",
+        experience: "uint32",
+        difference: "uint32",
       },
-      key: ["levelIndex"],
+      key: ["index"],
     },
   },
 });
