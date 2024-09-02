@@ -10,7 +10,7 @@ aggregates:
         tableName: ArticleIdGenerator
     properties:
       Author:
-        type: address # TODO throw if "FieldLayout: static type after dynamic type"
+        type: address
       Title:
         type: String
         length: 200

@@ -7,7 +7,7 @@ singletonObjects:
         tableName: XpTableLevel
         # Default table name is "ExperienceTableLevel" which is too long.
         indexColumnName: index
-        columnNames:
+        itemColumnNames:
           - level
           - experience
           - difference
