@@ -76,7 +76,6 @@ wubuku/dddappp-mud:master \
 --dddmlDirectoryPath /myapp/dddml \
 --boundedContextName Hello.Mud \
 --mudProjectDirectoryPath /myapp \
---boundedContextSuiPackageName infinite_sea \
 --boundedContextJavaPackageName org.dddml.suiinfinitesea \
 --javaProjectsDirectoryPath /myapp/mud-java-service \
 --javaProjectNamePrefix hellomud \
@@ -92,7 +91,7 @@ wubuku/dddappp-mud:master \
 >
 > ```shell
 > docker rm $(docker ps -aq --filter "ancestor=wubuku/dddappp-mud:master")
-> docker rmi wubuku/dddappp-sui:master
+> docker rmi wubuku/dddappp-mud:master
 > ```
 
 

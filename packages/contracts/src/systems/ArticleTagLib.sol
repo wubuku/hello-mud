@@ -35,12 +35,10 @@ library ArticleTagLib {
     uint64 count = ArticleTagCount.get(articleId);
     require(index < count, "Invalid index");
 
-    // Shift tags after the removed one
     for (uint64 i = index; i < count - 1; i++) {
       ArticleTag.set(articleId, i, ArticleTag.get(articleId, i + 1));
     }
 
-    // Delete the last tag and decrease the count
     ArticleTag.deleteRecord(articleId, count - 1);
     ArticleTagCount.set(articleId, count - 1);
   }
