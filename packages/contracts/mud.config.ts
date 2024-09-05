@@ -67,6 +67,22 @@ export default defineWorld({
       },
       key: ["articleId", "tagIndex"],
     },
+    Roster: {
+      schema: {
+        playerId: "uint256",
+        sequenceNumber: "uint32",
+        status: "uint8",
+        speed: "uint32",
+        coordinatesUpdatedAt: "uint64",
+        sailDuration: "uint64",
+        setSailAt: "uint64",
+        shipBattleId: "uint256",
+        environmentOwned: "bool",
+        baseExperience: "uint32",
+        shipIds: "uint256[]",
+      },
+      key: ["playerId", "sequenceNumber"],
+    },
     Counter: {
       schema: {
         value: "uint32",

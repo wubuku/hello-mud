@@ -1,0 +1,49 @@
+
+aggregates:
+  Roster:
+    id:
+      name: RosterId
+      type: RosterId
+    properties:
+      Status:
+        type: u8
+      Speed:
+        type: u32
+      # TODO: UpdatedCoordinates:
+      #   type: Coordinates
+      #   description: "The last updated coordinates"
+      CoordinatesUpdatedAt:
+        type: u64
+      # TargetCoordinates:
+      #   type: Coordinates
+      # OriginCoordinates:
+      #   type: Coordinates
+      SailDuration:
+        type: u64
+      SetSailAt:
+        type: u64
+      ShipBattleId:
+        type: u256
+      EnvironmentOwned:
+        type: bool
+        description: "Whether the roster is owned by the environment"
+      BaseExperience:
+        type: u32
+        description: "The base experience value gained by the player when the roster is destroyed"
+      ShipIds:
+        type: uint256[]
+
+    methods:
+      AdjustShipsPosition:
+        parameters:
+          #Player:
+          #  referenceType: Player
+          #  isIgnoredInEvent: true
+          Positions:
+            type: uint64[]
+            #itemType: u64
+          ShipIds:
+            type: uint256[]
+            #itemType: ID
+        event:
+          name: RosterShipsPositionAdjusted

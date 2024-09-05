@@ -20,3 +20,14 @@ valueObjects:
         type: u32
       Difference:
         type: u32
+
+  RosterId:
+    module: "Common"
+    properties:
+      PlayerId:
+        type: u256
+        columnName: playerId
+      SequenceNumber:
+        type: u32
+        columnName: sequenceNumber
+

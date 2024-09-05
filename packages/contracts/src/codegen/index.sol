@@ -11,6 +11,7 @@ import { ArticleTagCount } from "./tables/ArticleTagCount.sol";
 import { CommentSeqIdGenerator } from "./tables/CommentSeqIdGenerator.sol";
 import { Comment, CommentData } from "./tables/Comment.sol";
 import { ArticleTag } from "./tables/ArticleTag.sol";
+import { Roster, RosterData } from "./tables/Roster.sol";
 import { Counter } from "./tables/Counter.sol";
 import { Map, MapData } from "./tables/Map.sol";
 import { MapLocation, MapLocationData } from "./tables/MapLocation.sol";
