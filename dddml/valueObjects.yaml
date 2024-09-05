@@ -31,3 +31,10 @@ valueObjects:
         type: u32
         columnName: sequenceNumber
 
+
+  ItemIdQuantityPair:
+    properties:
+      ItemId:
+        type: u32
+      Quantity:
+        type: u32

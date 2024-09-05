@@ -19,3 +19,14 @@ singletonObjects:
             type: u32
           OccupiedBy:
             type: address
+
+    methods:
+      AddIsland:
+        #requiredPermission: "AdminCap"
+        parameters:
+          Coordinates:
+            type: Point2d #Coordinates
+          Resources:
+            itemType: ItemIdQuantityPair
+        event:
+          name: IslandAdded
