@@ -110,7 +110,8 @@ export default defineWorld({
     Ship: {
       schema: {
         id: "uint256",
-        owner: "uint256",
+        playerId: "uint256",
+        rosterSequenceNumber: "uint32",
         healthPoints: "uint32",
         attack: "uint32",
         protection: "uint32",

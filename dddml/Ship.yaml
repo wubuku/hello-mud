@@ -7,8 +7,13 @@ aggregates:
         class: sequence
         tableName: ShipIdGenerator
     properties:
-      Owner:
-        type: u256 # PlayerId
+      #Owner:
+      #  type: u256 # PlayerId
+      RosterId:
+        type: RosterId # Roaster the ship belongs to
+        columnNames:
+          - playerId
+          - rosterSequenceNumber
       HealthPoints:
         type: u32
       Attack:
@@ -19,10 +24,11 @@ aggregates:
         type: u32
       #BuildingExpenses:
       #  itemType: ItemIdQuantityPair[]
+      # Using itemType generates a corresponding Table.
+      # There is no need to generate a table because this property is immutable from the moment the ship is built.
       BuildingExpensesItemIds:
         type: uint32[]
       BuildingExpensesQuantities:
         type: uint32[]
       Inventory:
         itemType: ItemIdQuantityPair
-
