@@ -1,9 +1,12 @@
 singletonObjects:
   ExperienceTable:
+    metadata:
+      Preprocessors: [ "CRUD_IT" ]
+      #CRUD_IT_NO_UPDATE: true
+      CRUD_IT_NO_DELETE: true
     properties:
       Levels:
         itemType: ExperienceLevel
-        # isList: true
         tableName: XpTableLevel
         # Default table name is "ExperienceTableLevel" which is too long.
         indexColumnName: index
