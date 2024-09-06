@@ -1,0 +1,53 @@
+aggregates:
+  SkillProcess:
+    metadata:
+      Preprocessors: [ "CRUD_IT" ]
+      CRUD_IT_NO_UPDATE: true
+      CRUD_IT_NO_DELETE: true
+    id:
+      name: SkillProcessId
+      type: SkillProcessId
+      # generator:
+      #   class: assigned
+      #   tableName: SkillProcessTable
+    properties:
+      ItemId:
+        type: u32
+        #defaultLogic:
+        #  Move: "infinite_sea_common::item_id::unused_item()"
+      StartedAt:
+        type: u64
+        #defaultLogic:
+        #  Move: "0"
+      CreationTime:
+        type: u64
+        #defaultLogic:
+        #  Move: "0"
+      Completed:
+        type: bool
+        #defaultLogic:
+        #  Move: "true"
+      EndedAt:
+        type: u64
+        #defaultLogic:
+        #  Move: "0"
+      BatchSize:
+        type: u32
+        #defaultLogic:
+        #  Move: "1"
+      ProductionMaterials:
+        itemType: ItemIdQuantityPair
+        tableName: SkillPrcMtrl
+        description: "Actual input materials for production"
+
+
+valueObjects:
+
+  SkillProcessId:
+    properties:
+      SkillType:
+        type: SkillType
+      PlayerId:
+        type: u256
+      SequenceNumber:
+        type: u8

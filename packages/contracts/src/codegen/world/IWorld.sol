@@ -15,6 +15,7 @@ import { IPositionSystem } from "./IPositionSystem.sol";
 import { IRosterSystem } from "./IRosterSystem.sol";
 import { IShipBattleSystem } from "./IShipBattleSystem.sol";
 import { IShipSystem } from "./IShipSystem.sol";
+import { ISkillProcessSystem } from "./ISkillProcessSystem.sol";
 import { ITerrainSystem } from "./ITerrainSystem.sol";
 
 /**
@@ -37,5 +38,6 @@ interface IWorld is
   IRosterSystem,
   IShipBattleSystem,
   IShipSystem,
+  ISkillProcessSystem,
   ITerrainSystem
 {}

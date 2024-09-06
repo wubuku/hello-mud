@@ -20,8 +20,8 @@ struct PlayerData {
   address owner;
   uint16 level;
   uint32 experience;
-  int32 x;
-  int32 y;
+  int32 claimedIslandX;
+  int32 claimedIslandY;
   string name;
 }
 
@@ -55,8 +55,8 @@ library Player {
     fieldNames[0] = "owner";
     fieldNames[1] = "level";
     fieldNames[2] = "experience";
-    fieldNames[3] = "x";
-    fieldNames[4] = "y";
+    fieldNames[3] = "claimedIslandX";
+    fieldNames[4] = "claimedIslandY";
     fieldNames[5] = "name";
   }
 
@@ -201,9 +201,9 @@ library Player {
   }
 
   /**
-   * @notice Get x.
+   * @notice Get claimedIslandX.
    */
-  function getX(uint256 id) internal view returns (int32 x) {
+  function getClaimedIslandX(uint256 id) internal view returns (int32 claimedIslandX) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
@@ -212,9 +212,9 @@ library Player {
   }
 
   /**
-   * @notice Get x.
+   * @notice Get claimedIslandX.
    */
-  function _getX(uint256 id) internal view returns (int32 x) {
+  function _getClaimedIslandX(uint256 id) internal view returns (int32 claimedIslandX) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
@@ -223,29 +223,29 @@ library Player {
   }
 
   /**
-   * @notice Set x.
+   * @notice Set claimedIslandX.
    */
-  function setX(uint256 id, int32 x) internal {
+  function setClaimedIslandX(uint256 id, int32 claimedIslandX) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((x)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((claimedIslandX)), _fieldLayout);
   }
 
   /**
-   * @notice Set x.
+   * @notice Set claimedIslandX.
    */
-  function _setX(uint256 id, int32 x) internal {
+  function _setClaimedIslandX(uint256 id, int32 claimedIslandX) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((x)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((claimedIslandX)), _fieldLayout);
   }
 
   /**
-   * @notice Get y.
+   * @notice Get claimedIslandY.
    */
-  function getY(uint256 id) internal view returns (int32 y) {
+  function getClaimedIslandY(uint256 id) internal view returns (int32 claimedIslandY) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
@@ -254,9 +254,9 @@ library Player {
   }
 
   /**
-   * @notice Get y.
+   * @notice Get claimedIslandY.
    */
-  function _getY(uint256 id) internal view returns (int32 y) {
+  function _getClaimedIslandY(uint256 id) internal view returns (int32 claimedIslandY) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
@@ -265,23 +265,23 @@ library Player {
   }
 
   /**
-   * @notice Set y.
+   * @notice Set claimedIslandY.
    */
-  function setY(uint256 id, int32 y) internal {
+  function setClaimedIslandY(uint256 id, int32 claimedIslandY) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 4, abi.encodePacked((y)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 4, abi.encodePacked((claimedIslandY)), _fieldLayout);
   }
 
   /**
-   * @notice Set y.
+   * @notice Set claimedIslandY.
    */
-  function _setY(uint256 id, int32 y) internal {
+  function _setClaimedIslandY(uint256 id, int32 claimedIslandY) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 4, abi.encodePacked((y)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 4, abi.encodePacked((claimedIslandY)), _fieldLayout);
   }
 
   /**
@@ -484,11 +484,11 @@ library Player {
     address owner,
     uint16 level,
     uint32 experience,
-    int32 x,
-    int32 y,
+    int32 claimedIslandX,
+    int32 claimedIslandY,
     string memory name
   ) internal {
-    bytes memory _staticData = encodeStatic(owner, level, experience, x, y);
+    bytes memory _staticData = encodeStatic(owner, level, experience, claimedIslandX, claimedIslandY);
 
     EncodedLengths _encodedLengths = encodeLengths(name);
     bytes memory _dynamicData = encodeDynamic(name);
@@ -507,11 +507,11 @@ library Player {
     address owner,
     uint16 level,
     uint32 experience,
-    int32 x,
-    int32 y,
+    int32 claimedIslandX,
+    int32 claimedIslandY,
     string memory name
   ) internal {
-    bytes memory _staticData = encodeStatic(owner, level, experience, x, y);
+    bytes memory _staticData = encodeStatic(owner, level, experience, claimedIslandX, claimedIslandY);
 
     EncodedLengths _encodedLengths = encodeLengths(name);
     bytes memory _dynamicData = encodeDynamic(name);
@@ -526,7 +526,13 @@ library Player {
    * @notice Set the full data using the data struct.
    */
   function set(uint256 id, PlayerData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.owner, _table.level, _table.experience, _table.x, _table.y);
+    bytes memory _staticData = encodeStatic(
+      _table.owner,
+      _table.level,
+      _table.experience,
+      _table.claimedIslandX,
+      _table.claimedIslandY
+    );
 
     EncodedLengths _encodedLengths = encodeLengths(_table.name);
     bytes memory _dynamicData = encodeDynamic(_table.name);
@@ -541,7 +547,13 @@ library Player {
    * @notice Set the full data using the data struct.
    */
   function _set(uint256 id, PlayerData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.owner, _table.level, _table.experience, _table.x, _table.y);
+    bytes memory _staticData = encodeStatic(
+      _table.owner,
+      _table.level,
+      _table.experience,
+      _table.claimedIslandX,
+      _table.claimedIslandY
+    );
 
     EncodedLengths _encodedLengths = encodeLengths(_table.name);
     bytes memory _dynamicData = encodeDynamic(_table.name);
@@ -557,16 +569,16 @@ library Player {
    */
   function decodeStatic(
     bytes memory _blob
-  ) internal pure returns (address owner, uint16 level, uint32 experience, int32 x, int32 y) {
+  ) internal pure returns (address owner, uint16 level, uint32 experience, int32 claimedIslandX, int32 claimedIslandY) {
     owner = (address(Bytes.getBytes20(_blob, 0)));
 
     level = (uint16(Bytes.getBytes2(_blob, 20)));
 
     experience = (uint32(Bytes.getBytes4(_blob, 22)));
 
-    x = (int32(uint32(Bytes.getBytes4(_blob, 26))));
+    claimedIslandX = (int32(uint32(Bytes.getBytes4(_blob, 26))));
 
-    y = (int32(uint32(Bytes.getBytes4(_blob, 30))));
+    claimedIslandY = (int32(uint32(Bytes.getBytes4(_blob, 30))));
   }
 
   /**
@@ -595,7 +607,9 @@ library Player {
     EncodedLengths _encodedLengths,
     bytes memory _dynamicData
   ) internal pure returns (PlayerData memory _table) {
-    (_table.owner, _table.level, _table.experience, _table.x, _table.y) = decodeStatic(_staticData);
+    (_table.owner, _table.level, _table.experience, _table.claimedIslandX, _table.claimedIslandY) = decodeStatic(
+      _staticData
+    );
 
     (_table.name) = decodeDynamic(_encodedLengths, _dynamicData);
   }
@@ -628,10 +642,10 @@ library Player {
     address owner,
     uint16 level,
     uint32 experience,
-    int32 x,
-    int32 y
+    int32 claimedIslandX,
+    int32 claimedIslandY
   ) internal pure returns (bytes memory) {
-    return abi.encodePacked(owner, level, experience, x, y);
+    return abi.encodePacked(owner, level, experience, claimedIslandX, claimedIslandY);
   }
 
   /**
@@ -663,11 +677,11 @@ library Player {
     address owner,
     uint16 level,
     uint32 experience,
-    int32 x,
-    int32 y,
+    int32 claimedIslandX,
+    int32 claimedIslandY,
     string memory name
   ) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
-    bytes memory _staticData = encodeStatic(owner, level, experience, x, y);
+    bytes memory _staticData = encodeStatic(owner, level, experience, claimedIslandX, claimedIslandY);
 
     EncodedLengths _encodedLengths = encodeLengths(name);
     bytes memory _dynamicData = encodeDynamic(name);
