@@ -101,6 +101,41 @@ export default defineWorld({
       },
       key: ["playerId", "inventoryIndex"],
     },
+    ShipIdGenerator: {
+      schema: {
+        id: "uint256",
+      },
+      key: [],
+    },
+    Ship: {
+      schema: {
+        id: "uint256",
+        owner: "uint256",
+        healthPoints: "uint32",
+        attack: "uint32",
+        protection: "uint32",
+        speed: "uint32",
+        buildingExpensesItemIds: "uint32[]",
+        buildingExpensesQuantities: "uint32[]",
+      },
+      key: ["id"],
+    },
+    ShipInventoryCount: {
+      schema: {
+        shipId: "uint256",
+        count: "uint64",
+      },
+      key: ["shipId"],
+    },
+    ShipInventory: {
+      schema: {
+        shipId: "uint256",
+        inventoryIndex: "uint64",
+        inventoryItemId: "uint32",
+        inventoryQuantity: "uint32",
+      },
+      key: ["shipId", "inventoryIndex"],
+    },
     Roster: {
       schema: {
         playerId: "uint256",

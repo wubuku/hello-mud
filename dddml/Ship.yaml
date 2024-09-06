@@ -1,0 +1,28 @@
+aggregates:
+  Ship:
+    id:
+      name: Id
+      type: u256
+      generator:
+        class: sequence
+        tableName: ShipIdGenerator
+    properties:
+      Owner:
+        type: u256 # PlayerId
+      HealthPoints:
+        type: u32
+      Attack:
+        type: u32
+      Protection:
+        type: u32
+      Speed:
+        type: u32
+      #BuildingExpenses:
+      #  itemType: ItemIdQuantityPair[]
+      BuildingExpensesItemIds:
+        type: uint32[]
+      BuildingExpensesQuantities:
+        type: uint32[]
+      Inventory:
+        itemType: ItemIdQuantityPair
+
