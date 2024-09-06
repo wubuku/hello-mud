@@ -3,15 +3,6 @@ import { defineWorld } from "@latticexyz/world";
 export default defineWorld({
   namespace: "app",
   tables: {
-    Position: {
-      schema: {
-        player: "address",
-        x: "int32",
-        y: "int32",
-        description: "string",
-      },
-      key: ["player"],
-    },
     Terrain: {
       schema: {
         x: "int32",
@@ -21,6 +12,163 @@ export default defineWorld({
         bar: "bytes",
       },
       key: ["x", "y"],
+    },
+    Item: {
+      schema: {
+        itemId: "uint32",
+        requiredForCompletion: "bool",
+        sellsFor: "uint32",
+        name: "string",
+      },
+      key: ["itemId"],
+    },
+    ItemCreation: {
+      schema: {
+        itemCreationIdSkillType: "uint8",
+        itemCreationIdItemId: "uint32",
+        requirementsLevel: "uint16",
+        baseQuantity: "uint32",
+        baseExperience: "uint32",
+        baseCreationTime: "uint64",
+        energyCost: "uint64",
+        successRate: "uint16",
+        resourceCost: "uint32",
+      },
+      key: ["itemCreationIdSkillType", "itemCreationIdItemId"],
+    },
+    ItemProduction: {
+      schema: {
+        itemProductionIdSkillType: "uint8",
+        itemProductionIdItemId: "uint32",
+        requirementsLevel: "uint16",
+        baseQuantity: "uint32",
+        baseExperience: "uint32",
+        baseCreationTime: "uint64",
+        energyCost: "uint64",
+        successRate: "uint16",
+        materialItemIds: "uint32[]",
+        materialItemQuantities: "uint32[]",
+      },
+      key: ["itemProductionIdSkillType", "itemProductionIdItemId"],
+    },
+    Roster: {
+      schema: {
+        playerId: "uint256",
+        sequenceNumber: "uint32",
+        status: "uint8",
+        speed: "uint32",
+        coordinatesUpdatedAt: "uint64",
+        sailDuration: "uint64",
+        setSailAt: "uint64",
+        shipBattleId: "uint256",
+        environmentOwned: "bool",
+        baseExperience: "uint32",
+        shipIds: "uint256[]",
+      },
+      key: ["playerId", "sequenceNumber"],
+    },
+    SkillProcess: {
+      schema: {
+        skillProcessIdSkillType: "uint8",
+        skillProcessIdPlayerId: "uint256",
+        skillProcessIdSequenceNumber: "uint8",
+        itemId: "uint32",
+        startedAt: "uint64",
+        creationTime: "uint64",
+        completed: "bool",
+        endedAt: "uint64",
+        batchSize: "uint32",
+      },
+      key: ["skillProcessIdSkillType", "skillProcessIdPlayerId", "skillProcessIdSequenceNumber"],
+    },
+    SkillPrcMtrlCount: {
+      schema: {
+        skillProcessIdSkillType: "uint8",
+        skillProcessIdPlayerId: "uint256",
+        skillProcessIdSequenceNumber: "uint8",
+        count: "uint64",
+      },
+      key: ["skillProcessIdSkillType", "skillProcessIdPlayerId", "skillProcessIdSequenceNumber"],
+    },
+    SkillPrcMtrl: {
+      schema: {
+        skillProcessIdSkillType: "uint8",
+        skillProcessIdPlayerId: "uint256",
+        skillProcessIdSequenceNumber: "uint8",
+        productionMaterialIndex: "uint64",
+        productionMaterialItemId: "uint32",
+        productionMaterialQuantity: "uint32",
+      },
+      key: ["skillProcessIdSkillType", "skillProcessIdPlayerId", "skillProcessIdSequenceNumber", "productionMaterialIndex"],
+    },
+    Position: {
+      schema: {
+        player: "address",
+        x: "int32",
+        y: "int32",
+        description: "string",
+      },
+      key: ["player"],
+    },
+    PlayerIdGenerator: {
+      schema: {
+        id: "uint256",
+      },
+      key: [],
+    },
+    Player: {
+      schema: {
+        id: "uint256",
+        owner: "address",
+        level: "uint16",
+        experience: "uint32",
+        claimedIslandX: "int32",
+        claimedIslandY: "int32",
+        name: "string",
+      },
+      key: ["id"],
+    },
+    PlayerInventoryCount: {
+      schema: {
+        playerId: "uint256",
+        count: "uint64",
+      },
+      key: ["playerId"],
+    },
+    PlayerInventory: {
+      schema: {
+        playerId: "uint256",
+        inventoryIndex: "uint64",
+        inventoryItemId: "uint32",
+        inventoryQuantity: "uint32",
+      },
+      key: ["playerId", "inventoryIndex"],
+    },
+    ShipBattleIdGenerator: {
+      schema: {
+        id: "uint256",
+      },
+      key: [],
+    },
+    ShipBattle: {
+      schema: {
+        id: "uint256",
+        initiatorRosterPlayerId: "uint256",
+        initiatorRosterSequenceNumber: "uint32",
+        responderRosterPlayerId: "uint256",
+        responderRosterSequenceNumber: "uint32",
+        status: "uint8",
+        endedAt: "uint64",
+        winner: "uint8",
+        roundNumber: "uint32",
+        roundStartedAt: "uint64",
+        roundMover: "uint8",
+        roundAttackerShip: "uint256",
+        roundDefenderShip: "uint256",
+        initiatorExperiences: "uint32[]",
+        responderExperiences: "uint32[]",
+      },
+      key: ["id"],
     },
     ArticleIdGenerator: {
       schema: {
@@ -67,40 +215,6 @@ export default defineWorld({
       },
       key: ["articleId", "tagIndex"],
     },
-    PlayerIdGenerator: {
-      schema: {
-        id: "uint256",
-      },
-      key: [],
-    },
-    Player: {
-      schema: {
-        id: "uint256",
-        owner: "address",
-        level: "uint16",
-        experience: "uint32",
-        claimedIslandX: "int32",
-        claimedIslandY: "int32",
-        name: "string",
-      },
-      key: ["id"],
-    },
-    PlayerInventoryCount: {
-      schema: {
-        playerId: "uint256",
-        count: "uint64",
-      },
-      key: ["playerId"],
-    },
-    PlayerInventory: {
-      schema: {
-        playerId: "uint256",
-        inventoryIndex: "uint64",
-        inventoryItemId: "uint32",
-        inventoryQuantity: "uint32",
-      },
-      key: ["playerId", "inventoryIndex"],
-    },
     ShipIdGenerator: {
       schema: {
         id: "uint256",
@@ -137,141 +251,11 @@ export default defineWorld({
       },
       key: ["shipId", "inventoryIndex"],
     },
-    Roster: {
-      schema: {
-        playerId: "uint256",
-        sequenceNumber: "uint32",
-        status: "uint8",
-        speed: "uint32",
-        coordinatesUpdatedAt: "uint64",
-        sailDuration: "uint64",
-        setSailAt: "uint64",
-        shipBattleId: "uint256",
-        environmentOwned: "bool",
-        baseExperience: "uint32",
-        shipIds: "uint256[]",
-      },
-      key: ["playerId", "sequenceNumber"],
-    },
-    ShipBattleIdGenerator: {
-      schema: {
-        id: "uint256",
-      },
-      key: [],
-    },
-    ShipBattle: {
-      schema: {
-        id: "uint256",
-        initiatorRosterPlayerId: "uint256",
-        initiatorRosterSequenceNumber: "uint32",
-        responderRosterPlayerId: "uint256",
-        responderRosterSequenceNumber: "uint32",
-        status: "uint8",
-        endedAt: "uint64",
-        winner: "uint8",
-        roundNumber: "uint32",
-        roundStartedAt: "uint64",
-        roundMover: "uint8",
-        roundAttackerShip: "uint256",
-        roundDefenderShip: "uint256",
-        initiatorExperiences: "uint32[]",
-        responderExperiences: "uint32[]",
-      },
-      key: ["id"],
-    },
-    Item: {
-      schema: {
-        itemId: "uint32",
-        requiredForCompletion: "bool",
-        sellsFor: "uint32",
-        name: "string",
-      },
-      key: ["itemId"],
-    },
-    ItemCreation: {
-      schema: {
-        itemCreationIdSkillType: "uint8",
-        itemCreationIdItemId: "uint32",
-        requirementsLevel: "uint16",
-        baseQuantity: "uint32",
-        baseExperience: "uint32",
-        baseCreationTime: "uint64",
-        energyCost: "uint64",
-        successRate: "uint16",
-        resourceCost: "uint32",
-      },
-      key: ["itemCreationIdSkillType", "itemCreationIdItemId"],
-    },
-    ItemProduction: {
-      schema: {
-        itemProductionIdSkillType: "uint8",
-        itemProductionIdItemId: "uint32",
-        requirementsLevel: "uint16",
-        baseQuantity: "uint32",
-        baseExperience: "uint32",
-        baseCreationTime: "uint64",
-        energyCost: "uint64",
-        successRate: "uint16",
-        materialItemIds: "uint32[]",
-        materialItemQuantities: "uint32[]",
-      },
-      key: ["itemProductionIdSkillType", "itemProductionIdItemId"],
-    },
-    SkillProcess: {
-      schema: {
-        skillProcessIdSkillType: "uint8",
-        skillProcessIdPlayerId: "uint256",
-        skillProcessIdSequenceNumber: "uint8",
-        itemId: "uint32",
-        startedAt: "uint64",
-        creationTime: "uint64",
-        completed: "bool",
-        endedAt: "uint64",
-        batchSize: "uint32",
-      },
-      key: ["skillProcessIdSkillType", "skillProcessIdPlayerId", "skillProcessIdSequenceNumber"],
-    },
-    SkillPrcMtrlCount: {
-      schema: {
-        skillProcessIdSkillType: "uint8",
-        skillProcessIdPlayerId: "uint256",
-        skillProcessIdSequenceNumber: "uint8",
-        count: "uint64",
-      },
-      key: ["skillProcessIdSkillType", "skillProcessIdPlayerId", "skillProcessIdSequenceNumber"],
-    },
-    SkillPrcMtrl: {
-      schema: {
-        skillProcessIdSkillType: "uint8",
-        skillProcessIdPlayerId: "uint256",
-        skillProcessIdSequenceNumber: "uint8",
-        productionMaterialIndex: "uint64",
-        productionMaterialItemId: "uint32",
-        productionMaterialQuantity: "uint32",
-      },
-      key: ["skillProcessIdSkillType", "skillProcessIdPlayerId", "skillProcessIdSequenceNumber", "productionMaterialIndex"],
-    },
     Counter: {
       schema: {
         value: "uint32",
       },
       key: [],
-    },
-    Map: {
-      schema: {
-        width: "uint32",
-        height: "uint32",
-      },
-      key: [],
-    },
-    MapLocation: {
-      schema: {
-        x: "int32",
-        y: "int32",
-        type_: "uint32",
-        occupiedBy: "address",
-      },
-      key: ["x", "y"],
     },
     ExperienceTable: {
       schema: {
@@ -293,6 +277,22 @@ export default defineWorld({
         difference: "uint32",
       },
       key: ["index"],
+    },
+    Map: {
+      schema: {
+        width: "uint32",
+        height: "uint32",
+      },
+      key: [],
+    },
+    MapLocation: {
+      schema: {
+        x: "int32",
+        y: "int32",
+        type_: "uint32",
+        occupiedBy: "address",
+      },
+      key: ["x", "y"],
     },
   },
 });

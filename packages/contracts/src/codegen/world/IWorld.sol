@@ -9,6 +9,7 @@ import { ICounterSystem } from "./ICounterSystem.sol";
 import { IIncrementSystem } from "./IIncrementSystem.sol";
 import { IItemCreationSystem } from "./IItemCreationSystem.sol";
 import { IItemProductionSystem } from "./IItemProductionSystem.sol";
+import { IItemSystem } from "./IItemSystem.sol";
 import { IMapSystem } from "./IMapSystem.sol";
 import { IPlayerSystem } from "./IPlayerSystem.sol";
 import { IPositionSystem } from "./IPositionSystem.sol";
@@ -32,6 +33,7 @@ interface IWorld is
   IIncrementSystem,
   IItemCreationSystem,
   IItemProductionSystem,
+  IItemSystem,
   IMapSystem,
   IPlayerSystem,
   IPositionSystem,
