@@ -39,6 +39,7 @@ aggregates:
       ResourceCost:
         type: u32
         sequenceNumber: 100
+        # Ensure that dynamic fields come last by setting the seq-no.
     methods:
       # Create:
       #   requiredPermission: "__Publisher__"
@@ -66,6 +67,7 @@ aggregates:
       MaterialItemIds:
         type: uint32[]
         sequenceNumber: 100
+        # Ensure that dynamic fields come last by setting the seq-no.
       MaterialItemQuantities:
         type: uint32[]
         sequenceNumber: 101
