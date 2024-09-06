@@ -179,6 +179,44 @@ export default defineWorld({
       },
       key: ["id"],
     },
+    Item: {
+      schema: {
+        itemId: "uint32",
+        requiredForCompletion: "bool",
+        sellsFor: "uint32",
+        name: "string",
+      },
+      key: ["itemId"],
+    },
+    ItemCreation: {
+      schema: {
+        itemCreationIdSkillType: "uint8",
+        itemCreationIdItemId: "uint32",
+        requirementsLevel: "uint16",
+        baseQuantity: "uint32",
+        baseExperience: "uint32",
+        baseCreationTime: "uint64",
+        energyCost: "uint64",
+        successRate: "uint16",
+        resourceCost: "uint32",
+      },
+      key: ["itemCreationIdSkillType", "itemCreationIdItemId"],
+    },
+    ItemProduction: {
+      schema: {
+        itemProductionIdSkillType: "uint8",
+        itemProductionIdItemId: "uint32",
+        requirementsLevel: "uint16",
+        baseQuantity: "uint32",
+        baseExperience: "uint32",
+        baseCreationTime: "uint64",
+        energyCost: "uint64",
+        successRate: "uint16",
+        materialItemIds: "uint32[]",
+        materialItemQuantities: "uint32[]",
+      },
+      key: ["itemProductionIdSkillType", "itemProductionIdItemId"],
+    },
     Counter: {
       schema: {
         value: "uint32",

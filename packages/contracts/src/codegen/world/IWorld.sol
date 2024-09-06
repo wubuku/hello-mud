@@ -7,6 +7,8 @@ import { IBaseWorld } from "@latticexyz/world/src/codegen/interfaces/IBaseWorld.
 import { IArticleSystem } from "./IArticleSystem.sol";
 import { ICounterSystem } from "./ICounterSystem.sol";
 import { IIncrementSystem } from "./IIncrementSystem.sol";
+import { IItemCreationSystem } from "./IItemCreationSystem.sol";
+import { IItemProductionSystem } from "./IItemProductionSystem.sol";
 import { IMapSystem } from "./IMapSystem.sol";
 import { IPlayerSystem } from "./IPlayerSystem.sol";
 import { IPositionSystem } from "./IPositionSystem.sol";
@@ -27,6 +29,8 @@ interface IWorld is
   IArticleSystem,
   ICounterSystem,
   IIncrementSystem,
+  IItemCreationSystem,
+  IItemProductionSystem,
   IMapSystem,
   IPlayerSystem,
   IPositionSystem,

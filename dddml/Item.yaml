@@ -1,0 +1,105 @@
+aggregates:
+  Item:
+    metadata:
+      Preprocessors: [ "CRUD_IT" ]
+      #CRUD_IT_NO_UPDATE: true
+      CRUD_IT_NO_DELETE: true
+    id:
+      name: ItemId
+      type: u32
+      #generator:
+      #  class: assigned
+      #  tableName: ItemTable
+    properties:
+      RequiredForCompletion:
+        type: bool
+      SellsFor:
+        type: u32
+      Name:
+        type: string
+        length: 100
+      #Type:
+      #  type: ItemType
+
+
+  ItemCreation:
+    metadata:
+      Preprocessors: [ "CRUD_IT" ]
+      #CRUD_IT_NO_UPDATE: true
+      CRUD_IT_NO_DELETE: true
+    implements:
+      - ItemCreationOrProduction
+    id:
+      name: ItemCreationId
+      type: SkillTypeItemIdPair
+      #generator:
+      #  class: assigned
+      #  tableName: ItemCreationTable
+    properties:
+      ResourceCost:
+        type: u32
+        sequenceNumber: 100
+    methods:
+      # Create:
+      #   requiredPermission: "__Publisher__"
+      # Update:
+      #   requiredPermission: "__Publisher__"
+
+
+  ItemProduction:
+    module: "Common"
+    metadata:
+      Preprocessors: [ "CRUD_IT" ]
+      #CRUD_IT_NO_UPDATE: true
+      CRUD_IT_NO_DELETE: true
+    implements:
+      - ItemCreationOrProduction
+    id:
+      name: ItemProductionId
+      type: SkillTypeItemIdPair
+      #generator:
+      #  class: assigned
+      #  tableName: ItemProductionTable
+    properties:
+      #ProductionMaterials:
+      #  type: ItemIdQuantityPairs
+      MaterialItemIds:
+        type: uint32[]
+        sequenceNumber: 100
+      MaterialItemQuantities:
+        type: uint32[]
+        sequenceNumber: 101
+        
+    # methods:
+    #   Create:
+    #     requiredPermission: "__Publisher__"
+    #   Update:
+    #     requiredPermission: "__Publisher__"
+
+valueObjects:
+  SkillTypeItemIdPair:
+    properties:
+      SkillType:
+        type: SkillType
+      ItemId:
+        type: u32
+
+
+superObjects:
+  ItemCreationOrProduction:
+    properties:
+      #RequirementsSkill:
+      #  type: SkillType
+      RequirementsLevel:
+        type: u16
+      BaseQuantity:
+        type: u32
+      BaseExperience:
+        type: u32
+      BaseCreationTime:
+        type: u64
+      EnergyCost:
+        type: u64
+      SuccessRate: #(percentage)
+        type: u16
+
