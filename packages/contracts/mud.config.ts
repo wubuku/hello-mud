@@ -153,6 +153,32 @@ export default defineWorld({
       },
       key: ["playerId", "sequenceNumber"],
     },
+    ShipBattleIdGenerator: {
+      schema: {
+        id: "uint256",
+      },
+      key: [],
+    },
+    ShipBattle: {
+      schema: {
+        id: "uint256",
+        initiatorRosterPlayerId: "uint256",
+        initiatorRosterSequenceNumber: "uint32",
+        responderRosterPlayerId: "uint256",
+        responderRosterSequenceNumber: "uint32",
+        status: "uint8",
+        endedAt: "uint64",
+        winner: "uint8",
+        roundNumber: "uint32",
+        roundStartedAt: "uint64",
+        roundMover: "uint8",
+        roundAttackerShip: "uint256",
+        roundDefenderShip: "uint256",
+        initiatorExperiences: "uint32[]",
+        responderExperiences: "uint32[]",
+      },
+      key: ["id"],
+    },
     Counter: {
       schema: {
         value: "uint32",

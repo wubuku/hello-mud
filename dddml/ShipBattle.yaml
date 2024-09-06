@@ -1,0 +1,48 @@
+aggregates:
+
+  ShipBattle:
+    id:
+      name: Id
+      type: u256
+      generator:
+        class: sequence
+        tableName: ShipBattleIdGenerator
+    properties:
+      InitiatorRoster:
+        type: RosterId
+      ResponderRoster:
+        type: RosterId
+      Status:
+        type: u8
+      EndedAt:
+        type: u64
+        #optional: true
+        #defaultLogic:
+        #  Move: "std::option::none()"
+      Winner:
+        type: u8
+        #optional: true
+        description: "1: Initiator, 0: Responder"
+        #defaultLogic:
+        #  Move: "std::option::none()"
+      RoundNumber:
+        type: u32
+        #defaultLogic:
+        #  Move: "1"
+      RoundStartedAt:
+        type: u64
+      RoundMover:
+        type: u8
+        #optional: true
+        description: "1: Initiator, 0: Responder"
+      RoundAttackerShip:
+        type: u256
+        optional: true
+      RoundDefenderShip:
+        type: u256
+      InitiatorExperiences:
+        # The experiences Initiator has gained during the battle
+        type: uint32[]
+      ResponderExperiences:
+        type: uint32[]
+
