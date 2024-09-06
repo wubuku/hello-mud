@@ -15,11 +15,9 @@ library TerrainCreateLogic {
     return TerrainCreated(x, y, terrainType, foo, bar);
   }
 
-  function mutate(TerrainCreated memory terrainCreated) internal pure returns (TerrainData memory) {
-    TerrainData memory terrainData;
-    terrainData.terrainType = terrainCreated.terrainType;
-    terrainData.foo = terrainCreated.foo;
-    terrainData.bar = terrainCreated.bar;
-    return terrainData;
+  function mutate(
+    TerrainCreated memory terrainCreated
+  ) internal pure returns (TerrainData memory) {
+    // TODO ...
   }
 }

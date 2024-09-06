@@ -10,9 +10,9 @@ import { ItemCreationCreateLogic } from "./ItemCreationCreateLogic.sol";
 import { ItemCreationUpdateLogic } from "./ItemCreationUpdateLogic.sol";
 
 contract ItemCreationSystem is System {
-  event ItemCreationCreatedEvent(uint8 indexed ItemCreationIdSkillType, uint32 indexed ItemCreationIdItemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32 resourceCost);
+  event ItemCreationCreatedEvent(uint8 indexed itemCreationIdSkillType, uint32 indexed itemCreationIdItemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32 resourceCost);
 
-  event ItemCreationUpdatedEvent(uint8 indexed ItemCreationIdSkillType, uint32 indexed ItemCreationIdItemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32 resourceCost);
+  event ItemCreationUpdatedEvent(uint8 indexed itemCreationIdSkillType, uint32 indexed itemCreationIdItemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32 resourceCost);
 
   function itemCreationCreate(uint8 itemCreationIdSkillType, uint32 itemCreationIdItemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32 resourceCost) public {
     ItemCreationData memory itemCreationData = ItemCreation.get(itemCreationIdSkillType, itemCreationIdItemId);
@@ -21,9 +21,9 @@ contract ItemCreationSystem is System {
       "ItemCreation already exists"
     );
     ItemCreationCreated memory itemCreationCreated = ItemCreationCreateLogic.verify(itemCreationIdSkillType, itemCreationIdItemId, requirementsLevel, baseQuantity, baseExperience, baseCreationTime, energyCost, successRate, resourceCost);
-    itemCreationCreated.ItemCreationIdSkillType = itemCreationIdSkillType;
-    itemCreationCreated.ItemCreationIdItemId = itemCreationIdItemId;
-    emit ItemCreationCreatedEvent(itemCreationCreated.ItemCreationIdSkillType, itemCreationCreated.ItemCreationIdItemId, itemCreationCreated.requirementsLevel, itemCreationCreated.baseQuantity, itemCreationCreated.baseExperience, itemCreationCreated.baseCreationTime, itemCreationCreated.energyCost, itemCreationCreated.successRate, itemCreationCreated.resourceCost);
+    itemCreationCreated.itemCreationIdSkillType = itemCreationIdSkillType;
+    itemCreationCreated.itemCreationIdItemId = itemCreationIdItemId;
+    emit ItemCreationCreatedEvent(itemCreationCreated.itemCreationIdSkillType, itemCreationCreated.itemCreationIdItemId, itemCreationCreated.requirementsLevel, itemCreationCreated.baseQuantity, itemCreationCreated.baseExperience, itemCreationCreated.baseCreationTime, itemCreationCreated.energyCost, itemCreationCreated.successRate, itemCreationCreated.resourceCost);
     ItemCreationData memory newItemCreationData = ItemCreationCreateLogic.mutate(itemCreationCreated);
     ItemCreation.set(itemCreationIdSkillType, itemCreationIdItemId, newItemCreationData);
   }
@@ -35,9 +35,9 @@ contract ItemCreationSystem is System {
       "ItemCreation does not exist"
     );
     ItemCreationUpdated memory itemCreationUpdated = ItemCreationUpdateLogic.verify(itemCreationIdSkillType, itemCreationIdItemId, requirementsLevel, baseQuantity, baseExperience, baseCreationTime, energyCost, successRate, resourceCost, itemCreationData);
-    itemCreationUpdated.ItemCreationIdSkillType = itemCreationIdSkillType;
-    itemCreationUpdated.ItemCreationIdItemId = itemCreationIdItemId;
-    emit ItemCreationUpdatedEvent(itemCreationUpdated.ItemCreationIdSkillType, itemCreationUpdated.ItemCreationIdItemId, itemCreationUpdated.requirementsLevel, itemCreationUpdated.baseQuantity, itemCreationUpdated.baseExperience, itemCreationUpdated.baseCreationTime, itemCreationUpdated.energyCost, itemCreationUpdated.successRate, itemCreationUpdated.resourceCost);
+    itemCreationUpdated.itemCreationIdSkillType = itemCreationIdSkillType;
+    itemCreationUpdated.itemCreationIdItemId = itemCreationIdItemId;
+    emit ItemCreationUpdatedEvent(itemCreationUpdated.itemCreationIdSkillType, itemCreationUpdated.itemCreationIdItemId, itemCreationUpdated.requirementsLevel, itemCreationUpdated.baseQuantity, itemCreationUpdated.baseExperience, itemCreationUpdated.baseCreationTime, itemCreationUpdated.energyCost, itemCreationUpdated.successRate, itemCreationUpdated.resourceCost);
     ItemCreationData memory updatedItemCreationData = ItemCreationUpdateLogic.mutate(itemCreationUpdated, itemCreationData);
     ItemCreation.set(itemCreationIdSkillType, itemCreationIdItemId, updatedItemCreationData);
   }

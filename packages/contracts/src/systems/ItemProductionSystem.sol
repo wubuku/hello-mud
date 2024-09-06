@@ -10,9 +10,9 @@ import { ItemProductionCreateLogic } from "./ItemProductionCreateLogic.sol";
 import { ItemProductionUpdateLogic } from "./ItemProductionUpdateLogic.sol";
 
 contract ItemProductionSystem is System {
-  event ItemProductionCreatedEvent(uint8 indexed ItemProductionIdSkillType, uint32 indexed ItemProductionIdItemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32[] materialItemIds, uint32[] materialItemQuantities);
+  event ItemProductionCreatedEvent(uint8 indexed itemProductionIdSkillType, uint32 indexed itemProductionIdItemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32[] materialItemIds, uint32[] materialItemQuantities);
 
-  event ItemProductionUpdatedEvent(uint8 indexed ItemProductionIdSkillType, uint32 indexed ItemProductionIdItemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32[] materialItemIds, uint32[] materialItemQuantities);
+  event ItemProductionUpdatedEvent(uint8 indexed itemProductionIdSkillType, uint32 indexed itemProductionIdItemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32[] materialItemIds, uint32[] materialItemQuantities);
 
   function itemProductionCreate(uint8 itemProductionIdSkillType, uint32 itemProductionIdItemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32[] memory materialItemIds, uint32[] memory materialItemQuantities) public {
     ItemProductionData memory itemProductionData = ItemProduction.get(itemProductionIdSkillType, itemProductionIdItemId);
@@ -21,9 +21,9 @@ contract ItemProductionSystem is System {
       "ItemProduction already exists"
     );
     ItemProductionCreated memory itemProductionCreated = ItemProductionCreateLogic.verify(itemProductionIdSkillType, itemProductionIdItemId, requirementsLevel, baseQuantity, baseExperience, baseCreationTime, energyCost, successRate, materialItemIds, materialItemQuantities);
-    itemProductionCreated.ItemProductionIdSkillType = itemProductionIdSkillType;
-    itemProductionCreated.ItemProductionIdItemId = itemProductionIdItemId;
-    emit ItemProductionCreatedEvent(itemProductionCreated.ItemProductionIdSkillType, itemProductionCreated.ItemProductionIdItemId, itemProductionCreated.requirementsLevel, itemProductionCreated.baseQuantity, itemProductionCreated.baseExperience, itemProductionCreated.baseCreationTime, itemProductionCreated.energyCost, itemProductionCreated.successRate, itemProductionCreated.materialItemIds, itemProductionCreated.materialItemQuantities);
+    itemProductionCreated.itemProductionIdSkillType = itemProductionIdSkillType;
+    itemProductionCreated.itemProductionIdItemId = itemProductionIdItemId;
+    emit ItemProductionCreatedEvent(itemProductionCreated.itemProductionIdSkillType, itemProductionCreated.itemProductionIdItemId, itemProductionCreated.requirementsLevel, itemProductionCreated.baseQuantity, itemProductionCreated.baseExperience, itemProductionCreated.baseCreationTime, itemProductionCreated.energyCost, itemProductionCreated.successRate, itemProductionCreated.materialItemIds, itemProductionCreated.materialItemQuantities);
     ItemProductionData memory newItemProductionData = ItemProductionCreateLogic.mutate(itemProductionCreated);
     ItemProduction.set(itemProductionIdSkillType, itemProductionIdItemId, newItemProductionData);
   }
@@ -35,9 +35,9 @@ contract ItemProductionSystem is System {
       "ItemProduction does not exist"
     );
     ItemProductionUpdated memory itemProductionUpdated = ItemProductionUpdateLogic.verify(itemProductionIdSkillType, itemProductionIdItemId, requirementsLevel, baseQuantity, baseExperience, baseCreationTime, energyCost, successRate, materialItemIds, materialItemQuantities, itemProductionData);
-    itemProductionUpdated.ItemProductionIdSkillType = itemProductionIdSkillType;
-    itemProductionUpdated.ItemProductionIdItemId = itemProductionIdItemId;
-    emit ItemProductionUpdatedEvent(itemProductionUpdated.ItemProductionIdSkillType, itemProductionUpdated.ItemProductionIdItemId, itemProductionUpdated.requirementsLevel, itemProductionUpdated.baseQuantity, itemProductionUpdated.baseExperience, itemProductionUpdated.baseCreationTime, itemProductionUpdated.energyCost, itemProductionUpdated.successRate, itemProductionUpdated.materialItemIds, itemProductionUpdated.materialItemQuantities);
+    itemProductionUpdated.itemProductionIdSkillType = itemProductionIdSkillType;
+    itemProductionUpdated.itemProductionIdItemId = itemProductionIdItemId;
+    emit ItemProductionUpdatedEvent(itemProductionUpdated.itemProductionIdSkillType, itemProductionUpdated.itemProductionIdItemId, itemProductionUpdated.requirementsLevel, itemProductionUpdated.baseQuantity, itemProductionUpdated.baseExperience, itemProductionUpdated.baseCreationTime, itemProductionUpdated.energyCost, itemProductionUpdated.successRate, itemProductionUpdated.materialItemIds, itemProductionUpdated.materialItemQuantities);
     ItemProductionData memory updatedItemProductionData = ItemProductionUpdateLogic.mutate(itemProductionUpdated, itemProductionData);
     ItemProduction.set(itemProductionIdSkillType, itemProductionIdItemId, updatedItemProductionData);
   }

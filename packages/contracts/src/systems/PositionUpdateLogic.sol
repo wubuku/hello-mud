@@ -12,7 +12,6 @@ library PositionUpdateLogic {
     string memory description,
     PositionData memory positionData
   ) internal pure returns (PositionUpdated memory) {
-    positionData.x; // silence the warning
     return PositionUpdated(player, x, y, description);
   }
 
@@ -20,9 +19,6 @@ library PositionUpdateLogic {
     PositionUpdated memory positionUpdated,
     PositionData memory positionData
   ) internal pure returns (PositionData memory) {
-    positionData.x = positionUpdated.x;
-    positionData.y = positionUpdated.y;
-    positionData.description = positionUpdated.description;
-    return positionData;
+    // TODO ...
   }
 }

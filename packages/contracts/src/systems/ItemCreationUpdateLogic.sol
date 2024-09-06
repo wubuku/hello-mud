@@ -17,8 +17,7 @@ library ItemCreationUpdateLogic {
     uint32 resourceCost,
     ItemCreationData memory itemCreationData
   ) internal pure returns (ItemCreationUpdated memory) {
-    // TODO ...
-    //return ItemCreationUpdated(...);
+    return ItemCreationUpdated(itemCreationIdSkillType, itemCreationIdItemId, requirementsLevel, baseQuantity, baseExperience, baseCreationTime, energyCost, successRate, resourceCost);
   }
 
   function mutate(

@@ -9,7 +9,7 @@ import { SkillProcessCreated } from "./SkillProcessEvents.sol";
 import { SkillProcessCreateLogic } from "./SkillProcessCreateLogic.sol";
 
 contract SkillProcessSystem is System {
-  event SkillProcessCreatedEvent(uint8 indexed SkillProcessIdSkillType, uint256 indexed SkillProcessIdPlayerId, uint8 indexed SkillProcessIdSequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime, bool completed, uint64 endedAt, uint32 batchSize);
+  event SkillProcessCreatedEvent(uint8 indexed skillProcessIdSkillType, uint256 indexed skillProcessIdPlayerId, uint8 indexed skillProcessIdSequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime, bool completed, uint64 endedAt, uint32 batchSize);
 
   function skillProcessCreate(uint8 skillProcessIdSkillType, uint256 skillProcessIdPlayerId, uint8 skillProcessIdSequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime, bool completed, uint64 endedAt, uint32 batchSize) public {
     SkillProcessData memory skillProcessData = SkillProcess.get(skillProcessIdSkillType, skillProcessIdPlayerId, skillProcessIdSequenceNumber);
@@ -18,10 +18,10 @@ contract SkillProcessSystem is System {
       "SkillProcess already exists"
     );
     SkillProcessCreated memory skillProcessCreated = SkillProcessCreateLogic.verify(skillProcessIdSkillType, skillProcessIdPlayerId, skillProcessIdSequenceNumber, itemId, startedAt, creationTime, completed, endedAt, batchSize);
-    skillProcessCreated.SkillProcessIdSkillType = skillProcessIdSkillType;
-    skillProcessCreated.SkillProcessIdPlayerId = skillProcessIdPlayerId;
-    skillProcessCreated.SkillProcessIdSequenceNumber = skillProcessIdSequenceNumber;
-    emit SkillProcessCreatedEvent(skillProcessCreated.SkillProcessIdSkillType, skillProcessCreated.SkillProcessIdPlayerId, skillProcessCreated.SkillProcessIdSequenceNumber, skillProcessCreated.itemId, skillProcessCreated.startedAt, skillProcessCreated.creationTime, skillProcessCreated.completed, skillProcessCreated.endedAt, skillProcessCreated.batchSize);
+    skillProcessCreated.skillProcessIdSkillType = skillProcessIdSkillType;
+    skillProcessCreated.skillProcessIdPlayerId = skillProcessIdPlayerId;
+    skillProcessCreated.skillProcessIdSequenceNumber = skillProcessIdSequenceNumber;
+    emit SkillProcessCreatedEvent(skillProcessCreated.skillProcessIdSkillType, skillProcessCreated.skillProcessIdPlayerId, skillProcessCreated.skillProcessIdSequenceNumber, skillProcessCreated.itemId, skillProcessCreated.startedAt, skillProcessCreated.creationTime, skillProcessCreated.completed, skillProcessCreated.endedAt, skillProcessCreated.batchSize);
     SkillProcessData memory newSkillProcessData = SkillProcessCreateLogic.mutate(skillProcessCreated);
     SkillProcess.set(skillProcessIdSkillType, skillProcessIdPlayerId, skillProcessIdSequenceNumber, newSkillProcessData);
   }

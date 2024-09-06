@@ -14,11 +14,9 @@ library PositionCreateLogic {
     return PositionCreated(player, x, y, description);
   }
 
-  function mutate(PositionCreated memory positionCreated) internal pure returns (PositionData memory) {
-    PositionData memory positionData;
-    positionData.x = positionCreated.x;
-    positionData.y = positionCreated.y;
-    positionData.description = positionCreated.description;
-    return positionData;
+  function mutate(
+    PositionCreated memory positionCreated
+  ) internal pure returns (PositionData memory) {
+    // TODO ...
   }
 }

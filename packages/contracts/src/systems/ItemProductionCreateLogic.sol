@@ -17,8 +17,7 @@ library ItemProductionCreateLogic {
     uint32[] memory materialItemIds,
     uint32[] memory materialItemQuantities
   ) internal pure returns (ItemProductionCreated memory) {
-    // TODO ...
-    //return ItemProductionCreated(...);
+    return ItemProductionCreated(itemProductionIdSkillType, itemProductionIdItemId, requirementsLevel, baseQuantity, baseExperience, baseCreationTime, energyCost, successRate, materialItemIds, materialItemQuantities);
   }
 
   function mutate(

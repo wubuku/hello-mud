@@ -16,8 +16,7 @@ library SkillProcessCreateLogic {
     uint64 endedAt,
     uint32 batchSize
   ) internal pure returns (SkillProcessCreated memory) {
-    // TODO ...
-    //return SkillProcessCreated(...);
+    return SkillProcessCreated(skillProcessIdSkillType, skillProcessIdPlayerId, skillProcessIdSequenceNumber, itemId, startedAt, creationTime, completed, endedAt, batchSize);
   }
 
   function mutate(

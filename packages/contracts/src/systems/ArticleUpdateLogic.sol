@@ -12,7 +12,6 @@ library ArticleUpdateLogic {
     string memory body,
     ArticleData memory articleData
   ) internal pure returns (ArticleUpdated memory) {
-    articleData.author;
     return ArticleUpdated(id, author, title, body);
   }
 
@@ -20,9 +19,6 @@ library ArticleUpdateLogic {
     ArticleUpdated memory articleUpdated,
     ArticleData memory articleData
   ) internal pure returns (ArticleData memory) {
-    articleData.author = articleUpdated.author;
-    articleData.title = articleUpdated.title;
-    articleData.body = articleUpdated.body;
-    return articleData;
+    // TODO ...
   }
 }

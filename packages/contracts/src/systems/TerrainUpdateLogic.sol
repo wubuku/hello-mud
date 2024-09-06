@@ -13,7 +13,6 @@ library TerrainUpdateLogic {
     bytes memory bar,
     TerrainData memory terrainData
   ) internal pure returns (TerrainUpdated memory) {
-    terrainData.terrainType; // silence the warning
     return TerrainUpdated(x, y, terrainType, foo, bar);
   }
 
@@ -21,9 +20,6 @@ library TerrainUpdateLogic {
     TerrainUpdated memory terrainUpdated,
     TerrainData memory terrainData
   ) internal pure returns (TerrainData memory) {
-    terrainData.terrainType = terrainUpdated.terrainType;
-    terrainData.foo = terrainUpdated.foo;
-    terrainData.bar = terrainUpdated.bar;
-    return terrainData;
+    // TODO ...
   }
 }
