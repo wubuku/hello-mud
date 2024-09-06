@@ -22,7 +22,6 @@ valueObjects:
         type: u32
 
   RosterId:
-    module: "Common"
     properties:
       PlayerId:
         type: u256
@@ -38,3 +37,84 @@ valueObjects:
         type: u32
       Quantity:
         type: u32
+
+
+enumObjects:
+  SkillType:
+    baseType: u8
+    values:
+      Farming:
+        value: 0
+      Woodcutting:
+        value: 1
+      Fishing:
+        value: 2
+      Mining:
+        value: 3
+      Smithing:
+        value: 4
+      Cooking:
+        value: 5
+      Crafting:
+        value: 6
+      Township:
+        value: 7
+      Sailing:
+        value: 8
+      #Thieving:
+      #  value: xxx
+
+
+  MapLocationType:
+    baseType: u32
+    values:
+      Island:
+        value: 0
+
+  RosterSequenceNumber:
+    baseType: u32
+    #baseType: u8
+    values:
+      UnassignedShips:
+        value: 0
+      First:
+        value: 1
+      Second:
+        value: 2
+      Third:
+        value: 3
+      Fourth:
+        value: 4
+
+  RosterStatus:
+    baseType: u8
+    values:
+      AtAnchor:
+        value: 0
+      Underway:
+        value: 1
+      InBattle:
+        value: 2
+      Destroyed:
+        value: 3
+
+  ShipBattleCommand:
+    baseType: u8
+    values:
+      Attack:
+        value: 0
+      SwapPositions:
+        value: 1
+      Pass:
+        value: 2
+
+  BattleStatus:
+    baseType: u8
+    values:
+      InProgress:
+        value: 0
+      Ended:
+        value: 1
+      Looted:
+        value: 2
+        # The loot has been taken.
