@@ -24,6 +24,13 @@ library ItemCreationUpdateLogic {
     ItemCreationUpdated memory itemCreationUpdated,
     ItemCreationData memory itemCreationData
   ) internal pure returns (ItemCreationData memory) {
-    // TODO ...
+    itemCreationData.requirementsLevel = itemCreationUpdated.requirementsLevel;
+    itemCreationData.baseQuantity = itemCreationUpdated.baseQuantity;
+    itemCreationData.baseExperience = itemCreationUpdated.baseExperience;
+    itemCreationData.baseCreationTime = itemCreationUpdated.baseCreationTime;
+    itemCreationData.energyCost = itemCreationUpdated.energyCost;
+    itemCreationData.successRate = itemCreationUpdated.successRate;
+    itemCreationData.resourceCost = itemCreationUpdated.resourceCost;
+    return itemCreationData;
   }
 }

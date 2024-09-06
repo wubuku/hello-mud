@@ -17,6 +17,10 @@ library ArticleCreateLogic {
   function mutate(
     ArticleCreated memory articleCreated
   ) internal pure returns (ArticleData memory) {
-    // TODO ...
+    ArticleData memory articleData;
+    articleData.author = articleCreated.author;
+    articleData.title = articleCreated.title;
+    articleData.body = articleCreated.body;
+    return articleData;
   }
 }

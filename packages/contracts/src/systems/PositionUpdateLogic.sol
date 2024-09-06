@@ -19,6 +19,9 @@ library PositionUpdateLogic {
     PositionUpdated memory positionUpdated,
     PositionData memory positionData
   ) internal pure returns (PositionData memory) {
-    // TODO ...
+    positionData.x = positionUpdated.x;
+    positionData.y = positionUpdated.y;
+    positionData.description = positionUpdated.description;
+    return positionData;
   }
 }

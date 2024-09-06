@@ -22,6 +22,13 @@ library SkillProcessCreateLogic {
   function mutate(
     SkillProcessCreated memory skillProcessCreated
   ) internal pure returns (SkillProcessData memory) {
-    // TODO ...
+    SkillProcessData memory skillProcessData;
+    skillProcessData.itemId = skillProcessCreated.itemId;
+    skillProcessData.startedAt = skillProcessCreated.startedAt;
+    skillProcessData.creationTime = skillProcessCreated.creationTime;
+    skillProcessData.completed = skillProcessCreated.completed;
+    skillProcessData.endedAt = skillProcessCreated.endedAt;
+    skillProcessData.batchSize = skillProcessCreated.batchSize;
+    return skillProcessData;
   }
 }

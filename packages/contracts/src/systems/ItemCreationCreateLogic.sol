@@ -22,6 +22,14 @@ library ItemCreationCreateLogic {
   function mutate(
     ItemCreationCreated memory itemCreationCreated
   ) internal pure returns (ItemCreationData memory) {
-    // TODO ...
+    ItemCreationData memory itemCreationData;
+    itemCreationData.requirementsLevel = itemCreationCreated.requirementsLevel;
+    itemCreationData.baseQuantity = itemCreationCreated.baseQuantity;
+    itemCreationData.baseExperience = itemCreationCreated.baseExperience;
+    itemCreationData.baseCreationTime = itemCreationCreated.baseCreationTime;
+    itemCreationData.energyCost = itemCreationCreated.energyCost;
+    itemCreationData.successRate = itemCreationCreated.successRate;
+    itemCreationData.resourceCost = itemCreationCreated.resourceCost;
+    return itemCreationData;
   }
 }

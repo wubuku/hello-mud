@@ -20,6 +20,9 @@ library TerrainUpdateLogic {
     TerrainUpdated memory terrainUpdated,
     TerrainData memory terrainData
   ) internal pure returns (TerrainData memory) {
-    // TODO ...
+    terrainData.terrainType = terrainUpdated.terrainType;
+    terrainData.foo = terrainUpdated.foo;
+    terrainData.bar = terrainUpdated.bar;
+    return terrainData;
   }
 }

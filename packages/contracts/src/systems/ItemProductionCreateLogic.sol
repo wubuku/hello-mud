@@ -23,6 +23,15 @@ library ItemProductionCreateLogic {
   function mutate(
     ItemProductionCreated memory itemProductionCreated
   ) internal pure returns (ItemProductionData memory) {
-    // TODO ...
+    ItemProductionData memory itemProductionData;
+    itemProductionData.requirementsLevel = itemProductionCreated.requirementsLevel;
+    itemProductionData.baseQuantity = itemProductionCreated.baseQuantity;
+    itemProductionData.baseExperience = itemProductionCreated.baseExperience;
+    itemProductionData.baseCreationTime = itemProductionCreated.baseCreationTime;
+    itemProductionData.energyCost = itemProductionCreated.energyCost;
+    itemProductionData.successRate = itemProductionCreated.successRate;
+    itemProductionData.materialItemIds = itemProductionCreated.materialItemIds;
+    itemProductionData.materialItemQuantities = itemProductionCreated.materialItemQuantities;
+    return itemProductionData;
   }
 }

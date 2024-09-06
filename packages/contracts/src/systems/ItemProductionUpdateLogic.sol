@@ -25,6 +25,14 @@ library ItemProductionUpdateLogic {
     ItemProductionUpdated memory itemProductionUpdated,
     ItemProductionData memory itemProductionData
   ) internal pure returns (ItemProductionData memory) {
-    // TODO ...
+    itemProductionData.requirementsLevel = itemProductionUpdated.requirementsLevel;
+    itemProductionData.baseQuantity = itemProductionUpdated.baseQuantity;
+    itemProductionData.baseExperience = itemProductionUpdated.baseExperience;
+    itemProductionData.baseCreationTime = itemProductionUpdated.baseCreationTime;
+    itemProductionData.energyCost = itemProductionUpdated.energyCost;
+    itemProductionData.successRate = itemProductionUpdated.successRate;
+    itemProductionData.materialItemIds = itemProductionUpdated.materialItemIds;
+    itemProductionData.materialItemQuantities = itemProductionUpdated.materialItemQuantities;
+    return itemProductionData;
   }
 }
