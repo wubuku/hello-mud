@@ -13,7 +13,8 @@ library ExperienceTableCreateLogic {
   function mutate(
     ExperienceTableCreated memory experienceTableCreated
   ) internal pure returns (bool) {
-    bool reservedBool1 = experienceTableCreated.reservedBool1;
+    bool reservedBool1;
+    reservedBool1 = experienceTableCreated.reservedBool1;
     return reservedBool1;
   }
 }

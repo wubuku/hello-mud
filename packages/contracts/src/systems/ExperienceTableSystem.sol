@@ -17,25 +17,25 @@ contract ExperienceTableSystem is System {
   function experienceTableCreate(bool reservedBool1) public {
     bool s_reservedBool1 = ExperienceTable.get();
     require(
-      reservedBool1 == false,
+      s_reservedBool1 == false,
       "ExperienceTable already exists"
     );
-    ExperienceTableCreated memory experienceTableCreated = ExperienceTableCreateLogic.verify(s_reservedBool1);
+    ExperienceTableCreated memory experienceTableCreated = ExperienceTableCreateLogic.verify(reservedBool1);
     emit ExperienceTableCreatedEvent(experienceTableCreated.reservedBool1);
-    bool newReservedBool1 = ExperienceTableCreateLogic.mutate(experienceTableCreated);
-    ExperienceTable.set(newReservedBool1);
+    bool newS_reservedBool1 = ExperienceTableCreateLogic.mutate(experienceTableCreated);
+    ExperienceTable.set(newS_reservedBool1);
   }
 
   function experienceTableUpdate(bool reservedBool1) public {
     bool s_reservedBool1 = ExperienceTable.get();
     require(
-      !(reservedBool1 == false),
+      !(s_reservedBool1 == false),
       "ExperienceTable does not exist"
     );
     ExperienceTableUpdated memory experienceTableUpdated = ExperienceTableUpdateLogic.verify(reservedBool1, s_reservedBool1);
     emit ExperienceTableUpdatedEvent(experienceTableUpdated.reservedBool1);
-    bool updatedReservedBool1 = ExperienceTableUpdateLogic.mutate(experienceTableUpdated, reservedBool1);
-    ExperienceTable.set(updatedReservedBool1);
+    bool updatedS_reservedBool1 = ExperienceTableUpdateLogic.mutate(experienceTableUpdated, s_reservedBool1);
+    ExperienceTable.set(updatedS_reservedBool1);
   }
 
 }
