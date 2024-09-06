@@ -1,0 +1,23 @@
+aggregates:
+  Player:
+    metadata:
+    id:
+      name: Id
+      type: u256
+      generator:
+        class: sequence
+        tableName: PlayerIdGenerator
+    properties:
+      Owner:
+        type: address
+      Level:
+        type: u16
+      Experience:
+        type: u32
+      ClaimedIsland:
+        type: Point2d
+      Name:
+        type: String
+        length: 50
+      Inventory:
+        itemType: ItemIdQuantityPair

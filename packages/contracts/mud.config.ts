@@ -67,6 +67,40 @@ export default defineWorld({
       },
       key: ["articleId", "tagIndex"],
     },
+    PlayerIdGenerator: {
+      schema: {
+        id: "uint256",
+      },
+      key: [],
+    },
+    Player: {
+      schema: {
+        id: "uint256",
+        owner: "address",
+        level: "uint16",
+        experience: "uint32",
+        x: "int32",
+        y: "int32",
+        name: "string",
+      },
+      key: ["id"],
+    },
+    PlayerInventoryCount: {
+      schema: {
+        playerId: "uint256",
+        count: "uint64",
+      },
+      key: ["playerId"],
+    },
+    PlayerInventory: {
+      schema: {
+        playerId: "uint256",
+        inventoryIndex: "uint64",
+        inventoryItemId: "uint32",
+        inventoryQuantity: "uint32",
+      },
+      key: ["playerId", "inventoryIndex"],
+    },
     Roster: {
       schema: {
         playerId: "uint256",
