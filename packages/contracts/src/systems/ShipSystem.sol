@@ -5,6 +5,26 @@ pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
 import { Ship, ShipData, ShipIdGenerator } from "../codegen/index.sol";
+import { ShipCreated } from "./ShipEvents.sol";
+import { ShipCreateLogic } from "./ShipCreateLogic.sol";
 
 contract ShipSystem is System {
+  event ShipCreatedEvent(uint256 indexed id, uint256 rosterIdPlayerId, uint32 rosterIdSequenceNumber, uint32 healthPoints, uint32 attack, uint32 protection, uint32 speed, uint32[] buildingExpensesItemIds, uint32[] buildingExpensesQuantities);
+
+  function shipCreate(uint256 rosterIdPlayerId, uint32 rosterIdSequenceNumber, uint32 healthPoints, uint32 attack, uint32 protection, uint32 speed, uint32[] memory buildingExpensesItemIds, uint32[] memory buildingExpensesQuantities) internal returns (uint256, ShipData memory) {
+    uint256 id = ShipIdGenerator.get() + 1;
+    ShipIdGenerator.set(id);
+    ShipData memory shipData = Ship.get(id);
+    require(
+      shipData.playerId == 0 && shipData.rosterSequenceNumber == 0 && shipData.healthPoints == 0 && shipData.attack == 0 && shipData.protection == 0 && shipData.speed == 0 && shipData.buildingExpensesItemIds.length == 0 && shipData.buildingExpensesQuantities.length == 0,
+      "Ship already exists"
+    );
+    ShipCreated memory shipCreated = ShipCreateLogic.verify(id, rosterIdPlayerId, rosterIdSequenceNumber, healthPoints, attack, protection, speed, buildingExpensesItemIds, buildingExpensesQuantities);
+    shipCreated.id = id;
+    emit ShipCreatedEvent(shipCreated.id, shipCreated.rosterIdPlayerId, shipCreated.rosterIdSequenceNumber, shipCreated.healthPoints, shipCreated.attack, shipCreated.protection, shipCreated.speed, shipCreated.buildingExpensesItemIds, shipCreated.buildingExpensesQuantities);
+    ShipData memory newShipData = ShipCreateLogic.mutate(shipCreated);
+    Ship.set(id, newShipData);
+    return (id, newShipData);
+  }
+
 }
