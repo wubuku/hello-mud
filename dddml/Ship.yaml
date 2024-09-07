@@ -32,3 +32,9 @@ aggregates:
         type: uint32[]
       Inventory:
         itemType: ItemIdQuantityPair
+
+    # methods:
+    #   Create:
+    # TODO #     isInternal: true
+    #     result:
+    #       isObjectReturned: true

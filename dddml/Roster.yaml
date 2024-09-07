@@ -34,6 +34,75 @@ aggregates:
         type: uint256[]
 
     methods:
+      # Create:
+      #   isInternal: true
+      #   result:
+      #     isObjectReturned: true
+      #   event:
+      #     isObjectShared: true # Share the object after created.
+
+      CreateEnvironmentRoster:
+        isCreationCommand: true
+        #requiredPermission: "__Publisher__"
+        #metadata:
+        #  ParametersIncludedInMutationFunction: [ "Clock" ]
+        parameters:
+          Coordinates:
+            type: Point2d #Coordinates
+          ShipResourceQuantity:
+            type: u32
+          ShipBaseResourceQuantity:
+            type: u32
+          BaseExperience:
+            type: u32
+          #Clock:
+          #  referenceType: Clock
+          #  isIgnoredInEvent: true
+        event:
+          name: EnvironmentRosterCreated
+          #isObjectShared: true
+
+      AddShip:
+        isInternal: true
+        parameters:
+          ShipId:
+            type: u256 #Ship
+          Position:
+            type: u64
+            #optional: true
+        event:
+          name: RosterShipAdded
+
+
+      SetSail:
+        #requiredPermission: Owner
+        parameters:
+          # Player:
+          #   referenceType: Player
+          #   isIgnoredInEvent: true
+          TargetCoordinates:
+            type: Point2d #Coordinates
+          # Clock:
+          #   referenceType: Clock
+          #   isIgnoredInEvent: true
+          # Energy:
+          #   type: "Balance<ENERGY>"
+          #   eventPropertyName: EnergyCost
+          SailDuration:
+            type: u64
+          UpdatedCoordinates:
+            type: Point2d #Coordinates
+        event:
+          name: RosterSetSail
+          properties:
+            SetSailAt:
+              type: u64
+            UpdatedCoordinates:
+              type: Point2d #Coordinates
+            EnergyCost:
+              type: u64
+
+
       AdjustShipsPosition:
         parameters:
           #Player:
@@ -47,3 +116,78 @@ aggregates:
             #itemType: ID
         event:
           name: RosterShipsPositionAdjusted
+
+
+      TransferShip:
+        parameters:
+          # Player:
+          #   referenceType: Player
+          #   isIgnoredInEvent: true
+          ShipId:
+            type: u256 #ID
+          #FromRoster: # from current roster
+          ToRoster:
+            type: RosterId
+            # referenceType: Roster
+            # isMutableReference: true
+            # eventPropertyName: ToRosterId
+          ToPosition:
+            type: u64
+            #optional: true          
+          #Clock:
+          #  referenceType: Clock
+          #  isIgnoredInEvent: true
+        event:
+          name: RosterShipTransferred
+          properties:
+            TransferredAt:
+              type: u64
+
+
+      TransferShipInventory:
+        parameters:
+          # Player:
+          #   referenceType: Player
+          #   isIgnoredInEvent: true
+          FromShipId:
+            type: u256 #ID
+          ToShipId:
+            type: u256 #ID
+          ItemIdQuantityPairs:
+            itemType: ItemIdQuantityPair
+        event:
+          name: RosterShipInventoryTransferred
+
+      TakeOutShipInventory:
+        inheritsFrom: RosterTemplate.InOutShipInventory
+        #parameters:
+        event:
+          name: RosterShipInventoryTakenOut
+
+      PutInShipInventory:
+        inheritsFrom: RosterTemplate.InOutShipInventory
+        #parameters:
+        event:
+          name: RosterShipInventoryPutIn
+
+superObjects:
+  RosterTemplate:
+    isTemplate: true
+    methods:
+      InOutShipInventory:
+        parameters:
+          #Player:
+          #  referenceType: Player
+          #  isMutableReference: true
+          #  isIgnoredInEvent: true
+          #Clock:
+          #  referenceType: Clock
+          #  isIgnoredInEvent: true
+          ShipId:
+            type: u256 #ID
+          ItemIdQuantityPairs:
+            itemType: ItemIdQuantityPair
+          UpdatedCoordinates:
+            type: Point2d #Coordinates
+
+

@@ -5,11 +5,75 @@ pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
 import { Roster, RosterData } from "../codegen/index.sol";
-import { RosterShipsPositionAdjusted } from "./RosterEvents.sol";
+import { EnvironmentRosterCreated, RosterShipAdded, RosterSetSail, RosterShipsPositionAdjusted, RosterShipTransferred, RosterShipInventoryTransferred, RosterShipInventoryTakenOut, RosterShipInventoryPutIn } from "./RosterEvents.sol";
+import { RosterCreateEnvironmentRosterLogic } from "./RosterCreateEnvironmentRosterLogic.sol";
+import { RosterAddShipLogic } from "./RosterAddShipLogic.sol";
+import { RosterSetSailLogic } from "./RosterSetSailLogic.sol";
 import { RosterAdjustShipsPositionLogic } from "./RosterAdjustShipsPositionLogic.sol";
+import { RosterTransferShipLogic } from "./RosterTransferShipLogic.sol";
+import { RosterTransferShipInventoryLogic } from "./RosterTransferShipInventoryLogic.sol";
+import { RosterTakeOutShipInventoryLogic } from "./RosterTakeOutShipInventoryLogic.sol";
+import { RosterPutInShipInventoryLogic } from "./RosterPutInShipInventoryLogic.sol";
+import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 contract RosterSystem is System {
+  event EnvironmentRosterCreatedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, int32 coordinatesX, int32 coordinatesY, uint32 shipResourceQuantity, uint32 shipBaseResourceQuantity, uint32 baseExperience);
+
+  event RosterShipAddedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256 shipId, uint64 position);
+
+  event RosterSetSailEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, int32 targetCoordinatesX, int32 targetCoordinatesY, uint64 sailDuration, uint64 setSailAt, int32 updatedCoordinatesX, int32 updatedCoordinatesY, uint64 energyCost);
+
   event RosterShipsPositionAdjustedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint64[] positions, uint256[] shipIds);
+
+  event RosterShipTransferredEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256 shipId, uint256 toRosterPlayerId, uint32 toRosterSequenceNumber, uint64 toPosition, uint64 transferredAt);
+
+  event RosterShipInventoryTransferredEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256 fromShipId, uint256 toShipId);
+
+  event RosterShipInventoryTakenOutEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256 shipId, int32 updatedCoordinatesX, int32 updatedCoordinatesY);
+
+  event RosterShipInventoryPutInEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256 shipId, int32 updatedCoordinatesX, int32 updatedCoordinatesY);
+
+  function rosterCreateEnvironmentRoster(uint256 playerId, uint32 sequenceNumber, int32 coordinatesX, int32 coordinatesY, uint32 shipResourceQuantity, uint32 shipBaseResourceQuantity, uint32 baseExperience) public {
+    RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
+    require(
+      rosterData.status == 0 && rosterData.speed == 0 && rosterData.coordinatesUpdatedAt == 0 && rosterData.sailDuration == 0 && rosterData.setSailAt == 0 && rosterData.shipBattleId == 0 && rosterData.environmentOwned == false && rosterData.baseExperience == 0 && rosterData.shipIds.length == 0,
+      "Roster already exists"
+    );
+    EnvironmentRosterCreated memory environmentRosterCreated = RosterCreateEnvironmentRosterLogic.verify(playerId, sequenceNumber, coordinatesX, coordinatesY, shipResourceQuantity, shipBaseResourceQuantity, baseExperience);
+    environmentRosterCreated.playerId = playerId;
+    environmentRosterCreated.sequenceNumber = sequenceNumber;
+    emit EnvironmentRosterCreatedEvent(environmentRosterCreated.playerId, environmentRosterCreated.sequenceNumber, environmentRosterCreated.coordinatesX, environmentRosterCreated.coordinatesY, environmentRosterCreated.shipResourceQuantity, environmentRosterCreated.shipBaseResourceQuantity, environmentRosterCreated.baseExperience);
+    RosterData memory newRosterData = RosterCreateEnvironmentRosterLogic.mutate(environmentRosterCreated);
+    Roster.set(playerId, sequenceNumber, newRosterData);
+  }
+
+  function rosterAddShip(uint256 playerId, uint32 sequenceNumber, uint256 shipId, uint64 position) internal {
+    RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
+    require(
+      !(rosterData.status == 0 && rosterData.speed == 0 && rosterData.coordinatesUpdatedAt == 0 && rosterData.sailDuration == 0 && rosterData.setSailAt == 0 && rosterData.shipBattleId == 0 && rosterData.environmentOwned == false && rosterData.baseExperience == 0 && rosterData.shipIds.length == 0),
+      "Roster does not exist"
+    );
+    RosterShipAdded memory rosterShipAdded = RosterAddShipLogic.verify(playerId, sequenceNumber, shipId, position, rosterData);
+    rosterShipAdded.playerId = playerId;
+    rosterShipAdded.sequenceNumber = sequenceNumber;
+    emit RosterShipAddedEvent(rosterShipAdded.playerId, rosterShipAdded.sequenceNumber, rosterShipAdded.shipId, rosterShipAdded.position);
+    RosterData memory updatedRosterData = RosterAddShipLogic.mutate(rosterShipAdded, rosterData);
+    Roster.set(playerId, sequenceNumber, updatedRosterData);
+  }
+
+  function rosterSetSail(uint256 playerId, uint32 sequenceNumber, int32 targetCoordinatesX, int32 targetCoordinatesY, uint64 sailDuration, int32 updatedCoordinatesX, int32 updatedCoordinatesY) public {
+    RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
+    require(
+      !(rosterData.status == 0 && rosterData.speed == 0 && rosterData.coordinatesUpdatedAt == 0 && rosterData.sailDuration == 0 && rosterData.setSailAt == 0 && rosterData.shipBattleId == 0 && rosterData.environmentOwned == false && rosterData.baseExperience == 0 && rosterData.shipIds.length == 0),
+      "Roster does not exist"
+    );
+    RosterSetSail memory rosterSetSail = RosterSetSailLogic.verify(playerId, sequenceNumber, targetCoordinatesX, targetCoordinatesY, sailDuration, updatedCoordinatesX, updatedCoordinatesY, rosterData);
+    rosterSetSail.playerId = playerId;
+    rosterSetSail.sequenceNumber = sequenceNumber;
+    emit RosterSetSailEvent(rosterSetSail.playerId, rosterSetSail.sequenceNumber, rosterSetSail.targetCoordinatesX, rosterSetSail.targetCoordinatesY, rosterSetSail.sailDuration, rosterSetSail.setSailAt, rosterSetSail.updatedCoordinatesX, rosterSetSail.updatedCoordinatesY, rosterSetSail.energyCost);
+    RosterData memory updatedRosterData = RosterSetSailLogic.mutate(rosterSetSail, rosterData);
+    Roster.set(playerId, sequenceNumber, updatedRosterData);
+  }
 
   function rosterAdjustShipsPosition(uint256 playerId, uint32 sequenceNumber, uint64[] memory positions, uint256[] memory shipIds) public {
     RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
@@ -22,6 +86,62 @@ contract RosterSystem is System {
     rosterShipsPositionAdjusted.sequenceNumber = sequenceNumber;
     emit RosterShipsPositionAdjustedEvent(rosterShipsPositionAdjusted.playerId, rosterShipsPositionAdjusted.sequenceNumber, rosterShipsPositionAdjusted.positions, rosterShipsPositionAdjusted.shipIds);
     RosterData memory updatedRosterData = RosterAdjustShipsPositionLogic.mutate(rosterShipsPositionAdjusted, rosterData);
+    Roster.set(playerId, sequenceNumber, updatedRosterData);
+  }
+
+  function rosterTransferShip(uint256 playerId, uint32 sequenceNumber, uint256 shipId, uint256 toRosterPlayerId, uint32 toRosterSequenceNumber, uint64 toPosition) public {
+    RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
+    require(
+      !(rosterData.status == 0 && rosterData.speed == 0 && rosterData.coordinatesUpdatedAt == 0 && rosterData.sailDuration == 0 && rosterData.setSailAt == 0 && rosterData.shipBattleId == 0 && rosterData.environmentOwned == false && rosterData.baseExperience == 0 && rosterData.shipIds.length == 0),
+      "Roster does not exist"
+    );
+    RosterShipTransferred memory rosterShipTransferred = RosterTransferShipLogic.verify(playerId, sequenceNumber, shipId, toRosterPlayerId, toRosterSequenceNumber, toPosition, rosterData);
+    rosterShipTransferred.playerId = playerId;
+    rosterShipTransferred.sequenceNumber = sequenceNumber;
+    emit RosterShipTransferredEvent(rosterShipTransferred.playerId, rosterShipTransferred.sequenceNumber, rosterShipTransferred.shipId, rosterShipTransferred.toRosterPlayerId, rosterShipTransferred.toRosterSequenceNumber, rosterShipTransferred.toPosition, rosterShipTransferred.transferredAt);
+    RosterData memory updatedRosterData = RosterTransferShipLogic.mutate(rosterShipTransferred, rosterData);
+    Roster.set(playerId, sequenceNumber, updatedRosterData);
+  }
+
+  function rosterTransferShipInventory(uint256 playerId, uint32 sequenceNumber, uint256 fromShipId, uint256 toShipId, ItemIdQuantityPair[] memory itemIdQuantityPairs) public {
+    RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
+    require(
+      !(rosterData.status == 0 && rosterData.speed == 0 && rosterData.coordinatesUpdatedAt == 0 && rosterData.sailDuration == 0 && rosterData.setSailAt == 0 && rosterData.shipBattleId == 0 && rosterData.environmentOwned == false && rosterData.baseExperience == 0 && rosterData.shipIds.length == 0),
+      "Roster does not exist"
+    );
+    RosterShipInventoryTransferred memory rosterShipInventoryTransferred = RosterTransferShipInventoryLogic.verify(playerId, sequenceNumber, fromShipId, toShipId, itemIdQuantityPairs, rosterData);
+    rosterShipInventoryTransferred.playerId = playerId;
+    rosterShipInventoryTransferred.sequenceNumber = sequenceNumber;
+    emit RosterShipInventoryTransferredEvent(rosterShipInventoryTransferred.playerId, rosterShipInventoryTransferred.sequenceNumber, rosterShipInventoryTransferred.fromShipId, rosterShipInventoryTransferred.toShipId);
+    RosterData memory updatedRosterData = RosterTransferShipInventoryLogic.mutate(rosterShipInventoryTransferred, rosterData);
+    Roster.set(playerId, sequenceNumber, updatedRosterData);
+  }
+
+  function rosterTakeOutShipInventory(uint256 playerId, uint32 sequenceNumber, uint256 shipId, ItemIdQuantityPair[] memory itemIdQuantityPairs, int32 updatedCoordinatesX, int32 updatedCoordinatesY) public {
+    RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
+    require(
+      !(rosterData.status == 0 && rosterData.speed == 0 && rosterData.coordinatesUpdatedAt == 0 && rosterData.sailDuration == 0 && rosterData.setSailAt == 0 && rosterData.shipBattleId == 0 && rosterData.environmentOwned == false && rosterData.baseExperience == 0 && rosterData.shipIds.length == 0),
+      "Roster does not exist"
+    );
+    RosterShipInventoryTakenOut memory rosterShipInventoryTakenOut = RosterTakeOutShipInventoryLogic.verify(playerId, sequenceNumber, shipId, itemIdQuantityPairs, updatedCoordinatesX, updatedCoordinatesY, rosterData);
+    rosterShipInventoryTakenOut.playerId = playerId;
+    rosterShipInventoryTakenOut.sequenceNumber = sequenceNumber;
+    emit RosterShipInventoryTakenOutEvent(rosterShipInventoryTakenOut.playerId, rosterShipInventoryTakenOut.sequenceNumber, rosterShipInventoryTakenOut.shipId, rosterShipInventoryTakenOut.updatedCoordinatesX, rosterShipInventoryTakenOut.updatedCoordinatesY);
+    RosterData memory updatedRosterData = RosterTakeOutShipInventoryLogic.mutate(rosterShipInventoryTakenOut, rosterData);
+    Roster.set(playerId, sequenceNumber, updatedRosterData);
+  }
+
+  function rosterPutInShipInventory(uint256 playerId, uint32 sequenceNumber, uint256 shipId, ItemIdQuantityPair[] memory itemIdQuantityPairs, int32 updatedCoordinatesX, int32 updatedCoordinatesY) public {
+    RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
+    require(
+      !(rosterData.status == 0 && rosterData.speed == 0 && rosterData.coordinatesUpdatedAt == 0 && rosterData.sailDuration == 0 && rosterData.setSailAt == 0 && rosterData.shipBattleId == 0 && rosterData.environmentOwned == false && rosterData.baseExperience == 0 && rosterData.shipIds.length == 0),
+      "Roster does not exist"
+    );
+    RosterShipInventoryPutIn memory rosterShipInventoryPutIn = RosterPutInShipInventoryLogic.verify(playerId, sequenceNumber, shipId, itemIdQuantityPairs, updatedCoordinatesX, updatedCoordinatesY, rosterData);
+    rosterShipInventoryPutIn.playerId = playerId;
+    rosterShipInventoryPutIn.sequenceNumber = sequenceNumber;
+    emit RosterShipInventoryPutInEvent(rosterShipInventoryPutIn.playerId, rosterShipInventoryPutIn.sequenceNumber, rosterShipInventoryPutIn.shipId, rosterShipInventoryPutIn.updatedCoordinatesX, rosterShipInventoryPutIn.updatedCoordinatesY);
+    RosterData memory updatedRosterData = RosterPutInShipInventoryLogic.mutate(rosterShipInventoryPutIn, rosterData);
     Roster.set(playerId, sequenceNumber, updatedRosterData);
   }
 
