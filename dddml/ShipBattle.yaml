@@ -71,9 +71,9 @@ aggregates:
           #   referenceType: Clock
           #   isIgnoredInEvent: true
           InitiatorCoordinates:
-            type: Point2d #Coordinates
+            type: Coordinates
           ResponderCoordinates:
-            type: Point2d #Coordinates
+            type: Coordinates
         #result:
         # TODO ? isObjectReturned: true
         event:

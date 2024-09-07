@@ -1,5 +1,5 @@
 valueObjects:
-  Point2d:
+  Coordinates:
     # We can conceptually define a reusable DDDML value object here.
     # Although this object might not be present in the generated MUD code.
     properties:

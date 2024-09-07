@@ -15,7 +15,7 @@ aggregates:
       Experience:
         type: u32
       ClaimedIsland:
-        type: Point2d
+        type: Coordinates
       Name:
         type: String
         length: 50
@@ -77,7 +77,7 @@ superObjects:
           #   isMutableReference: true
           #   isIgnoredInEvent: true
           Coordinates:
-            type: Point2d #Coordinates
+            type: Coordinates
           # Clock:
           #   referenceType: Clock
           #   isIgnoredInEvent: true

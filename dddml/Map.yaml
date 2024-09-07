@@ -13,7 +13,7 @@ singletonObjects:
         # This is an internal entity
         id:
           name: Coordinates
-          type: Point2d
+          type: Coordinates
         properties:
           Type:
             type: u32
@@ -25,7 +25,7 @@ singletonObjects:
         #requiredPermission: "AdminCap"
         parameters:
           Coordinates:
-            type: Point2d #Coordinates
+            type: Coordinates
           Resources:
             itemType: ItemIdQuantityPair
         event:
@@ -37,7 +37,7 @@ singletonObjects:
         # TODO #isInternal: true
         parameters:
           Coordinates:
-            type: Point2d #Coordinates
+            type: Coordinates
           ClaimedBy:
             type: u256 # PlayerId
           ClaimedAt:
@@ -58,7 +58,7 @@ singletonObjects:
           PlayerId:
             type: u256 # ID
           Coordinates:
-            type: Point2d #Coordinates
+            type: Coordinates
           #Clock:
           #  referenceType: Clock
           #  isIgnoredInEvent: true
@@ -70,6 +70,6 @@ singletonObjects:
             GatheredAt:
               type: u64
             Coordinates:
-              type: Point2d #Coordinates
+              type: Coordinates
             Resources:
               itemType: ItemIdQuantityPair

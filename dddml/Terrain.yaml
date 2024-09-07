@@ -6,7 +6,7 @@ aggregates:
       #CRUD_IT_NO_UPDATE: true
     id:
       name: TerrainId
-      type: Point2d
+      type: Coordinates
     properties:
       TerrainType:
         type: string

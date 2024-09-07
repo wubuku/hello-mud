@@ -48,7 +48,7 @@ aggregates:
         #  ParametersIncludedInMutationFunction: [ "Clock" ]
         parameters:
           Coordinates:
-            type: Point2d #Coordinates
+            type: Coordinates
           ShipResourceQuantity:
             type: u32
           ShipBaseResourceQuantity:
@@ -81,7 +81,7 @@ aggregates:
           #   referenceType: Player
           #   isIgnoredInEvent: true
           TargetCoordinates:
-            type: Point2d #Coordinates
+            type: Coordinates
           # Clock:
           #   referenceType: Clock
           #   isIgnoredInEvent: true
@@ -91,14 +91,14 @@ aggregates:
           SailDuration:
             type: u64
           UpdatedCoordinates:
-            type: Point2d #Coordinates
+            type: Coordinates
         event:
           name: RosterSetSail
           properties:
             SetSailAt:
               type: u64
             UpdatedCoordinates:
-              type: Point2d #Coordinates
+              type: Coordinates
             EnergyCost:
               type: u64
 
@@ -188,6 +188,6 @@ superObjects:
           ItemIdQuantityPairs:
             itemType: ItemIdQuantityPair
           UpdatedCoordinates:
-            type: Point2d #Coordinates
+            type: Coordinates
 
 
