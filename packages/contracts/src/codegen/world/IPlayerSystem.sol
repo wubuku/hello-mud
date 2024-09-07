@@ -8,4 +8,12 @@ pragma solidity >=0.8.24;
  * @author MUD (https://mud.dev) by Lattice (https://lattice.xyz)
  * @dev This interface is automatically generated from the corresponding system contract. Do not edit manually.
  */
-interface IPlayerSystem {}
+interface IPlayerSystem {
+  function app__playerCreate(string memory name) external;
+
+  function app__playerClaimIsland(uint256 id, int32 coordinatesX, int32 coordinatesY) external;
+
+  function app__playerAirdrop(uint256 id, uint32 itemId, uint32 quantity) external;
+
+  function app__playerGatherIslandResources(uint256 id) external;
+}

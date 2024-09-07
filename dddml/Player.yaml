@@ -21,3 +21,83 @@ aggregates:
         length: 50
       Inventory:
         itemType: ItemIdQuantityPair
+
+    methods:
+      Create:
+        isCreationCommand: true
+        parameters:
+          Name:
+            type: String
+        event:
+          name: PlayerCreated
+          properties:
+            Owner:
+              type: address
+
+      ClaimIsland:
+        inheritsFrom: PlayerTemplate.ClaimIsland
+        event:
+          name: IslandClaimed
+
+
+      Airdrop:
+        #requiredPermission: "__Publisher__"
+        #requiredPermission: AdminCap
+        parameters:
+          ItemId:
+            type: u32
+          Quantity:
+            type: u32
+        event:
+          name: PlayerAirdropped
+
+      GatherIslandResources:
+        #metadata:
+        #  ParametersIncludedInMutationFunction: [ "Clock" ]
+        parameters:
+          #Map:
+          #  referenceType: Map
+          #  isMutableReference: true
+          #  isIgnoredInEvent: true
+          #Clock:
+          #  referenceType: Clock
+          #  isIgnoredInEvent: true
+        event:
+          name: PlayerIslandResourcesGathered
+
+
+superObjects:
+  PlayerTemplate:
+    isTemplate: true
+    methods:
+      ClaimIsland:
+        parameters:
+          # Map:
+          #   referenceType: Map
+          #   isMutableReference: true
+          #   isIgnoredInEvent: true
+          Coordinates:
+            type: Point2d #Coordinates
+          # Clock:
+          #   referenceType: Clock
+          #   isIgnoredInEvent: true
+          # RosterTable:
+          #   referenceType: RosterTable
+          #   isMutableReference: true
+          #   isIgnoredInEvent: true
+          # SkillProcessTable:
+          #   referenceType: SkillProcessTable
+          #   isMutableReference: true
+          #   isIgnoredInEvent: true
+        event:
+          properties:
+            ClaimedAt:
+              type: u64
+        # constants:
+        #   ESenderHasNoPermission:
+        #     constantExpression:
+        #       Move: 22
+        #     type: u64
+        # verificationLogic:
+        #   Move: >
+        #     assert!(sui::tx_context::sender(ctx) == player::owner(player), ESenderHasNoPermission);
