@@ -35,3 +35,13 @@ struct ShipBattleMoveMade {
   uint256 nextRoundDefenderShip;
 }
 
+struct ShipBattleLootTaken {
+  uint256 id;
+  uint8 choice;
+  uint64 lootedAt;
+  uint32 increasedExperience;
+  uint16 newLevel;
+  uint32 loserIncreasedExperience;
+  uint16 loserNewLevel;
+}
+

@@ -22,4 +22,6 @@ interface IShipBattleSystem {
   ) external;
 
   function app__shipBattleMakeMove(uint256 id, uint8 attackerCommand) external;
+
+  function app__shipBattleTakeLoot(uint256 id, uint8 choice) external;
 }

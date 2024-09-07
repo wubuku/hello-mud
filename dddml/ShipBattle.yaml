@@ -1,6 +1,8 @@
 aggregates:
 
   ShipBattle:
+    metadata:
+      MudStoreValueCheckMaxFieldCount: 6
     id:
       name: Id
       type: u256
@@ -140,4 +142,52 @@ aggregates:
             NextRoundDefenderShip:
               type: u256 #ID
               optional: true
+
+
+      TakeLoot:
+        parameters:
+          # Player:
+          #   referenceType: Player
+          #   isMutableReference: true
+          #   isIgnoredInEvent: true
+          # LoserPlayer:
+          #   referenceType: Player
+          #   isMutableReference: true
+          #   isIgnoredInEvent: true
+          # Initiator:
+          #   referenceType: Roster
+          #   isMutableReference: true
+          #   isIgnoredInEvent: true
+          # Responder:
+          #   referenceType: Roster
+          #   isMutableReference: true
+          #   isIgnoredInEvent: true
+          # ExperienceTable:
+          #   referenceType: ExperienceTable
+          #   isIgnoredInEvent: true
+          # Clock:
+          #   referenceType: Clock
+          #   isIgnoredInEvent: true
+          ##Winner:
+          ##  type: u8 # 1: Initiator, 0: Responder
+          Choice:
+            type: u8
+            description: "1: Take all, 0: Leave it"
+        event:
+          name: ShipBattleLootTaken
+          properties:
+            Loot:
+              itemType: ItemIdQuantityPair
+            LootedAt:
+              type: u64
+              description: "The time when the loot is taken"
+            IncreasedExperience:
+              type: u32
+            NewLevel:
+              type: u16
+            LoserIncreasedExperience:
+              type: u32
+            LoserNewLevel:
+              type: u16
+
 
