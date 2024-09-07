@@ -21,9 +21,11 @@ extra_output_files = [
   "evm.bytecode"
 ]
 fs_permissions = [{ access = "read", path = "./"}]
+via_ir = true
 
 [profile.garnet]
 eth_rpc_url = "https://rpc.garnetchain.com"
 
 [profile.redstone]
 eth_rpc_url = "https://rpc.redstonechain.com"
+
