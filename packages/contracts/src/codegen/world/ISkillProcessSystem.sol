@@ -10,9 +10,9 @@ pragma solidity >=0.8.24;
  */
 interface ISkillProcessSystem {
   function app__skillProcessCreate(
-    uint8 skillProcessIdSkillType,
-    uint256 skillProcessIdPlayerId,
-    uint8 skillProcessIdSequenceNumber,
+    uint8 skillType,
+    uint256 playerId,
+    uint8 sequenceNumber,
     uint32 itemId,
     uint64 startedAt,
     uint64 creationTime,

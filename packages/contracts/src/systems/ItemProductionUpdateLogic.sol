@@ -6,8 +6,8 @@ import { ItemProductionData } from "../codegen/index.sol";
 
 library ItemProductionUpdateLogic {
   function verify(
-    uint8 itemProductionIdSkillType,
-    uint32 itemProductionIdItemId,
+    uint8 skillType,
+    uint32 itemId,
     uint16 requirementsLevel,
     uint32 baseQuantity,
     uint32 baseExperience,
@@ -18,7 +18,7 @@ library ItemProductionUpdateLogic {
     uint32[] memory materialItemQuantities,
     ItemProductionData memory itemProductionData
   ) internal pure returns (ItemProductionUpdated memory) {
-    return ItemProductionUpdated(itemProductionIdSkillType, itemProductionIdItemId, requirementsLevel, baseQuantity, baseExperience, baseCreationTime, energyCost, successRate, materialItemIds, materialItemQuantities);
+    return ItemProductionUpdated(skillType, itemId, requirementsLevel, baseQuantity, baseExperience, baseCreationTime, energyCost, successRate, materialItemIds, materialItemQuantities);
   }
 
   function mutate(

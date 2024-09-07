@@ -6,8 +6,8 @@ import { ItemCreationData } from "../codegen/index.sol";
 
 library ItemCreationUpdateLogic {
   function verify(
-    uint8 itemCreationIdSkillType,
-    uint32 itemCreationIdItemId,
+    uint8 skillType,
+    uint32 itemId,
     uint16 requirementsLevel,
     uint32 baseQuantity,
     uint32 baseExperience,
@@ -17,7 +17,7 @@ library ItemCreationUpdateLogic {
     uint32 resourceCost,
     ItemCreationData memory itemCreationData
   ) internal pure returns (ItemCreationUpdated memory) {
-    return ItemCreationUpdated(itemCreationIdSkillType, itemCreationIdItemId, requirementsLevel, baseQuantity, baseExperience, baseCreationTime, energyCost, successRate, resourceCost);
+    return ItemCreationUpdated(skillType, itemId, requirementsLevel, baseQuantity, baseExperience, baseCreationTime, energyCost, successRate, resourceCost);
   }
 
   function mutate(

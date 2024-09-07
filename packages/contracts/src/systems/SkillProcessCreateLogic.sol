@@ -6,9 +6,9 @@ import { SkillProcessData } from "../codegen/index.sol";
 
 library SkillProcessCreateLogic {
   function verify(
-    uint8 skillProcessIdSkillType,
-    uint256 skillProcessIdPlayerId,
-    uint8 skillProcessIdSequenceNumber,
+    uint8 skillType,
+    uint256 playerId,
+    uint8 sequenceNumber,
     uint32 itemId,
     uint64 startedAt,
     uint64 creationTime,
@@ -16,7 +16,7 @@ library SkillProcessCreateLogic {
     uint64 endedAt,
     uint32 batchSize
   ) internal pure returns (SkillProcessCreated memory) {
-    return SkillProcessCreated(skillProcessIdSkillType, skillProcessIdPlayerId, skillProcessIdSequenceNumber, itemId, startedAt, creationTime, completed, endedAt, batchSize);
+    return SkillProcessCreated(skillType, playerId, sequenceNumber, itemId, startedAt, creationTime, completed, endedAt, batchSize);
   }
 
   function mutate(

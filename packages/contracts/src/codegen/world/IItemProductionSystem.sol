@@ -10,8 +10,8 @@ pragma solidity >=0.8.24;
  */
 interface IItemProductionSystem {
   function app__itemProductionCreate(
-    uint8 itemProductionIdSkillType,
-    uint32 itemProductionIdItemId,
+    uint8 skillType,
+    uint32 itemId,
     uint16 requirementsLevel,
     uint32 baseQuantity,
     uint32 baseExperience,
@@ -23,8 +23,8 @@ interface IItemProductionSystem {
   ) external;
 
   function app__itemProductionUpdate(
-    uint8 itemProductionIdSkillType,
-    uint32 itemProductionIdItemId,
+    uint8 skillType,
+    uint32 itemId,
     uint16 requirementsLevel,
     uint32 baseQuantity,
     uint32 baseExperience,
