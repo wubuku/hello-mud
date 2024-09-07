@@ -5,11 +5,120 @@ pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
 import { SkillProcess, SkillProcessData } from "../codegen/index.sol";
-import { SkillProcessCreated } from "./SkillProcessEvents.sol";
+import { ProductionProcessStarted, ProductionProcessCompleted, ShipProductionProcessStarted, ShipProductionProcessCompleted, CreationProcessStarted, CreationProcessCompleted, SkillProcessCreated } from "./SkillProcessEvents.sol";
+import { SkillProcessStartProductionLogic } from "./SkillProcessStartProductionLogic.sol";
+import { SkillProcessCompleteProductionLogic } from "./SkillProcessCompleteProductionLogic.sol";
+import { SkillProcessStartShipProductionLogic } from "./SkillProcessStartShipProductionLogic.sol";
+import { SkillProcessCompleteShipProductionLogic } from "./SkillProcessCompleteShipProductionLogic.sol";
+import { SkillProcessStartCreationLogic } from "./SkillProcessStartCreationLogic.sol";
+import { SkillProcessCompleteCreationLogic } from "./SkillProcessCompleteCreationLogic.sol";
 import { SkillProcessCreateLogic } from "./SkillProcessCreateLogic.sol";
+import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 contract SkillProcessSystem is System {
+  event ProductionProcessStartedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 batchSize, uint32 itemId, uint64 energyCost, uint64 startedAt, uint64 creationTime);
+
+  event ProductionProcessCompletedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime, uint64 endedAt, bool successful, uint32 quantity, uint32 experience, uint16 newLevel);
+
+  event ShipProductionProcessStartedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 itemId, uint64 energyCost, uint64 startedAt, uint64 creationTime);
+
+  event ShipProductionProcessCompletedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime, uint64 endedAt, bool successful, uint32 quantity, uint32 experience, uint16 newLevel);
+
+  event CreationProcessStartedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 batchSize, uint32 itemId, uint64 energyCost, uint32 resourceCost, uint64 startedAt, uint64 creationTime);
+
+  event CreationProcessCompletedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime, uint64 endedAt, bool successful, uint32 quantity, uint32 experience, uint16 newLevel);
+
   event SkillProcessCreatedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime, bool completed, uint64 endedAt, uint32 batchSize);
+
+  function skillProcessStartProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber, uint32 batchSize, uint32 itemId) public {
+    SkillProcessData memory skillProcessData = SkillProcess.get(skillType, playerId, sequenceNumber);
+    require(
+      !(skillProcessData.itemId == 0 && skillProcessData.startedAt == 0 && skillProcessData.creationTime == 0 && skillProcessData.completed == false && skillProcessData.endedAt == 0 && skillProcessData.batchSize == 0),
+      "SkillProcess does not exist"
+    );
+    ProductionProcessStarted memory productionProcessStarted = SkillProcessStartProductionLogic.verify(skillType, playerId, sequenceNumber, batchSize, itemId, skillProcessData);
+    productionProcessStarted.skillType = skillType;
+    productionProcessStarted.playerId = playerId;
+    productionProcessStarted.sequenceNumber = sequenceNumber;
+    emit ProductionProcessStartedEvent(productionProcessStarted.skillType, productionProcessStarted.playerId, productionProcessStarted.sequenceNumber, productionProcessStarted.batchSize, productionProcessStarted.itemId, productionProcessStarted.energyCost, productionProcessStarted.startedAt, productionProcessStarted.creationTime);
+    SkillProcessData memory updatedSkillProcessData = SkillProcessStartProductionLogic.mutate(productionProcessStarted, skillProcessData);
+    SkillProcess.set(skillType, playerId, sequenceNumber, updatedSkillProcessData);
+  }
+
+  function skillProcessCompleteProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber) public {
+    SkillProcessData memory skillProcessData = SkillProcess.get(skillType, playerId, sequenceNumber);
+    require(
+      !(skillProcessData.itemId == 0 && skillProcessData.startedAt == 0 && skillProcessData.creationTime == 0 && skillProcessData.completed == false && skillProcessData.endedAt == 0 && skillProcessData.batchSize == 0),
+      "SkillProcess does not exist"
+    );
+    ProductionProcessCompleted memory productionProcessCompleted = SkillProcessCompleteProductionLogic.verify(skillType, playerId, sequenceNumber, skillProcessData);
+    productionProcessCompleted.skillType = skillType;
+    productionProcessCompleted.playerId = playerId;
+    productionProcessCompleted.sequenceNumber = sequenceNumber;
+    emit ProductionProcessCompletedEvent(productionProcessCompleted.skillType, productionProcessCompleted.playerId, productionProcessCompleted.sequenceNumber, productionProcessCompleted.itemId, productionProcessCompleted.startedAt, productionProcessCompleted.creationTime, productionProcessCompleted.endedAt, productionProcessCompleted.successful, productionProcessCompleted.quantity, productionProcessCompleted.experience, productionProcessCompleted.newLevel);
+    SkillProcessData memory updatedSkillProcessData = SkillProcessCompleteProductionLogic.mutate(productionProcessCompleted, skillProcessData);
+    SkillProcess.set(skillType, playerId, sequenceNumber, updatedSkillProcessData);
+  }
+
+  function skillProcessStartShipProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber, ItemIdQuantityPair[] memory productionMaterials, uint32 itemId) public {
+    SkillProcessData memory skillProcessData = SkillProcess.get(skillType, playerId, sequenceNumber);
+    require(
+      !(skillProcessData.itemId == 0 && skillProcessData.startedAt == 0 && skillProcessData.creationTime == 0 && skillProcessData.completed == false && skillProcessData.endedAt == 0 && skillProcessData.batchSize == 0),
+      "SkillProcess does not exist"
+    );
+    ShipProductionProcessStarted memory shipProductionProcessStarted = SkillProcessStartShipProductionLogic.verify(skillType, playerId, sequenceNumber, productionMaterials, itemId, skillProcessData);
+    shipProductionProcessStarted.skillType = skillType;
+    shipProductionProcessStarted.playerId = playerId;
+    shipProductionProcessStarted.sequenceNumber = sequenceNumber;
+    emit ShipProductionProcessStartedEvent(shipProductionProcessStarted.skillType, shipProductionProcessStarted.playerId, shipProductionProcessStarted.sequenceNumber, shipProductionProcessStarted.itemId, shipProductionProcessStarted.energyCost, shipProductionProcessStarted.startedAt, shipProductionProcessStarted.creationTime);
+    SkillProcessData memory updatedSkillProcessData = SkillProcessStartShipProductionLogic.mutate(shipProductionProcessStarted, skillProcessData);
+    SkillProcess.set(skillType, playerId, sequenceNumber, updatedSkillProcessData);
+  }
+
+  function skillProcessCompleteShipProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber) public {
+    SkillProcessData memory skillProcessData = SkillProcess.get(skillType, playerId, sequenceNumber);
+    require(
+      !(skillProcessData.itemId == 0 && skillProcessData.startedAt == 0 && skillProcessData.creationTime == 0 && skillProcessData.completed == false && skillProcessData.endedAt == 0 && skillProcessData.batchSize == 0),
+      "SkillProcess does not exist"
+    );
+    ShipProductionProcessCompleted memory shipProductionProcessCompleted = SkillProcessCompleteShipProductionLogic.verify(skillType, playerId, sequenceNumber, skillProcessData);
+    shipProductionProcessCompleted.skillType = skillType;
+    shipProductionProcessCompleted.playerId = playerId;
+    shipProductionProcessCompleted.sequenceNumber = sequenceNumber;
+    emit ShipProductionProcessCompletedEvent(shipProductionProcessCompleted.skillType, shipProductionProcessCompleted.playerId, shipProductionProcessCompleted.sequenceNumber, shipProductionProcessCompleted.itemId, shipProductionProcessCompleted.startedAt, shipProductionProcessCompleted.creationTime, shipProductionProcessCompleted.endedAt, shipProductionProcessCompleted.successful, shipProductionProcessCompleted.quantity, shipProductionProcessCompleted.experience, shipProductionProcessCompleted.newLevel);
+    SkillProcessData memory updatedSkillProcessData = SkillProcessCompleteShipProductionLogic.mutate(shipProductionProcessCompleted, skillProcessData);
+    SkillProcess.set(skillType, playerId, sequenceNumber, updatedSkillProcessData);
+  }
+
+  function skillProcessStartCreation(uint8 skillType, uint256 playerId, uint8 sequenceNumber, uint32 batchSize, uint32 itemId) public {
+    SkillProcessData memory skillProcessData = SkillProcess.get(skillType, playerId, sequenceNumber);
+    require(
+      !(skillProcessData.itemId == 0 && skillProcessData.startedAt == 0 && skillProcessData.creationTime == 0 && skillProcessData.completed == false && skillProcessData.endedAt == 0 && skillProcessData.batchSize == 0),
+      "SkillProcess does not exist"
+    );
+    CreationProcessStarted memory creationProcessStarted = SkillProcessStartCreationLogic.verify(skillType, playerId, sequenceNumber, batchSize, itemId, skillProcessData);
+    creationProcessStarted.skillType = skillType;
+    creationProcessStarted.playerId = playerId;
+    creationProcessStarted.sequenceNumber = sequenceNumber;
+    emit CreationProcessStartedEvent(creationProcessStarted.skillType, creationProcessStarted.playerId, creationProcessStarted.sequenceNumber, creationProcessStarted.batchSize, creationProcessStarted.itemId, creationProcessStarted.energyCost, creationProcessStarted.resourceCost, creationProcessStarted.startedAt, creationProcessStarted.creationTime);
+    SkillProcessData memory updatedSkillProcessData = SkillProcessStartCreationLogic.mutate(creationProcessStarted, skillProcessData);
+    SkillProcess.set(skillType, playerId, sequenceNumber, updatedSkillProcessData);
+  }
+
+  function skillProcessCompleteCreation(uint8 skillType, uint256 playerId, uint8 sequenceNumber) public {
+    SkillProcessData memory skillProcessData = SkillProcess.get(skillType, playerId, sequenceNumber);
+    require(
+      !(skillProcessData.itemId == 0 && skillProcessData.startedAt == 0 && skillProcessData.creationTime == 0 && skillProcessData.completed == false && skillProcessData.endedAt == 0 && skillProcessData.batchSize == 0),
+      "SkillProcess does not exist"
+    );
+    CreationProcessCompleted memory creationProcessCompleted = SkillProcessCompleteCreationLogic.verify(skillType, playerId, sequenceNumber, skillProcessData);
+    creationProcessCompleted.skillType = skillType;
+    creationProcessCompleted.playerId = playerId;
+    creationProcessCompleted.sequenceNumber = sequenceNumber;
+    emit CreationProcessCompletedEvent(creationProcessCompleted.skillType, creationProcessCompleted.playerId, creationProcessCompleted.sequenceNumber, creationProcessCompleted.itemId, creationProcessCompleted.startedAt, creationProcessCompleted.creationTime, creationProcessCompleted.endedAt, creationProcessCompleted.successful, creationProcessCompleted.quantity, creationProcessCompleted.experience, creationProcessCompleted.newLevel);
+    SkillProcessData memory updatedSkillProcessData = SkillProcessCompleteCreationLogic.mutate(creationProcessCompleted, skillProcessData);
+    SkillProcess.set(skillType, playerId, sequenceNumber, updatedSkillProcessData);
+  }
 
   function skillProcessCreate(uint8 skillType, uint256 playerId, uint8 sequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime, bool completed, uint64 endedAt, uint32 batchSize) public {
     SkillProcessData memory skillProcessData = SkillProcess.get(skillType, playerId, sequenceNumber);

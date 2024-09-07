@@ -46,3 +46,98 @@ aggregates:
       ResponderExperiences:
         type: uint32[]
 
+    # methods:
+    #   InitiateBattle:
+    #     isCreationCommand: true
+    #     parameters:
+    #       PlayerId:
+    #         type: u256
+    #       # Player:
+    #       #   referenceType: Player
+    #       #   isIgnoredInEvent: true
+    #       InitiatorRoster:
+    #         type: RosterId
+    #         # referenceType: Roster
+    #         # isMutableReference: true
+    #         # isIgnoredInEvent: true
+    #       ResponderRoster:
+    #         type: RosterId
+    #         # referenceType: Roster
+    #         # isMutableReference: true
+    #         # isIgnoredInEvent: true
+    #       # Clock:
+    #       #   referenceType: Clock
+    #       #   isIgnoredInEvent: true
+    #       InitiatorCoordinates:
+    #         type: Point2d #Coordinates
+    #       ResponderCoordinates:
+    #         type: Point2d #Coordinates
+    #     #result:
+    #     # TODO ? isObjectReturned: true
+    #     event:
+    #       name: ShipBattleInitiated
+    #       # isObjectShared: true
+    #       properties:
+    #         # InitiatorId:
+    #         #   type: ID
+    #         # ResponderId:
+    #         #   type: ID
+    #         StartedAt:
+    #           type: u64
+    #         FirstRoundMover:
+    #           type: u8
+    #           optional: true
+    #         FirstRoundAttackerShip:
+    #           type: u256 #ID
+    #           optional: true
+    #         FirstRoundDefenderShip:
+    #           type: u256 #ID
+    #           optional: true
+
+    #   MakeMove:
+    #     parameters:
+    #       # Player:
+    #       #   referenceType: Player
+    #       #   isIgnoredInEvent: true
+    #       # Initiator:
+    #       #   referenceType: Roster
+    #       #   isMutableReference: true
+    #       #   isIgnoredInEvent: true
+    #       # Responder:
+    #       #   referenceType: Roster
+    #       #   isMutableReference: true
+    #       #   isIgnoredInEvent: true
+    #       # Clock:
+    #       #   referenceType: Clock
+    #       #   isIgnoredInEvent: true
+    #       AttackerCommand:
+    #         type: ShipBattleCommand
+    #     event:
+    #       name: ShipBattleMoveMade
+    #       properties:
+    #         DefenderCommand:
+    #           type: ShipBattleCommand
+    #         RoundNumber:
+    #           type: u32
+    #         DefenderDamageTaken:
+    #           type: u32
+    #         AttackerDamageTaken:
+    #           type: u32
+    #         IsBattleEnded:
+    #           type: bool
+    #         Winner:
+    #           type: u8
+    #           optional: true
+    #           description: "1: Initiator, 0: Responder"
+    #         NextRoundStartedAt:
+    #           type: u64
+    #         NextRoundMover:
+    #           type: u8
+    #           optional: true
+    #         NextRoundAttackerShip:
+    #           type: u256 #ID
+    #           optional: true
+    #         NextRoundDefenderShip:
+    #           type: u256 #ID
+    #           optional: true
+

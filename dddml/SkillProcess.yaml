@@ -40,9 +40,77 @@ aggregates:
         tableName: SkillPrcMtrl
         description: "Actual input materials for production"
 
+    methods:
+      # Create:
+      #   parameters:
+      #     Player:
+      #       referenceType: Player
+      #       isIgnoredInEvent: true
+      #   event:
+      #     isObjectShared: true # Share the object after created.
+      #   constants:
+      #     EInvalidPlayerId:
+      #       constantExpression:
+      #         Move: 10
+      #       type: u64
+      #     ESenderHasNoPermission:
+      #       constantExpression:
+      #         Move: 22
+      #       type: u64
+      #     EInvalidSequenceNumber:
+      #       constantExpression:
+      #         Move: 23
+      #       type: u64
+      #   verificationLogic:
+
+      StartProduction:
+        inheritsFrom: SkillProcessTemplate.StartProduction
+        parameters:
+          BatchSize:
+            type: u32
+        event:
+          name: ProductionProcessStarted
+
+      CompleteProduction:
+        inheritsFrom: SkillProcessTemplate.CompleteProduction
+        event:
+          name: ProductionProcessCompleted
+
+      StartShipProduction:
+        inheritsFrom: SkillProcessTemplate.StartProduction
+        parameters:
+          ProductionMaterials:
+            itemType: ItemIdQuantityPair
+        event:
+          name: ShipProductionProcessStarted
+
+      CompleteShipProduction:
+        inheritsFrom: SkillProcessTemplate.CompleteProduction
+        parameters:
+          # UnassignedShips:
+          #   referenceType: Roster
+          #   isMutableReference: true
+          #   isIgnoredInEvent: true
+        event:
+          name: ShipProductionProcessCompleted
+        #result:
+        #  type: Ship
+
+      StartCreation:
+        inheritsFrom: SkillProcessTemplate.StartCreation
+        parameters:
+          BatchSize:
+            type: u32
+        event:
+          name: CreationProcessStarted
+
+      CompleteCreation:
+        inheritsFrom: SkillProcessTemplate.CompleteCreation
+        event:
+          name: CreationProcessCompleted
+
 
 valueObjects:
-
   SkillProcessId:
     properties:
       SkillType:
@@ -51,3 +119,140 @@ valueObjects:
         type: u256
       SequenceNumber:
         type: u8
+
+
+superObjects:
+  SkillProcessTemplate:
+    isTemplate: true
+    methods:
+      StartProduction:
+        parameters:
+          ItemId:
+            type: u32
+          # Player:
+          #   referenceType: Player
+          #   isMutableReference: true
+          #   isIgnoredInEvent: true
+          # ItemProduction:
+          #   referenceType: ItemProduction
+          #   #eventPropertyName: ItemProductionId
+          #   isIgnoredInEvent: true
+          # Clock:
+          #   referenceType: Clock
+          #   isIgnoredInEvent: true
+          # Energy:
+          #   type: "Balance<ENERGY>"
+          #   eventPropertyName: EnergyCost
+        event:
+          properties:
+            ItemId:
+              type: u32
+            EnergyCost:
+              type: u64
+            StartedAt:
+              type: u64
+            CreationTime:
+              type: u64
+            ProductionMaterials:
+              itemType: ItemIdQuantityPair
+
+      CompleteProduction:
+        parameters:
+          # Player:
+          #   referenceType: Player
+          #   isMutableReference: true
+          #   isIgnoredInEvent: true
+          # ItemProduction:
+          #   referenceType: ItemProduction
+          #   isIgnoredInEvent: true
+          # ExperienceTable:
+          #   referenceType: ExperienceTable
+          #   isIgnoredInEvent: true
+          # Clock:
+          #   referenceType: Clock
+          #   isIgnoredInEvent: true
+        event:
+          properties:
+            ItemId:
+              type: u32
+            StartedAt:
+              type: u64
+            CreationTime:
+              type: u64
+            EndedAt:
+              type: u64
+            Successful:
+              type: bool
+            Quantity:
+              type: u32
+            Experience:
+              type: u32
+              description: "Increased experience value"
+            NewLevel:
+              type: u16
+
+
+      StartCreation:
+        parameters:
+          ItemId:
+            type: u32
+          # Player:
+          #   referenceType: Player
+          #   isMutableReference: true
+          #   isIgnoredInEvent: true
+          # ItemCreation:
+          #   referenceType: ItemCreation
+          #   isIgnoredInEvent: true
+          # Clock:
+          #   referenceType: Clock
+          #   isIgnoredInEvent: true
+          # Energy:
+          #   type: "Balance<ENERGY>"
+          #   eventPropertyName: EnergyCost
+        event:
+          properties:
+            ItemId: # ItemId to be created
+              type: u32
+            EnergyCost:
+              type: u64
+            ResourceCost:
+              type: u32
+            StartedAt:
+              type: u64
+            CreationTime:
+              type: u64
+
+      CompleteCreation:
+        parameters:
+          # Player:
+          #   referenceType: Player
+          #   isMutableReference: true
+          #   isIgnoredInEvent: true
+          # ItemCreation:
+          #   referenceType: ItemCreation
+          #   isIgnoredInEvent: true
+          # ExperienceTable:
+          #   referenceType: ExperienceTable
+          #   isIgnoredInEvent: true
+          # Clock:
+          #   referenceType: Clock
+          #   isIgnoredInEvent: true
+        event:
+          properties:
+            ItemId:
+              type: u32
+            StartedAt:
+              type: u64
+            CreationTime:
+              type: u64
+            EndedAt:
+              type: u64
+            Successful:
+              type: bool
+            Quantity:
+              type: u32
+            Experience:
+              type: u32
+              description: "Increased experience value"
+            NewLevel:
+              type: u16
