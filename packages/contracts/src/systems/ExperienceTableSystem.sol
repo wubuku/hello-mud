@@ -5,14 +5,44 @@ pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
 import { ExperienceTable } from "../codegen/index.sol";
-import { ExperienceTableCreated, ExperienceTableUpdated } from "./ExperienceTableEvents.sol";
+import { ExperienceLevelAdded, ExperienceLevelUpdated, ExperienceTableCreated, ExperienceTableUpdated } from "./ExperienceTableEvents.sol";
+import { ExperienceTableAddLevelLogic } from "./ExperienceTableAddLevelLogic.sol";
+import { ExperienceTableUpdateLevelLogic } from "./ExperienceTableUpdateLevelLogic.sol";
 import { ExperienceTableCreateLogic } from "./ExperienceTableCreateLogic.sol";
 import { ExperienceTableUpdateLogic } from "./ExperienceTableUpdateLogic.sol";
 
 contract ExperienceTableSystem is System {
+  event ExperienceLevelAddedEvent(uint16 level, uint32 experience, uint32 difference);
+
+  event ExperienceLevelUpdatedEvent(uint16 level, uint32 experience, uint32 difference);
+
   event ExperienceTableCreatedEvent(bool reservedBool1);
 
   event ExperienceTableUpdatedEvent(bool reservedBool1);
+
+  function experienceTableAddLevel(uint16 level, uint32 experience, uint32 difference) public {
+    bool reservedBool1 = ExperienceTable.get();
+    require(
+      !(reservedBool1 == false),
+      "ExperienceTable does not exist"
+    );
+    ExperienceLevelAdded memory experienceLevelAdded = ExperienceTableAddLevelLogic.verify(level, experience, difference, reservedBool1);
+    emit ExperienceLevelAddedEvent(experienceLevelAdded.level, experienceLevelAdded.experience, experienceLevelAdded.difference);
+    bool updatedReservedBool1 = ExperienceTableAddLevelLogic.mutate(experienceLevelAdded, reservedBool1);
+    ExperienceTable.set(updatedReservedBool1);
+  }
+
+  function experienceTableUpdateLevel(uint16 level, uint32 experience, uint32 difference) public {
+    bool reservedBool1 = ExperienceTable.get();
+    require(
+      !(reservedBool1 == false),
+      "ExperienceTable does not exist"
+    );
+    ExperienceLevelUpdated memory experienceLevelUpdated = ExperienceTableUpdateLevelLogic.verify(level, experience, difference, reservedBool1);
+    emit ExperienceLevelUpdatedEvent(experienceLevelUpdated.level, experienceLevelUpdated.experience, experienceLevelUpdated.difference);
+    bool updatedReservedBool1 = ExperienceTableUpdateLevelLogic.mutate(experienceLevelUpdated, reservedBool1);
+    ExperienceTable.set(updatedReservedBool1);
+  }
 
   function experienceTableCreate(bool reservedBool1) public {
     bool s_reservedBool1 = ExperienceTable.get();

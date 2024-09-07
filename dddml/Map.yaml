@@ -30,3 +30,46 @@ singletonObjects:
             itemType: ItemIdQuantityPair
         event:
           name: IslandAdded
+
+      ClaimIsland:
+        # metadata:
+        #   IsExternalFriendly: true
+        # TODO #isInternal: true
+        parameters:
+          Coordinates:
+            type: Point2d #Coordinates
+          ClaimedBy:
+            type: u256 # PlayerId
+          ClaimedAt:
+            type: u64
+        event:
+          name: MapIslandClaimed
+
+      GatherIslandResources:
+        # metadata:
+        #   ParametersIncludedInMutationFunction: [ "Clock" ]
+        #   IsExternalFriendly: true
+        # TODO #isInternal: true
+        parameters:
+          #Player:
+          #  referenceType: Player
+          #  isMutableReference: true
+          #  isIgnoredInEvent: true
+          PlayerId:
+            type: u256 # ID
+          Coordinates:
+            type: Point2d #Coordinates
+          #Clock:
+          #  referenceType: Clock
+          #  isIgnoredInEvent: true
+        result:
+          itemType: ItemIdQuantityPair
+        event:
+          name: IslandResourcesGathered
+          properties:
+            GatheredAt:
+              type: u64
+            Coordinates:
+              type: Point2d #Coordinates
+            Resources:
+              itemType: ItemIdQuantityPair

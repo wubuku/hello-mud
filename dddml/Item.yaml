@@ -20,7 +20,11 @@ aggregates:
         length: 100
       #Type:
       #  type: ItemType
-
+    # methods:
+    #   Create:
+    #     requiredPermission: "__Publisher__"
+    #   Update:
+    #     requiredPermission: "__Publisher__"
 
   ItemCreation:
     metadata:

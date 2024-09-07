@@ -5,12 +5,18 @@ pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
 import { Map, MapData } from "../codegen/index.sol";
-import { IslandAdded } from "./MapEvents.sol";
+import { IslandAdded, MapIslandClaimed, IslandResourcesGathered } from "./MapEvents.sol";
 import { MapAddIslandLogic } from "./MapAddIslandLogic.sol";
+import { MapClaimIslandLogic } from "./MapClaimIslandLogic.sol";
+import { MapGatherIslandResourcesLogic } from "./MapGatherIslandResourcesLogic.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 contract MapSystem is System {
-  event IslandAddedEvent(int32 x, int32 y);
+  event IslandAddedEvent(int32 coordinatesX, int32 coordinatesY);
+
+  event MapIslandClaimedEvent(int32 coordinatesX, int32 coordinatesY, uint256 claimedBy, uint64 claimedAt);
+
+  event IslandResourcesGatheredEvent(uint256 playerId, uint64 gatheredAt, int32 coordinatesX, int32 coordinatesY);
 
   function mapAddIsland(int32 coordinatesX, int32 coordinatesY, ItemIdQuantityPair[] memory resources) public {
     MapData memory mapData = Map.get();
@@ -19,8 +25,32 @@ contract MapSystem is System {
       "Map does not exist"
     );
     IslandAdded memory islandAdded = MapAddIslandLogic.verify(coordinatesX, coordinatesY, resources, mapData);
-    emit IslandAddedEvent(islandAdded.x, islandAdded.y);
+    emit IslandAddedEvent(islandAdded.coordinatesX, islandAdded.coordinatesY);
     MapData memory updatedMapData = MapAddIslandLogic.mutate(islandAdded, mapData);
+    Map.set(updatedMapData);
+  }
+
+  function mapClaimIsland(int32 coordinatesX, int32 coordinatesY, uint256 claimedBy, uint64 claimedAt) public {
+    MapData memory mapData = Map.get();
+    require(
+      !(mapData.width == 0 && mapData.height == 0),
+      "Map does not exist"
+    );
+    MapIslandClaimed memory mapIslandClaimed = MapClaimIslandLogic.verify(coordinatesX, coordinatesY, claimedBy, claimedAt, mapData);
+    emit MapIslandClaimedEvent(mapIslandClaimed.coordinatesX, mapIslandClaimed.coordinatesY, mapIslandClaimed.claimedBy, mapIslandClaimed.claimedAt);
+    MapData memory updatedMapData = MapClaimIslandLogic.mutate(mapIslandClaimed, mapData);
+    Map.set(updatedMapData);
+  }
+
+  function mapGatherIslandResources(uint256 playerId, int32 coordinatesX, int32 coordinatesY) public {
+    MapData memory mapData = Map.get();
+    require(
+      !(mapData.width == 0 && mapData.height == 0),
+      "Map does not exist"
+    );
+    IslandResourcesGathered memory islandResourcesGathered = MapGatherIslandResourcesLogic.verify(playerId, coordinatesX, coordinatesY, mapData);
+    emit IslandResourcesGatheredEvent(islandResourcesGathered.playerId, islandResourcesGathered.gatheredAt, islandResourcesGathered.coordinatesX, islandResourcesGathered.coordinatesY);
+    MapData memory updatedMapData = MapGatherIslandResourcesLogic.mutate(islandResourcesGathered, mapData);
     Map.set(updatedMapData);
   }
 
