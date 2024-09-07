@@ -14,6 +14,4 @@ interface IMapSystem {
   function app__mapAddIsland(int32 coordinatesX, int32 coordinatesY, ItemIdQuantityPair[] memory resources) external;
 
   function app__mapClaimIsland(int32 coordinatesX, int32 coordinatesY, uint256 claimedBy, uint64 claimedAt) external;
-
-  function app__mapGatherIslandResources(uint256 playerId, int32 coordinatesX, int32 coordinatesY) external;
 }

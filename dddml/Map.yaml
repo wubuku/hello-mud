@@ -49,7 +49,7 @@ singletonObjects:
         # metadata:
         #   ParametersIncludedInMutationFunction: [ "Clock" ]
         #   IsExternalFriendly: true
-        # TODO #isInternal: true
+        isInternal: true
         parameters:
           #Player:
           #  referenceType: Player

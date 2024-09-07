@@ -42,7 +42,7 @@ contract MapSystem is System {
     Map.set(updatedMapData);
   }
 
-  function mapGatherIslandResources(uint256 playerId, int32 coordinatesX, int32 coordinatesY) public {
+  function mapGatherIslandResources(uint256 playerId, int32 coordinatesX, int32 coordinatesY) internal returns (ItemIdQuantityPair[] memory) {
     MapData memory mapData = Map.get();
     require(
       !(mapData.width == 0 && mapData.height == 0),
@@ -50,8 +50,9 @@ contract MapSystem is System {
     );
     IslandResourcesGathered memory islandResourcesGathered = MapGatherIslandResourcesLogic.verify(playerId, coordinatesX, coordinatesY, mapData);
     emit IslandResourcesGatheredEvent(islandResourcesGathered.playerId, islandResourcesGathered.gatheredAt, islandResourcesGathered.coordinatesX, islandResourcesGathered.coordinatesY);
-    MapData memory updatedMapData = MapGatherIslandResourcesLogic.mutate(islandResourcesGathered, mapData);
+    (ItemIdQuantityPair[] memory result, MapData memory updatedMapData) = MapGatherIslandResourcesLogic.mutate(islandResourcesGathered, mapData);
     Map.set(updatedMapData);
+    return result;
   }
 
 }
