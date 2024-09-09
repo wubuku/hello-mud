@@ -3,6 +3,7 @@ pragma solidity >=0.8.24;
 
 import { ArticleCreated } from "./ArticleEvents.sol";
 import { ArticleData } from "../codegen/index.sol";
+import { IWorldContextConsumer } from "@latticexyz/world/src/IWorldContextConsumer.sol";
 
 library ArticleCreateLogic {
   function verify(
@@ -10,8 +11,13 @@ library ArticleCreateLogic {
     address author,
     string memory title,
     string memory body
-  ) internal pure returns (ArticleCreated memory) {
-    return ArticleCreated(id, author, title, body);
+  ) internal view returns (ArticleCreated memory) {
+
+    // Get the MUD context information this way:
+    IWorldContextConsumer ctx = IWorldContextConsumer(address(this));
+    address _author = ctx._msgSender();
+
+    return ArticleCreated(id, _author, title, body);
   }
 
   function mutate(

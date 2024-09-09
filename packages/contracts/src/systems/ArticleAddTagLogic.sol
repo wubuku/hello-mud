@@ -4,6 +4,7 @@ pragma solidity >=0.8.24;
 import { TagAdded } from "./ArticleEvents.sol";
 import { ArticleData } from "../codegen/index.sol";
 import { ArticleTagLib } from "./ArticleTagLib.sol";
+import { IWorldContextConsumer } from "@latticexyz/world/src/IWorldContextConsumer.sol";
 
 library ArticleAddTagLogic {
   function verify(
@@ -11,7 +12,10 @@ library ArticleAddTagLogic {
     string memory tag,
     ArticleData memory articleData
   ) internal view returns (TagAdded memory) {
-    articleData.author;
+
+    IWorldContextConsumer ctx = IWorldContextConsumer(address(this));
+    require(articleData.author == ctx._msgSender(), "Not the author");
+
     string[] memory tags = ArticleTagLib.getAllTags(id);
     for (uint i = 0; i < tags.length; i++) {
       require(keccak256(bytes(tags[i])) != keccak256(bytes(tag)), "Tag already exists");

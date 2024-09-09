@@ -2,6 +2,9 @@ aggregates:
   Article:
     metadata:
       Preprocessors: ["CRUD_IT"]
+      IsAbstractMudSystem: true
+      # The above option generates an abstract MUD system contract for the aggregate.
+      # This allows us to hand-write an extension to it. 
     id:
       name: Id
       type: u64
