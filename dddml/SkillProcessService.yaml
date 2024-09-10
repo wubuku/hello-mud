@@ -1,0 +1,48 @@
+services:
+  SkillProcessService:
+    methods:
+      StartCreation:
+        parameters:
+          SkillProcessId:
+            type: SkillProcessId
+          BatchSize:
+            type: u32
+          PlayerId:
+            type: u256
+          ItemCreationId:
+            type: SkillTypeItemIdPair
+          #Clock:
+          #  referenceType: Clock
+          #Energy:
+          #  type: "Coin<ENERGY>"
+
+
+      StartProduction:
+        parameters:
+          SkillProcessId:
+            type: SkillProcessId
+          BatchSize:
+            type: u32
+          PlayerId:
+            type: u256
+          ItemProductionId:
+            type: SkillTypeItemIdPair
+          #Clock:
+          #  referenceType: Clock
+          #Energy:
+          #  type: "Coin<ENERGY>"
+
+      StartShipProduction:
+        parameters:
+          SkillProcessId:
+            type: SkillProcessId
+          ProductionMaterials:
+            itemType: ItemIdQuantityPair
+          PlayerId:
+            type: u256
+          ItemProductionId:
+            type: SkillTypeItemIdPair
+          #Clock:
+          #  referenceType: Clock
+          #Energy:
+          #  type: "Coin<ENERGY>"
