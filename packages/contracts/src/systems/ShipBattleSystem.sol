@@ -18,32 +18,33 @@ contract ShipBattleSystem is System {
   event ShipBattleLootTakenEvent(uint256 indexed id, uint8 choice, uint64 lootedAt, uint32 increasedExperience, uint16 newLevel, uint32 loserIncreasedExperience, uint16 loserNewLevel);
 
   function shipBattleInitiateBattle(uint256 playerId, uint256 initiatorRosterPlayerId, uint32 initiatorRosterSequenceNumber, uint256 responderRosterPlayerId, uint32 responderRosterSequenceNumber, int32 initiatorCoordinatesX, int32 initiatorCoordinatesY, int32 responderCoordinatesX, int32 responderCoordinatesY) public returns (uint256) {
-    uint256 id = ShipBattleIdGenerator.get() + 1;
-    ShipBattleIdGenerator.set(id);
-    ShipBattleData memory shipBattleData = ShipBattle.get(id);
-    require(
-      shipBattleData.initiatorRosterPlayerId == 0 && shipBattleData.initiatorRosterSequenceNumber == 0 && shipBattleData.responderRosterPlayerId == 0 && shipBattleData.responderRosterSequenceNumber == 0 && shipBattleData.status == 0 && shipBattleData.endedAt == 0,
-      "ShipBattle already exists"
-    );
-    ShipBattleInitiated memory shipBattleInitiated = ShipBattleInitiateBattleLogic.verify(id, playerId, initiatorRosterPlayerId, initiatorRosterSequenceNumber, responderRosterPlayerId, responderRosterSequenceNumber, initiatorCoordinatesX, initiatorCoordinatesY, responderCoordinatesX, responderCoordinatesY);
-    shipBattleInitiated.id = id;
-    emit ShipBattleInitiatedEvent(shipBattleInitiated.id, shipBattleInitiated.playerId, shipBattleInitiated.initiatorRosterPlayerId, shipBattleInitiated.initiatorRosterSequenceNumber, shipBattleInitiated.responderRosterPlayerId, shipBattleInitiated.responderRosterSequenceNumber, shipBattleInitiated.initiatorCoordinatesX, shipBattleInitiated.initiatorCoordinatesY, shipBattleInitiated.responderCoordinatesX, shipBattleInitiated.responderCoordinatesY, shipBattleInitiated.startedAt, shipBattleInitiated.firstRoundMover, shipBattleInitiated.firstRoundAttackerShip, shipBattleInitiated.firstRoundDefenderShip);
-    ShipBattleData memory newShipBattleData = ShipBattleInitiateBattleLogic.mutate(shipBattleInitiated);
-    ShipBattle.set(id, newShipBattleData);
-    return id;
+    // uint256 id = ShipBattleIdGenerator.get() + 1;
+    // ShipBattleIdGenerator.set(id);
+    // ShipBattleData memory shipBattleData = ShipBattle.get(id);
+    // require(
+    //   shipBattleData.initiatorRosterPlayerId == 0 && shipBattleData.initiatorRosterSequenceNumber == 0 && shipBattleData.responderRosterPlayerId == 0 && shipBattleData.responderRosterSequenceNumber == 0 && shipBattleData.status == 0 && shipBattleData.endedAt == 0,
+    //   "ShipBattle already exists"
+    // );
+    // ShipBattleInitiated memory shipBattleInitiated = ShipBattleInitiateBattleLogic.verify(id, playerId, initiatorRosterPlayerId, initiatorRosterSequenceNumber, responderRosterPlayerId, responderRosterSequenceNumber, initiatorCoordinatesX, initiatorCoordinatesY, responderCoordinatesX, responderCoordinatesY);
+    // shipBattleInitiated.id = id;
+    // emit ShipBattleInitiatedEvent(shipBattleInitiated.id, shipBattleInitiated.playerId, shipBattleInitiated.initiatorRosterPlayerId, shipBattleInitiated.initiatorRosterSequenceNumber, shipBattleInitiated.responderRosterPlayerId, shipBattleInitiated.responderRosterSequenceNumber, shipBattleInitiated.initiatorCoordinatesX, shipBattleInitiated.initiatorCoordinatesY, shipBattleInitiated.responderCoordinatesX, shipBattleInitiated.responderCoordinatesY, shipBattleInitiated.startedAt, shipBattleInitiated.firstRoundMover, shipBattleInitiated.firstRoundAttackerShip, shipBattleInitiated.firstRoundDefenderShip);
+    // ShipBattleData memory newShipBattleData = ShipBattleInitiateBattleLogic.mutate(shipBattleInitiated);
+    // ShipBattle.set(id, newShipBattleData);
+    // return id;
+    return 0;
   }
 
   function shipBattleMakeMove(uint256 id, uint8 attackerCommand) public {
-    ShipBattleData memory shipBattleData = ShipBattle.get(id);
-    require(
-      !(shipBattleData.initiatorRosterPlayerId == 0 && shipBattleData.initiatorRosterSequenceNumber == 0 && shipBattleData.responderRosterPlayerId == 0 && shipBattleData.responderRosterSequenceNumber == 0 && shipBattleData.status == 0 && shipBattleData.endedAt == 0),
-      "ShipBattle does not exist"
-    );
-    ShipBattleMoveMade memory shipBattleMoveMade = ShipBattleMakeMoveLogic.verify(id, attackerCommand, shipBattleData);
-    shipBattleMoveMade.id = id;
-    emit ShipBattleMoveMadeEvent(shipBattleMoveMade.id, shipBattleMoveMade.attackerCommand, shipBattleMoveMade.defenderCommand, shipBattleMoveMade.roundNumber, shipBattleMoveMade.defenderDamageTaken, shipBattleMoveMade.attackerDamageTaken, shipBattleMoveMade.isBattleEnded, shipBattleMoveMade.winner, shipBattleMoveMade.nextRoundStartedAt, shipBattleMoveMade.nextRoundMover, shipBattleMoveMade.nextRoundAttackerShip, shipBattleMoveMade.nextRoundDefenderShip);
-    ShipBattleData memory updatedShipBattleData = ShipBattleMakeMoveLogic.mutate(shipBattleMoveMade, shipBattleData);
-    ShipBattle.set(id, updatedShipBattleData);
+    // ShipBattleData memory shipBattleData = ShipBattle.get(id);
+    // require(
+    //   !(shipBattleData.initiatorRosterPlayerId == 0 && shipBattleData.initiatorRosterSequenceNumber == 0 && shipBattleData.responderRosterPlayerId == 0 && shipBattleData.responderRosterSequenceNumber == 0 && shipBattleData.status == 0 && shipBattleData.endedAt == 0),
+    //   "ShipBattle does not exist"
+    // );
+    // ShipBattleMoveMade memory shipBattleMoveMade = ShipBattleMakeMoveLogic.verify(id, attackerCommand, shipBattleData);
+    // shipBattleMoveMade.id = id;
+    // emit ShipBattleMoveMadeEvent(shipBattleMoveMade.id, shipBattleMoveMade.attackerCommand, shipBattleMoveMade.defenderCommand, shipBattleMoveMade.roundNumber, shipBattleMoveMade.defenderDamageTaken, shipBattleMoveMade.attackerDamageTaken, shipBattleMoveMade.isBattleEnded, shipBattleMoveMade.winner, shipBattleMoveMade.nextRoundStartedAt, shipBattleMoveMade.nextRoundMover, shipBattleMoveMade.nextRoundAttackerShip, shipBattleMoveMade.nextRoundDefenderShip);
+    // ShipBattleData memory updatedShipBattleData = ShipBattleMakeMoveLogic.mutate(shipBattleMoveMade, shipBattleData);
+    // ShipBattle.set(id, updatedShipBattleData);
   }
 
   function shipBattleTakeLoot(uint256 id, uint8 choice) public {

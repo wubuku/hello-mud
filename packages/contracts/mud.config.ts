@@ -295,4 +295,11 @@ export default defineWorld({
       key: ["index"],
     },
   },
+  modules: [
+    {
+      artifactPath: "./out/AlwaysAllowDelegationModule.sol/AlwaysAllowDelegationModule.json",
+      root: true,
+      args: [],
+    },
+  ],
 });

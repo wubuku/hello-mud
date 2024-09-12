@@ -213,5 +213,3 @@ cast send --private-key __PRIVATE_KEY__ \
 ```shell
 cast logs 'TerrainUpdatedEvent(int32,int32,string,uint8[],bytes)'
 ```
-
-
