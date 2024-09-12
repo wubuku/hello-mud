@@ -11,6 +11,10 @@ pragma solidity >=0.8.24;
 interface IShipBattleServiceSystem {
   function app__shipBattleServiceInitiateBattleAndAutoPlayTillEnd(
     uint256 playerId,
+    uint256 initiatorRosterPlayerId,
+    uint32 initiatorRosterSequenceNumber,
+    uint256 responderRosterPlayerId,
+    uint32 responderRosterSequenceNumber,
     int32 initiatorCoordinatesX,
     int32 initiatorCoordinatesY,
     int32 responderCoordinatesX,

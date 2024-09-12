@@ -7,6 +7,10 @@ services:
             type: u256
             #referenceType: Player
             #isMutableReference: true
+          InitiatorRoster:
+            type: RosterId
+          ResponderRoster:
+            type: RosterId
           #Initiator:
           #  referenceType: Roster
           #  isMutableReference: true
