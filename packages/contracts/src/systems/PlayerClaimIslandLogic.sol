@@ -30,7 +30,7 @@ library PlayerClaimIslandLogic {
     int32 coordinatesY = islandClaimed.coordinatesY;
     uint64 claimedAt = islandClaimed.claimedAt;
     uint256 claimedBy = islandClaimed.id; // Player ID
-    MapAggregateLib.mapClaimIsland(coordinatesX, coordinatesY, claimedBy, claimedAt);
+    MapAggregateLib.claimIsland(coordinatesX, coordinatesY, claimedBy, claimedAt);
     // TODO ...
   }
 }

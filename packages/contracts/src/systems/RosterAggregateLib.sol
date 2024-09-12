@@ -13,7 +13,7 @@ library RosterAggregateLib {
 
   event RosterShipAddedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256 shipId, uint64 position);
 
-  function rosterCreate(uint256 playerId, uint32 sequenceNumber) internal returns (uint256, uint32, RosterData memory) {
+  function create(uint256 playerId, uint32 sequenceNumber) internal returns (uint256, uint32, RosterData memory) {
     RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
     require(
       !(rosterData.status == 0 && rosterData.speed == 0 && rosterData.coordinatesUpdatedAt == 0 && rosterData.sailDuration == 0 && rosterData.setSailAt == 0 && rosterData.shipBattleId == 0 && rosterData.environmentOwned == false && rosterData.baseExperience == 0 && rosterData.shipIds.length == 0),
@@ -28,7 +28,7 @@ library RosterAggregateLib {
     return (playerId, sequenceNumber, updatedRosterData);
   }
 
-  function rosterAddShip(uint256 playerId, uint32 sequenceNumber, uint256 shipId, uint64 position) internal {
+  function addShip(uint256 playerId, uint32 sequenceNumber, uint256 shipId, uint64 position) internal {
     RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
     require(
       !(rosterData.status == 0 && rosterData.speed == 0 && rosterData.coordinatesUpdatedAt == 0 && rosterData.sailDuration == 0 && rosterData.setSailAt == 0 && rosterData.shipBattleId == 0 && rosterData.environmentOwned == false && rosterData.baseExperience == 0 && rosterData.shipIds.length == 0),

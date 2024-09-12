@@ -14,7 +14,7 @@ library MapAggregateLib {
 
   event IslandResourcesGatheredEvent(uint256 playerId, uint64 gatheredAt, int32 coordinatesX, int32 coordinatesY);
 
-  function mapClaimIsland(int32 coordinatesX, int32 coordinatesY, uint256 claimedBy, uint64 claimedAt) internal {
+  function claimIsland(int32 coordinatesX, int32 coordinatesY, uint256 claimedBy, uint64 claimedAt) internal {
     MapData memory mapData = Map.get();
     require(
       !(mapData.width == 0 && mapData.height == 0),
@@ -26,7 +26,7 @@ library MapAggregateLib {
     Map.set(updatedMapData);
   }
 
-  function mapGatherIslandResources(uint256 playerId, int32 coordinatesX, int32 coordinatesY) internal returns (ItemIdQuantityPair[] memory) {
+  function gatherIslandResources(uint256 playerId, int32 coordinatesX, int32 coordinatesY) internal returns (ItemIdQuantityPair[] memory) {
     MapData memory mapData = Map.get();
     require(
       !(mapData.width == 0 && mapData.height == 0),

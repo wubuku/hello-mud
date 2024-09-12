@@ -10,7 +10,7 @@ import { ShipCreateLogic } from "./ShipCreateLogic.sol";
 library ShipAggregateLib {
   event ShipCreatedEvent(uint256 indexed id, uint256 rosterIdPlayerId, uint32 rosterIdSequenceNumber, uint32 healthPoints, uint32 attack, uint32 protection, uint32 speed, uint32[] buildingExpensesItemIds, uint32[] buildingExpensesQuantities);
 
-  function shipCreate(uint256 rosterIdPlayerId, uint32 rosterIdSequenceNumber, uint32 healthPoints, uint32 attack, uint32 protection, uint32 speed, uint32[] memory buildingExpensesItemIds, uint32[] memory buildingExpensesQuantities) internal returns (uint256, ShipData memory) {
+  function create(uint256 rosterIdPlayerId, uint32 rosterIdSequenceNumber, uint32 healthPoints, uint32 attack, uint32 protection, uint32 speed, uint32[] memory buildingExpensesItemIds, uint32[] memory buildingExpensesQuantities) internal returns (uint256, ShipData memory) {
     uint256 id = ShipIdGenerator.get() + 1;
     ShipIdGenerator.set(id);
     ShipData memory shipData = Ship.get(id);
