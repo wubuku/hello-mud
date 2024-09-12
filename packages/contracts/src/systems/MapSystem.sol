@@ -5,15 +5,12 @@ pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
 import { Map, MapData } from "../codegen/index.sol";
-import { IslandAdded, IslandResourcesGathered } from "./MapEvents.sol";
+import { IslandAdded } from "./MapEvents.sol";
 import { MapAddIslandLogic } from "./MapAddIslandLogic.sol";
-import { MapGatherIslandResourcesLogic } from "./MapGatherIslandResourcesLogic.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 contract MapSystem is System {
   event IslandAddedEvent(int32 coordinatesX, int32 coordinatesY);
-
-  event IslandResourcesGatheredEvent(uint256 playerId, uint64 gatheredAt, int32 coordinatesX, int32 coordinatesY);
 
   function mapAddIsland(int32 coordinatesX, int32 coordinatesY, ItemIdQuantityPair[] memory resources) public {
     MapData memory mapData = Map.get();
@@ -25,19 +22,6 @@ contract MapSystem is System {
     emit IslandAddedEvent(islandAdded.coordinatesX, islandAdded.coordinatesY);
     MapData memory updatedMapData = MapAddIslandLogic.mutate(islandAdded, mapData);
     Map.set(updatedMapData);
-  }
-
-  function mapGatherIslandResources(uint256 playerId, int32 coordinatesX, int32 coordinatesY) internal returns (ItemIdQuantityPair[] memory) {
-    MapData memory mapData = Map.get();
-    require(
-      !(mapData.width == 0 && mapData.height == 0),
-      "Map does not exist"
-    );
-    IslandResourcesGathered memory islandResourcesGathered = MapGatherIslandResourcesLogic.verify(playerId, coordinatesX, coordinatesY, mapData);
-    emit IslandResourcesGatheredEvent(islandResourcesGathered.playerId, islandResourcesGathered.gatheredAt, islandResourcesGathered.coordinatesX, islandResourcesGathered.coordinatesY);
-    (ItemIdQuantityPair[] memory result, MapData memory updatedMapData) = MapGatherIslandResourcesLogic.mutate(islandResourcesGathered, mapData);
-    Map.set(updatedMapData);
-    return result;
   }
 
 }

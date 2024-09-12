@@ -34,12 +34,13 @@ aggregates:
         type: uint256[]
 
     methods:
-      # Create:
-      #   isInternal: true
-      #   result:
-      #     isObjectReturned: true
-      #   event:
-      #     isObjectShared: true # Share the object after created.
+      Create:
+        isInternal: true
+        result:
+          isObjectReturned: true
+        event:
+          name: RosterCreated
+        #  isObjectShared: true # Share the object after created.
 
       CreateEnvironmentRoster:
         isCreationCommand: true

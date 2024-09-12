@@ -5,9 +5,8 @@ pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
 import { Roster, RosterData } from "../codegen/index.sol";
-import { EnvironmentRosterCreated, RosterShipAdded, RosterSetSail, RosterShipsPositionAdjusted, RosterShipTransferred, RosterShipInventoryTransferred, RosterShipInventoryTakenOut, RosterShipInventoryPutIn } from "./RosterEvents.sol";
+import { EnvironmentRosterCreated, RosterSetSail, RosterShipsPositionAdjusted, RosterShipTransferred, RosterShipInventoryTransferred, RosterShipInventoryTakenOut, RosterShipInventoryPutIn } from "./RosterEvents.sol";
 import { RosterCreateEnvironmentRosterLogic } from "./RosterCreateEnvironmentRosterLogic.sol";
-import { RosterAddShipLogic } from "./RosterAddShipLogic.sol";
 import { RosterSetSailLogic } from "./RosterSetSailLogic.sol";
 import { RosterAdjustShipsPositionLogic } from "./RosterAdjustShipsPositionLogic.sol";
 import { RosterTransferShipLogic } from "./RosterTransferShipLogic.sol";
@@ -18,8 +17,6 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 contract RosterSystem is System {
   event EnvironmentRosterCreatedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, int32 coordinatesX, int32 coordinatesY, uint32 shipResourceQuantity, uint32 shipBaseResourceQuantity, uint32 baseExperience);
-
-  event RosterShipAddedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256 shipId, uint64 position);
 
   event RosterSetSailEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, int32 targetCoordinatesX, int32 targetCoordinatesY, uint64 sailDuration, uint64 setSailAt, int32 updatedCoordinatesX, int32 updatedCoordinatesY, uint64 energyCost);
 
@@ -45,20 +42,6 @@ contract RosterSystem is System {
     emit EnvironmentRosterCreatedEvent(environmentRosterCreated.playerId, environmentRosterCreated.sequenceNumber, environmentRosterCreated.coordinatesX, environmentRosterCreated.coordinatesY, environmentRosterCreated.shipResourceQuantity, environmentRosterCreated.shipBaseResourceQuantity, environmentRosterCreated.baseExperience);
     RosterData memory newRosterData = RosterCreateEnvironmentRosterLogic.mutate(environmentRosterCreated);
     Roster.set(playerId, sequenceNumber, newRosterData);
-  }
-
-  function rosterAddShip(uint256 playerId, uint32 sequenceNumber, uint256 shipId, uint64 position) internal {
-    RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
-    require(
-      !(rosterData.status == 0 && rosterData.speed == 0 && rosterData.coordinatesUpdatedAt == 0 && rosterData.sailDuration == 0 && rosterData.setSailAt == 0 && rosterData.shipBattleId == 0 && rosterData.environmentOwned == false && rosterData.baseExperience == 0 && rosterData.shipIds.length == 0),
-      "Roster does not exist"
-    );
-    RosterShipAdded memory rosterShipAdded = RosterAddShipLogic.verify(playerId, sequenceNumber, shipId, position, rosterData);
-    rosterShipAdded.playerId = playerId;
-    rosterShipAdded.sequenceNumber = sequenceNumber;
-    emit RosterShipAddedEvent(rosterShipAdded.playerId, rosterShipAdded.sequenceNumber, rosterShipAdded.shipId, rosterShipAdded.position);
-    RosterData memory updatedRosterData = RosterAddShipLogic.mutate(rosterShipAdded, rosterData);
-    Roster.set(playerId, sequenceNumber, updatedRosterData);
   }
 
   function rosterSetSail(uint256 playerId, uint32 sequenceNumber, int32 targetCoordinatesX, int32 targetCoordinatesY, uint64 sailDuration, int32 updatedCoordinatesX, int32 updatedCoordinatesY) public {
