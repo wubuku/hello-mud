@@ -34,7 +34,7 @@ singletonObjects:
       ClaimIsland:
         # metadata:
         #   IsExternalFriendly: true
-        # TODO #isInternal: true
+        isInternal: true
         parameters:
           Coordinates:
             type: Coordinates
