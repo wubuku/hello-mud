@@ -1,0 +1,41 @@
+services:
+  ShipBattleService:
+    methods:
+      InitiateBattleAndAutoPlayTillEnd:
+        parameters:
+          PlayerId:
+            type: u256
+            #referenceType: Player
+            #isMutableReference: true
+          #Initiator:
+          #  referenceType: Roster
+          #  isMutableReference: true
+          #Responder:
+          #  referenceType: Roster
+          #  isMutableReference: true
+          #Clock:
+          #  referenceType: Clock
+          InitiatorCoordinates:
+            type: Coordinates
+          ResponderCoordinates:
+            type: Coordinates
+
+      AutoPlayTillEnd:
+        parameters:
+          ShipBattleId:
+            type: u256
+            #referenceType: ShipBattle
+            #isMutableReference: true
+          PlayerId:
+            type: u256 
+            #referenceType: Player
+            #isMutableReference: true
+          #Initiator:
+          #  referenceType: Roster
+          #  isMutableReference: true
+          #Responder:
+          #  referenceType: Roster
+          #  isMutableReference: true
+          #Clock:
+          #  referenceType: Clock
+

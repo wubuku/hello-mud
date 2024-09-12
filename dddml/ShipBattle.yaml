@@ -74,8 +74,8 @@ aggregates:
             type: Coordinates
           ResponderCoordinates:
             type: Coordinates
-        #result:
-        # TODO ? isObjectReturned: true
+        result:
+          isObjectReturned: true
         event:
           name: ShipBattleInitiated
           # isObjectShared: true

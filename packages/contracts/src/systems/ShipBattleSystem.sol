@@ -17,7 +17,7 @@ contract ShipBattleSystem is System {
 
   event ShipBattleLootTakenEvent(uint256 indexed id, uint8 choice, uint64 lootedAt, uint32 increasedExperience, uint16 newLevel, uint32 loserIncreasedExperience, uint16 loserNewLevel);
 
-  function shipBattleInitiateBattle(uint256 playerId, uint256 initiatorRosterPlayerId, uint32 initiatorRosterSequenceNumber, uint256 responderRosterPlayerId, uint32 responderRosterSequenceNumber, int32 initiatorCoordinatesX, int32 initiatorCoordinatesY, int32 responderCoordinatesX, int32 responderCoordinatesY) public {
+  function shipBattleInitiateBattle(uint256 playerId, uint256 initiatorRosterPlayerId, uint32 initiatorRosterSequenceNumber, uint256 responderRosterPlayerId, uint32 responderRosterSequenceNumber, int32 initiatorCoordinatesX, int32 initiatorCoordinatesY, int32 responderCoordinatesX, int32 responderCoordinatesY) public returns (uint256, ShipBattleData memory) {
     uint256 id = ShipBattleIdGenerator.get() + 1;
     ShipBattleIdGenerator.set(id);
     ShipBattleData memory shipBattleData = ShipBattle.get(id);
@@ -30,6 +30,7 @@ contract ShipBattleSystem is System {
     emit ShipBattleInitiatedEvent(shipBattleInitiated.id, shipBattleInitiated.playerId, shipBattleInitiated.initiatorRosterPlayerId, shipBattleInitiated.initiatorRosterSequenceNumber, shipBattleInitiated.responderRosterPlayerId, shipBattleInitiated.responderRosterSequenceNumber, shipBattleInitiated.initiatorCoordinatesX, shipBattleInitiated.initiatorCoordinatesY, shipBattleInitiated.responderCoordinatesX, shipBattleInitiated.responderCoordinatesY, shipBattleInitiated.startedAt, shipBattleInitiated.firstRoundMover, shipBattleInitiated.firstRoundAttackerShip, shipBattleInitiated.firstRoundDefenderShip);
     ShipBattleData memory newShipBattleData = ShipBattleInitiateBattleLogic.mutate(shipBattleInitiated);
     ShipBattle.set(id, newShipBattleData);
+    return (id, newShipBattleData);
   }
 
   function shipBattleMakeMove(uint256 id, uint8 attackerCommand) public {

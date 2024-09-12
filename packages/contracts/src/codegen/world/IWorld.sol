@@ -15,6 +15,7 @@ import { IMapSystem } from "./IMapSystem.sol";
 import { IPlayerSystem } from "./IPlayerSystem.sol";
 import { IPositionSystem } from "./IPositionSystem.sol";
 import { IRosterSystem } from "./IRosterSystem.sol";
+import { IShipBattleServiceSystem } from "./IShipBattleServiceSystem.sol";
 import { IShipBattleSystem } from "./IShipBattleSystem.sol";
 import { IShipSystem } from "./IShipSystem.sol";
 import { ISkillProcessServiceSystem } from "./ISkillProcessServiceSystem.sol";
@@ -41,6 +42,7 @@ interface IWorld is
   IPlayerSystem,
   IPositionSystem,
   IRosterSystem,
+  IShipBattleServiceSystem,
   IShipBattleSystem,
   IShipSystem,
   ISkillProcessServiceSystem,
