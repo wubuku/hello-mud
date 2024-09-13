@@ -93,8 +93,36 @@ contract ShipBattleServiceSystem is System {
       responderCoordinatesX,
       responderCoordinatesY
     );
+    require(shipBattleId != 0, "ShipBattle initiation failed");
     shipBattleServiceAutoPlayTillEnd(shipBattleId, playerId);
   }
+
+  function shipBattleServiceAutoPlayTillEnd(uint256 shipBattleId, uint256 playerId) public {
+    ResourceId shipBattleSystemId = WorldResourceIdLib.encode({
+      typeId: RESOURCE_SYSTEM,
+      namespace: "app",
+      name: "ShipBattleSystem"
+    });
+
+    IBaseWorld world = IBaseWorld(_world());
+    for (uint256 i = 0; i < MAX_NUMBER_OF_ROUNDS; i++) {
+      //uint8 status = ShipBattle.getStatus(shipBattleId);
+      // TODO if (status == BattleStatus.ENDED) {
+      //  break;
+      //}
+
+      // call shipBattleSystem.shipBattleMakeMove(shipBattleId, ShipBattleCommand.ATTACK);
+      world.callFrom(
+        _msgSender(),
+        shipBattleSystemId,
+        abi.encodeWithSignature("shipBattleMakeMove(uint256,uint8)", shipBattleId, ShipBattleCommand.ATTACK)
+      );
+      if (i == 1) {
+        break;
+      }
+    }
+  }
+
 
   function _getPanicReason(uint errorCode) internal pure returns (string memory) {
     if (errorCode == 0x01) return "Assertion failed";
@@ -138,29 +166,4 @@ contract ShipBattleServiceSystem is System {
     return string(str);
   }
 
-  function shipBattleServiceAutoPlayTillEnd(uint256 shipBattleId, uint256 playerId) public {
-    ResourceId shipBattleSystemId = WorldResourceIdLib.encode({
-      typeId: RESOURCE_SYSTEM,
-      namespace: "app",
-      name: "ShipBattleSystem"
-    });
-
-    IBaseWorld world = IBaseWorld(_world());
-    for (uint256 i = 0; i < MAX_NUMBER_OF_ROUNDS; i++) {
-      uint8 status = ShipBattle.getStatus(shipBattleId);
-      // TODO if (status == BattleStatus.ENDED) {
-      //  break;
-      //}
-
-      // call shipBattleSystem.shipBattleMakeMove(shipBattleId, ShipBattleCommand.ATTACK);
-      world.callFrom(
-        _msgSender(),
-        shipBattleSystemId,
-        abi.encodeWithSignature("shipBattleMakeMove(uint256,uint8)", shipBattleId, ShipBattleCommand.ATTACK)
-      );
-      if (i == 1) {
-        break;
-      }
-    }
-  }
 }

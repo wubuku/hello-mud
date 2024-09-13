@@ -18,13 +18,36 @@ library ShipBattleInitiateBattleLogic {
     int32 responderCoordinatesY
   ) internal pure returns (ShipBattleInitiated memory) {
     // TODO ...
-    //return ShipBattleInitiated(...);
+    return ShipBattleInitiated(
+      id,
+      playerId,
+      initiatorRosterPlayerId,
+      initiatorRosterSequenceNumber,
+      responderRosterPlayerId,
+      responderRosterSequenceNumber,
+      initiatorCoordinatesX,
+      initiatorCoordinatesY,
+      responderCoordinatesX,
+      responderCoordinatesY,
+      0, //startedAt,
+      0, //firstRoundMover,
+      0, //firstRoundAttackerShip,
+      0 //firstRoundDefenderShip
+    );
   }
 
-  function mutate(
-    ShipBattleInitiated memory shipBattleInitiated
-  ) internal pure returns (ShipBattleData memory) {
+  function mutate(ShipBattleInitiated memory shipBattleInitiated) internal pure returns (ShipBattleData memory) {
     ShipBattleData memory shipBattleData;
+    shipBattleData.initiatorRosterPlayerId = shipBattleInitiated.initiatorRosterPlayerId;
+    shipBattleData.initiatorRosterSequenceNumber = shipBattleInitiated.initiatorRosterSequenceNumber;
+    shipBattleData.responderRosterPlayerId = shipBattleInitiated.responderRosterPlayerId;
+    shipBattleData.responderRosterSequenceNumber = shipBattleInitiated.responderRosterSequenceNumber;
+    shipBattleData.status = 1; //TODO ...
+    shipBattleData.endedAt = 0;
+    shipBattleData.winner = 0;
+    shipBattleData.roundNumber = 0;
+    shipBattleData.roundStartedAt = 0;
+    shipBattleData.roundMover = 0;
     // TODO ...
     return shipBattleData;
   }

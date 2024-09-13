@@ -18,6 +18,8 @@ library ShipBattleMakeMoveLogic {
     ShipBattleMoveMade memory shipBattleMoveMade,
     ShipBattleData memory shipBattleData
   ) internal pure returns (ShipBattleData memory) {
+    shipBattleData.status = 2; // Just for testing. TODO ...
     // TODO ...
+    return shipBattleData;
   }
 }
