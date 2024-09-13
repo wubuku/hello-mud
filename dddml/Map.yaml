@@ -1,5 +1,8 @@
 singletonObjects:
   Map:
+    friends:
+      - Player.ClaimIsland
+      - Player.GatherIslandResources
     properties:
       Width:
         type: u32

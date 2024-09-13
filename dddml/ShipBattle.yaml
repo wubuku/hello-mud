@@ -3,6 +3,8 @@ aggregates:
   ShipBattle:
     metadata:
       MudStoreValueCheckMaxFieldCount: 6
+    friends:
+      - ShipBattleService
     id:
       name: Id
       type: u256
