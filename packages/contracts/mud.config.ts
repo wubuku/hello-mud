@@ -297,7 +297,7 @@ export default defineWorld({
   },
   modules: [
     {
-      artifactPath: "./out/AlwaysAllowDelegationModule.sol/AlwaysAllowDelegationModule.json",
+      artifactPath: "./out/AppNamespaceDelegationModule.sol/AppNamespaceDelegationModule.json",
       root: true,
       args: [],
     },
