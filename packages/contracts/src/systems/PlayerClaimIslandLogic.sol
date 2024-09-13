@@ -4,7 +4,8 @@ pragma solidity >=0.8.24;
 import { IslandClaimed } from "./PlayerEvents.sol";
 import { PlayerData } from "../codegen/index.sol";
 import { MapAggregateLib } from "./MapAggregateLib.sol";
-import { IWorldContextConsumer } from "@latticexyz/world/src/IWorldContextConsumer.sol";
+import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
+
 
 library PlayerClaimIslandLogic {
   function verify(
@@ -13,8 +14,7 @@ library PlayerClaimIslandLogic {
     int32 coordinatesY,
     PlayerData memory playerData
   ) internal view returns (IslandClaimed memory) {
-    IWorldContextConsumer ctx = IWorldContextConsumer(address(this));
-    require(playerData.owner == ctx._msgSender(), "MsgSender is not the player.owner");
+    require(playerData.owner == WorldContextConsumerLib._msgSender(), "MsgSender is not the player.owner");
 
     // TODO check coordinatesX, coordinatesY
 

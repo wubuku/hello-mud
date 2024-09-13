@@ -2,14 +2,16 @@
 pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { ShipBattleSystem } from "./ShipBattleSystem.sol";
-import { BattleStatus } from "./BattleStatus.sol";
-import { ShipBattleCommand } from "./ShipBattleCommand.sol";
-import { ShipBattle } from "../codegen/index.sol";
-//import { IWorldContextConsumer } from "@latticexyz/world/src/IWorldContextConsumer.sol";
 import { IBaseWorld } from "@latticexyz/world/src/codegen/interfaces/IBaseWorld.sol";
 import { ResourceId, WorldResourceIdLib, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
 import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
+// import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
+
+// import { BattleStatus } from "./BattleStatus.sol";
+import { ShipBattleCommand } from "./ShipBattleCommand.sol";
+import { ShipBattle } from "../codegen/index.sol";
+// import { ShipBattleSystem } from "./ShipBattleSystem.sol";
+import { ShipBattleAggregateLib } from "./ShipBattleAggregateLib.sol";
 
 contract ShipBattleServiceSystem is System {
   uint256 constant MAX_NUMBER_OF_ROUNDS = 100;
@@ -29,52 +31,69 @@ contract ShipBattleServiceSystem is System {
     int32 responderCoordinatesX,
     int32 responderCoordinatesY
   ) public {
-    ResourceId shipBattleSystemId = WorldResourceIdLib.encode({
-      typeId: RESOURCE_SYSTEM,
-      namespace: "app",
-      name: "ShipBattleSystem"
-    });
-    IBaseWorld world = IBaseWorld(_world());
-    try
-      world.callFrom(
-        _msgSender(),
-        shipBattleSystemId,
-        abi.encodeWithSignature(
-          "shipBattleInitiateBattle(uint256,uint256,uint32,uint256,uint32,int32,int32,int32,int32)",
-          playerId,
-          initiatorRosterPlayerId,
-          initiatorRosterSequenceNumber,
-          responderRosterPlayerId,
-          responderRosterSequenceNumber,
-          initiatorCoordinatesX,
-          initiatorCoordinatesY,
-          responderCoordinatesX,
-          responderCoordinatesY
-        )
-      )
-    returns (bytes memory shipBattleInitiateBattleReturnData) {
-      uint256 shipBattleId = abi.decode(shipBattleInitiateBattleReturnData, (uint256));
-      shipBattleServiceAutoPlayTillEnd(shipBattleId, playerId);
-    } catch Error(string memory reason) {
-      // 捕获带有原因的错误（包括 require 和 revert 带消息的情况）
-      //emit ErrorOccurred(reason);
-      revert(string(abi.encodePacked("Error occurred: ", reason)));
-    } catch Panic(uint errorCode) {
-      // 捕获 Panic 错误（如断言失败、除以零、溢出等）
-      string memory panicReason = _getPanicReason(errorCode);
-      revert(string(abi.encodePacked("Panic occurred: ", panicReason)));
-    } catch (bytes memory lowLevelData) {
-      // 捕获其他错误（包括自定义错误）
-      //emit LowLevelError(lowLevelData);
-      //revert("Low level error occurred");
+    // ResourceId shipBattleSystemId = WorldResourceIdLib.encode({
+    //   typeId: RESOURCE_SYSTEM,
+    //   namespace: "app",
+    //   name: "ShipBattleSystem"
+    // });
 
-      string memory hexString = _bytesToHexString(lowLevelData);
-      revert(string(abi.encodePacked("Low level error occurred: ", hexString)));
+    // //IBaseWorld world = IBaseWorld(_world());
+    // IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
+    // //address msgSender = _msgSender();
+    // address msgSender = WorldContextConsumerLib._msgSender();
+    // try
+    //   world.callFrom(
+    //     msgSender,
+    //     shipBattleSystemId,
+    //     abi.encodeWithSignature(
+    //       "shipBattleInitiateBattle(uint256,uint256,uint32,uint256,uint32,int32,int32,int32,int32)",
+    //       playerId,
+    //       initiatorRosterPlayerId,
+    //       initiatorRosterSequenceNumber,
+    //       responderRosterPlayerId,
+    //       responderRosterSequenceNumber,
+    //       initiatorCoordinatesX,
+    //       initiatorCoordinatesY,
+    //       responderCoordinatesX,
+    //       responderCoordinatesY
+    //     )
+    //   )
+    // returns (bytes memory shipBattleInitiateBattleReturnData) {
+    //   uint256 shipBattleId = abi.decode(shipBattleInitiateBattleReturnData, (uint256));
+    //   shipBattleServiceAutoPlayTillEnd(shipBattleId, playerId);
+    // } catch Error(string memory reason) {
+    //   // 捕获带有原因的错误（包括 require 和 revert 带消息的情况）
+    //   //emit ErrorOccurred(reason);
+    //   revert(string(abi.encodePacked("Error occurred: ", reason)));
+    // } catch Panic(uint errorCode) {
+    //   // 捕获 Panic 错误（如断言失败、除以零、溢出等）
+    //   string memory panicReason = _getPanicReason(errorCode);
+    //   revert(string(abi.encodePacked("Panic occurred: ", panicReason)));
+    // } catch (bytes memory lowLevelData) {
+    //   // 捕获其他错误（包括自定义错误）
+    //   //emit LowLevelError(lowLevelData);
+    //   //revert("Low level error occurred");
 
-      // For example:
-      // server returned an error response: error code 3: execution reverted: revert:
-      // Low level error occurred: 0xc86745f9000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000a93bbb2b14d6e0a4c2954f5b6fbf60c4fa5a8089
-    }
+    //   string memory hexString = _bytesToHexString(lowLevelData);
+    //   revert(string(abi.encodePacked("Low level error occurred: ", hexString)));
+
+    //   // For example:
+    //   // server returned an error response: error code 3: execution reverted: revert:
+    //   // Low level error occurred: 0xc86745f9000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000a93bbb2b14d6e0a4c2954f5b6fbf60c4fa5a8089
+    // }
+
+    uint256 shipBattleId = ShipBattleAggregateLib.initiateBattle(
+      playerId,
+      initiatorRosterPlayerId,
+      initiatorRosterSequenceNumber,
+      responderRosterPlayerId,
+      responderRosterSequenceNumber,
+      initiatorCoordinatesX,
+      initiatorCoordinatesY,
+      responderCoordinatesX,
+      responderCoordinatesY
+    );
+    shipBattleServiceAutoPlayTillEnd(shipBattleId, playerId);
   }
 
   function _getPanicReason(uint errorCode) internal pure returns (string memory) {
@@ -120,8 +139,6 @@ contract ShipBattleServiceSystem is System {
   }
 
   function shipBattleServiceAutoPlayTillEnd(uint256 shipBattleId, uint256 playerId) public {
-    //IWorldContextConsumer ctx = IWorldContextConsumer(address(this));
-    //IBaseWorld world = IBaseWorld(ctx._world());
     ResourceId shipBattleSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
