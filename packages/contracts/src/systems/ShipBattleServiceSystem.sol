@@ -11,7 +11,7 @@ import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 import { ShipBattleCommand } from "./ShipBattleCommand.sol";
 import { ShipBattle } from "../codegen/index.sol";
 // import { ShipBattleSystem } from "./ShipBattleSystem.sol";
-import { ShipBattleAggregateLib } from "./ShipBattleAggregateLib.sol";
+import { ShipBattleDelegationLib } from "./ShipBattleDelegationLib.sol";
 
 contract ShipBattleServiceSystem is System {
   uint256 constant MAX_NUMBER_OF_ROUNDS = 100;
@@ -82,7 +82,7 @@ contract ShipBattleServiceSystem is System {
     //   // Low level error occurred: 0xc86745f9000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000a93bbb2b14d6e0a4c2954f5b6fbf60c4fa5a8089
     // }
 
-    uint256 shipBattleId = ShipBattleAggregateLib.initiateBattle(
+    uint256 shipBattleId = ShipBattleDelegationLib.initiateBattle(
       playerId,
       initiatorRosterPlayerId,
       initiatorRosterSequenceNumber,
