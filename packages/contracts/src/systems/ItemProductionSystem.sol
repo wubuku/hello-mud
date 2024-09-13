@@ -17,7 +17,7 @@ contract ItemProductionSystem is System {
   function itemProductionCreate(uint8 skillType, uint32 itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32[] memory materialItemIds, uint32[] memory materialItemQuantities) public {
     ItemProductionData memory itemProductionData = ItemProduction.get(skillType, itemId);
     require(
-      itemProductionData.requirementsLevel == 0 && itemProductionData.baseQuantity == 0 && itemProductionData.baseExperience == 0 && itemProductionData.baseCreationTime == 0 && itemProductionData.energyCost == 0 && itemProductionData.successRate == 0 && itemProductionData.materialItemIds.length == 0 && itemProductionData.materialItemQuantities.length == 0,
+      itemProductionData.requirementsLevel == uint16(0) && itemProductionData.baseQuantity == uint32(0) && itemProductionData.baseExperience == uint32(0) && itemProductionData.baseCreationTime == uint64(0) && itemProductionData.energyCost == uint64(0) && itemProductionData.successRate == uint16(0) && itemProductionData.materialItemIds.length == 0 && itemProductionData.materialItemQuantities.length == 0,
       "ItemProduction already exists"
     );
     ItemProductionCreated memory itemProductionCreated = ItemProductionCreateLogic.verify(skillType, itemId, requirementsLevel, baseQuantity, baseExperience, baseCreationTime, energyCost, successRate, materialItemIds, materialItemQuantities);
@@ -31,7 +31,7 @@ contract ItemProductionSystem is System {
   function itemProductionUpdate(uint8 skillType, uint32 itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32[] memory materialItemIds, uint32[] memory materialItemQuantities) public {
     ItemProductionData memory itemProductionData = ItemProduction.get(skillType, itemId);
     require(
-      !(itemProductionData.requirementsLevel == 0 && itemProductionData.baseQuantity == 0 && itemProductionData.baseExperience == 0 && itemProductionData.baseCreationTime == 0 && itemProductionData.energyCost == 0 && itemProductionData.successRate == 0 && itemProductionData.materialItemIds.length == 0 && itemProductionData.materialItemQuantities.length == 0),
+      !(itemProductionData.requirementsLevel == uint16(0) && itemProductionData.baseQuantity == uint32(0) && itemProductionData.baseExperience == uint32(0) && itemProductionData.baseCreationTime == uint64(0) && itemProductionData.energyCost == uint64(0) && itemProductionData.successRate == uint16(0) && itemProductionData.materialItemIds.length == 0 && itemProductionData.materialItemQuantities.length == 0),
       "ItemProduction does not exist"
     );
     ItemProductionUpdated memory itemProductionUpdated = ItemProductionUpdateLogic.verify(skillType, itemId, requirementsLevel, baseQuantity, baseExperience, baseCreationTime, energyCost, successRate, materialItemIds, materialItemQuantities, itemProductionData);

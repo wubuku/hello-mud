@@ -15,7 +15,7 @@ library ShipAggregateLib {
     ShipIdGenerator.set(id);
     ShipData memory shipData = Ship.get(id);
     require(
-      shipData.playerId == 0 && shipData.rosterSequenceNumber == 0 && shipData.healthPoints == 0 && shipData.attack == 0 && shipData.protection == 0 && shipData.speed == 0 && shipData.buildingExpensesItemIds.length == 0 && shipData.buildingExpensesQuantities.length == 0,
+      shipData.playerId == uint256(0) && shipData.rosterSequenceNumber == uint32(0) && shipData.healthPoints == uint32(0) && shipData.attack == uint32(0) && shipData.protection == uint32(0) && shipData.speed == uint32(0) && shipData.buildingExpensesItemIds.length == 0 && shipData.buildingExpensesQuantities.length == 0,
       "Ship already exists"
     );
     ShipCreated memory shipCreated = ShipCreateLogic.verify(id, rosterIdPlayerId, rosterIdSequenceNumber, healthPoints, attack, protection, speed, buildingExpensesItemIds, buildingExpensesQuantities);

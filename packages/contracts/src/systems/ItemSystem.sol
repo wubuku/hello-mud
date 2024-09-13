@@ -17,7 +17,7 @@ contract ItemSystem is System {
   function itemCreate(uint32 itemId, bool requiredForCompletion, uint32 sellsFor, string memory name) public {
     ItemData memory itemData = Item.get(itemId);
     require(
-      itemData.requiredForCompletion == false && itemData.sellsFor == 0 && bytes(itemData.name).length == 0,
+      itemData.requiredForCompletion == false && itemData.sellsFor == uint32(0) && bytes(itemData.name).length == 0,
       "Item already exists"
     );
     ItemCreated memory itemCreated = ItemCreateLogic.verify(itemId, requiredForCompletion, sellsFor, name);
@@ -30,7 +30,7 @@ contract ItemSystem is System {
   function itemUpdate(uint32 itemId, bool requiredForCompletion, uint32 sellsFor, string memory name) public {
     ItemData memory itemData = Item.get(itemId);
     require(
-      !(itemData.requiredForCompletion == false && itemData.sellsFor == 0 && bytes(itemData.name).length == 0),
+      !(itemData.requiredForCompletion == false && itemData.sellsFor == uint32(0) && bytes(itemData.name).length == 0),
       "Item does not exist"
     );
     ItemUpdated memory itemUpdated = ItemUpdateLogic.verify(itemId, requiredForCompletion, sellsFor, name, itemData);

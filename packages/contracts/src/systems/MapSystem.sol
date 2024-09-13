@@ -14,10 +14,10 @@ contract MapSystem is System {
 
   function mapAddIsland(int32 coordinatesX, int32 coordinatesY, ItemIdQuantityPair[] memory resources) public {
     MapData memory mapData = Map.get();
-    // require(
-    //   !(mapData.width == 0 && mapData.height == 0),
-    //   "Map does not exist"
-    // );
+    require(
+      !(mapData.width == uint32(0) && mapData.height == uint32(0)),
+      "Map does not exist"
+    );
     IslandAdded memory islandAdded = MapAddIslandLogic.verify(coordinatesX, coordinatesY, resources, mapData);
     emit IslandAddedEvent(islandAdded.coordinatesX, islandAdded.coordinatesY);
     MapData memory updatedMapData = MapAddIslandLogic.mutate(islandAdded, mapData);

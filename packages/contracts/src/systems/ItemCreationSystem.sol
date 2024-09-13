@@ -17,7 +17,7 @@ contract ItemCreationSystem is System {
   function itemCreationCreate(uint8 skillType, uint32 itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32 resourceCost) public {
     ItemCreationData memory itemCreationData = ItemCreation.get(skillType, itemId);
     require(
-      itemCreationData.requirementsLevel == 0 && itemCreationData.baseQuantity == 0 && itemCreationData.baseExperience == 0 && itemCreationData.baseCreationTime == 0 && itemCreationData.energyCost == 0 && itemCreationData.successRate == 0 && itemCreationData.resourceCost == 0,
+      itemCreationData.requirementsLevel == uint16(0) && itemCreationData.baseQuantity == uint32(0) && itemCreationData.baseExperience == uint32(0) && itemCreationData.baseCreationTime == uint64(0) && itemCreationData.energyCost == uint64(0) && itemCreationData.successRate == uint16(0) && itemCreationData.resourceCost == uint32(0),
       "ItemCreation already exists"
     );
     ItemCreationCreated memory itemCreationCreated = ItemCreationCreateLogic.verify(skillType, itemId, requirementsLevel, baseQuantity, baseExperience, baseCreationTime, energyCost, successRate, resourceCost);
@@ -31,7 +31,7 @@ contract ItemCreationSystem is System {
   function itemCreationUpdate(uint8 skillType, uint32 itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32 resourceCost) public {
     ItemCreationData memory itemCreationData = ItemCreation.get(skillType, itemId);
     require(
-      !(itemCreationData.requirementsLevel == 0 && itemCreationData.baseQuantity == 0 && itemCreationData.baseExperience == 0 && itemCreationData.baseCreationTime == 0 && itemCreationData.energyCost == 0 && itemCreationData.successRate == 0 && itemCreationData.resourceCost == 0),
+      !(itemCreationData.requirementsLevel == uint16(0) && itemCreationData.baseQuantity == uint32(0) && itemCreationData.baseExperience == uint32(0) && itemCreationData.baseCreationTime == uint64(0) && itemCreationData.energyCost == uint64(0) && itemCreationData.successRate == uint16(0) && itemCreationData.resourceCost == uint32(0)),
       "ItemCreation does not exist"
     );
     ItemCreationUpdated memory itemCreationUpdated = ItemCreationUpdateLogic.verify(skillType, itemId, requirementsLevel, baseQuantity, baseExperience, baseCreationTime, energyCost, successRate, resourceCost, itemCreationData);

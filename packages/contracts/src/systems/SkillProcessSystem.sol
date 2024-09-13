@@ -33,7 +33,7 @@ contract SkillProcessSystem is System {
   function skillProcessStartProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber, uint32 batchSize, uint32 itemId) public {
     SkillProcessData memory skillProcessData = SkillProcess.get(skillType, playerId, sequenceNumber);
     require(
-      !(skillProcessData.itemId == 0 && skillProcessData.startedAt == 0 && skillProcessData.creationTime == 0 && skillProcessData.completed == false && skillProcessData.endedAt == 0 && skillProcessData.batchSize == 0),
+      !(skillProcessData.itemId == uint32(0) && skillProcessData.startedAt == uint64(0) && skillProcessData.creationTime == uint64(0) && skillProcessData.completed == false && skillProcessData.endedAt == uint64(0) && skillProcessData.batchSize == uint32(0)),
       "SkillProcess does not exist"
     );
     ProductionProcessStarted memory productionProcessStarted = SkillProcessStartProductionLogic.verify(skillType, playerId, sequenceNumber, batchSize, itemId, skillProcessData);
@@ -48,7 +48,7 @@ contract SkillProcessSystem is System {
   function skillProcessCompleteProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber) public {
     SkillProcessData memory skillProcessData = SkillProcess.get(skillType, playerId, sequenceNumber);
     require(
-      !(skillProcessData.itemId == 0 && skillProcessData.startedAt == 0 && skillProcessData.creationTime == 0 && skillProcessData.completed == false && skillProcessData.endedAt == 0 && skillProcessData.batchSize == 0),
+      !(skillProcessData.itemId == uint32(0) && skillProcessData.startedAt == uint64(0) && skillProcessData.creationTime == uint64(0) && skillProcessData.completed == false && skillProcessData.endedAt == uint64(0) && skillProcessData.batchSize == uint32(0)),
       "SkillProcess does not exist"
     );
     ProductionProcessCompleted memory productionProcessCompleted = SkillProcessCompleteProductionLogic.verify(skillType, playerId, sequenceNumber, skillProcessData);
@@ -63,7 +63,7 @@ contract SkillProcessSystem is System {
   function skillProcessStartShipProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber, ItemIdQuantityPair[] memory productionMaterials, uint32 itemId) public {
     SkillProcessData memory skillProcessData = SkillProcess.get(skillType, playerId, sequenceNumber);
     require(
-      !(skillProcessData.itemId == 0 && skillProcessData.startedAt == 0 && skillProcessData.creationTime == 0 && skillProcessData.completed == false && skillProcessData.endedAt == 0 && skillProcessData.batchSize == 0),
+      !(skillProcessData.itemId == uint32(0) && skillProcessData.startedAt == uint64(0) && skillProcessData.creationTime == uint64(0) && skillProcessData.completed == false && skillProcessData.endedAt == uint64(0) && skillProcessData.batchSize == uint32(0)),
       "SkillProcess does not exist"
     );
     ShipProductionProcessStarted memory shipProductionProcessStarted = SkillProcessStartShipProductionLogic.verify(skillType, playerId, sequenceNumber, productionMaterials, itemId, skillProcessData);
@@ -78,7 +78,7 @@ contract SkillProcessSystem is System {
   function skillProcessCompleteShipProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber) public {
     SkillProcessData memory skillProcessData = SkillProcess.get(skillType, playerId, sequenceNumber);
     require(
-      !(skillProcessData.itemId == 0 && skillProcessData.startedAt == 0 && skillProcessData.creationTime == 0 && skillProcessData.completed == false && skillProcessData.endedAt == 0 && skillProcessData.batchSize == 0),
+      !(skillProcessData.itemId == uint32(0) && skillProcessData.startedAt == uint64(0) && skillProcessData.creationTime == uint64(0) && skillProcessData.completed == false && skillProcessData.endedAt == uint64(0) && skillProcessData.batchSize == uint32(0)),
       "SkillProcess does not exist"
     );
     ShipProductionProcessCompleted memory shipProductionProcessCompleted = SkillProcessCompleteShipProductionLogic.verify(skillType, playerId, sequenceNumber, skillProcessData);
@@ -93,7 +93,7 @@ contract SkillProcessSystem is System {
   function skillProcessStartCreation(uint8 skillType, uint256 playerId, uint8 sequenceNumber, uint32 batchSize, uint32 itemId) public {
     SkillProcessData memory skillProcessData = SkillProcess.get(skillType, playerId, sequenceNumber);
     require(
-      !(skillProcessData.itemId == 0 && skillProcessData.startedAt == 0 && skillProcessData.creationTime == 0 && skillProcessData.completed == false && skillProcessData.endedAt == 0 && skillProcessData.batchSize == 0),
+      !(skillProcessData.itemId == uint32(0) && skillProcessData.startedAt == uint64(0) && skillProcessData.creationTime == uint64(0) && skillProcessData.completed == false && skillProcessData.endedAt == uint64(0) && skillProcessData.batchSize == uint32(0)),
       "SkillProcess does not exist"
     );
     CreationProcessStarted memory creationProcessStarted = SkillProcessStartCreationLogic.verify(skillType, playerId, sequenceNumber, batchSize, itemId, skillProcessData);
@@ -108,7 +108,7 @@ contract SkillProcessSystem is System {
   function skillProcessCompleteCreation(uint8 skillType, uint256 playerId, uint8 sequenceNumber) public {
     SkillProcessData memory skillProcessData = SkillProcess.get(skillType, playerId, sequenceNumber);
     require(
-      !(skillProcessData.itemId == 0 && skillProcessData.startedAt == 0 && skillProcessData.creationTime == 0 && skillProcessData.completed == false && skillProcessData.endedAt == 0 && skillProcessData.batchSize == 0),
+      !(skillProcessData.itemId == uint32(0) && skillProcessData.startedAt == uint64(0) && skillProcessData.creationTime == uint64(0) && skillProcessData.completed == false && skillProcessData.endedAt == uint64(0) && skillProcessData.batchSize == uint32(0)),
       "SkillProcess does not exist"
     );
     CreationProcessCompleted memory creationProcessCompleted = SkillProcessCompleteCreationLogic.verify(skillType, playerId, sequenceNumber, skillProcessData);
@@ -123,7 +123,7 @@ contract SkillProcessSystem is System {
   function skillProcessCreate(uint8 skillType, uint256 playerId, uint8 sequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime, bool completed, uint64 endedAt, uint32 batchSize) public {
     SkillProcessData memory skillProcessData = SkillProcess.get(skillType, playerId, sequenceNumber);
     require(
-      skillProcessData.itemId == 0 && skillProcessData.startedAt == 0 && skillProcessData.creationTime == 0 && skillProcessData.completed == false && skillProcessData.endedAt == 0 && skillProcessData.batchSize == 0,
+      skillProcessData.itemId == uint32(0) && skillProcessData.startedAt == uint64(0) && skillProcessData.creationTime == uint64(0) && skillProcessData.completed == false && skillProcessData.endedAt == uint64(0) && skillProcessData.batchSize == uint32(0),
       "SkillProcess already exists"
     );
     SkillProcessCreated memory skillProcessCreated = SkillProcessCreateLogic.verify(skillType, playerId, sequenceNumber, itemId, startedAt, creationTime, completed, endedAt, batchSize);

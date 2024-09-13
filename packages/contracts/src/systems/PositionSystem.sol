@@ -17,7 +17,7 @@ contract PositionSystem is System {
   function positionCreate(address player, int32 x, int32 y, string memory description) public {
     PositionData memory positionData = Position.get(player);
     require(
-      positionData.x == 0 && positionData.y == 0 && bytes(positionData.description).length == 0,
+      positionData.x == int32(0) && positionData.y == int32(0) && bytes(positionData.description).length == 0,
       "Position already exists"
     );
     PositionCreated memory positionCreated = PositionCreateLogic.verify(player, x, y, description);
@@ -30,7 +30,7 @@ contract PositionSystem is System {
   function positionUpdate(address player, int32 x, int32 y, string memory description) public {
     PositionData memory positionData = Position.get(player);
     require(
-      !(positionData.x == 0 && positionData.y == 0 && bytes(positionData.description).length == 0),
+      !(positionData.x == int32(0) && positionData.y == int32(0) && bytes(positionData.description).length == 0),
       "Position does not exist"
     );
     PositionUpdated memory positionUpdated = PositionUpdateLogic.verify(player, x, y, description, positionData);
