@@ -4,6 +4,8 @@ aggregates:
       Preprocessors: [ "CRUD_IT" ]
       CRUD_IT_NO_UPDATE: true
       CRUD_IT_NO_DELETE: true
+    friends:
+      - SkillProcessService
     id:
       name: SkillProcessId
       type: SkillProcessId
