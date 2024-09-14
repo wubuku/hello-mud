@@ -2,12 +2,20 @@
 
 English | [中文版](./README_CN.md)
 
-This is a PoC (Proof of Concept) for developing dapps with MUD framework in a low-code way.
+This is a demonstration for developing dapps with MUD framework in a low-code way.
 
 
 The core of low-code is “model-driven.”
 We will show how to use a DSL (Domain Specific Language) called DDDML to describe the application's domain model.
 The domain model is then converted into the MUD config (model) file and Solidity contracts to speed up the application development process.
+
+
+> We are currently porting the fully on-chain game [Infinite Seas](http://infiniteseas.io) to EVM.
+> In the `./dddml` directory of the current repository, you can see most of the DDDML model files we designed for Infinite Seas.
+> We have included them as part of this example so that you can see the practical application of DDDML.
+> We use almost identical model files to drive the development of both the Sui version and the Aptos version of Infinite Seas.
+> Those familiar with the Move ecosystem should know that although both Sui and Aptos use the Move language, they have significant differences in many details, especially in state storage mechanisms.
+> In the current Web3 development landscape, only a highly abstract and concise DSL like DDDML allows us to port a complex decentralized application so effortlessly.
 
 
 ## Motivation
