@@ -5,7 +5,7 @@ English | [中文版](./README_CN.md)
 This is a demonstration for developing dapps with MUD framework in a low-code way.
 
 
-The core of low-code is “model-driven.”
+The core of low-code is "model-driven."
 We will show how to use a DSL (Domain Specific Language) called DDDML to describe the application's domain model.
 The domain model is then converted into the MUD config (model) file and Solidity contracts to speed up the application development process.
 

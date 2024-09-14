@@ -6,6 +6,7 @@ import { console } from "forge-std/console.sol";
 import { StoreSwitch } from "@latticexyz/store/src/StoreSwitch.sol";
 
 import { IWorld } from "../src/codegen/world/IWorld.sol";
+import { Energy } from "../src/tokens/Energy.sol";
 
 contract PostDeploy is Script {
   function run(address worldAddress) external {
@@ -14,9 +15,18 @@ contract PostDeploy is Script {
 
     // Load the private key from the `PRIVATE_KEY` environment variable (in .env)
     uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+    address deployerAddress = vm.addr(deployerPrivateKey);
 
     // Start broadcasting transactions from the deployer account
     vm.startBroadcast(deployerPrivateKey);
+
+    console.log("Deploying contracts with the account:", deployerAddress);
+
+    uint256 balance = deployerAddress.balance;
+    console.log("Account balance:", balance);
+
+    Energy energyToken = new Energy(deployerAddress);
+    console.log("ENERGY Token address:", address(energyToken));
 
     // ------------------ EXAMPLES ------------------
 

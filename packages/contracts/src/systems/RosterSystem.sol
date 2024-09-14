@@ -50,11 +50,11 @@ contract RosterSystem is System {
       !(rosterData.status == uint8(0) && rosterData.speed == uint32(0) && rosterData.coordinatesUpdatedAt == uint64(0) && rosterData.sailDuration == uint64(0) && rosterData.setSailAt == uint64(0) && rosterData.shipBattleId == uint256(0) && rosterData.environmentOwned == false && rosterData.baseExperience == uint32(0) && rosterData.shipIds.length == 0),
       "Roster does not exist"
     );
-    RosterSetSail memory rosterSetSail = RosterSetSailLogic.verify(playerId, sequenceNumber, targetCoordinatesX, targetCoordinatesY, sailDuration, updatedCoordinatesX, updatedCoordinatesY, rosterData);
-    rosterSetSail.playerId = playerId;
-    rosterSetSail.sequenceNumber = sequenceNumber;
-    emit RosterSetSailEvent(rosterSetSail.playerId, rosterSetSail.sequenceNumber, rosterSetSail.targetCoordinatesX, rosterSetSail.targetCoordinatesY, rosterSetSail.sailDuration, rosterSetSail.setSailAt, rosterSetSail.updatedCoordinatesX, rosterSetSail.updatedCoordinatesY, rosterSetSail.energyCost);
-    RosterData memory updatedRosterData = RosterSetSailLogic.mutate(rosterSetSail, rosterData);
+    RosterSetSail memory rosterSetSail_e = RosterSetSailLogic.verify(playerId, sequenceNumber, targetCoordinatesX, targetCoordinatesY, sailDuration, updatedCoordinatesX, updatedCoordinatesY, rosterData);
+    rosterSetSail_e.playerId = playerId;
+    rosterSetSail_e.sequenceNumber = sequenceNumber;
+    emit RosterSetSailEvent(rosterSetSail_e.playerId, rosterSetSail_e.sequenceNumber, rosterSetSail_e.targetCoordinatesX, rosterSetSail_e.targetCoordinatesY, rosterSetSail_e.sailDuration, rosterSetSail_e.setSailAt, rosterSetSail_e.updatedCoordinatesX, rosterSetSail_e.updatedCoordinatesY, rosterSetSail_e.energyCost);
+    RosterData memory updatedRosterData = RosterSetSailLogic.mutate(rosterSetSail_e, rosterData);
     Roster.set(playerId, sequenceNumber, updatedRosterData);
   }
 

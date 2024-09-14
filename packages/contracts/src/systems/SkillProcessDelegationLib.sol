@@ -15,7 +15,7 @@ library SkillProcessDelegationLib {
     ResourceId skillProcessSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "SkillProcessSystem"
+      name: "SkillProcessSyst" // NOTE: Only the first 16 characters are used. Original: "SkillProcessSystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
@@ -34,7 +34,7 @@ library SkillProcessDelegationLib {
     ResourceId skillProcessSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "SkillProcessSystem"
+      name: "SkillProcessSyst" // NOTE: Only the first 16 characters are used. Original: "SkillProcessSystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
@@ -53,7 +53,7 @@ library SkillProcessDelegationLib {
     ResourceId skillProcessSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "SkillProcessSystem"
+      name: "SkillProcessSyst" // NOTE: Only the first 16 characters are used. Original: "SkillProcessSystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
@@ -72,7 +72,7 @@ library SkillProcessDelegationLib {
     ResourceId skillProcessSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "SkillProcessSystem"
+      name: "SkillProcessSyst" // NOTE: Only the first 16 characters are used. Original: "SkillProcessSystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
@@ -91,7 +91,7 @@ library SkillProcessDelegationLib {
     ResourceId skillProcessSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "SkillProcessSystem"
+      name: "SkillProcessSyst" // NOTE: Only the first 16 characters are used. Original: "SkillProcessSystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
@@ -110,7 +110,7 @@ library SkillProcessDelegationLib {
     ResourceId skillProcessSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "SkillProcessSystem"
+      name: "SkillProcessSyst" // NOTE: Only the first 16 characters are used. Original: "SkillProcessSystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
@@ -129,7 +129,7 @@ library SkillProcessDelegationLib {
     ResourceId skillProcessSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "SkillProcessSystem"
+      name: "SkillProcessSyst" // NOTE: Only the first 16 characters are used. Original: "SkillProcessSystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
