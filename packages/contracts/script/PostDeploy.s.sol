@@ -11,6 +11,8 @@ import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 import { IWorld } from "../src/codegen/world/IWorld.sol";
 import { Energy } from "../src/tokens/Energy.sol";
 
+import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
 contract PostDeploy is Script {
   function run(address worldAddress) external {
     // Specify a store so that you can use tables directly in PostDeploy
@@ -41,7 +43,9 @@ contract PostDeploy is Script {
     console.log("SkillProcessServiceSystem address:", systemAddress);
     console.log("SkillProcessServiceSystem publicAccess:", publicAccess);
 
-    // ------------------ EXAMPLES ------------------
+    IERC20 energyIErc20 = IERC20(address(energyToken));
+    energyIErc20.approve(systemAddress, 10000 * 10 ** 18);
+    console.log("Approved SkillProcessServiceSystem to spend ENERGY tokens");
 
     // Call increment on the world via the registered function selector
     uint32 newValue = IWorld(worldAddress).app__increment();
