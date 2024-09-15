@@ -9,19 +9,24 @@ import { ItemCreationCreated, ItemCreationUpdated } from "./ItemCreationEvents.s
 import { ItemCreationCreateLogic } from "./ItemCreationCreateLogic.sol";
 import { ItemCreationUpdateLogic } from "./ItemCreationUpdateLogic.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
-import { AccessControl } from "@latticexyz/world/src/AccessControl.sol";
+import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
+import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
 
 contract ItemCreationSystem is System {
+  using WorldResourceIdInstance for ResourceId;
+
   event ItemCreationCreatedEvent(uint8 indexed skillType, uint32 indexed itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32 resourceCost);
 
   event ItemCreationUpdatedEvent(uint8 indexed skillType, uint32 indexed itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32 resourceCost);
 
-  function _requireOwner() internal view {
-    AccessControl.requireOwner(SystemRegistry.get(address(this)), _msgSender());
+  function _requireNamespaceOwner() internal view {
+    ResourceId _thisSystemId = SystemRegistry.get(address(this));
+    address _thisNamespaceOwner = NamespaceOwner.get(_thisSystemId.getNamespaceId());
+    require(_thisNamespaceOwner == _msgSender(), "Require namespace owner");
   }
 
   function itemCreationCreate(uint8 skillType, uint32 itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32 resourceCost) public {
-    _requireOwner();
+    _requireNamespaceOwner();
     ItemCreationData memory itemCreationData = ItemCreation.get(skillType, itemId);
     require(
       itemCreationData.requirementsLevel == uint16(0) && itemCreationData.baseQuantity == uint32(0) && itemCreationData.baseExperience == uint32(0) && itemCreationData.baseCreationTime == uint64(0) && itemCreationData.energyCost == uint64(0) && itemCreationData.successRate == uint16(0) && itemCreationData.resourceCost == uint32(0),
@@ -36,7 +41,7 @@ contract ItemCreationSystem is System {
   }
 
   function itemCreationUpdate(uint8 skillType, uint32 itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32 resourceCost) public {
-    _requireOwner();
+    _requireNamespaceOwner();
     ItemCreationData memory itemCreationData = ItemCreation.get(skillType, itemId);
     require(
       !(itemCreationData.requirementsLevel == uint16(0) && itemCreationData.baseQuantity == uint32(0) && itemCreationData.baseExperience == uint32(0) && itemCreationData.baseCreationTime == uint64(0) && itemCreationData.energyCost == uint64(0) && itemCreationData.successRate == uint16(0) && itemCreationData.resourceCost == uint32(0)),

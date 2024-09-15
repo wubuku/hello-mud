@@ -9,19 +9,24 @@ import { ItemCreated, ItemUpdated } from "./ItemEvents.sol";
 import { ItemCreateLogic } from "./ItemCreateLogic.sol";
 import { ItemUpdateLogic } from "./ItemUpdateLogic.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
-import { AccessControl } from "@latticexyz/world/src/AccessControl.sol";
+import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
+import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
 
 contract ItemSystem is System {
+  using WorldResourceIdInstance for ResourceId;
+
   event ItemCreatedEvent(uint32 indexed itemId, bool requiredForCompletion, uint32 sellsFor, string name);
 
   event ItemUpdatedEvent(uint32 indexed itemId, bool requiredForCompletion, uint32 sellsFor, string name);
 
-  function _requireOwner() internal view {
-    AccessControl.requireOwner(SystemRegistry.get(address(this)), _msgSender());
+  function _requireNamespaceOwner() internal view {
+    ResourceId _thisSystemId = SystemRegistry.get(address(this));
+    address _thisNamespaceOwner = NamespaceOwner.get(_thisSystemId.getNamespaceId());
+    require(_thisNamespaceOwner == _msgSender(), "Require namespace owner");
   }
 
   function itemCreate(uint32 itemId, bool requiredForCompletion, uint32 sellsFor, string memory name) public {
-    _requireOwner();
+    _requireNamespaceOwner();
     ItemData memory itemData = Item.get(itemId);
     require(
       itemData.requiredForCompletion == false && itemData.sellsFor == uint32(0) && bytes(itemData.name).length == 0,
@@ -35,7 +40,7 @@ contract ItemSystem is System {
   }
 
   function itemUpdate(uint32 itemId, bool requiredForCompletion, uint32 sellsFor, string memory name) public {
-    _requireOwner();
+    _requireNamespaceOwner();
     ItemData memory itemData = Item.get(itemId);
     require(
       !(itemData.requiredForCompletion == false && itemData.sellsFor == uint32(0) && bytes(itemData.name).length == 0),

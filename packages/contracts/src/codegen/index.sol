@@ -34,3 +34,4 @@ import { MapLocation, MapLocationData } from "./tables/MapLocation.sol";
 import { ExperienceTable } from "./tables/ExperienceTable.sol";
 import { XpTableLevelCount } from "./tables/XpTableLevelCount.sol";
 import { XpTableLevel, XpTableLevelData } from "./tables/XpTableLevel.sol";
+import { EnergyToken } from "./tables/EnergyToken.sol";

@@ -11,9 +11,12 @@ import { PlayerClaimIslandLogic } from "./PlayerClaimIslandLogic.sol";
 import { PlayerAirdropLogic } from "./PlayerAirdropLogic.sol";
 import { PlayerGatherIslandResourcesLogic } from "./PlayerGatherIslandResourcesLogic.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
-import { AccessControl } from "@latticexyz/world/src/AccessControl.sol";
+import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
+import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
 
 contract PlayerSystem is System {
+  using WorldResourceIdInstance for ResourceId;
+
   event PlayerCreatedEvent(uint256 indexed id, string name, address owner);
 
   event IslandClaimedEvent(uint256 indexed id, int32 coordinatesX, int32 coordinatesY, uint64 claimedAt);
@@ -22,8 +25,10 @@ contract PlayerSystem is System {
 
   event PlayerIslandResourcesGatheredEvent(uint256 indexed id);
 
-  function _requireOwner() internal view {
-    AccessControl.requireOwner(SystemRegistry.get(address(this)), _msgSender());
+  function _requireNamespaceOwner() internal view {
+    ResourceId _thisSystemId = SystemRegistry.get(address(this));
+    address _thisNamespaceOwner = NamespaceOwner.get(_thisSystemId.getNamespaceId());
+    require(_thisNamespaceOwner == _msgSender(), "Require namespace owner");
   }
 
   function playerCreate(string memory name) public {
@@ -55,7 +60,7 @@ contract PlayerSystem is System {
   }
 
   function playerAirdrop(uint256 id, uint32 itemId, uint32 quantity) public {
-    _requireOwner();
+    _requireNamespaceOwner();
     PlayerData memory playerData = Player.get(id);
     require(
       !(playerData.owner == address(0) && playerData.level == uint16(0) && playerData.experience == uint32(0) && playerData.claimedIslandX == int32(0) && playerData.claimedIslandY == int32(0) && bytes(playerData.name).length == 0),

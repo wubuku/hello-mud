@@ -1,0 +1,14 @@
+singletonObjects:
+  EnergyToken:
+    metadata:
+      Preprocessors: [ "CRUD_IT" ]
+      #CRUD_IT_NO_UPDATE: true
+      CRUD_IT_NO_DELETE: true
+    properties:
+      TokenAddress:
+        type: address
+    methods:
+      Create:
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
+      Update:
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"

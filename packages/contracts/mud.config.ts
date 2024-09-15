@@ -294,6 +294,12 @@ export default defineWorld({
       },
       key: ["index"],
     },
+    EnergyToken: {
+      schema: {
+        tokenAddress: "address",
+      },
+      key: [],
+    },
   },
   modules: [
     {

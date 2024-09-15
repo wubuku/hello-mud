@@ -11,9 +11,12 @@ import { ExperienceTableUpdateLevelLogic } from "./ExperienceTableUpdateLevelLog
 import { ExperienceTableCreateLogic } from "./ExperienceTableCreateLogic.sol";
 import { ExperienceTableUpdateLogic } from "./ExperienceTableUpdateLogic.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
-import { AccessControl } from "@latticexyz/world/src/AccessControl.sol";
+import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
+import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
 
 contract ExperienceTableSystem is System {
+  using WorldResourceIdInstance for ResourceId;
+
   event ExperienceLevelAddedEvent(uint16 level, uint32 experience, uint32 difference);
 
   event ExperienceLevelUpdatedEvent(uint16 level, uint32 experience, uint32 difference);
@@ -22,12 +25,14 @@ contract ExperienceTableSystem is System {
 
   event ExperienceTableUpdatedEvent(bool reservedBool1);
 
-  function _requireOwner() internal view {
-    AccessControl.requireOwner(SystemRegistry.get(address(this)), _msgSender());
+  function _requireNamespaceOwner() internal view {
+    ResourceId _thisSystemId = SystemRegistry.get(address(this));
+    address _thisNamespaceOwner = NamespaceOwner.get(_thisSystemId.getNamespaceId());
+    require(_thisNamespaceOwner == _msgSender(), "Require namespace owner");
   }
 
   function experienceTableAddLevel(uint16 level, uint32 experience, uint32 difference) public {
-    _requireOwner();
+    _requireNamespaceOwner();
     bool reservedBool1 = ExperienceTable.get();
     require(
       !(reservedBool1 == false),
@@ -40,7 +45,7 @@ contract ExperienceTableSystem is System {
   }
 
   function experienceTableUpdateLevel(uint16 level, uint32 experience, uint32 difference) public {
-    _requireOwner();
+    _requireNamespaceOwner();
     bool reservedBool1 = ExperienceTable.get();
     require(
       !(reservedBool1 == false),
@@ -53,27 +58,27 @@ contract ExperienceTableSystem is System {
   }
 
   function experienceTableCreate(bool reservedBool1) public {
-    bool s_reservedBool1 = ExperienceTable.get();
+    bool __reservedBool1 = ExperienceTable.get();
     require(
-      s_reservedBool1 == false,
+      __reservedBool1 == false,
       "ExperienceTable already exists"
     );
     ExperienceTableCreated memory experienceTableCreated = ExperienceTableCreateLogic.verify(reservedBool1);
     emit ExperienceTableCreatedEvent(experienceTableCreated.reservedBool1);
-    bool newS_reservedBool1 = ExperienceTableCreateLogic.mutate(experienceTableCreated);
-    ExperienceTable.set(newS_reservedBool1);
+    bool new__ReservedBool1 = ExperienceTableCreateLogic.mutate(experienceTableCreated);
+    ExperienceTable.set(new__ReservedBool1);
   }
 
   function experienceTableUpdate(bool reservedBool1) public {
-    bool s_reservedBool1 = ExperienceTable.get();
+    bool __reservedBool1 = ExperienceTable.get();
     require(
-      !(s_reservedBool1 == false),
+      !(__reservedBool1 == false),
       "ExperienceTable does not exist"
     );
-    ExperienceTableUpdated memory experienceTableUpdated = ExperienceTableUpdateLogic.verify(reservedBool1, s_reservedBool1);
+    ExperienceTableUpdated memory experienceTableUpdated = ExperienceTableUpdateLogic.verify(reservedBool1, __reservedBool1);
     emit ExperienceTableUpdatedEvent(experienceTableUpdated.reservedBool1);
-    bool updatedS_reservedBool1 = ExperienceTableUpdateLogic.mutate(experienceTableUpdated, s_reservedBool1);
-    ExperienceTable.set(updatedS_reservedBool1);
+    bool updated__ReservedBool1 = ExperienceTableUpdateLogic.mutate(experienceTableUpdated, __reservedBool1);
+    ExperienceTable.set(updated__ReservedBool1);
   }
 
 }

@@ -6,6 +6,7 @@ pragma solidity >=0.8.24;
 import { IBaseWorld } from "@latticexyz/world/src/codegen/interfaces/IBaseWorld.sol";
 import { IArticleSystem } from "./IArticleSystem.sol";
 import { ICounterSystem } from "./ICounterSystem.sol";
+import { IEnergyTokenSystem } from "./IEnergyTokenSystem.sol";
 import { IExperienceTableSystem } from "./IExperienceTableSystem.sol";
 import { IIncrementSystem } from "./IIncrementSystem.sol";
 import { IItemCreationSystem } from "./IItemCreationSystem.sol";
@@ -33,6 +34,7 @@ interface IWorld is
   IBaseWorld,
   IArticleSystem,
   ICounterSystem,
+  IEnergyTokenSystem,
   IExperienceTableSystem,
   IIncrementSystem,
   IItemCreationSystem,

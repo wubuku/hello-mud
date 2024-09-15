@@ -8,16 +8,21 @@ import { RosterCreated, RosterShipAdded } from "./RosterEvents.sol";
 import { RosterCreateLogic } from "./RosterCreateLogic.sol";
 import { RosterAddShipLogic } from "./RosterAddShipLogic.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
-import { AccessControl } from "@latticexyz/world/src/AccessControl.sol";
+import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
+import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 
 library RosterAggregateLib {
+  using WorldResourceIdInstance for ResourceId;
+
   event RosterCreatedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber);
 
   event RosterShipAddedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256 shipId, uint64 position);
 
-  function _requireOwner() internal view {
-    AccessControl.requireOwner(SystemRegistry.get(address(this)), WorldContextConsumerLib._msgSender());
+  function _requireNamespaceOwner() internal view {
+    ResourceId _thisSystemId = SystemRegistry.get(address(this));
+    address _thisNamespaceOwner = NamespaceOwner.get(_thisSystemId.getNamespaceId());
+    require(_thisNamespaceOwner == WorldContextConsumerLib._msgSender(), "Require namespace owner");
   }
 
   function create(uint256 playerId, uint32 sequenceNumber) internal returns (uint256, uint32, RosterData memory) {

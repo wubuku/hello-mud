@@ -47,6 +47,8 @@ contract PostDeploy is Script {
     energyIErc20.approve(systemAddress, 10000 * 10 ** 18);
     console.log("Approved SkillProcessServiceSystem to spend ENERGY tokens");
 
+    IWorld(worldAddress).app__energyTokenCreate(address(energyToken));
+
     // Call increment on the world via the registered function selector
     uint32 newValue = IWorld(worldAddress).app__increment();
     console.log("Increment via IWorld:", newValue);

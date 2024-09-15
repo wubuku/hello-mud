@@ -9,19 +9,24 @@ import { ItemProductionCreated, ItemProductionUpdated } from "./ItemProductionEv
 import { ItemProductionCreateLogic } from "./ItemProductionCreateLogic.sol";
 import { ItemProductionUpdateLogic } from "./ItemProductionUpdateLogic.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
-import { AccessControl } from "@latticexyz/world/src/AccessControl.sol";
+import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
+import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
 
 contract ItemProductionSystem is System {
+  using WorldResourceIdInstance for ResourceId;
+
   event ItemProductionCreatedEvent(uint8 indexed skillType, uint32 indexed itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32[] materialItemIds, uint32[] materialItemQuantities);
 
   event ItemProductionUpdatedEvent(uint8 indexed skillType, uint32 indexed itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32[] materialItemIds, uint32[] materialItemQuantities);
 
-  function _requireOwner() internal view {
-    AccessControl.requireOwner(SystemRegistry.get(address(this)), _msgSender());
+  function _requireNamespaceOwner() internal view {
+    ResourceId _thisSystemId = SystemRegistry.get(address(this));
+    address _thisNamespaceOwner = NamespaceOwner.get(_thisSystemId.getNamespaceId());
+    require(_thisNamespaceOwner == _msgSender(), "Require namespace owner");
   }
 
   function itemProductionCreate(uint8 skillType, uint32 itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32[] memory materialItemIds, uint32[] memory materialItemQuantities) public {
-    _requireOwner();
+    _requireNamespaceOwner();
     ItemProductionData memory itemProductionData = ItemProduction.get(skillType, itemId);
     require(
       itemProductionData.requirementsLevel == uint16(0) && itemProductionData.baseQuantity == uint32(0) && itemProductionData.baseExperience == uint32(0) && itemProductionData.baseCreationTime == uint64(0) && itemProductionData.energyCost == uint64(0) && itemProductionData.successRate == uint16(0) && itemProductionData.materialItemIds.length == 0 && itemProductionData.materialItemQuantities.length == 0,
@@ -36,7 +41,7 @@ contract ItemProductionSystem is System {
   }
 
   function itemProductionUpdate(uint8 skillType, uint32 itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32[] memory materialItemIds, uint32[] memory materialItemQuantities) public {
-    _requireOwner();
+    _requireNamespaceOwner();
     ItemProductionData memory itemProductionData = ItemProduction.get(skillType, itemId);
     require(
       !(itemProductionData.requirementsLevel == uint16(0) && itemProductionData.baseQuantity == uint32(0) && itemProductionData.baseExperience == uint32(0) && itemProductionData.baseCreationTime == uint64(0) && itemProductionData.energyCost == uint64(0) && itemProductionData.successRate == uint16(0) && itemProductionData.materialItemIds.length == 0 && itemProductionData.materialItemQuantities.length == 0),
