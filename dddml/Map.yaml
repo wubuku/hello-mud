@@ -25,7 +25,7 @@ singletonObjects:
 
     methods:
       AddIsland:
-        #requiredPermission: "AdminCap"
+        requiredPermission: __NamespaceOwner__ #requiredPermission: "AdminCap"
         parameters:
           Coordinates:
             type: Coordinates

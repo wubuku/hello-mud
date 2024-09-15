@@ -8,11 +8,18 @@ import { Map, MapData } from "../codegen/index.sol";
 import { IslandAdded } from "./MapEvents.sol";
 import { MapAddIslandLogic } from "./MapAddIslandLogic.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
+import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
+import { AccessControl } from "@latticexyz/world/src/AccessControl.sol";
 
 contract MapSystem is System {
   event IslandAddedEvent(int32 coordinatesX, int32 coordinatesY);
 
+  function _requireOwner() internal view {
+    AccessControl.requireOwner(SystemRegistry.get(address(this)), _msgSender());
+  }
+
   function mapAddIsland(int32 coordinatesX, int32 coordinatesY, ItemIdQuantityPair[] memory resources) public {
+    _requireOwner();
     MapData memory mapData = Map.get();
     require(
       !(mapData.width == uint32(0) && mapData.height == uint32(0)),

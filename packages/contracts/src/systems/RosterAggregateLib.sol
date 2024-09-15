@@ -7,11 +7,18 @@ import { Roster, RosterData } from "../codegen/index.sol";
 import { RosterCreated, RosterShipAdded } from "./RosterEvents.sol";
 import { RosterCreateLogic } from "./RosterCreateLogic.sol";
 import { RosterAddShipLogic } from "./RosterAddShipLogic.sol";
+import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
+import { AccessControl } from "@latticexyz/world/src/AccessControl.sol";
+import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 
 library RosterAggregateLib {
   event RosterCreatedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber);
 
   event RosterShipAddedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256 shipId, uint64 position);
+
+  function _requireOwner() internal view {
+    AccessControl.requireOwner(SystemRegistry.get(address(this)), WorldContextConsumerLib._msgSender());
+  }
 
   function create(uint256 playerId, uint32 sequenceNumber) internal returns (uint256, uint32, RosterData memory) {
     RosterData memory rosterData = Roster.get(playerId, sequenceNumber);

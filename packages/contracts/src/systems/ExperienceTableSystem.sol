@@ -10,6 +10,8 @@ import { ExperienceTableAddLevelLogic } from "./ExperienceTableAddLevelLogic.sol
 import { ExperienceTableUpdateLevelLogic } from "./ExperienceTableUpdateLevelLogic.sol";
 import { ExperienceTableCreateLogic } from "./ExperienceTableCreateLogic.sol";
 import { ExperienceTableUpdateLogic } from "./ExperienceTableUpdateLogic.sol";
+import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
+import { AccessControl } from "@latticexyz/world/src/AccessControl.sol";
 
 contract ExperienceTableSystem is System {
   event ExperienceLevelAddedEvent(uint16 level, uint32 experience, uint32 difference);
@@ -20,7 +22,12 @@ contract ExperienceTableSystem is System {
 
   event ExperienceTableUpdatedEvent(bool reservedBool1);
 
+  function _requireOwner() internal view {
+    AccessControl.requireOwner(SystemRegistry.get(address(this)), _msgSender());
+  }
+
   function experienceTableAddLevel(uint16 level, uint32 experience, uint32 difference) public {
+    _requireOwner();
     bool reservedBool1 = ExperienceTable.get();
     require(
       !(reservedBool1 == false),
@@ -33,6 +40,7 @@ contract ExperienceTableSystem is System {
   }
 
   function experienceTableUpdateLevel(uint16 level, uint32 experience, uint32 difference) public {
+    _requireOwner();
     bool reservedBool1 = ExperienceTable.get();
     require(
       !(reservedBool1 == false),

@@ -44,7 +44,7 @@ aggregates:
 
       CreateEnvironmentRoster:
         isCreationCommand: true
-        #requiredPermission: "__Publisher__"
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
         #metadata:
         #  ParametersIncludedInMutationFunction: [ "Clock" ]
         parameters:
@@ -76,7 +76,7 @@ aggregates:
 
 
       SetSail:
-        #requiredPermission: Owner
+        #requiredPermission: Owner # _to_do_
         parameters:
           # Player:
           #   referenceType: Player

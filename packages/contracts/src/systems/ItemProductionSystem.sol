@@ -8,13 +8,20 @@ import { ItemProduction, ItemProductionData } from "../codegen/index.sol";
 import { ItemProductionCreated, ItemProductionUpdated } from "./ItemProductionEvents.sol";
 import { ItemProductionCreateLogic } from "./ItemProductionCreateLogic.sol";
 import { ItemProductionUpdateLogic } from "./ItemProductionUpdateLogic.sol";
+import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
+import { AccessControl } from "@latticexyz/world/src/AccessControl.sol";
 
 contract ItemProductionSystem is System {
   event ItemProductionCreatedEvent(uint8 indexed skillType, uint32 indexed itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32[] materialItemIds, uint32[] materialItemQuantities);
 
   event ItemProductionUpdatedEvent(uint8 indexed skillType, uint32 indexed itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32[] materialItemIds, uint32[] materialItemQuantities);
 
+  function _requireOwner() internal view {
+    AccessControl.requireOwner(SystemRegistry.get(address(this)), _msgSender());
+  }
+
   function itemProductionCreate(uint8 skillType, uint32 itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32[] memory materialItemIds, uint32[] memory materialItemQuantities) public {
+    _requireOwner();
     ItemProductionData memory itemProductionData = ItemProduction.get(skillType, itemId);
     require(
       itemProductionData.requirementsLevel == uint16(0) && itemProductionData.baseQuantity == uint32(0) && itemProductionData.baseExperience == uint32(0) && itemProductionData.baseCreationTime == uint64(0) && itemProductionData.energyCost == uint64(0) && itemProductionData.successRate == uint16(0) && itemProductionData.materialItemIds.length == 0 && itemProductionData.materialItemQuantities.length == 0,
@@ -29,6 +36,7 @@ contract ItemProductionSystem is System {
   }
 
   function itemProductionUpdate(uint8 skillType, uint32 itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32[] memory materialItemIds, uint32[] memory materialItemQuantities) public {
+    _requireOwner();
     ItemProductionData memory itemProductionData = ItemProduction.get(skillType, itemId);
     require(
       !(itemProductionData.requirementsLevel == uint16(0) && itemProductionData.baseQuantity == uint32(0) && itemProductionData.baseExperience == uint32(0) && itemProductionData.baseCreationTime == uint64(0) && itemProductionData.energyCost == uint64(0) && itemProductionData.successRate == uint16(0) && itemProductionData.materialItemIds.length == 0 && itemProductionData.materialItemQuantities.length == 0),

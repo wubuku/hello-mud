@@ -19,7 +19,7 @@ singletonObjects:
         # MUD table requires at least one field.
     methods:
       AddLevel:
-        requiredPermission: "__Publisher__"
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
         parameters:
           Level:
             type: u16
@@ -30,7 +30,7 @@ singletonObjects:
         event:
           name: ExperienceLevelAdded
       UpdateLevel:
-        requiredPermission: "__Publisher__"
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
         parameters:
           Level:
             type: u16

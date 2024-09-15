@@ -20,11 +20,11 @@ aggregates:
         length: 100
       #Type:
       #  type: ItemType
-    # methods:
-    #   Create:
-    #     requiredPermission: "__Publisher__"
-    #   Update:
-    #     requiredPermission: "__Publisher__"
+    methods:
+      Create:
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
+      Update:
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
 
   ItemCreation:
     metadata:
@@ -45,10 +45,10 @@ aggregates:
         sequenceNumber: 100
         # Ensure that dynamic fields come last by setting the seq-no.
     methods:
-      # Create:
-      #   requiredPermission: "__Publisher__"
-      # Update:
-      #   requiredPermission: "__Publisher__"
+      Create:
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
+      Update:
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
 
 
   ItemProduction:
@@ -76,11 +76,11 @@ aggregates:
         type: uint32[]
         sequenceNumber: 101
         
-    # methods:
-    #   Create:
-    #     requiredPermission: "__Publisher__"
-    #   Update:
-    #     requiredPermission: "__Publisher__"
+    methods:
+      Create:
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
+      Update:
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
 
 valueObjects:
   SkillTypeItemIdPair:

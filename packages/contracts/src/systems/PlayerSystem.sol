@@ -10,6 +10,8 @@ import { PlayerCreateLogic } from "./PlayerCreateLogic.sol";
 import { PlayerClaimIslandLogic } from "./PlayerClaimIslandLogic.sol";
 import { PlayerAirdropLogic } from "./PlayerAirdropLogic.sol";
 import { PlayerGatherIslandResourcesLogic } from "./PlayerGatherIslandResourcesLogic.sol";
+import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
+import { AccessControl } from "@latticexyz/world/src/AccessControl.sol";
 
 contract PlayerSystem is System {
   event PlayerCreatedEvent(uint256 indexed id, string name, address owner);
@@ -19,6 +21,10 @@ contract PlayerSystem is System {
   event PlayerAirdroppedEvent(uint256 indexed id, uint32 itemId, uint32 quantity);
 
   event PlayerIslandResourcesGatheredEvent(uint256 indexed id);
+
+  function _requireOwner() internal view {
+    AccessControl.requireOwner(SystemRegistry.get(address(this)), _msgSender());
+  }
 
   function playerCreate(string memory name) public {
     uint256 id = PlayerIdGenerator.get() + 1;
@@ -49,6 +55,7 @@ contract PlayerSystem is System {
   }
 
   function playerAirdrop(uint256 id, uint32 itemId, uint32 quantity) public {
+    _requireOwner();
     PlayerData memory playerData = Player.get(id);
     require(
       !(playerData.owner == address(0) && playerData.level == uint16(0) && playerData.experience == uint32(0) && playerData.claimedIslandX == int32(0) && playerData.claimedIslandY == int32(0) && bytes(playerData.name).length == 0),

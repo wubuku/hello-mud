@@ -41,7 +41,7 @@ aggregates:
 
 
       Airdrop:
-        #requiredPermission: "__Publisher__"
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
         #requiredPermission: AdminCap
         parameters:
           ItemId:

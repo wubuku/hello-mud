@@ -8,11 +8,18 @@ import { MapIslandClaimed, IslandResourcesGathered } from "./MapEvents.sol";
 import { MapClaimIslandLogic } from "./MapClaimIslandLogic.sol";
 import { MapGatherIslandResourcesLogic } from "./MapGatherIslandResourcesLogic.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
+import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
+import { AccessControl } from "@latticexyz/world/src/AccessControl.sol";
+import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 
 library MapAggregateLib {
   event MapIslandClaimedEvent(int32 coordinatesX, int32 coordinatesY, uint256 claimedBy, uint64 claimedAt);
 
   event IslandResourcesGatheredEvent(uint256 playerId, uint64 gatheredAt, int32 coordinatesX, int32 coordinatesY);
+
+  function _requireOwner() internal view {
+    AccessControl.requireOwner(SystemRegistry.get(address(this)), WorldContextConsumerLib._msgSender());
+  }
 
   function claimIsland(int32 coordinatesX, int32 coordinatesY, uint256 claimedBy, uint64 claimedAt) internal {
     MapData memory mapData = Map.get();
