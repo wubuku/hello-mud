@@ -38,7 +38,7 @@ contract AppNamespaceDelegationModule is Module {
     if (!success) revertWithBytes(returnData);
   }
 
-  function install(bytes memory) public pure override {
+  function install(bytes memory) public pure {
     revert Module_NonRootInstallNotSupported();
   }
 }
