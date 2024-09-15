@@ -31,8 +31,8 @@ contract PostDeploy is Script {
     console.log("Account balance:", balance);
 
     Energy energyToken = new Energy(deployerAddress);
-
-    console.log("ENERGY Token address:", address(energyToken));
+    address energyTokenAddress = address(energyToken);
+    console.log("ENERGY Token address:", energyTokenAddress);
 
     ResourceId skillProcessServiceSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
@@ -43,12 +43,14 @@ contract PostDeploy is Script {
     console.log("SkillProcessServiceSystem address:", systemAddress);
     console.log("SkillProcessServiceSystem publicAccess:", publicAccess);
 
-    IERC20 energyIErc20 = IERC20(address(energyToken));
+    IERC20 energyIErc20 = IERC20(energyTokenAddress);
     energyIErc20.approve(systemAddress, 10000 * 10 ** 18);
     console.log("Approved SkillProcessServiceSystem to spend ENERGY tokens");
 
-    IWorld(worldAddress).app__energyTokenCreate(address(energyToken));
+    IWorld(worldAddress).app__energyTokenCreate(energyTokenAddress);
+    console.log("Set ENERGY token address for the world");
 
+    // Tests...
     // Call increment on the world via the registered function selector
     uint32 newValue = IWorld(worldAddress).app__increment();
     console.log("Increment via IWorld:", newValue);
