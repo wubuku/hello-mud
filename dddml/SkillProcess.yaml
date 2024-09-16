@@ -5,7 +5,8 @@ aggregates:
       CRUD_IT_NO_UPDATE: true
       CRUD_IT_NO_DELETE: true
     friends:
-      - SkillProcessService
+      #- SkillProcessService
+      #- AggregatorService
     id:
       name: SkillProcessId
       type: SkillProcessId
@@ -67,6 +68,7 @@ aggregates:
 
       StartProduction:
         inheritsFrom: SkillProcessTemplate.StartProduction
+        isInternal: true
         parameters:
           BatchSize:
             type: u32
@@ -80,6 +82,7 @@ aggregates:
 
       StartShipProduction:
         inheritsFrom: SkillProcessTemplate.StartProduction
+        isInternal: true
         parameters:
           ProductionMaterials:
             itemType: ItemIdQuantityPair
@@ -100,6 +103,7 @@ aggregates:
 
       StartCreation:
         inheritsFrom: SkillProcessTemplate.StartCreation
+        isInternal: true
         parameters:
           BatchSize:
             type: u32

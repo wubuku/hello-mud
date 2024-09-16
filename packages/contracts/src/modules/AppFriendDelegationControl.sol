@@ -18,18 +18,6 @@ contract AppFriendDelegationControl is DelegationControl {
       // NOTE: Only 16 bytes are used: "ShipBattleServic"
     );
 
-  ResourceId constant SKILL_PROCESS_SYSTEM =
-    ResourceId.wrap(
-      bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16(bytes("SkillProcessSystem"))))
-      // NOTE: Only 16 bytes are used: "SkillProcessSyst"
-    );
-
-  ResourceId constant SKILL_PROCESS_SERVICE_SYSTEM =
-    ResourceId.wrap(
-      bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16(bytes("SkillProcessServiceSystem"))))
-      // NOTE: Only 16 bytes are used: "SkillProcessServ"
-    );
-
   ResourceId constant MAP_SYSTEM =
     ResourceId.wrap(bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16("MapSystem"))));
 
@@ -42,10 +30,6 @@ contract AppFriendDelegationControl is DelegationControl {
       ResourceId.unwrap(systemId) == ResourceId.unwrap(SHIP_BATTLE_SYSTEM) &&
       (
         ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(SHIP_BATTLE_SERVICE_SYSTEM)
-      ) ||
-      ResourceId.unwrap(systemId) == ResourceId.unwrap(SKILL_PROCESS_SYSTEM) &&
-      (
-        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(SKILL_PROCESS_SERVICE_SYSTEM)
       ) ||
       ResourceId.unwrap(systemId) == ResourceId.unwrap(MAP_SYSTEM) &&
       (

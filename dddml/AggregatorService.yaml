@@ -1,5 +1,8 @@
 services:
-  SkillProcessService:
+  AggregatorService:
+    # This service is an aggregator of SkillProcessService and RosterService of Sui version.
+    metadata:
+      GlobalFunctionNamePrefix: "UniApi" # Unified API
     methods:
       StartCreation:
         parameters:
@@ -46,3 +49,25 @@ services:
           #  referenceType: Clock
           #Energy:
           #  type: "Coin<ENERGY>"
+
+  # RosterService:
+  #   methods:
+      RosterSetSail: # SetSail
+        parameters:
+          Roster:
+            type: RosterId #referenceType: Roster
+            #isMutableReference: true
+          PlayerId:
+            type: u256 #referenceType: Player
+          TargetCoordinates:
+            type: Coordinates
+          #Clock:
+          #  referenceType: Clock
+          #Energy:
+          #  type: "Coin<ENERGY>"
+          EnergyAmount:
+            type: u64
+          SailDuration:
+            type: u64
+          UpdatedCoordinates:
+            type: Coordinates

@@ -37,15 +37,15 @@ contract PostDeploy is Script {
     ResourceId skillProcessServiceSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "SkillProcessServ" // NOTE: Only the first 16 characters are used. Original: "SkillProcessServiceSystem"
+      name: "AggregatorServic" // NOTE: Only the first 16 characters are used. Original: "AggregatorServiceSystem"
     });
     (address systemAddress, bool publicAccess) = Systems.get(skillProcessServiceSystemId);
-    console.log("SkillProcessServiceSystem address:", systemAddress);
-    console.log("SkillProcessServiceSystem publicAccess:", publicAccess);
+    console.log("AggregatorServiceSystem address:", systemAddress);
+    console.log("AggregatorServiceSystem publicAccess:", publicAccess);
 
     IERC20 energyIErc20 = IERC20(energyTokenAddress);
     energyIErc20.approve(systemAddress, 10000 * 10 ** 18);
-    console.log("Approved SkillProcessServiceSystem to spend ENERGY tokens");
+    console.log("Approved AggregatorServiceSystem to spend ENERGY tokens");
 
     IWorld(worldAddress).app__energyTokenCreate(energyTokenAddress);
     console.log("Set ENERGY token address for the world");

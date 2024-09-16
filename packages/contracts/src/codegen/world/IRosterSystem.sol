@@ -21,16 +21,6 @@ interface IRosterSystem {
     uint32 baseExperience
   ) external;
 
-  function app__rosterSetSail(
-    uint256 playerId,
-    uint32 sequenceNumber,
-    int32 targetCoordinatesX,
-    int32 targetCoordinatesY,
-    uint64 sailDuration,
-    int32 updatedCoordinatesX,
-    int32 updatedCoordinatesY
-  ) external;
-
   function app__rosterAdjustShipsPosition(
     uint256 playerId,
     uint32 sequenceNumber,

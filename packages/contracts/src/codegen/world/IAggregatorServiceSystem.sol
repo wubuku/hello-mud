@@ -6,12 +6,12 @@ pragma solidity >=0.8.24;
 import { ItemIdQuantityPair } from "../../systems/ItemIdQuantityPair.sol";
 
 /**
- * @title ISkillProcessServiceSystem
+ * @title IAggregatorServiceSystem
  * @author MUD (https://mud.dev) by Lattice (https://lattice.xyz)
  * @dev This interface is automatically generated from the corresponding system contract. Do not edit manually.
  */
-interface ISkillProcessServiceSystem {
-  function app__skillProcessServiceStartCreation(
+interface IAggregatorServiceSystem {
+  function app__uniApiStartCreation(
     uint8 skillProcessIdSkillType,
     uint256 skillProcessIdPlayerId,
     uint8 skillProcessIdSequenceNumber,
@@ -21,7 +21,7 @@ interface ISkillProcessServiceSystem {
     uint32 itemCreationIdItemId
   ) external;
 
-  function app__skillProcessServiceStartProduction(
+  function app__uniApiStartProduction(
     uint8 skillProcessIdSkillType,
     uint256 skillProcessIdPlayerId,
     uint8 skillProcessIdSequenceNumber,
@@ -31,7 +31,7 @@ interface ISkillProcessServiceSystem {
     uint32 itemProductionIdItemId
   ) external;
 
-  function app__skillProcessServiceStartShipProduction(
+  function app__uniApiStartShipProduction(
     uint8 skillProcessIdSkillType,
     uint256 skillProcessIdPlayerId,
     uint8 skillProcessIdSequenceNumber,
@@ -39,5 +39,17 @@ interface ISkillProcessServiceSystem {
     uint256 playerId,
     uint8 itemProductionIdSkillType,
     uint32 itemProductionIdItemId
+  ) external;
+
+  function app__uniApiRosterSetSail(
+    uint256 rosterPlayerId,
+    uint32 rosterSequenceNumber,
+    uint256 playerId,
+    int32 targetCoordinatesX,
+    int32 targetCoordinatesY,
+    uint64 energyAmount,
+    uint64 sailDuration,
+    int32 updatedCoordinatesX,
+    int32 updatedCoordinatesY
   ) external;
 }

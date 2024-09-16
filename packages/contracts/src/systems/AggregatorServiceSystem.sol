@@ -6,10 +6,10 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { EnergyToken } from "../codegen/index.sol";
 import { SafeERC20, IERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-contract SkillProcessServiceSystem is System {
+contract AggregatorServiceSystem is System {
   using SafeERC20 for IERC20;
 
-  function skillProcessServiceStartCreation(
+  function uniApiStartCreation(
     uint8 skillProcessIdSkillType,
     uint256 skillProcessIdPlayerId,
     uint8 skillProcessIdSequenceNumber,
@@ -30,7 +30,7 @@ contract SkillProcessServiceSystem is System {
     // TODO ...
   }
 
-  function skillProcessServiceStartProduction(
+  function uniApiStartProduction(
     uint8 skillProcessIdSkillType,
     uint256 skillProcessIdPlayerId,
     uint8 skillProcessIdSequenceNumber,
@@ -42,7 +42,7 @@ contract SkillProcessServiceSystem is System {
     // TODO ...
   }
 
-  function skillProcessServiceStartShipProduction(
+  function uniApiStartShipProduction(
     uint8 skillProcessIdSkillType,
     uint256 skillProcessIdPlayerId,
     uint8 skillProcessIdSequenceNumber,
@@ -50,6 +50,20 @@ contract SkillProcessServiceSystem is System {
     uint256 playerId,
     uint8 itemProductionIdSkillType,
     uint32 itemProductionIdItemId
+  ) public {
+    // TODO ...
+  }
+
+  function uniApiRosterSetSail(
+    uint256 rosterPlayerId,
+    uint32 rosterSequenceNumber,
+    uint256 playerId,
+    int32 targetCoordinatesX,
+    int32 targetCoordinatesY,
+    uint64 energyAmount,
+    uint64 sailDuration,
+    int32 updatedCoordinatesX,
+    int32 updatedCoordinatesY
   ) public {
     // TODO ...
   }
