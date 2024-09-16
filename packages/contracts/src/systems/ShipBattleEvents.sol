@@ -10,10 +10,10 @@ struct ShipBattleInitiated {
   uint32 initiatorRosterSequenceNumber;
   uint256 responderRosterPlayerId;
   uint32 responderRosterSequenceNumber;
-  int32 initiatorCoordinatesX;
-  int32 initiatorCoordinatesY;
-  int32 responderCoordinatesX;
-  int32 responderCoordinatesY;
+  uint32 initiatorCoordinatesX;
+  uint32 initiatorCoordinatesY;
+  uint32 responderCoordinatesX;
+  uint32 responderCoordinatesY;
   uint64 startedAt;
   uint8 firstRoundMover;
   uint256 firstRoundAttackerShip;

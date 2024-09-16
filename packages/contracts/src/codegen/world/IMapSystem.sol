@@ -11,5 +11,5 @@ import { ItemIdQuantityPair } from "../../systems/ItemIdQuantityPair.sol";
  * @dev This interface is automatically generated from the corresponding system contract. Do not edit manually.
  */
 interface IMapSystem {
-  function app__mapAddIsland(int32 coordinatesX, int32 coordinatesY, ItemIdQuantityPair[] memory resources) external;
+  function app__mapAddIsland(uint32 coordinatesX, uint32 coordinatesY, ItemIdQuantityPair[] memory resources) external;
 }

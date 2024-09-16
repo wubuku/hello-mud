@@ -11,13 +11,13 @@ import { ShipBattleMakeMoveLogic } from "./ShipBattleMakeMoveLogic.sol";
 import { ShipBattleTakeLootLogic } from "./ShipBattleTakeLootLogic.sol";
 
 contract ShipBattleSystem is System {
-  event ShipBattleInitiatedEvent(uint256 indexed id, uint256 playerId, uint256 initiatorRosterPlayerId, uint32 initiatorRosterSequenceNumber, uint256 responderRosterPlayerId, uint32 responderRosterSequenceNumber, int32 initiatorCoordinatesX, int32 initiatorCoordinatesY, int32 responderCoordinatesX, int32 responderCoordinatesY, uint64 startedAt, uint8 firstRoundMover, uint256 firstRoundAttackerShip, uint256 firstRoundDefenderShip);
+  event ShipBattleInitiatedEvent(uint256 indexed id, uint256 playerId, uint256 initiatorRosterPlayerId, uint32 initiatorRosterSequenceNumber, uint256 responderRosterPlayerId, uint32 responderRosterSequenceNumber, uint32 initiatorCoordinatesX, uint32 initiatorCoordinatesY, uint32 responderCoordinatesX, uint32 responderCoordinatesY, uint64 startedAt, uint8 firstRoundMover, uint256 firstRoundAttackerShip, uint256 firstRoundDefenderShip);
 
   event ShipBattleMoveMadeEvent(uint256 indexed id, uint8 attackerCommand, uint8 defenderCommand, uint32 roundNumber, uint32 defenderDamageTaken, uint32 attackerDamageTaken, bool isBattleEnded, uint8 winner, uint64 nextRoundStartedAt, uint8 nextRoundMover, uint256 nextRoundAttackerShip, uint256 nextRoundDefenderShip);
 
   event ShipBattleLootTakenEvent(uint256 indexed id, uint8 choice, uint64 lootedAt, uint32 increasedExperience, uint16 newLevel, uint32 loserIncreasedExperience, uint16 loserNewLevel);
 
-  function shipBattleInitiateBattle(uint256 playerId, uint256 initiatorRosterPlayerId, uint32 initiatorRosterSequenceNumber, uint256 responderRosterPlayerId, uint32 responderRosterSequenceNumber, int32 initiatorCoordinatesX, int32 initiatorCoordinatesY, int32 responderCoordinatesX, int32 responderCoordinatesY) public returns (uint256) {
+  function shipBattleInitiateBattle(uint256 playerId, uint256 initiatorRosterPlayerId, uint32 initiatorRosterSequenceNumber, uint256 responderRosterPlayerId, uint32 responderRosterSequenceNumber, uint32 initiatorCoordinatesX, uint32 initiatorCoordinatesY, uint32 responderCoordinatesX, uint32 responderCoordinatesY) public returns (uint256) {
     uint256 id = ShipBattleIdGenerator.get() + 1;
     ShipBattleIdGenerator.set(id);
     ShipBattleData memory shipBattleData = ShipBattle.get(id);

@@ -7,8 +7,8 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 library MapAddIslandLogic {
   function verify(
-    int32 coordinatesX,
-    int32 coordinatesY,
+    uint32 coordinatesX,
+    uint32 coordinatesY,
     ItemIdQuantityPair[] memory resources,
     MapData memory mapData
   ) internal pure returns (IslandAdded memory) {

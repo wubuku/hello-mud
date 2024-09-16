@@ -10,7 +10,7 @@ import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol"
 
 library ShipBattleDelegationLib {
 
-  function initiateBattle(uint256 playerId, uint256 initiatorRosterPlayerId, uint32 initiatorRosterSequenceNumber, uint256 responderRosterPlayerId, uint32 responderRosterSequenceNumber, int32 initiatorCoordinatesX, int32 initiatorCoordinatesY, int32 responderCoordinatesX, int32 responderCoordinatesY) internal returns (uint256) {
+  function initiateBattle(uint256 playerId, uint256 initiatorRosterPlayerId, uint32 initiatorRosterSequenceNumber, uint256 responderRosterPlayerId, uint32 responderRosterSequenceNumber, uint32 initiatorCoordinatesX, uint32 initiatorCoordinatesY, uint32 responderCoordinatesX, uint32 responderCoordinatesY) internal returns (uint256) {
     ResourceId shipBattleSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -22,7 +22,7 @@ library ShipBattleDelegationLib {
       WorldContextConsumerLib._msgSender(),
       shipBattleSystemId,
       abi.encodeWithSignature(
-        "shipBattleInitiateBattle(uint256,uint256,uint32,uint256,uint32,int32,int32,int32,int32)",
+        "shipBattleInitiateBattle(uint256,uint256,uint32,uint256,uint32,uint32,uint32,uint32,uint32)",
         playerId, initiatorRosterPlayerId, initiatorRosterSequenceNumber, responderRosterPlayerId, responderRosterSequenceNumber, initiatorCoordinatesX, initiatorCoordinatesY, responderCoordinatesX, responderCoordinatesY
       )
     );

@@ -14,8 +14,8 @@ export default defineWorld({
     },
     Terrain: {
       schema: {
-        x: "int32",
-        y: "int32",
+        x: "uint32",
+        y: "uint32",
         terrainType: "string",
         foo: "uint8[]",
         bar: "bytes",
@@ -79,8 +79,8 @@ export default defineWorld({
         owner: "address",
         level: "uint16",
         experience: "uint32",
-        claimedIslandX: "int32",
-        claimedIslandY: "int32",
+        claimedIslandX: "uint32",
+        claimedIslandY: "uint32",
         name: "string",
       },
       key: ["id"],
@@ -266,8 +266,8 @@ export default defineWorld({
     },
     MapLocation: {
       schema: {
-        x: "int32",
-        y: "int32",
+        x: "uint32",
+        y: "uint32",
         type_: "uint32",
         occupiedBy: "address",
       },

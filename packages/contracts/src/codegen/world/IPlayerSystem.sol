@@ -11,7 +11,7 @@ pragma solidity >=0.8.24;
 interface IPlayerSystem {
   function app__playerCreate(string memory name) external;
 
-  function app__playerClaimIsland(uint256 id, int32 coordinatesX, int32 coordinatesY) external;
+  function app__playerClaimIsland(uint256 id, uint32 coordinatesX, uint32 coordinatesY) external;
 
   function app__playerAirdrop(uint256 id, uint32 itemId, uint32 quantity) external;
 

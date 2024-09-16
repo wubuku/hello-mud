@@ -28,8 +28,8 @@ library MapLocation {
   FieldLayout constant _fieldLayout =
     FieldLayout.wrap(0x0018020004140000000000000000000000000000000000000000000000000000);
 
-  // Hex-encoded key schema of (int32, int32)
-  Schema constant _keySchema = Schema.wrap(0x0008020023230000000000000000000000000000000000000000000000000000);
+  // Hex-encoded key schema of (uint32, uint32)
+  Schema constant _keySchema = Schema.wrap(0x0008020003030000000000000000000000000000000000000000000000000000);
   // Hex-encoded value schema of (uint32, address)
   Schema constant _valueSchema = Schema.wrap(0x0018020003610000000000000000000000000000000000000000000000000000);
 
@@ -70,10 +70,10 @@ library MapLocation {
   /**
    * @notice Get type_.
    */
-  function getType_(int32 x, int32 y) internal view returns (uint32 type_) {
+  function getType_(uint32 x, uint32 y) internal view returns (uint32 type_) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
     return (uint32(bytes4(_blob)));
@@ -82,10 +82,10 @@ library MapLocation {
   /**
    * @notice Get type_.
    */
-  function _getType_(int32 x, int32 y) internal view returns (uint32 type_) {
+  function _getType_(uint32 x, uint32 y) internal view returns (uint32 type_) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
     return (uint32(bytes4(_blob)));
@@ -94,10 +94,10 @@ library MapLocation {
   /**
    * @notice Set type_.
    */
-  function setType_(int32 x, int32 y, uint32 type_) internal {
+  function setType_(uint32 x, uint32 y, uint32 type_) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((type_)), _fieldLayout);
   }
@@ -105,10 +105,10 @@ library MapLocation {
   /**
    * @notice Set type_.
    */
-  function _setType_(int32 x, int32 y, uint32 type_) internal {
+  function _setType_(uint32 x, uint32 y, uint32 type_) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((type_)), _fieldLayout);
   }
@@ -116,10 +116,10 @@ library MapLocation {
   /**
    * @notice Get occupiedBy.
    */
-  function getOccupiedBy(int32 x, int32 y) internal view returns (address occupiedBy) {
+  function getOccupiedBy(uint32 x, uint32 y) internal view returns (address occupiedBy) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
     return (address(bytes20(_blob)));
@@ -128,10 +128,10 @@ library MapLocation {
   /**
    * @notice Get occupiedBy.
    */
-  function _getOccupiedBy(int32 x, int32 y) internal view returns (address occupiedBy) {
+  function _getOccupiedBy(uint32 x, uint32 y) internal view returns (address occupiedBy) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
     return (address(bytes20(_blob)));
@@ -140,10 +140,10 @@ library MapLocation {
   /**
    * @notice Set occupiedBy.
    */
-  function setOccupiedBy(int32 x, int32 y, address occupiedBy) internal {
+  function setOccupiedBy(uint32 x, uint32 y, address occupiedBy) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreSwitch.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((occupiedBy)), _fieldLayout);
   }
@@ -151,10 +151,10 @@ library MapLocation {
   /**
    * @notice Set occupiedBy.
    */
-  function _setOccupiedBy(int32 x, int32 y, address occupiedBy) internal {
+  function _setOccupiedBy(uint32 x, uint32 y, address occupiedBy) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreCore.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((occupiedBy)), _fieldLayout);
   }
@@ -162,10 +162,10 @@ library MapLocation {
   /**
    * @notice Get the full data.
    */
-  function get(int32 x, int32 y) internal view returns (MapLocationData memory _table) {
+  function get(uint32 x, uint32 y) internal view returns (MapLocationData memory _table) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     (bytes memory _staticData, EncodedLengths _encodedLengths, bytes memory _dynamicData) = StoreSwitch.getRecord(
       _tableId,
@@ -178,10 +178,10 @@ library MapLocation {
   /**
    * @notice Get the full data.
    */
-  function _get(int32 x, int32 y) internal view returns (MapLocationData memory _table) {
+  function _get(uint32 x, uint32 y) internal view returns (MapLocationData memory _table) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     (bytes memory _staticData, EncodedLengths _encodedLengths, bytes memory _dynamicData) = StoreCore.getRecord(
       _tableId,
@@ -194,15 +194,15 @@ library MapLocation {
   /**
    * @notice Set the full data using individual values.
    */
-  function set(int32 x, int32 y, uint32 type_, address occupiedBy) internal {
+  function set(uint32 x, uint32 y, uint32 type_, address occupiedBy) internal {
     bytes memory _staticData = encodeStatic(type_, occupiedBy);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
 
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreSwitch.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData);
   }
@@ -210,15 +210,15 @@ library MapLocation {
   /**
    * @notice Set the full data using individual values.
    */
-  function _set(int32 x, int32 y, uint32 type_, address occupiedBy) internal {
+  function _set(uint32 x, uint32 y, uint32 type_, address occupiedBy) internal {
     bytes memory _staticData = encodeStatic(type_, occupiedBy);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
 
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreCore.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData, _fieldLayout);
   }
@@ -226,15 +226,15 @@ library MapLocation {
   /**
    * @notice Set the full data using the data struct.
    */
-  function set(int32 x, int32 y, MapLocationData memory _table) internal {
+  function set(uint32 x, uint32 y, MapLocationData memory _table) internal {
     bytes memory _staticData = encodeStatic(_table.type_, _table.occupiedBy);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
 
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreSwitch.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData);
   }
@@ -242,15 +242,15 @@ library MapLocation {
   /**
    * @notice Set the full data using the data struct.
    */
-  function _set(int32 x, int32 y, MapLocationData memory _table) internal {
+  function _set(uint32 x, uint32 y, MapLocationData memory _table) internal {
     bytes memory _staticData = encodeStatic(_table.type_, _table.occupiedBy);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
 
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreCore.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData, _fieldLayout);
   }
@@ -281,10 +281,10 @@ library MapLocation {
   /**
    * @notice Delete all data for given keys.
    */
-  function deleteRecord(int32 x, int32 y) internal {
+  function deleteRecord(uint32 x, uint32 y) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreSwitch.deleteRecord(_tableId, _keyTuple);
   }
@@ -292,10 +292,10 @@ library MapLocation {
   /**
    * @notice Delete all data for given keys.
    */
-  function _deleteRecord(int32 x, int32 y) internal {
+  function _deleteRecord(uint32 x, uint32 y) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreCore.deleteRecord(_tableId, _keyTuple, _fieldLayout);
   }
@@ -326,10 +326,10 @@ library MapLocation {
   /**
    * @notice Encode keys as a bytes32 array using this table's field layout.
    */
-  function encodeKeyTuple(int32 x, int32 y) internal pure returns (bytes32[] memory) {
+  function encodeKeyTuple(uint32 x, uint32 y) internal pure returns (bytes32[] memory) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     return _keyTuple;
   }

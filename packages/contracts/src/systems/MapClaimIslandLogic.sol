@@ -6,8 +6,8 @@ import { MapData } from "../codegen/index.sol";
 
 library MapClaimIslandLogic {
   function verify(
-    int32 coordinatesX,
-    int32 coordinatesY,
+    uint32 coordinatesX,
+    uint32 coordinatesY,
     uint256 claimedBy,
     uint64 claimedAt,
     MapData memory mapData

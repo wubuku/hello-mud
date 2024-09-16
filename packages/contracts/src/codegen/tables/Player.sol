@@ -20,8 +20,8 @@ struct PlayerData {
   address owner;
   uint16 level;
   uint32 experience;
-  int32 claimedIslandX;
-  int32 claimedIslandY;
+  uint32 claimedIslandX;
+  uint32 claimedIslandY;
   string name;
 }
 
@@ -34,8 +34,8 @@ library Player {
 
   // Hex-encoded key schema of (uint256)
   Schema constant _keySchema = Schema.wrap(0x002001001f000000000000000000000000000000000000000000000000000000);
-  // Hex-encoded value schema of (address, uint16, uint32, int32, int32, string)
-  Schema constant _valueSchema = Schema.wrap(0x002205016101032323c500000000000000000000000000000000000000000000);
+  // Hex-encoded value schema of (address, uint16, uint32, uint32, uint32, string)
+  Schema constant _valueSchema = Schema.wrap(0x002205016101030303c500000000000000000000000000000000000000000000);
 
   /**
    * @notice Get the table's key field names.
@@ -203,29 +203,29 @@ library Player {
   /**
    * @notice Get claimedIslandX.
    */
-  function getClaimedIslandX(uint256 id) internal view returns (int32 claimedIslandX) {
+  function getClaimedIslandX(uint256 id) internal view returns (uint32 claimedIslandX) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
-    return (int32(uint32(bytes4(_blob))));
+    return (uint32(bytes4(_blob)));
   }
 
   /**
    * @notice Get claimedIslandX.
    */
-  function _getClaimedIslandX(uint256 id) internal view returns (int32 claimedIslandX) {
+  function _getClaimedIslandX(uint256 id) internal view returns (uint32 claimedIslandX) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
     bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
-    return (int32(uint32(bytes4(_blob))));
+    return (uint32(bytes4(_blob)));
   }
 
   /**
    * @notice Set claimedIslandX.
    */
-  function setClaimedIslandX(uint256 id, int32 claimedIslandX) internal {
+  function setClaimedIslandX(uint256 id, uint32 claimedIslandX) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
@@ -235,7 +235,7 @@ library Player {
   /**
    * @notice Set claimedIslandX.
    */
-  function _setClaimedIslandX(uint256 id, int32 claimedIslandX) internal {
+  function _setClaimedIslandX(uint256 id, uint32 claimedIslandX) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
@@ -245,29 +245,29 @@ library Player {
   /**
    * @notice Get claimedIslandY.
    */
-  function getClaimedIslandY(uint256 id) internal view returns (int32 claimedIslandY) {
+  function getClaimedIslandY(uint256 id) internal view returns (uint32 claimedIslandY) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 4, _fieldLayout);
-    return (int32(uint32(bytes4(_blob))));
+    return (uint32(bytes4(_blob)));
   }
 
   /**
    * @notice Get claimedIslandY.
    */
-  function _getClaimedIslandY(uint256 id) internal view returns (int32 claimedIslandY) {
+  function _getClaimedIslandY(uint256 id) internal view returns (uint32 claimedIslandY) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
     bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 4, _fieldLayout);
-    return (int32(uint32(bytes4(_blob))));
+    return (uint32(bytes4(_blob)));
   }
 
   /**
    * @notice Set claimedIslandY.
    */
-  function setClaimedIslandY(uint256 id, int32 claimedIslandY) internal {
+  function setClaimedIslandY(uint256 id, uint32 claimedIslandY) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
@@ -277,7 +277,7 @@ library Player {
   /**
    * @notice Set claimedIslandY.
    */
-  function _setClaimedIslandY(uint256 id, int32 claimedIslandY) internal {
+  function _setClaimedIslandY(uint256 id, uint32 claimedIslandY) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
@@ -484,8 +484,8 @@ library Player {
     address owner,
     uint16 level,
     uint32 experience,
-    int32 claimedIslandX,
-    int32 claimedIslandY,
+    uint32 claimedIslandX,
+    uint32 claimedIslandY,
     string memory name
   ) internal {
     bytes memory _staticData = encodeStatic(owner, level, experience, claimedIslandX, claimedIslandY);
@@ -507,8 +507,8 @@ library Player {
     address owner,
     uint16 level,
     uint32 experience,
-    int32 claimedIslandX,
-    int32 claimedIslandY,
+    uint32 claimedIslandX,
+    uint32 claimedIslandY,
     string memory name
   ) internal {
     bytes memory _staticData = encodeStatic(owner, level, experience, claimedIslandX, claimedIslandY);
@@ -569,16 +569,20 @@ library Player {
    */
   function decodeStatic(
     bytes memory _blob
-  ) internal pure returns (address owner, uint16 level, uint32 experience, int32 claimedIslandX, int32 claimedIslandY) {
+  )
+    internal
+    pure
+    returns (address owner, uint16 level, uint32 experience, uint32 claimedIslandX, uint32 claimedIslandY)
+  {
     owner = (address(Bytes.getBytes20(_blob, 0)));
 
     level = (uint16(Bytes.getBytes2(_blob, 20)));
 
     experience = (uint32(Bytes.getBytes4(_blob, 22)));
 
-    claimedIslandX = (int32(uint32(Bytes.getBytes4(_blob, 26))));
+    claimedIslandX = (uint32(Bytes.getBytes4(_blob, 26)));
 
-    claimedIslandY = (int32(uint32(Bytes.getBytes4(_blob, 30))));
+    claimedIslandY = (uint32(Bytes.getBytes4(_blob, 30)));
   }
 
   /**
@@ -642,8 +646,8 @@ library Player {
     address owner,
     uint16 level,
     uint32 experience,
-    int32 claimedIslandX,
-    int32 claimedIslandY
+    uint32 claimedIslandX,
+    uint32 claimedIslandY
   ) internal pure returns (bytes memory) {
     return abi.encodePacked(owner, level, experience, claimedIslandX, claimedIslandY);
   }
@@ -677,8 +681,8 @@ library Player {
     address owner,
     uint16 level,
     uint32 experience,
-    int32 claimedIslandX,
-    int32 claimedIslandY,
+    uint32 claimedIslandX,
+    uint32 claimedIslandY,
     string memory name
   ) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
     bytes memory _staticData = encodeStatic(owner, level, experience, claimedIslandX, claimedIslandY);

@@ -20,7 +20,7 @@ import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/World
 contract RosterSystem is System {
   using WorldResourceIdInstance for ResourceId;
 
-  event EnvironmentRosterCreatedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, int32 coordinatesX, int32 coordinatesY, uint32 shipResourceQuantity, uint32 shipBaseResourceQuantity, uint32 baseExperience);
+  event EnvironmentRosterCreatedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint32 coordinatesX, uint32 coordinatesY, uint32 shipResourceQuantity, uint32 shipBaseResourceQuantity, uint32 baseExperience);
 
   event RosterShipsPositionAdjustedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint64[] positions, uint256[] shipIds);
 
@@ -28,9 +28,9 @@ contract RosterSystem is System {
 
   event RosterShipInventoryTransferredEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256 fromShipId, uint256 toShipId);
 
-  event RosterShipInventoryTakenOutEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256 shipId, int32 updatedCoordinatesX, int32 updatedCoordinatesY);
+  event RosterShipInventoryTakenOutEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256 shipId, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY);
 
-  event RosterShipInventoryPutInEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256 shipId, int32 updatedCoordinatesX, int32 updatedCoordinatesY);
+  event RosterShipInventoryPutInEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256 shipId, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY);
 
   function _requireNamespaceOwner() internal view {
     ResourceId _thisSystemId = SystemRegistry.get(address(this));
@@ -38,7 +38,7 @@ contract RosterSystem is System {
     require(_thisNamespaceOwner == _msgSender(), "Require namespace owner");
   }
 
-  function rosterCreateEnvironmentRoster(uint256 playerId, uint32 sequenceNumber, int32 coordinatesX, int32 coordinatesY, uint32 shipResourceQuantity, uint32 shipBaseResourceQuantity, uint32 baseExperience) public {
+  function rosterCreateEnvironmentRoster(uint256 playerId, uint32 sequenceNumber, uint32 coordinatesX, uint32 coordinatesY, uint32 shipResourceQuantity, uint32 shipBaseResourceQuantity, uint32 baseExperience) public {
     _requireNamespaceOwner();
     RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
     require(
@@ -95,7 +95,7 @@ contract RosterSystem is System {
     Roster.set(playerId, sequenceNumber, updatedRosterData);
   }
 
-  function rosterTakeOutShipInventory(uint256 playerId, uint32 sequenceNumber, uint256 shipId, ItemIdQuantityPair[] memory itemIdQuantityPairs, int32 updatedCoordinatesX, int32 updatedCoordinatesY) public {
+  function rosterTakeOutShipInventory(uint256 playerId, uint32 sequenceNumber, uint256 shipId, ItemIdQuantityPair[] memory itemIdQuantityPairs, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY) public {
     RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
     require(
       !(rosterData.status == uint8(0) && rosterData.speed == uint32(0) && rosterData.coordinatesUpdatedAt == uint64(0) && rosterData.sailDuration == uint64(0) && rosterData.setSailAt == uint64(0) && rosterData.shipBattleId == uint256(0) && rosterData.environmentOwned == false && rosterData.baseExperience == uint32(0) && rosterData.shipIds.length == 0),
@@ -109,7 +109,7 @@ contract RosterSystem is System {
     Roster.set(playerId, sequenceNumber, updatedRosterData);
   }
 
-  function rosterPutInShipInventory(uint256 playerId, uint32 sequenceNumber, uint256 shipId, ItemIdQuantityPair[] memory itemIdQuantityPairs, int32 updatedCoordinatesX, int32 updatedCoordinatesY) public {
+  function rosterPutInShipInventory(uint256 playerId, uint32 sequenceNumber, uint256 shipId, ItemIdQuantityPair[] memory itemIdQuantityPairs, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY) public {
     RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
     require(
       !(rosterData.status == uint8(0) && rosterData.speed == uint32(0) && rosterData.coordinatesUpdatedAt == uint64(0) && rosterData.sailDuration == uint64(0) && rosterData.setSailAt == uint64(0) && rosterData.shipBattleId == uint256(0) && rosterData.environmentOwned == false && rosterData.baseExperience == uint32(0) && rosterData.shipIds.length == 0),

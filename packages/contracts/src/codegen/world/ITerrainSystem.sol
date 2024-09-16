@@ -10,16 +10,16 @@ pragma solidity >=0.8.24;
  */
 interface ITerrainSystem {
   function app__terrainCreate(
-    int32 x,
-    int32 y,
+    uint32 x,
+    uint32 y,
     string memory terrainType,
     uint8[] memory foo,
     bytes memory bar
   ) external;
 
   function app__terrainUpdate(
-    int32 x,
-    int32 y,
+    uint32 x,
+    uint32 y,
     string memory terrainType,
     uint8[] memory foo,
     bytes memory bar

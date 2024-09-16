@@ -11,7 +11,7 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 library MapDelegationLib {
 
-  function addIsland(int32 coordinatesX, int32 coordinatesY, ItemIdQuantityPair[] memory resources) internal {
+  function addIsland(uint32 coordinatesX, uint32 coordinatesY, ItemIdQuantityPair[] memory resources) internal {
     ResourceId mapSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -23,7 +23,7 @@ library MapDelegationLib {
       WorldContextConsumerLib._msgSender(),
       mapSystemId,
       abi.encodeWithSignature(
-        "mapAddIsland(int32,int32,(uint32,uint32)[])",
+        "mapAddIsland(uint32,uint32,(uint32,uint32)[])",
         coordinatesX, coordinatesY, resources
       )
     );

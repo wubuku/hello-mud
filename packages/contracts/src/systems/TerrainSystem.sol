@@ -10,11 +10,11 @@ import { TerrainCreateLogic } from "./TerrainCreateLogic.sol";
 import { TerrainUpdateLogic } from "./TerrainUpdateLogic.sol";
 
 contract TerrainSystem is System {
-  event TerrainCreatedEvent(int32 indexed x, int32 indexed y, string terrainType, uint8[] foo, bytes bar);
+  event TerrainCreatedEvent(uint32 indexed x, uint32 indexed y, string terrainType, uint8[] foo, bytes bar);
 
-  event TerrainUpdatedEvent(int32 indexed x, int32 indexed y, string terrainType, uint8[] foo, bytes bar);
+  event TerrainUpdatedEvent(uint32 indexed x, uint32 indexed y, string terrainType, uint8[] foo, bytes bar);
 
-  function terrainCreate(int32 x, int32 y, string memory terrainType, uint8[] memory foo, bytes memory bar) public {
+  function terrainCreate(uint32 x, uint32 y, string memory terrainType, uint8[] memory foo, bytes memory bar) public {
     TerrainData memory terrainData = Terrain.get(x, y);
     require(
       bytes(terrainData.terrainType).length == 0 && terrainData.foo.length == 0 && terrainData.bar.length == 0,
@@ -28,7 +28,7 @@ contract TerrainSystem is System {
     Terrain.set(x, y, newTerrainData);
   }
 
-  function terrainUpdate(int32 x, int32 y, string memory terrainType, uint8[] memory foo, bytes memory bar) public {
+  function terrainUpdate(uint32 x, uint32 y, string memory terrainType, uint8[] memory foo, bytes memory bar) public {
     TerrainData memory terrainData = Terrain.get(x, y);
     require(
       !(bytes(terrainData.terrainType).length == 0 && terrainData.foo.length == 0 && terrainData.bar.length == 0),

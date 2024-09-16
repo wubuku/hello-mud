@@ -19,7 +19,7 @@ contract PlayerSystem is System {
 
   event PlayerCreatedEvent(uint256 indexed id, string name, address owner);
 
-  event IslandClaimedEvent(uint256 indexed id, int32 coordinatesX, int32 coordinatesY, uint64 claimedAt);
+  event IslandClaimedEvent(uint256 indexed id, uint32 coordinatesX, uint32 coordinatesY, uint64 claimedAt);
 
   event PlayerAirdroppedEvent(uint256 indexed id, uint32 itemId, uint32 quantity);
 
@@ -36,7 +36,7 @@ contract PlayerSystem is System {
     PlayerIdGenerator.set(id);
     PlayerData memory playerData = Player.get(id);
     require(
-      playerData.owner == address(0) && playerData.level == uint16(0) && playerData.experience == uint32(0) && playerData.claimedIslandX == int32(0) && playerData.claimedIslandY == int32(0) && bytes(playerData.name).length == 0,
+      playerData.owner == address(0) && playerData.level == uint16(0) && playerData.experience == uint32(0) && playerData.claimedIslandX == uint32(0) && playerData.claimedIslandY == uint32(0) && bytes(playerData.name).length == 0,
       "Player already exists"
     );
     PlayerCreated memory playerCreated = PlayerCreateLogic.verify(id, name);
@@ -46,10 +46,10 @@ contract PlayerSystem is System {
     Player.set(id, newPlayerData);
   }
 
-  function playerClaimIsland(uint256 id, int32 coordinatesX, int32 coordinatesY) public {
+  function playerClaimIsland(uint256 id, uint32 coordinatesX, uint32 coordinatesY) public {
     PlayerData memory playerData = Player.get(id);
     require(
-      !(playerData.owner == address(0) && playerData.level == uint16(0) && playerData.experience == uint32(0) && playerData.claimedIslandX == int32(0) && playerData.claimedIslandY == int32(0) && bytes(playerData.name).length == 0),
+      !(playerData.owner == address(0) && playerData.level == uint16(0) && playerData.experience == uint32(0) && playerData.claimedIslandX == uint32(0) && playerData.claimedIslandY == uint32(0) && bytes(playerData.name).length == 0),
       "Player does not exist"
     );
     IslandClaimed memory islandClaimed = PlayerClaimIslandLogic.verify(id, coordinatesX, coordinatesY, playerData);
@@ -63,7 +63,7 @@ contract PlayerSystem is System {
     _requireNamespaceOwner();
     PlayerData memory playerData = Player.get(id);
     require(
-      !(playerData.owner == address(0) && playerData.level == uint16(0) && playerData.experience == uint32(0) && playerData.claimedIslandX == int32(0) && playerData.claimedIslandY == int32(0) && bytes(playerData.name).length == 0),
+      !(playerData.owner == address(0) && playerData.level == uint16(0) && playerData.experience == uint32(0) && playerData.claimedIslandX == uint32(0) && playerData.claimedIslandY == uint32(0) && bytes(playerData.name).length == 0),
       "Player does not exist"
     );
     PlayerAirdropped memory playerAirdropped = PlayerAirdropLogic.verify(id, itemId, quantity, playerData);
@@ -76,7 +76,7 @@ contract PlayerSystem is System {
   function playerGatherIslandResources(uint256 id) public {
     PlayerData memory playerData = Player.get(id);
     require(
-      !(playerData.owner == address(0) && playerData.level == uint16(0) && playerData.experience == uint32(0) && playerData.claimedIslandX == int32(0) && playerData.claimedIslandY == int32(0) && bytes(playerData.name).length == 0),
+      !(playerData.owner == address(0) && playerData.level == uint16(0) && playerData.experience == uint32(0) && playerData.claimedIslandX == uint32(0) && playerData.claimedIslandY == uint32(0) && bytes(playerData.name).length == 0),
       "Player does not exist"
     );
     PlayerIslandResourcesGathered memory playerIslandResourcesGathered = PlayerGatherIslandResourcesLogic.verify(id, playerData);

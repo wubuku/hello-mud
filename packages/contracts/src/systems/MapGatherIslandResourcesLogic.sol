@@ -8,8 +8,8 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 library MapGatherIslandResourcesLogic {
   function verify(
     uint256 playerId,
-    int32 coordinatesX,
-    int32 coordinatesY,
+    uint32 coordinatesX,
+    uint32 coordinatesY,
     MapData memory mapData
   ) internal pure returns (IslandResourcesGathered memory) {
     // TODO ...

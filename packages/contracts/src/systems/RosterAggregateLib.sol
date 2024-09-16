@@ -20,7 +20,7 @@ library RosterAggregateLib {
 
   event RosterShipAddedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256 shipId, uint64 position);
 
-  event RosterSetSailEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, int32 targetCoordinatesX, int32 targetCoordinatesY, uint64 sailDuration, uint64 setSailAt, int32 updatedCoordinatesX, int32 updatedCoordinatesY, uint64 energyCost);
+  event RosterSetSailEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint32 targetCoordinatesX, uint32 targetCoordinatesY, uint64 sailDuration, uint64 setSailAt, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY, uint64 energyCost);
 
   function _requireNamespaceOwner() internal view {
     ResourceId _thisSystemId = SystemRegistry.get(address(this));
@@ -57,7 +57,7 @@ library RosterAggregateLib {
     Roster.set(playerId, sequenceNumber, updatedRosterData);
   }
 
-  function setSail(uint256 playerId, uint32 sequenceNumber, int32 targetCoordinatesX, int32 targetCoordinatesY, uint64 sailDuration, int32 updatedCoordinatesX, int32 updatedCoordinatesY) internal {
+  function setSail(uint256 playerId, uint32 sequenceNumber, uint32 targetCoordinatesX, uint32 targetCoordinatesY, uint64 sailDuration, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY) internal {
     RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
     require(
       !(rosterData.status == uint8(0) && rosterData.speed == uint32(0) && rosterData.coordinatesUpdatedAt == uint64(0) && rosterData.sailDuration == uint64(0) && rosterData.setSailAt == uint64(0) && rosterData.shipBattleId == uint256(0) && rosterData.environmentOwned == false && rosterData.baseExperience == uint32(0) && rosterData.shipIds.length == 0),

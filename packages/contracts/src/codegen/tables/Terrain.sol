@@ -29,8 +29,8 @@ library Terrain {
   FieldLayout constant _fieldLayout =
     FieldLayout.wrap(0x0000000300000000000000000000000000000000000000000000000000000000);
 
-  // Hex-encoded key schema of (int32, int32)
-  Schema constant _keySchema = Schema.wrap(0x0008020023230000000000000000000000000000000000000000000000000000);
+  // Hex-encoded key schema of (uint32, uint32)
+  Schema constant _keySchema = Schema.wrap(0x0008020003030000000000000000000000000000000000000000000000000000);
   // Hex-encoded value schema of (string, uint8[], bytes)
   Schema constant _valueSchema = Schema.wrap(0x00000003c562c400000000000000000000000000000000000000000000000000);
 
@@ -72,10 +72,10 @@ library Terrain {
   /**
    * @notice Get terrainType.
    */
-  function getTerrainType(int32 x, int32 y) internal view returns (string memory terrainType) {
+  function getTerrainType(uint32 x, uint32 y) internal view returns (string memory terrainType) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     bytes memory _blob = StoreSwitch.getDynamicField(_tableId, _keyTuple, 0);
     return (string(_blob));
@@ -84,10 +84,10 @@ library Terrain {
   /**
    * @notice Get terrainType.
    */
-  function _getTerrainType(int32 x, int32 y) internal view returns (string memory terrainType) {
+  function _getTerrainType(uint32 x, uint32 y) internal view returns (string memory terrainType) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     bytes memory _blob = StoreCore.getDynamicField(_tableId, _keyTuple, 0);
     return (string(_blob));
@@ -96,10 +96,10 @@ library Terrain {
   /**
    * @notice Set terrainType.
    */
-  function setTerrainType(int32 x, int32 y, string memory terrainType) internal {
+  function setTerrainType(uint32 x, uint32 y, string memory terrainType) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreSwitch.setDynamicField(_tableId, _keyTuple, 0, bytes((terrainType)));
   }
@@ -107,10 +107,10 @@ library Terrain {
   /**
    * @notice Set terrainType.
    */
-  function _setTerrainType(int32 x, int32 y, string memory terrainType) internal {
+  function _setTerrainType(uint32 x, uint32 y, string memory terrainType) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreCore.setDynamicField(_tableId, _keyTuple, 0, bytes((terrainType)));
   }
@@ -118,10 +118,10 @@ library Terrain {
   /**
    * @notice Get the length of terrainType.
    */
-  function lengthTerrainType(int32 x, int32 y) internal view returns (uint256) {
+  function lengthTerrainType(uint32 x, uint32 y) internal view returns (uint256) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     uint256 _byteLength = StoreSwitch.getDynamicFieldLength(_tableId, _keyTuple, 0);
     unchecked {
@@ -132,10 +132,10 @@ library Terrain {
   /**
    * @notice Get the length of terrainType.
    */
-  function _lengthTerrainType(int32 x, int32 y) internal view returns (uint256) {
+  function _lengthTerrainType(uint32 x, uint32 y) internal view returns (uint256) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     uint256 _byteLength = StoreCore.getDynamicFieldLength(_tableId, _keyTuple, 0);
     unchecked {
@@ -147,10 +147,10 @@ library Terrain {
    * @notice Get an item of terrainType.
    * @dev Reverts with Store_IndexOutOfBounds if `_index` is out of bounds for the array.
    */
-  function getItemTerrainType(int32 x, int32 y, uint256 _index) internal view returns (string memory) {
+  function getItemTerrainType(uint32 x, uint32 y, uint256 _index) internal view returns (string memory) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     unchecked {
       bytes memory _blob = StoreSwitch.getDynamicFieldSlice(_tableId, _keyTuple, 0, _index * 1, (_index + 1) * 1);
@@ -162,10 +162,10 @@ library Terrain {
    * @notice Get an item of terrainType.
    * @dev Reverts with Store_IndexOutOfBounds if `_index` is out of bounds for the array.
    */
-  function _getItemTerrainType(int32 x, int32 y, uint256 _index) internal view returns (string memory) {
+  function _getItemTerrainType(uint32 x, uint32 y, uint256 _index) internal view returns (string memory) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     unchecked {
       bytes memory _blob = StoreCore.getDynamicFieldSlice(_tableId, _keyTuple, 0, _index * 1, (_index + 1) * 1);
@@ -176,10 +176,10 @@ library Terrain {
   /**
    * @notice Push a slice to terrainType.
    */
-  function pushTerrainType(int32 x, int32 y, string memory _slice) internal {
+  function pushTerrainType(uint32 x, uint32 y, string memory _slice) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreSwitch.pushToDynamicField(_tableId, _keyTuple, 0, bytes((_slice)));
   }
@@ -187,10 +187,10 @@ library Terrain {
   /**
    * @notice Push a slice to terrainType.
    */
-  function _pushTerrainType(int32 x, int32 y, string memory _slice) internal {
+  function _pushTerrainType(uint32 x, uint32 y, string memory _slice) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreCore.pushToDynamicField(_tableId, _keyTuple, 0, bytes((_slice)));
   }
@@ -198,10 +198,10 @@ library Terrain {
   /**
    * @notice Pop a slice from terrainType.
    */
-  function popTerrainType(int32 x, int32 y) internal {
+  function popTerrainType(uint32 x, uint32 y) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreSwitch.popFromDynamicField(_tableId, _keyTuple, 0, 1);
   }
@@ -209,10 +209,10 @@ library Terrain {
   /**
    * @notice Pop a slice from terrainType.
    */
-  function _popTerrainType(int32 x, int32 y) internal {
+  function _popTerrainType(uint32 x, uint32 y) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreCore.popFromDynamicField(_tableId, _keyTuple, 0, 1);
   }
@@ -220,10 +220,10 @@ library Terrain {
   /**
    * @notice Update a slice of terrainType at `_index`.
    */
-  function updateTerrainType(int32 x, int32 y, uint256 _index, string memory _slice) internal {
+  function updateTerrainType(uint32 x, uint32 y, uint256 _index, string memory _slice) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     unchecked {
       bytes memory _encoded = bytes((_slice));
@@ -234,10 +234,10 @@ library Terrain {
   /**
    * @notice Update a slice of terrainType at `_index`.
    */
-  function _updateTerrainType(int32 x, int32 y, uint256 _index, string memory _slice) internal {
+  function _updateTerrainType(uint32 x, uint32 y, uint256 _index, string memory _slice) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     unchecked {
       bytes memory _encoded = bytes((_slice));
@@ -248,10 +248,10 @@ library Terrain {
   /**
    * @notice Get foo.
    */
-  function getFoo(int32 x, int32 y) internal view returns (uint8[] memory foo) {
+  function getFoo(uint32 x, uint32 y) internal view returns (uint8[] memory foo) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     bytes memory _blob = StoreSwitch.getDynamicField(_tableId, _keyTuple, 1);
     return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_uint8());
@@ -260,10 +260,10 @@ library Terrain {
   /**
    * @notice Get foo.
    */
-  function _getFoo(int32 x, int32 y) internal view returns (uint8[] memory foo) {
+  function _getFoo(uint32 x, uint32 y) internal view returns (uint8[] memory foo) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     bytes memory _blob = StoreCore.getDynamicField(_tableId, _keyTuple, 1);
     return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_uint8());
@@ -272,10 +272,10 @@ library Terrain {
   /**
    * @notice Set foo.
    */
-  function setFoo(int32 x, int32 y, uint8[] memory foo) internal {
+  function setFoo(uint32 x, uint32 y, uint8[] memory foo) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreSwitch.setDynamicField(_tableId, _keyTuple, 1, EncodeArray.encode((foo)));
   }
@@ -283,10 +283,10 @@ library Terrain {
   /**
    * @notice Set foo.
    */
-  function _setFoo(int32 x, int32 y, uint8[] memory foo) internal {
+  function _setFoo(uint32 x, uint32 y, uint8[] memory foo) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreCore.setDynamicField(_tableId, _keyTuple, 1, EncodeArray.encode((foo)));
   }
@@ -294,10 +294,10 @@ library Terrain {
   /**
    * @notice Get the length of foo.
    */
-  function lengthFoo(int32 x, int32 y) internal view returns (uint256) {
+  function lengthFoo(uint32 x, uint32 y) internal view returns (uint256) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     uint256 _byteLength = StoreSwitch.getDynamicFieldLength(_tableId, _keyTuple, 1);
     unchecked {
@@ -308,10 +308,10 @@ library Terrain {
   /**
    * @notice Get the length of foo.
    */
-  function _lengthFoo(int32 x, int32 y) internal view returns (uint256) {
+  function _lengthFoo(uint32 x, uint32 y) internal view returns (uint256) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     uint256 _byteLength = StoreCore.getDynamicFieldLength(_tableId, _keyTuple, 1);
     unchecked {
@@ -323,10 +323,10 @@ library Terrain {
    * @notice Get an item of foo.
    * @dev Reverts with Store_IndexOutOfBounds if `_index` is out of bounds for the array.
    */
-  function getItemFoo(int32 x, int32 y, uint256 _index) internal view returns (uint8) {
+  function getItemFoo(uint32 x, uint32 y, uint256 _index) internal view returns (uint8) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     unchecked {
       bytes memory _blob = StoreSwitch.getDynamicFieldSlice(_tableId, _keyTuple, 1, _index * 1, (_index + 1) * 1);
@@ -338,10 +338,10 @@ library Terrain {
    * @notice Get an item of foo.
    * @dev Reverts with Store_IndexOutOfBounds if `_index` is out of bounds for the array.
    */
-  function _getItemFoo(int32 x, int32 y, uint256 _index) internal view returns (uint8) {
+  function _getItemFoo(uint32 x, uint32 y, uint256 _index) internal view returns (uint8) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     unchecked {
       bytes memory _blob = StoreCore.getDynamicFieldSlice(_tableId, _keyTuple, 1, _index * 1, (_index + 1) * 1);
@@ -352,10 +352,10 @@ library Terrain {
   /**
    * @notice Push an element to foo.
    */
-  function pushFoo(int32 x, int32 y, uint8 _element) internal {
+  function pushFoo(uint32 x, uint32 y, uint8 _element) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreSwitch.pushToDynamicField(_tableId, _keyTuple, 1, abi.encodePacked((_element)));
   }
@@ -363,10 +363,10 @@ library Terrain {
   /**
    * @notice Push an element to foo.
    */
-  function _pushFoo(int32 x, int32 y, uint8 _element) internal {
+  function _pushFoo(uint32 x, uint32 y, uint8 _element) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreCore.pushToDynamicField(_tableId, _keyTuple, 1, abi.encodePacked((_element)));
   }
@@ -374,10 +374,10 @@ library Terrain {
   /**
    * @notice Pop an element from foo.
    */
-  function popFoo(int32 x, int32 y) internal {
+  function popFoo(uint32 x, uint32 y) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreSwitch.popFromDynamicField(_tableId, _keyTuple, 1, 1);
   }
@@ -385,10 +385,10 @@ library Terrain {
   /**
    * @notice Pop an element from foo.
    */
-  function _popFoo(int32 x, int32 y) internal {
+  function _popFoo(uint32 x, uint32 y) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreCore.popFromDynamicField(_tableId, _keyTuple, 1, 1);
   }
@@ -396,10 +396,10 @@ library Terrain {
   /**
    * @notice Update an element of foo at `_index`.
    */
-  function updateFoo(int32 x, int32 y, uint256 _index, uint8 _element) internal {
+  function updateFoo(uint32 x, uint32 y, uint256 _index, uint8 _element) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     unchecked {
       bytes memory _encoded = abi.encodePacked((_element));
@@ -410,10 +410,10 @@ library Terrain {
   /**
    * @notice Update an element of foo at `_index`.
    */
-  function _updateFoo(int32 x, int32 y, uint256 _index, uint8 _element) internal {
+  function _updateFoo(uint32 x, uint32 y, uint256 _index, uint8 _element) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     unchecked {
       bytes memory _encoded = abi.encodePacked((_element));
@@ -424,10 +424,10 @@ library Terrain {
   /**
    * @notice Get bar.
    */
-  function getBar(int32 x, int32 y) internal view returns (bytes memory bar) {
+  function getBar(uint32 x, uint32 y) internal view returns (bytes memory bar) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     bytes memory _blob = StoreSwitch.getDynamicField(_tableId, _keyTuple, 2);
     return (bytes(_blob));
@@ -436,10 +436,10 @@ library Terrain {
   /**
    * @notice Get bar.
    */
-  function _getBar(int32 x, int32 y) internal view returns (bytes memory bar) {
+  function _getBar(uint32 x, uint32 y) internal view returns (bytes memory bar) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     bytes memory _blob = StoreCore.getDynamicField(_tableId, _keyTuple, 2);
     return (bytes(_blob));
@@ -448,10 +448,10 @@ library Terrain {
   /**
    * @notice Set bar.
    */
-  function setBar(int32 x, int32 y, bytes memory bar) internal {
+  function setBar(uint32 x, uint32 y, bytes memory bar) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreSwitch.setDynamicField(_tableId, _keyTuple, 2, bytes((bar)));
   }
@@ -459,10 +459,10 @@ library Terrain {
   /**
    * @notice Set bar.
    */
-  function _setBar(int32 x, int32 y, bytes memory bar) internal {
+  function _setBar(uint32 x, uint32 y, bytes memory bar) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreCore.setDynamicField(_tableId, _keyTuple, 2, bytes((bar)));
   }
@@ -470,10 +470,10 @@ library Terrain {
   /**
    * @notice Get the length of bar.
    */
-  function lengthBar(int32 x, int32 y) internal view returns (uint256) {
+  function lengthBar(uint32 x, uint32 y) internal view returns (uint256) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     uint256 _byteLength = StoreSwitch.getDynamicFieldLength(_tableId, _keyTuple, 2);
     unchecked {
@@ -484,10 +484,10 @@ library Terrain {
   /**
    * @notice Get the length of bar.
    */
-  function _lengthBar(int32 x, int32 y) internal view returns (uint256) {
+  function _lengthBar(uint32 x, uint32 y) internal view returns (uint256) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     uint256 _byteLength = StoreCore.getDynamicFieldLength(_tableId, _keyTuple, 2);
     unchecked {
@@ -499,10 +499,10 @@ library Terrain {
    * @notice Get an item of bar.
    * @dev Reverts with Store_IndexOutOfBounds if `_index` is out of bounds for the array.
    */
-  function getItemBar(int32 x, int32 y, uint256 _index) internal view returns (bytes memory) {
+  function getItemBar(uint32 x, uint32 y, uint256 _index) internal view returns (bytes memory) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     unchecked {
       bytes memory _blob = StoreSwitch.getDynamicFieldSlice(_tableId, _keyTuple, 2, _index * 1, (_index + 1) * 1);
@@ -514,10 +514,10 @@ library Terrain {
    * @notice Get an item of bar.
    * @dev Reverts with Store_IndexOutOfBounds if `_index` is out of bounds for the array.
    */
-  function _getItemBar(int32 x, int32 y, uint256 _index) internal view returns (bytes memory) {
+  function _getItemBar(uint32 x, uint32 y, uint256 _index) internal view returns (bytes memory) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     unchecked {
       bytes memory _blob = StoreCore.getDynamicFieldSlice(_tableId, _keyTuple, 2, _index * 1, (_index + 1) * 1);
@@ -528,10 +528,10 @@ library Terrain {
   /**
    * @notice Push a slice to bar.
    */
-  function pushBar(int32 x, int32 y, bytes memory _slice) internal {
+  function pushBar(uint32 x, uint32 y, bytes memory _slice) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreSwitch.pushToDynamicField(_tableId, _keyTuple, 2, bytes((_slice)));
   }
@@ -539,10 +539,10 @@ library Terrain {
   /**
    * @notice Push a slice to bar.
    */
-  function _pushBar(int32 x, int32 y, bytes memory _slice) internal {
+  function _pushBar(uint32 x, uint32 y, bytes memory _slice) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreCore.pushToDynamicField(_tableId, _keyTuple, 2, bytes((_slice)));
   }
@@ -550,10 +550,10 @@ library Terrain {
   /**
    * @notice Pop a slice from bar.
    */
-  function popBar(int32 x, int32 y) internal {
+  function popBar(uint32 x, uint32 y) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreSwitch.popFromDynamicField(_tableId, _keyTuple, 2, 1);
   }
@@ -561,10 +561,10 @@ library Terrain {
   /**
    * @notice Pop a slice from bar.
    */
-  function _popBar(int32 x, int32 y) internal {
+  function _popBar(uint32 x, uint32 y) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreCore.popFromDynamicField(_tableId, _keyTuple, 2, 1);
   }
@@ -572,10 +572,10 @@ library Terrain {
   /**
    * @notice Update a slice of bar at `_index`.
    */
-  function updateBar(int32 x, int32 y, uint256 _index, bytes memory _slice) internal {
+  function updateBar(uint32 x, uint32 y, uint256 _index, bytes memory _slice) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     unchecked {
       bytes memory _encoded = bytes((_slice));
@@ -586,10 +586,10 @@ library Terrain {
   /**
    * @notice Update a slice of bar at `_index`.
    */
-  function _updateBar(int32 x, int32 y, uint256 _index, bytes memory _slice) internal {
+  function _updateBar(uint32 x, uint32 y, uint256 _index, bytes memory _slice) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     unchecked {
       bytes memory _encoded = bytes((_slice));
@@ -600,10 +600,10 @@ library Terrain {
   /**
    * @notice Get the full data.
    */
-  function get(int32 x, int32 y) internal view returns (TerrainData memory _table) {
+  function get(uint32 x, uint32 y) internal view returns (TerrainData memory _table) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     (bytes memory _staticData, EncodedLengths _encodedLengths, bytes memory _dynamicData) = StoreSwitch.getRecord(
       _tableId,
@@ -616,10 +616,10 @@ library Terrain {
   /**
    * @notice Get the full data.
    */
-  function _get(int32 x, int32 y) internal view returns (TerrainData memory _table) {
+  function _get(uint32 x, uint32 y) internal view returns (TerrainData memory _table) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     (bytes memory _staticData, EncodedLengths _encodedLengths, bytes memory _dynamicData) = StoreCore.getRecord(
       _tableId,
@@ -632,14 +632,14 @@ library Terrain {
   /**
    * @notice Set the full data using individual values.
    */
-  function set(int32 x, int32 y, string memory terrainType, uint8[] memory foo, bytes memory bar) internal {
+  function set(uint32 x, uint32 y, string memory terrainType, uint8[] memory foo, bytes memory bar) internal {
     bytes memory _staticData;
     EncodedLengths _encodedLengths = encodeLengths(terrainType, foo, bar);
     bytes memory _dynamicData = encodeDynamic(terrainType, foo, bar);
 
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreSwitch.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData);
   }
@@ -647,14 +647,14 @@ library Terrain {
   /**
    * @notice Set the full data using individual values.
    */
-  function _set(int32 x, int32 y, string memory terrainType, uint8[] memory foo, bytes memory bar) internal {
+  function _set(uint32 x, uint32 y, string memory terrainType, uint8[] memory foo, bytes memory bar) internal {
     bytes memory _staticData;
     EncodedLengths _encodedLengths = encodeLengths(terrainType, foo, bar);
     bytes memory _dynamicData = encodeDynamic(terrainType, foo, bar);
 
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreCore.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData, _fieldLayout);
   }
@@ -662,14 +662,14 @@ library Terrain {
   /**
    * @notice Set the full data using the data struct.
    */
-  function set(int32 x, int32 y, TerrainData memory _table) internal {
+  function set(uint32 x, uint32 y, TerrainData memory _table) internal {
     bytes memory _staticData;
     EncodedLengths _encodedLengths = encodeLengths(_table.terrainType, _table.foo, _table.bar);
     bytes memory _dynamicData = encodeDynamic(_table.terrainType, _table.foo, _table.bar);
 
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreSwitch.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData);
   }
@@ -677,14 +677,14 @@ library Terrain {
   /**
    * @notice Set the full data using the data struct.
    */
-  function _set(int32 x, int32 y, TerrainData memory _table) internal {
+  function _set(uint32 x, uint32 y, TerrainData memory _table) internal {
     bytes memory _staticData;
     EncodedLengths _encodedLengths = encodeLengths(_table.terrainType, _table.foo, _table.bar);
     bytes memory _dynamicData = encodeDynamic(_table.terrainType, _table.foo, _table.bar);
 
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreCore.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData, _fieldLayout);
   }
@@ -733,10 +733,10 @@ library Terrain {
   /**
    * @notice Delete all data for given keys.
    */
-  function deleteRecord(int32 x, int32 y) internal {
+  function deleteRecord(uint32 x, uint32 y) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreSwitch.deleteRecord(_tableId, _keyTuple);
   }
@@ -744,10 +744,10 @@ library Terrain {
   /**
    * @notice Delete all data for given keys.
    */
-  function _deleteRecord(int32 x, int32 y) internal {
+  function _deleteRecord(uint32 x, uint32 y) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     StoreCore.deleteRecord(_tableId, _keyTuple, _fieldLayout);
   }
@@ -800,10 +800,10 @@ library Terrain {
   /**
    * @notice Encode keys as a bytes32 array using this table's field layout.
    */
-  function encodeKeyTuple(int32 x, int32 y) internal pure returns (bytes32[] memory) {
+  function encodeKeyTuple(uint32 x, uint32 y) internal pure returns (bytes32[] memory) {
     bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(int256(x)));
-    _keyTuple[1] = bytes32(uint256(int256(y)));
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
 
     return _keyTuple;
   }

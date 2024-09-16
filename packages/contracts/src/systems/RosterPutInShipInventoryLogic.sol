@@ -11,8 +11,8 @@ library RosterPutInShipInventoryLogic {
     uint32 sequenceNumber,
     uint256 shipId,
     ItemIdQuantityPair[] memory itemIdQuantityPairs,
-    int32 updatedCoordinatesX,
-    int32 updatedCoordinatesY,
+    uint32 updatedCoordinatesX,
+    uint32 updatedCoordinatesY,
     RosterData memory rosterData
   ) internal pure returns (RosterShipInventoryPutIn memory) {
     // TODO ...

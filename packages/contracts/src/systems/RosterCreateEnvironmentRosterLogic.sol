@@ -8,8 +8,8 @@ library RosterCreateEnvironmentRosterLogic {
   function verify(
     uint256 playerId,
     uint32 sequenceNumber,
-    int32 coordinatesX,
-    int32 coordinatesY,
+    uint32 coordinatesX,
+    uint32 coordinatesY,
     uint32 shipResourceQuantity,
     uint32 shipBaseResourceQuantity,
     uint32 baseExperience

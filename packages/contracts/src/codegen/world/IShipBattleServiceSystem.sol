@@ -15,10 +15,10 @@ interface IShipBattleServiceSystem {
     uint32 initiatorRosterSequenceNumber,
     uint256 responderRosterPlayerId,
     uint32 responderRosterSequenceNumber,
-    int32 initiatorCoordinatesX,
-    int32 initiatorCoordinatesY,
-    int32 responderCoordinatesX,
-    int32 responderCoordinatesY
+    uint32 initiatorCoordinatesX,
+    uint32 initiatorCoordinatesY,
+    uint32 responderCoordinatesX,
+    uint32 responderCoordinatesY
   ) external;
 
   function app__shipBattleServiceAutoPlayTillEnd(uint256 shipBattleId, uint256 playerId) external;

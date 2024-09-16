@@ -15,7 +15,7 @@ import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/World
 contract MapSystem is System {
   using WorldResourceIdInstance for ResourceId;
 
-  event IslandAddedEvent(int32 coordinatesX, int32 coordinatesY);
+  event IslandAddedEvent(uint32 coordinatesX, uint32 coordinatesY);
 
   function _requireNamespaceOwner() internal view {
     ResourceId _thisSystemId = SystemRegistry.get(address(this));
@@ -23,7 +23,7 @@ contract MapSystem is System {
     require(_thisNamespaceOwner == _msgSender(), "Require namespace owner");
   }
 
-  function mapAddIsland(int32 coordinatesX, int32 coordinatesY, ItemIdQuantityPair[] memory resources) public {
+  function mapAddIsland(uint32 coordinatesX, uint32 coordinatesY, ItemIdQuantityPair[] memory resources) public {
     _requireNamespaceOwner();
     MapData memory mapData = Map.get();
     require(

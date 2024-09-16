@@ -16,9 +16,9 @@ import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol"
 library MapAggregateLib {
   using WorldResourceIdInstance for ResourceId;
 
-  event MapIslandClaimedEvent(int32 coordinatesX, int32 coordinatesY, uint256 claimedBy, uint64 claimedAt);
+  event MapIslandClaimedEvent(uint32 coordinatesX, uint32 coordinatesY, uint256 claimedBy, uint64 claimedAt);
 
-  event IslandResourcesGatheredEvent(uint256 playerId, uint64 gatheredAt, int32 coordinatesX, int32 coordinatesY);
+  event IslandResourcesGatheredEvent(uint256 playerId, uint64 gatheredAt, uint32 coordinatesX, uint32 coordinatesY);
 
   function _requireNamespaceOwner() internal view {
     ResourceId _thisSystemId = SystemRegistry.get(address(this));
@@ -26,7 +26,7 @@ library MapAggregateLib {
     require(_thisNamespaceOwner == WorldContextConsumerLib._msgSender(), "Require namespace owner");
   }
 
-  function claimIsland(int32 coordinatesX, int32 coordinatesY, uint256 claimedBy, uint64 claimedAt) internal {
+  function claimIsland(uint32 coordinatesX, uint32 coordinatesY, uint256 claimedBy, uint64 claimedAt) internal {
     MapData memory mapData = Map.get();
     require(
       !(mapData.width == uint32(0) && mapData.height == uint32(0)),
@@ -38,7 +38,7 @@ library MapAggregateLib {
     Map.set(updatedMapData);
   }
 
-  function gatherIslandResources(uint256 playerId, int32 coordinatesX, int32 coordinatesY) internal returns (ItemIdQuantityPair[] memory) {
+  function gatherIslandResources(uint256 playerId, uint32 coordinatesX, uint32 coordinatesY) internal returns (ItemIdQuantityPair[] memory) {
     MapData memory mapData = Map.get();
     require(
       !(mapData.width == uint32(0) && mapData.height == uint32(0)),

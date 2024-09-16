@@ -45,11 +45,11 @@ interface IAggregatorServiceSystem {
     uint256 rosterPlayerId,
     uint32 rosterSequenceNumber,
     uint256 playerId,
-    int32 targetCoordinatesX,
-    int32 targetCoordinatesY,
+    uint32 targetCoordinatesX,
+    uint32 targetCoordinatesY,
     uint64 energyAmount,
     uint64 sailDuration,
-    int32 updatedCoordinatesX,
-    int32 updatedCoordinatesY
+    uint32 updatedCoordinatesX,
+    uint32 updatedCoordinatesY
   ) external;
 }

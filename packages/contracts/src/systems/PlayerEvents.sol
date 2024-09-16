@@ -11,8 +11,8 @@ struct PlayerCreated {
 
 struct IslandClaimed {
   uint256 id;
-  int32 coordinatesX;
-  int32 coordinatesY;
+  uint32 coordinatesX;
+  uint32 coordinatesY;
   uint64 claimedAt;
 }
 

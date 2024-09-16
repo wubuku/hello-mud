@@ -5,7 +5,7 @@ pragma solidity >=0.8.24;
 
 
 struct Coordinates {
-  int32 x;
-  int32 y;
+  uint32 x;
+  uint32 y;
 }
 

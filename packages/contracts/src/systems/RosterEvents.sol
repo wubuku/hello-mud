@@ -11,8 +11,8 @@ struct RosterCreated {
 struct EnvironmentRosterCreated {
   uint256 playerId;
   uint32 sequenceNumber;
-  int32 coordinatesX;
-  int32 coordinatesY;
+  uint32 coordinatesX;
+  uint32 coordinatesY;
   uint32 shipResourceQuantity;
   uint32 shipBaseResourceQuantity;
   uint32 baseExperience;
@@ -28,12 +28,12 @@ struct RosterShipAdded {
 struct RosterSetSail {
   uint256 playerId;
   uint32 sequenceNumber;
-  int32 targetCoordinatesX;
-  int32 targetCoordinatesY;
+  uint32 targetCoordinatesX;
+  uint32 targetCoordinatesY;
   uint64 sailDuration;
   uint64 setSailAt;
-  int32 updatedCoordinatesX;
-  int32 updatedCoordinatesY;
+  uint32 updatedCoordinatesX;
+  uint32 updatedCoordinatesY;
   uint64 energyCost;
 }
 
@@ -65,15 +65,15 @@ struct RosterShipInventoryTakenOut {
   uint256 playerId;
   uint32 sequenceNumber;
   uint256 shipId;
-  int32 updatedCoordinatesX;
-  int32 updatedCoordinatesY;
+  uint32 updatedCoordinatesX;
+  uint32 updatedCoordinatesY;
 }
 
 struct RosterShipInventoryPutIn {
   uint256 playerId;
   uint32 sequenceNumber;
   uint256 shipId;
-  int32 updatedCoordinatesX;
-  int32 updatedCoordinatesY;
+  uint32 updatedCoordinatesX;
+  uint32 updatedCoordinatesY;
 }
 

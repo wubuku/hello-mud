@@ -6,8 +6,8 @@ import { TerrainData } from "../codegen/index.sol";
 
 library TerrainUpdateLogic {
   function verify(
-    int32 x,
-    int32 y,
+    uint32 x,
+    uint32 y,
     string memory terrainType,
     uint8[] memory foo,
     bytes memory bar,

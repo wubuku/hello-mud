@@ -14,8 +14,8 @@ interface IRosterSystem {
   function app__rosterCreateEnvironmentRoster(
     uint256 playerId,
     uint32 sequenceNumber,
-    int32 coordinatesX,
-    int32 coordinatesY,
+    uint32 coordinatesX,
+    uint32 coordinatesY,
     uint32 shipResourceQuantity,
     uint32 shipBaseResourceQuantity,
     uint32 baseExperience
@@ -50,8 +50,8 @@ interface IRosterSystem {
     uint32 sequenceNumber,
     uint256 shipId,
     ItemIdQuantityPair[] memory itemIdQuantityPairs,
-    int32 updatedCoordinatesX,
-    int32 updatedCoordinatesY
+    uint32 updatedCoordinatesX,
+    uint32 updatedCoordinatesY
   ) external;
 
   function app__rosterPutInShipInventory(
@@ -59,7 +59,7 @@ interface IRosterSystem {
     uint32 sequenceNumber,
     uint256 shipId,
     ItemIdQuantityPair[] memory itemIdQuantityPairs,
-    int32 updatedCoordinatesX,
-    int32 updatedCoordinatesY
+    uint32 updatedCoordinatesX,
+    uint32 updatedCoordinatesY
   ) external;
 }
