@@ -17,6 +17,7 @@ import { EncodedLengths, EncodedLengthsLib } from "@latticexyz/store/src/Encoded
 import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 
 struct MapData {
+  bool existing;
   uint32 width;
   uint32 height;
 }
@@ -26,12 +27,12 @@ library Map {
   ResourceId constant _tableId = ResourceId.wrap(0x746261707000000000000000000000004d617000000000000000000000000000);
 
   FieldLayout constant _fieldLayout =
-    FieldLayout.wrap(0x0008020004040000000000000000000000000000000000000000000000000000);
+    FieldLayout.wrap(0x0009030001040400000000000000000000000000000000000000000000000000);
 
   // Hex-encoded key schema of ()
   Schema constant _keySchema = Schema.wrap(0x0000000000000000000000000000000000000000000000000000000000000000);
-  // Hex-encoded value schema of (uint32, uint32)
-  Schema constant _valueSchema = Schema.wrap(0x0008020003030000000000000000000000000000000000000000000000000000);
+  // Hex-encoded value schema of (bool, uint32, uint32)
+  Schema constant _valueSchema = Schema.wrap(0x0009030060030300000000000000000000000000000000000000000000000000);
 
   /**
    * @notice Get the table's key field names.
@@ -46,9 +47,10 @@ library Map {
    * @return fieldNames An array of strings with the names of value fields.
    */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
-    fieldNames = new string[](2);
-    fieldNames[0] = "width";
-    fieldNames[1] = "height";
+    fieldNames = new string[](3);
+    fieldNames[0] = "existing";
+    fieldNames[1] = "width";
+    fieldNames[2] = "height";
   }
 
   /**
@@ -66,12 +68,50 @@ library Map {
   }
 
   /**
+   * @notice Get existing.
+   */
+  function getExisting() internal view returns (bool existing) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
+    return (_toBool(uint8(bytes1(_blob))));
+  }
+
+  /**
+   * @notice Get existing.
+   */
+  function _getExisting() internal view returns (bool existing) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
+    return (_toBool(uint8(bytes1(_blob))));
+  }
+
+  /**
+   * @notice Set existing.
+   */
+  function setExisting(bool existing) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((existing)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set existing.
+   */
+  function _setExisting(bool existing) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((existing)), _fieldLayout);
+  }
+
+  /**
    * @notice Get width.
    */
   function getWidth() internal view returns (uint32 width) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
     return (uint32(bytes4(_blob)));
   }
 
@@ -81,7 +121,7 @@ library Map {
   function _getWidth() internal view returns (uint32 width) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
     return (uint32(bytes4(_blob)));
   }
 
@@ -91,7 +131,7 @@ library Map {
   function setWidth(uint32 width) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((width)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((width)), _fieldLayout);
   }
 
   /**
@@ -100,7 +140,7 @@ library Map {
   function _setWidth(uint32 width) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((width)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((width)), _fieldLayout);
   }
 
   /**
@@ -109,7 +149,7 @@ library Map {
   function getHeight() internal view returns (uint32 height) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
     return (uint32(bytes4(_blob)));
   }
 
@@ -119,7 +159,7 @@ library Map {
   function _getHeight() internal view returns (uint32 height) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
     return (uint32(bytes4(_blob)));
   }
 
@@ -129,7 +169,7 @@ library Map {
   function setHeight(uint32 height) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((height)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((height)), _fieldLayout);
   }
 
   /**
@@ -138,7 +178,7 @@ library Map {
   function _setHeight(uint32 height) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((height)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((height)), _fieldLayout);
   }
 
   /**
@@ -172,8 +212,8 @@ library Map {
   /**
    * @notice Set the full data using individual values.
    */
-  function set(uint32 width, uint32 height) internal {
-    bytes memory _staticData = encodeStatic(width, height);
+  function set(bool existing, uint32 width, uint32 height) internal {
+    bytes memory _staticData = encodeStatic(existing, width, height);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
@@ -186,8 +226,8 @@ library Map {
   /**
    * @notice Set the full data using individual values.
    */
-  function _set(uint32 width, uint32 height) internal {
-    bytes memory _staticData = encodeStatic(width, height);
+  function _set(bool existing, uint32 width, uint32 height) internal {
+    bytes memory _staticData = encodeStatic(existing, width, height);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
@@ -201,7 +241,7 @@ library Map {
    * @notice Set the full data using the data struct.
    */
   function set(MapData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.width, _table.height);
+    bytes memory _staticData = encodeStatic(_table.existing, _table.width, _table.height);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
@@ -215,7 +255,7 @@ library Map {
    * @notice Set the full data using the data struct.
    */
   function _set(MapData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.width, _table.height);
+    bytes memory _staticData = encodeStatic(_table.existing, _table.width, _table.height);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
@@ -228,10 +268,12 @@ library Map {
   /**
    * @notice Decode the tightly packed blob of static data using this table's field layout.
    */
-  function decodeStatic(bytes memory _blob) internal pure returns (uint32 width, uint32 height) {
-    width = (uint32(Bytes.getBytes4(_blob, 0)));
+  function decodeStatic(bytes memory _blob) internal pure returns (bool existing, uint32 width, uint32 height) {
+    existing = (_toBool(uint8(Bytes.getBytes1(_blob, 0))));
 
-    height = (uint32(Bytes.getBytes4(_blob, 4)));
+    width = (uint32(Bytes.getBytes4(_blob, 1)));
+
+    height = (uint32(Bytes.getBytes4(_blob, 5)));
   }
 
   /**
@@ -245,7 +287,7 @@ library Map {
     EncodedLengths,
     bytes memory
   ) internal pure returns (MapData memory _table) {
-    (_table.width, _table.height) = decodeStatic(_staticData);
+    (_table.existing, _table.width, _table.height) = decodeStatic(_staticData);
   }
 
   /**
@@ -270,8 +312,8 @@ library Map {
    * @notice Tightly pack static (fixed length) data using this table's schema.
    * @return The static data, encoded into a sequence of bytes.
    */
-  function encodeStatic(uint32 width, uint32 height) internal pure returns (bytes memory) {
-    return abi.encodePacked(width, height);
+  function encodeStatic(bool existing, uint32 width, uint32 height) internal pure returns (bytes memory) {
+    return abi.encodePacked(existing, width, height);
   }
 
   /**
@@ -280,8 +322,12 @@ library Map {
    * @return The lengths of the dynamic fields (packed into a single bytes32 value).
    * @return The dynamic (variable length) data, encoded into a sequence of bytes.
    */
-  function encode(uint32 width, uint32 height) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
-    bytes memory _staticData = encodeStatic(width, height);
+  function encode(
+    bool existing,
+    uint32 width,
+    uint32 height
+  ) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
+    bytes memory _staticData = encodeStatic(existing, width, height);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
@@ -296,5 +342,17 @@ library Map {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     return _keyTuple;
+  }
+}
+
+/**
+ * @notice Cast a value to a bool.
+ * @dev Boolean values are encoded as uint8 (1 = true, 0 = false), but Solidity doesn't allow casting between uint8 and bool.
+ * @param value The uint8 value to convert.
+ * @return result The boolean value.
+ */
+function _toBool(uint8 value) pure returns (bool result) {
+  assembly {
+    result := value
   }
 }

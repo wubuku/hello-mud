@@ -22,3 +22,15 @@ struct IslandResourcesGathered {
   uint32 coordinatesY;
 }
 
+struct MapCreated {
+  bool existing;
+  uint32 width;
+  uint32 height;
+}
+
+struct MapUpdated {
+  bool existing;
+  uint32 width;
+  uint32 height;
+}
+

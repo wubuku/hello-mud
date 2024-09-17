@@ -11,13 +11,10 @@ library ItemCreateLogic {
     uint32 sellsFor,
     string memory name
   ) internal pure returns (ItemCreated memory) {
-    // TODO ...
-    //return ItemCreated(...);
+    return ItemCreated(itemId, requiredForCompletion, sellsFor, name);
   }
 
-  function mutate(
-    ItemCreated memory itemCreated
-  ) internal pure returns (ItemData memory) {
-    // TODO ...
+  function mutate(ItemCreated memory itemCreated) internal pure returns (ItemData memory) {
+    return ItemData(itemCreated.requiredForCompletion, itemCreated.sellsFor, itemCreated.name);
   }
 }

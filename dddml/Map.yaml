@@ -1,9 +1,15 @@
 singletonObjects:
   Map:
+    metadata:
+      Preprocessors: [ "CRUD_IT" ]
+      #CRUD_IT_NO_UPDATE: true
+      CRUD_IT_NO_DELETE: true
     friends:
       - Player.ClaimIsland
       - Player.GatherIslandResources
     properties:
+      Existing:
+        type: bool
       Width:
         type: u32
       Height:

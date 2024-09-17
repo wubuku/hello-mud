@@ -29,7 +29,7 @@ library MapAggregateLib {
   function claimIsland(uint32 coordinatesX, uint32 coordinatesY, uint256 claimedBy, uint64 claimedAt) internal {
     MapData memory mapData = Map.get();
     require(
-      !(mapData.width == uint32(0) && mapData.height == uint32(0)),
+      !(mapData.existing == false && mapData.width == uint32(0) && mapData.height == uint32(0)),
       "Map does not exist"
     );
     MapIslandClaimed memory mapIslandClaimed = MapClaimIslandLogic.verify(coordinatesX, coordinatesY, claimedBy, claimedAt, mapData);
@@ -41,7 +41,7 @@ library MapAggregateLib {
   function gatherIslandResources(uint256 playerId, uint32 coordinatesX, uint32 coordinatesY) internal returns (ItemIdQuantityPair[] memory) {
     MapData memory mapData = Map.get();
     require(
-      !(mapData.width == uint32(0) && mapData.height == uint32(0)),
+      !(mapData.existing == false && mapData.width == uint32(0) && mapData.height == uint32(0)),
       "Map does not exist"
     );
     IslandResourcesGathered memory islandResourcesGathered = MapGatherIslandResourcesLogic.verify(playerId, coordinatesX, coordinatesY, mapData);

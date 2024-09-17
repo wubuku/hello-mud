@@ -30,4 +30,42 @@ library MapDelegationLib {
 
   }
 
+  function create(bool existing, uint32 width, uint32 height) internal {
+    ResourceId mapSystemId = WorldResourceIdLib.encode({
+      typeId: RESOURCE_SYSTEM,
+      namespace: "app",
+      name: "MapSystem"
+    });
+
+    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
+    world.callFrom(
+      WorldContextConsumerLib._msgSender(),
+      mapSystemId,
+      abi.encodeWithSignature(
+        "mapCreate(bool,uint32,uint32)",
+        existing, width, height
+      )
+    );
+
+  }
+
+  function update(bool existing, uint32 width, uint32 height) internal {
+    ResourceId mapSystemId = WorldResourceIdLib.encode({
+      typeId: RESOURCE_SYSTEM,
+      namespace: "app",
+      name: "MapSystem"
+    });
+
+    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
+    world.callFrom(
+      WorldContextConsumerLib._msgSender(),
+      mapSystemId,
+      abi.encodeWithSignature(
+        "mapUpdate(bool,uint32,uint32)",
+        existing, width, height
+      )
+    );
+
+  }
+
 }
