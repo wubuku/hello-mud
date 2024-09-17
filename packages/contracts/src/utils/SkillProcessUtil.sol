@@ -11,7 +11,7 @@ library SkillProcessUtil {
   error IncorrectSkillType(uint8 expectedSkillType, uint8 actualSkillType);
   error IncorrectItemId(uint32 expectedItemId, uint32 actualItemId);
 
-  function skillTypeMaxSequenceNumber(uint8 skillType) public pure returns (uint8) {
+  function skillTypeMaxSequenceNumber(uint8 skillType) internal pure returns (uint8) {
     return skillType == SkillType.FARMING ? 1 : 0;
   }
 
@@ -19,7 +19,7 @@ library SkillProcessUtil {
     uint256 playerId,
     SkillTypeItemIdPair memory itemCreationId,
     SkillProcessId memory skillProcessId
-  ) public pure returns (uint256, uint8, uint32) {
+  ) internal pure returns (uint256, uint8, uint32) {
     uint256 _playerId = skillProcessId.playerId;
     if (playerId != _playerId) revert InvalidPlayerId(playerId, _playerId);
 
@@ -35,7 +35,7 @@ library SkillProcessUtil {
     SkillTypeItemIdPair memory itemCreationId,
     SkillProcessId memory skillProcessId,
     SkillProcessData memory skillProcessData
-  ) public pure returns (uint256, uint8, uint32) {
+  ) internal pure returns (uint256, uint8, uint32) {
     (uint256 _playerId, uint8 skillType, uint32 itemId) = assertIdsAreConsistentForStartingCreation(
       playerId,
       itemCreationId,

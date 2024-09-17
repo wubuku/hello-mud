@@ -15,6 +15,7 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import { SkillType } from "../src/systems/SkillType.sol";
 import { PlayerIdGenerator } from "../src/codegen/index.sol";
+import { ItemIdQuantityPair } from "../src/systems/ItemIdQuantityPair.sol";
 
 contract PostDeploy is Script {
   function run(address worldAddress) external {
@@ -57,6 +58,10 @@ contract PostDeploy is Script {
     world.app__mapCreate(true, 0, 0); // Width and height not used
     console.log("Created map");
 
+    uint32 firstIslandX = 2147483647;
+    uint32 firstIslandY = 2147483647;
+    addInitialIsland(world, firstIslandX, firstIslandY);
+
     createItems(world);
     console.log("Created items");
 
@@ -79,6 +84,7 @@ contract PostDeploy is Script {
     world.app__playerCreate("TestPlayer");
     uint256 playerId = PlayerIdGenerator.getId();
     console.log("Created test player, playerId:", playerId);
+
     // Airdrop items to the test player
     world.app__playerAirdrop(playerId, 1, 100); // 100 PotatoSeeds
     world.app__playerAirdrop(playerId, 2, 50); // 50 CottonSeeds
@@ -87,12 +93,40 @@ contract PostDeploy is Script {
     world.app__playerAirdrop(playerId, 302, 150); // 150 TinOre
     console.log("Airdropped items to test player");
 
+    world.app__playerClaimIsland(playerId, firstIslandX, firstIslandY);
+    console.log("An island claimed by test player");
+
     // Tests...
     // Call increment on the world via the registered function selector
     //uint32 newValue = IWorld(worldAddress).app__increment();
     //console.log("Increment via IWorld:", newValue);
 
     vm.stopBroadcast();
+  }
+
+  function addInitialIsland(IWorld world, uint32 coordinatesX, uint32 coordinatesY) internal {
+    ItemIdQuantityPair[] memory islandResources = createIslandResources();
+
+    console.log("Adding an island to the map at coordinates (%d, %d)", coordinatesX, coordinatesY);
+    logIslandResources(islandResources);
+
+    world.app__mapAddIsland(coordinatesX, coordinatesY, islandResources);
+    console.log("Island added successfully.");
+  }
+
+  function createIslandResources() internal pure returns (ItemIdQuantityPair[] memory) {
+    ItemIdQuantityPair[] memory resources = new ItemIdQuantityPair[](3);
+    resources[0] = ItemIdQuantityPair(2, 200); // CottonSeeds
+    resources[1] = ItemIdQuantityPair(2000000001, 100); // ResourceTypeWoodcutting
+    resources[2] = ItemIdQuantityPair(2000000003, 200); // ResourceTypeMining
+    return resources;
+  }
+
+  function logIslandResources(ItemIdQuantityPair[] memory resources) internal view {
+    console.log("With the following resources:");
+    for (uint i = 0; i < resources.length; i++) {
+      console.log("    ItemId: %d, Quantity: %d", resources[i].itemId, resources[i].quantity);
+    }
   }
 
   function createItems(IWorld world) internal {

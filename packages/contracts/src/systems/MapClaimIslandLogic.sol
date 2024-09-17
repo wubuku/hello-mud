@@ -2,8 +2,7 @@
 pragma solidity >=0.8.24;
 
 import { MapIslandClaimed } from "./MapEvents.sol";
-import { MapData } from "../codegen/index.sol";
-import { MapLocation } from "../codegen/tables/MapLocation.sol";
+import { MapData, MapLocation } from "../codegen/index.sol";
 import { SortedVectorUtil } from "../utils/SortedVectorUtil.sol";
 import { MapLocationType } from "./MapLocationType.sol";
 
