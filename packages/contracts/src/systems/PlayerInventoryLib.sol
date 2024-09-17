@@ -57,4 +57,12 @@ library PlayerInventoryLib {
     }
     return inventory_;
   }
+
+  function getInventoryCount(uint256 playerId) internal view returns (uint64) {
+    return PlayerInventoryCount.get(playerId);
+  }
+
+  function getInventoryByIndex(uint256 playerId, uint64 index) internal view returns (PlayerInventoryData memory) {
+    return PlayerInventory.get(playerId, index);
+  }
 }

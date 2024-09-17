@@ -19,12 +19,18 @@ import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 struct RosterData {
   uint8 status;
   uint32 speed;
+  uint32 baseExperience;
+  bool environmentOwned;
+  uint32 updatedCoordinatesX;
+  uint32 updatedCoordinatesY;
   uint64 coordinatesUpdatedAt;
+  uint32 targetCoordinatesX;
+  uint32 targetCoordinatesY;
+  uint32 originCoordinatesX;
+  uint32 originCoordinatesY;
   uint64 sailDuration;
   uint64 setSailAt;
   uint256 shipBattleId;
-  bool environmentOwned;
-  uint32 baseExperience;
   uint256[] shipIds;
 }
 
@@ -33,12 +39,12 @@ library Roster {
   ResourceId constant _tableId = ResourceId.wrap(0x74626170700000000000000000000000526f7374657200000000000000000000);
 
   FieldLayout constant _fieldLayout =
-    FieldLayout.wrap(0x0042080101040808082001040000000000000000000000000000000000000000);
+    FieldLayout.wrap(0x005a0e0101040401040408040404040808200000000000000000000000000000);
 
   // Hex-encoded key schema of (uint256, uint32)
   Schema constant _keySchema = Schema.wrap(0x002402001f030000000000000000000000000000000000000000000000000000);
-  // Hex-encoded value schema of (uint8, uint32, uint64, uint64, uint64, uint256, bool, uint32, uint256[])
-  Schema constant _valueSchema = Schema.wrap(0x0042080100030707071f60038100000000000000000000000000000000000000);
+  // Hex-encoded value schema of (uint8, uint32, uint32, bool, uint32, uint32, uint64, uint32, uint32, uint32, uint32, uint64, uint64, uint256, uint256[])
+  Schema constant _valueSchema = Schema.wrap(0x005a0e01000303600303070303030307071f8100000000000000000000000000);
 
   /**
    * @notice Get the table's key field names.
@@ -55,16 +61,22 @@ library Roster {
    * @return fieldNames An array of strings with the names of value fields.
    */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
-    fieldNames = new string[](9);
+    fieldNames = new string[](15);
     fieldNames[0] = "status";
     fieldNames[1] = "speed";
-    fieldNames[2] = "coordinatesUpdatedAt";
-    fieldNames[3] = "sailDuration";
-    fieldNames[4] = "setSailAt";
-    fieldNames[5] = "shipBattleId";
-    fieldNames[6] = "environmentOwned";
-    fieldNames[7] = "baseExperience";
-    fieldNames[8] = "shipIds";
+    fieldNames[2] = "baseExperience";
+    fieldNames[3] = "environmentOwned";
+    fieldNames[4] = "updatedCoordinatesX";
+    fieldNames[5] = "updatedCoordinatesY";
+    fieldNames[6] = "coordinatesUpdatedAt";
+    fieldNames[7] = "targetCoordinatesX";
+    fieldNames[8] = "targetCoordinatesY";
+    fieldNames[9] = "originCoordinatesX";
+    fieldNames[10] = "originCoordinatesY";
+    fieldNames[11] = "sailDuration";
+    fieldNames[12] = "setSailAt";
+    fieldNames[13] = "shipBattleId";
+    fieldNames[14] = "shipIds";
   }
 
   /**
@@ -174,6 +186,202 @@ library Roster {
   }
 
   /**
+   * @notice Get baseExperience.
+   */
+  function getBaseExperience(uint256 playerId, uint32 sequenceNumber) internal view returns (uint32 baseExperience) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
+    return (uint32(bytes4(_blob)));
+  }
+
+  /**
+   * @notice Get baseExperience.
+   */
+  function _getBaseExperience(uint256 playerId, uint32 sequenceNumber) internal view returns (uint32 baseExperience) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
+    return (uint32(bytes4(_blob)));
+  }
+
+  /**
+   * @notice Set baseExperience.
+   */
+  function setBaseExperience(uint256 playerId, uint32 sequenceNumber, uint32 baseExperience) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((baseExperience)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set baseExperience.
+   */
+  function _setBaseExperience(uint256 playerId, uint32 sequenceNumber, uint32 baseExperience) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((baseExperience)), _fieldLayout);
+  }
+
+  /**
+   * @notice Get environmentOwned.
+   */
+  function getEnvironmentOwned(uint256 playerId, uint32 sequenceNumber) internal view returns (bool environmentOwned) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
+    return (_toBool(uint8(bytes1(_blob))));
+  }
+
+  /**
+   * @notice Get environmentOwned.
+   */
+  function _getEnvironmentOwned(uint256 playerId, uint32 sequenceNumber) internal view returns (bool environmentOwned) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
+    return (_toBool(uint8(bytes1(_blob))));
+  }
+
+  /**
+   * @notice Set environmentOwned.
+   */
+  function setEnvironmentOwned(uint256 playerId, uint32 sequenceNumber, bool environmentOwned) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((environmentOwned)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set environmentOwned.
+   */
+  function _setEnvironmentOwned(uint256 playerId, uint32 sequenceNumber, bool environmentOwned) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((environmentOwned)), _fieldLayout);
+  }
+
+  /**
+   * @notice Get updatedCoordinatesX.
+   */
+  function getUpdatedCoordinatesX(
+    uint256 playerId,
+    uint32 sequenceNumber
+  ) internal view returns (uint32 updatedCoordinatesX) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 4, _fieldLayout);
+    return (uint32(bytes4(_blob)));
+  }
+
+  /**
+   * @notice Get updatedCoordinatesX.
+   */
+  function _getUpdatedCoordinatesX(
+    uint256 playerId,
+    uint32 sequenceNumber
+  ) internal view returns (uint32 updatedCoordinatesX) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 4, _fieldLayout);
+    return (uint32(bytes4(_blob)));
+  }
+
+  /**
+   * @notice Set updatedCoordinatesX.
+   */
+  function setUpdatedCoordinatesX(uint256 playerId, uint32 sequenceNumber, uint32 updatedCoordinatesX) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 4, abi.encodePacked((updatedCoordinatesX)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set updatedCoordinatesX.
+   */
+  function _setUpdatedCoordinatesX(uint256 playerId, uint32 sequenceNumber, uint32 updatedCoordinatesX) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 4, abi.encodePacked((updatedCoordinatesX)), _fieldLayout);
+  }
+
+  /**
+   * @notice Get updatedCoordinatesY.
+   */
+  function getUpdatedCoordinatesY(
+    uint256 playerId,
+    uint32 sequenceNumber
+  ) internal view returns (uint32 updatedCoordinatesY) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 5, _fieldLayout);
+    return (uint32(bytes4(_blob)));
+  }
+
+  /**
+   * @notice Get updatedCoordinatesY.
+   */
+  function _getUpdatedCoordinatesY(
+    uint256 playerId,
+    uint32 sequenceNumber
+  ) internal view returns (uint32 updatedCoordinatesY) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 5, _fieldLayout);
+    return (uint32(bytes4(_blob)));
+  }
+
+  /**
+   * @notice Set updatedCoordinatesY.
+   */
+  function setUpdatedCoordinatesY(uint256 playerId, uint32 sequenceNumber, uint32 updatedCoordinatesY) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 5, abi.encodePacked((updatedCoordinatesY)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set updatedCoordinatesY.
+   */
+  function _setUpdatedCoordinatesY(uint256 playerId, uint32 sequenceNumber, uint32 updatedCoordinatesY) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 5, abi.encodePacked((updatedCoordinatesY)), _fieldLayout);
+  }
+
+  /**
    * @notice Get coordinatesUpdatedAt.
    */
   function getCoordinatesUpdatedAt(
@@ -184,7 +392,7 @@ library Roster {
     _keyTuple[0] = bytes32(uint256(playerId));
     _keyTuple[1] = bytes32(uint256(sequenceNumber));
 
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 6, _fieldLayout);
     return (uint64(bytes8(_blob)));
   }
 
@@ -199,7 +407,7 @@ library Roster {
     _keyTuple[0] = bytes32(uint256(playerId));
     _keyTuple[1] = bytes32(uint256(sequenceNumber));
 
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 6, _fieldLayout);
     return (uint64(bytes8(_blob)));
   }
 
@@ -211,7 +419,7 @@ library Roster {
     _keyTuple[0] = bytes32(uint256(playerId));
     _keyTuple[1] = bytes32(uint256(sequenceNumber));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((coordinatesUpdatedAt)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 6, abi.encodePacked((coordinatesUpdatedAt)), _fieldLayout);
   }
 
   /**
@@ -222,7 +430,215 @@ library Roster {
     _keyTuple[0] = bytes32(uint256(playerId));
     _keyTuple[1] = bytes32(uint256(sequenceNumber));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((coordinatesUpdatedAt)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 6, abi.encodePacked((coordinatesUpdatedAt)), _fieldLayout);
+  }
+
+  /**
+   * @notice Get targetCoordinatesX.
+   */
+  function getTargetCoordinatesX(
+    uint256 playerId,
+    uint32 sequenceNumber
+  ) internal view returns (uint32 targetCoordinatesX) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 7, _fieldLayout);
+    return (uint32(bytes4(_blob)));
+  }
+
+  /**
+   * @notice Get targetCoordinatesX.
+   */
+  function _getTargetCoordinatesX(
+    uint256 playerId,
+    uint32 sequenceNumber
+  ) internal view returns (uint32 targetCoordinatesX) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 7, _fieldLayout);
+    return (uint32(bytes4(_blob)));
+  }
+
+  /**
+   * @notice Set targetCoordinatesX.
+   */
+  function setTargetCoordinatesX(uint256 playerId, uint32 sequenceNumber, uint32 targetCoordinatesX) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 7, abi.encodePacked((targetCoordinatesX)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set targetCoordinatesX.
+   */
+  function _setTargetCoordinatesX(uint256 playerId, uint32 sequenceNumber, uint32 targetCoordinatesX) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 7, abi.encodePacked((targetCoordinatesX)), _fieldLayout);
+  }
+
+  /**
+   * @notice Get targetCoordinatesY.
+   */
+  function getTargetCoordinatesY(
+    uint256 playerId,
+    uint32 sequenceNumber
+  ) internal view returns (uint32 targetCoordinatesY) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 8, _fieldLayout);
+    return (uint32(bytes4(_blob)));
+  }
+
+  /**
+   * @notice Get targetCoordinatesY.
+   */
+  function _getTargetCoordinatesY(
+    uint256 playerId,
+    uint32 sequenceNumber
+  ) internal view returns (uint32 targetCoordinatesY) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 8, _fieldLayout);
+    return (uint32(bytes4(_blob)));
+  }
+
+  /**
+   * @notice Set targetCoordinatesY.
+   */
+  function setTargetCoordinatesY(uint256 playerId, uint32 sequenceNumber, uint32 targetCoordinatesY) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 8, abi.encodePacked((targetCoordinatesY)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set targetCoordinatesY.
+   */
+  function _setTargetCoordinatesY(uint256 playerId, uint32 sequenceNumber, uint32 targetCoordinatesY) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 8, abi.encodePacked((targetCoordinatesY)), _fieldLayout);
+  }
+
+  /**
+   * @notice Get originCoordinatesX.
+   */
+  function getOriginCoordinatesX(
+    uint256 playerId,
+    uint32 sequenceNumber
+  ) internal view returns (uint32 originCoordinatesX) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 9, _fieldLayout);
+    return (uint32(bytes4(_blob)));
+  }
+
+  /**
+   * @notice Get originCoordinatesX.
+   */
+  function _getOriginCoordinatesX(
+    uint256 playerId,
+    uint32 sequenceNumber
+  ) internal view returns (uint32 originCoordinatesX) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 9, _fieldLayout);
+    return (uint32(bytes4(_blob)));
+  }
+
+  /**
+   * @notice Set originCoordinatesX.
+   */
+  function setOriginCoordinatesX(uint256 playerId, uint32 sequenceNumber, uint32 originCoordinatesX) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 9, abi.encodePacked((originCoordinatesX)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set originCoordinatesX.
+   */
+  function _setOriginCoordinatesX(uint256 playerId, uint32 sequenceNumber, uint32 originCoordinatesX) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 9, abi.encodePacked((originCoordinatesX)), _fieldLayout);
+  }
+
+  /**
+   * @notice Get originCoordinatesY.
+   */
+  function getOriginCoordinatesY(
+    uint256 playerId,
+    uint32 sequenceNumber
+  ) internal view returns (uint32 originCoordinatesY) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 10, _fieldLayout);
+    return (uint32(bytes4(_blob)));
+  }
+
+  /**
+   * @notice Get originCoordinatesY.
+   */
+  function _getOriginCoordinatesY(
+    uint256 playerId,
+    uint32 sequenceNumber
+  ) internal view returns (uint32 originCoordinatesY) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 10, _fieldLayout);
+    return (uint32(bytes4(_blob)));
+  }
+
+  /**
+   * @notice Set originCoordinatesY.
+   */
+  function setOriginCoordinatesY(uint256 playerId, uint32 sequenceNumber, uint32 originCoordinatesY) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 10, abi.encodePacked((originCoordinatesY)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set originCoordinatesY.
+   */
+  function _setOriginCoordinatesY(uint256 playerId, uint32 sequenceNumber, uint32 originCoordinatesY) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 10, abi.encodePacked((originCoordinatesY)), _fieldLayout);
   }
 
   /**
@@ -233,7 +649,7 @@ library Roster {
     _keyTuple[0] = bytes32(uint256(playerId));
     _keyTuple[1] = bytes32(uint256(sequenceNumber));
 
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 11, _fieldLayout);
     return (uint64(bytes8(_blob)));
   }
 
@@ -245,7 +661,7 @@ library Roster {
     _keyTuple[0] = bytes32(uint256(playerId));
     _keyTuple[1] = bytes32(uint256(sequenceNumber));
 
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 11, _fieldLayout);
     return (uint64(bytes8(_blob)));
   }
 
@@ -257,7 +673,7 @@ library Roster {
     _keyTuple[0] = bytes32(uint256(playerId));
     _keyTuple[1] = bytes32(uint256(sequenceNumber));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((sailDuration)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 11, abi.encodePacked((sailDuration)), _fieldLayout);
   }
 
   /**
@@ -268,7 +684,7 @@ library Roster {
     _keyTuple[0] = bytes32(uint256(playerId));
     _keyTuple[1] = bytes32(uint256(sequenceNumber));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((sailDuration)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 11, abi.encodePacked((sailDuration)), _fieldLayout);
   }
 
   /**
@@ -279,7 +695,7 @@ library Roster {
     _keyTuple[0] = bytes32(uint256(playerId));
     _keyTuple[1] = bytes32(uint256(sequenceNumber));
 
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 4, _fieldLayout);
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 12, _fieldLayout);
     return (uint64(bytes8(_blob)));
   }
 
@@ -291,7 +707,7 @@ library Roster {
     _keyTuple[0] = bytes32(uint256(playerId));
     _keyTuple[1] = bytes32(uint256(sequenceNumber));
 
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 4, _fieldLayout);
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 12, _fieldLayout);
     return (uint64(bytes8(_blob)));
   }
 
@@ -303,7 +719,7 @@ library Roster {
     _keyTuple[0] = bytes32(uint256(playerId));
     _keyTuple[1] = bytes32(uint256(sequenceNumber));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 4, abi.encodePacked((setSailAt)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 12, abi.encodePacked((setSailAt)), _fieldLayout);
   }
 
   /**
@@ -314,7 +730,7 @@ library Roster {
     _keyTuple[0] = bytes32(uint256(playerId));
     _keyTuple[1] = bytes32(uint256(sequenceNumber));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 4, abi.encodePacked((setSailAt)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 12, abi.encodePacked((setSailAt)), _fieldLayout);
   }
 
   /**
@@ -325,7 +741,7 @@ library Roster {
     _keyTuple[0] = bytes32(uint256(playerId));
     _keyTuple[1] = bytes32(uint256(sequenceNumber));
 
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 5, _fieldLayout);
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 13, _fieldLayout);
     return (uint256(bytes32(_blob)));
   }
 
@@ -337,7 +753,7 @@ library Roster {
     _keyTuple[0] = bytes32(uint256(playerId));
     _keyTuple[1] = bytes32(uint256(sequenceNumber));
 
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 5, _fieldLayout);
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 13, _fieldLayout);
     return (uint256(bytes32(_blob)));
   }
 
@@ -349,7 +765,7 @@ library Roster {
     _keyTuple[0] = bytes32(uint256(playerId));
     _keyTuple[1] = bytes32(uint256(sequenceNumber));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 5, abi.encodePacked((shipBattleId)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 13, abi.encodePacked((shipBattleId)), _fieldLayout);
   }
 
   /**
@@ -360,99 +776,7 @@ library Roster {
     _keyTuple[0] = bytes32(uint256(playerId));
     _keyTuple[1] = bytes32(uint256(sequenceNumber));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 5, abi.encodePacked((shipBattleId)), _fieldLayout);
-  }
-
-  /**
-   * @notice Get environmentOwned.
-   */
-  function getEnvironmentOwned(uint256 playerId, uint32 sequenceNumber) internal view returns (bool environmentOwned) {
-    bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(playerId));
-    _keyTuple[1] = bytes32(uint256(sequenceNumber));
-
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 6, _fieldLayout);
-    return (_toBool(uint8(bytes1(_blob))));
-  }
-
-  /**
-   * @notice Get environmentOwned.
-   */
-  function _getEnvironmentOwned(uint256 playerId, uint32 sequenceNumber) internal view returns (bool environmentOwned) {
-    bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(playerId));
-    _keyTuple[1] = bytes32(uint256(sequenceNumber));
-
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 6, _fieldLayout);
-    return (_toBool(uint8(bytes1(_blob))));
-  }
-
-  /**
-   * @notice Set environmentOwned.
-   */
-  function setEnvironmentOwned(uint256 playerId, uint32 sequenceNumber, bool environmentOwned) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(playerId));
-    _keyTuple[1] = bytes32(uint256(sequenceNumber));
-
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 6, abi.encodePacked((environmentOwned)), _fieldLayout);
-  }
-
-  /**
-   * @notice Set environmentOwned.
-   */
-  function _setEnvironmentOwned(uint256 playerId, uint32 sequenceNumber, bool environmentOwned) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(playerId));
-    _keyTuple[1] = bytes32(uint256(sequenceNumber));
-
-    StoreCore.setStaticField(_tableId, _keyTuple, 6, abi.encodePacked((environmentOwned)), _fieldLayout);
-  }
-
-  /**
-   * @notice Get baseExperience.
-   */
-  function getBaseExperience(uint256 playerId, uint32 sequenceNumber) internal view returns (uint32 baseExperience) {
-    bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(playerId));
-    _keyTuple[1] = bytes32(uint256(sequenceNumber));
-
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 7, _fieldLayout);
-    return (uint32(bytes4(_blob)));
-  }
-
-  /**
-   * @notice Get baseExperience.
-   */
-  function _getBaseExperience(uint256 playerId, uint32 sequenceNumber) internal view returns (uint32 baseExperience) {
-    bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(playerId));
-    _keyTuple[1] = bytes32(uint256(sequenceNumber));
-
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 7, _fieldLayout);
-    return (uint32(bytes4(_blob)));
-  }
-
-  /**
-   * @notice Set baseExperience.
-   */
-  function setBaseExperience(uint256 playerId, uint32 sequenceNumber, uint32 baseExperience) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(playerId));
-    _keyTuple[1] = bytes32(uint256(sequenceNumber));
-
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 7, abi.encodePacked((baseExperience)), _fieldLayout);
-  }
-
-  /**
-   * @notice Set baseExperience.
-   */
-  function _setBaseExperience(uint256 playerId, uint32 sequenceNumber, uint32 baseExperience) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
-    _keyTuple[0] = bytes32(uint256(playerId));
-    _keyTuple[1] = bytes32(uint256(sequenceNumber));
-
-    StoreCore.setStaticField(_tableId, _keyTuple, 7, abi.encodePacked((baseExperience)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 13, abi.encodePacked((shipBattleId)), _fieldLayout);
   }
 
   /**
@@ -671,23 +995,35 @@ library Roster {
     uint32 sequenceNumber,
     uint8 status,
     uint32 speed,
+    uint32 baseExperience,
+    bool environmentOwned,
+    uint32 updatedCoordinatesX,
+    uint32 updatedCoordinatesY,
     uint64 coordinatesUpdatedAt,
+    uint32 targetCoordinatesX,
+    uint32 targetCoordinatesY,
+    uint32 originCoordinatesX,
+    uint32 originCoordinatesY,
     uint64 sailDuration,
     uint64 setSailAt,
     uint256 shipBattleId,
-    bool environmentOwned,
-    uint32 baseExperience,
     uint256[] memory shipIds
   ) internal {
     bytes memory _staticData = encodeStatic(
       status,
       speed,
+      baseExperience,
+      environmentOwned,
+      updatedCoordinatesX,
+      updatedCoordinatesY,
       coordinatesUpdatedAt,
+      targetCoordinatesX,
+      targetCoordinatesY,
+      originCoordinatesX,
+      originCoordinatesY,
       sailDuration,
       setSailAt,
-      shipBattleId,
-      environmentOwned,
-      baseExperience
+      shipBattleId
     );
 
     EncodedLengths _encodedLengths = encodeLengths(shipIds);
@@ -708,23 +1044,35 @@ library Roster {
     uint32 sequenceNumber,
     uint8 status,
     uint32 speed,
+    uint32 baseExperience,
+    bool environmentOwned,
+    uint32 updatedCoordinatesX,
+    uint32 updatedCoordinatesY,
     uint64 coordinatesUpdatedAt,
+    uint32 targetCoordinatesX,
+    uint32 targetCoordinatesY,
+    uint32 originCoordinatesX,
+    uint32 originCoordinatesY,
     uint64 sailDuration,
     uint64 setSailAt,
     uint256 shipBattleId,
-    bool environmentOwned,
-    uint32 baseExperience,
     uint256[] memory shipIds
   ) internal {
     bytes memory _staticData = encodeStatic(
       status,
       speed,
+      baseExperience,
+      environmentOwned,
+      updatedCoordinatesX,
+      updatedCoordinatesY,
       coordinatesUpdatedAt,
+      targetCoordinatesX,
+      targetCoordinatesY,
+      originCoordinatesX,
+      originCoordinatesY,
       sailDuration,
       setSailAt,
-      shipBattleId,
-      environmentOwned,
-      baseExperience
+      shipBattleId
     );
 
     EncodedLengths _encodedLengths = encodeLengths(shipIds);
@@ -744,12 +1092,18 @@ library Roster {
     bytes memory _staticData = encodeStatic(
       _table.status,
       _table.speed,
+      _table.baseExperience,
+      _table.environmentOwned,
+      _table.updatedCoordinatesX,
+      _table.updatedCoordinatesY,
       _table.coordinatesUpdatedAt,
+      _table.targetCoordinatesX,
+      _table.targetCoordinatesY,
+      _table.originCoordinatesX,
+      _table.originCoordinatesY,
       _table.sailDuration,
       _table.setSailAt,
-      _table.shipBattleId,
-      _table.environmentOwned,
-      _table.baseExperience
+      _table.shipBattleId
     );
 
     EncodedLengths _encodedLengths = encodeLengths(_table.shipIds);
@@ -769,12 +1123,18 @@ library Roster {
     bytes memory _staticData = encodeStatic(
       _table.status,
       _table.speed,
+      _table.baseExperience,
+      _table.environmentOwned,
+      _table.updatedCoordinatesX,
+      _table.updatedCoordinatesY,
       _table.coordinatesUpdatedAt,
+      _table.targetCoordinatesX,
+      _table.targetCoordinatesY,
+      _table.originCoordinatesX,
+      _table.originCoordinatesY,
       _table.sailDuration,
       _table.setSailAt,
-      _table.shipBattleId,
-      _table.environmentOwned,
-      _table.baseExperience
+      _table.shipBattleId
     );
 
     EncodedLengths _encodedLengths = encodeLengths(_table.shipIds);
@@ -798,29 +1158,47 @@ library Roster {
     returns (
       uint8 status,
       uint32 speed,
+      uint32 baseExperience,
+      bool environmentOwned,
+      uint32 updatedCoordinatesX,
+      uint32 updatedCoordinatesY,
       uint64 coordinatesUpdatedAt,
+      uint32 targetCoordinatesX,
+      uint32 targetCoordinatesY,
+      uint32 originCoordinatesX,
+      uint32 originCoordinatesY,
       uint64 sailDuration,
       uint64 setSailAt,
-      uint256 shipBattleId,
-      bool environmentOwned,
-      uint32 baseExperience
+      uint256 shipBattleId
     )
   {
     status = (uint8(Bytes.getBytes1(_blob, 0)));
 
     speed = (uint32(Bytes.getBytes4(_blob, 1)));
 
-    coordinatesUpdatedAt = (uint64(Bytes.getBytes8(_blob, 5)));
+    baseExperience = (uint32(Bytes.getBytes4(_blob, 5)));
 
-    sailDuration = (uint64(Bytes.getBytes8(_blob, 13)));
+    environmentOwned = (_toBool(uint8(Bytes.getBytes1(_blob, 9))));
 
-    setSailAt = (uint64(Bytes.getBytes8(_blob, 21)));
+    updatedCoordinatesX = (uint32(Bytes.getBytes4(_blob, 10)));
 
-    shipBattleId = (uint256(Bytes.getBytes32(_blob, 29)));
+    updatedCoordinatesY = (uint32(Bytes.getBytes4(_blob, 14)));
 
-    environmentOwned = (_toBool(uint8(Bytes.getBytes1(_blob, 61))));
+    coordinatesUpdatedAt = (uint64(Bytes.getBytes8(_blob, 18)));
 
-    baseExperience = (uint32(Bytes.getBytes4(_blob, 62)));
+    targetCoordinatesX = (uint32(Bytes.getBytes4(_blob, 26)));
+
+    targetCoordinatesY = (uint32(Bytes.getBytes4(_blob, 30)));
+
+    originCoordinatesX = (uint32(Bytes.getBytes4(_blob, 34)));
+
+    originCoordinatesY = (uint32(Bytes.getBytes4(_blob, 38)));
+
+    sailDuration = (uint64(Bytes.getBytes8(_blob, 42)));
+
+    setSailAt = (uint64(Bytes.getBytes8(_blob, 50)));
+
+    shipBattleId = (uint256(Bytes.getBytes32(_blob, 58)));
   }
 
   /**
@@ -852,12 +1230,18 @@ library Roster {
     (
       _table.status,
       _table.speed,
+      _table.baseExperience,
+      _table.environmentOwned,
+      _table.updatedCoordinatesX,
+      _table.updatedCoordinatesY,
       _table.coordinatesUpdatedAt,
+      _table.targetCoordinatesX,
+      _table.targetCoordinatesY,
+      _table.originCoordinatesX,
+      _table.originCoordinatesY,
       _table.sailDuration,
       _table.setSailAt,
-      _table.shipBattleId,
-      _table.environmentOwned,
-      _table.baseExperience
+      _table.shipBattleId
     ) = decodeStatic(_staticData);
 
     (_table.shipIds) = decodeDynamic(_encodedLengths, _dynamicData);
@@ -892,23 +1276,35 @@ library Roster {
   function encodeStatic(
     uint8 status,
     uint32 speed,
+    uint32 baseExperience,
+    bool environmentOwned,
+    uint32 updatedCoordinatesX,
+    uint32 updatedCoordinatesY,
     uint64 coordinatesUpdatedAt,
+    uint32 targetCoordinatesX,
+    uint32 targetCoordinatesY,
+    uint32 originCoordinatesX,
+    uint32 originCoordinatesY,
     uint64 sailDuration,
     uint64 setSailAt,
-    uint256 shipBattleId,
-    bool environmentOwned,
-    uint32 baseExperience
+    uint256 shipBattleId
   ) internal pure returns (bytes memory) {
     return
       abi.encodePacked(
         status,
         speed,
+        baseExperience,
+        environmentOwned,
+        updatedCoordinatesX,
+        updatedCoordinatesY,
         coordinatesUpdatedAt,
+        targetCoordinatesX,
+        targetCoordinatesY,
+        originCoordinatesX,
+        originCoordinatesY,
         sailDuration,
         setSailAt,
-        shipBattleId,
-        environmentOwned,
-        baseExperience
+        shipBattleId
       );
   }
 
@@ -940,23 +1336,35 @@ library Roster {
   function encode(
     uint8 status,
     uint32 speed,
+    uint32 baseExperience,
+    bool environmentOwned,
+    uint32 updatedCoordinatesX,
+    uint32 updatedCoordinatesY,
     uint64 coordinatesUpdatedAt,
+    uint32 targetCoordinatesX,
+    uint32 targetCoordinatesY,
+    uint32 originCoordinatesX,
+    uint32 originCoordinatesY,
     uint64 sailDuration,
     uint64 setSailAt,
     uint256 shipBattleId,
-    bool environmentOwned,
-    uint32 baseExperience,
     uint256[] memory shipIds
   ) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
     bytes memory _staticData = encodeStatic(
       status,
       speed,
+      baseExperience,
+      environmentOwned,
+      updatedCoordinatesX,
+      updatedCoordinatesY,
       coordinatesUpdatedAt,
+      targetCoordinatesX,
+      targetCoordinatesY,
+      originCoordinatesX,
+      originCoordinatesY,
       sailDuration,
       setSailAt,
-      shipBattleId,
-      environmentOwned,
-      baseExperience
+      shipBattleId
     );
 
     EncodedLengths _encodedLengths = encodeLengths(shipIds);

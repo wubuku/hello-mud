@@ -57,4 +57,12 @@ library ArticleTagLib {
     }
     return tags;
   }
+
+  function getTagCount(uint64 articleId) internal view returns (uint64) {
+    return ArticleTagCount.get(articleId);
+  }
+
+  function getTagByIndex(uint64 articleId, uint64 index) internal view returns (string memory) {
+    return ArticleTag.get(articleId, index);
+  }
 }

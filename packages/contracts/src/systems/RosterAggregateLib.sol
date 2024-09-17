@@ -31,7 +31,7 @@ library RosterAggregateLib {
   function create(uint256 playerId, uint32 sequenceNumber) internal returns (uint256, uint32, RosterData memory) {
     RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
     require(
-      !(rosterData.status == uint8(0) && rosterData.speed == uint32(0) && rosterData.coordinatesUpdatedAt == uint64(0) && rosterData.sailDuration == uint64(0) && rosterData.setSailAt == uint64(0) && rosterData.shipBattleId == uint256(0) && rosterData.environmentOwned == false && rosterData.baseExperience == uint32(0) && rosterData.shipIds.length == 0),
+      !(rosterData.status == uint8(0) && rosterData.speed == uint32(0) && rosterData.baseExperience == uint32(0) && rosterData.environmentOwned == false && rosterData.updatedCoordinatesX == uint32(0) && rosterData.updatedCoordinatesY == uint32(0) && rosterData.coordinatesUpdatedAt == uint64(0) && rosterData.targetCoordinatesX == uint32(0) && rosterData.targetCoordinatesY == uint32(0) && rosterData.originCoordinatesX == uint32(0) && rosterData.originCoordinatesY == uint32(0) && rosterData.sailDuration == uint64(0) && rosterData.setSailAt == uint64(0) && rosterData.shipBattleId == uint256(0) && rosterData.shipIds.length == 0),
       "Roster does not exist"
     );
     RosterCreated memory rosterCreated = RosterCreateLogic.verify(playerId, sequenceNumber, rosterData);
@@ -46,7 +46,7 @@ library RosterAggregateLib {
   function addShip(uint256 playerId, uint32 sequenceNumber, uint256 shipId, uint64 position) internal {
     RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
     require(
-      !(rosterData.status == uint8(0) && rosterData.speed == uint32(0) && rosterData.coordinatesUpdatedAt == uint64(0) && rosterData.sailDuration == uint64(0) && rosterData.setSailAt == uint64(0) && rosterData.shipBattleId == uint256(0) && rosterData.environmentOwned == false && rosterData.baseExperience == uint32(0) && rosterData.shipIds.length == 0),
+      !(rosterData.status == uint8(0) && rosterData.speed == uint32(0) && rosterData.baseExperience == uint32(0) && rosterData.environmentOwned == false && rosterData.updatedCoordinatesX == uint32(0) && rosterData.updatedCoordinatesY == uint32(0) && rosterData.coordinatesUpdatedAt == uint64(0) && rosterData.targetCoordinatesX == uint32(0) && rosterData.targetCoordinatesY == uint32(0) && rosterData.originCoordinatesX == uint32(0) && rosterData.originCoordinatesY == uint32(0) && rosterData.sailDuration == uint64(0) && rosterData.setSailAt == uint64(0) && rosterData.shipBattleId == uint256(0) && rosterData.shipIds.length == 0),
       "Roster does not exist"
     );
     RosterShipAdded memory rosterShipAdded = RosterAddShipLogic.verify(playerId, sequenceNumber, shipId, position, rosterData);
@@ -60,7 +60,7 @@ library RosterAggregateLib {
   function setSail(uint256 playerId, uint32 sequenceNumber, uint32 targetCoordinatesX, uint32 targetCoordinatesY, uint64 sailDuration, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY) internal {
     RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
     require(
-      !(rosterData.status == uint8(0) && rosterData.speed == uint32(0) && rosterData.coordinatesUpdatedAt == uint64(0) && rosterData.sailDuration == uint64(0) && rosterData.setSailAt == uint64(0) && rosterData.shipBattleId == uint256(0) && rosterData.environmentOwned == false && rosterData.baseExperience == uint32(0) && rosterData.shipIds.length == 0),
+      !(rosterData.status == uint8(0) && rosterData.speed == uint32(0) && rosterData.baseExperience == uint32(0) && rosterData.environmentOwned == false && rosterData.updatedCoordinatesX == uint32(0) && rosterData.updatedCoordinatesY == uint32(0) && rosterData.coordinatesUpdatedAt == uint64(0) && rosterData.targetCoordinatesX == uint32(0) && rosterData.targetCoordinatesY == uint32(0) && rosterData.originCoordinatesX == uint32(0) && rosterData.originCoordinatesY == uint32(0) && rosterData.sailDuration == uint64(0) && rosterData.setSailAt == uint64(0) && rosterData.shipBattleId == uint256(0) && rosterData.shipIds.length == 0),
       "Roster does not exist"
     );
     RosterSetSail memory rosterSetSail = RosterSetSailLogic.verify(playerId, sequenceNumber, targetCoordinatesX, targetCoordinatesY, sailDuration, updatedCoordinatesX, updatedCoordinatesY, rosterData);

@@ -57,4 +57,12 @@ library SkillPrcMtrlLib {
     }
     return productionMaterials;
   }
+
+  function getProductionMaterialCount(uint8 skillProcessIdSkillType, uint256 skillProcessIdPlayerId, uint8 skillProcessIdSequenceNumber) internal view returns (uint64) {
+    return SkillPrcMtrlCount.get(skillProcessIdSkillType, skillProcessIdPlayerId, skillProcessIdSequenceNumber);
+  }
+
+  function getProductionMaterialByIndex(uint8 skillProcessIdSkillType, uint256 skillProcessIdPlayerId, uint8 skillProcessIdSequenceNumber, uint64 index) internal view returns (SkillPrcMtrlData memory) {
+    return SkillPrcMtrl.get(skillProcessIdSkillType, skillProcessIdPlayerId, skillProcessIdSequenceNumber, index);
+  }
 }

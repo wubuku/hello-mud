@@ -57,4 +57,12 @@ library XpTableLevelLib {
     }
     return levels;
   }
+
+  function getLevelCount() internal view returns (uint64) {
+    return XpTableLevelCount.get();
+  }
+
+  function getLevelByIndex(uint64 index) internal view returns (XpTableLevelData memory) {
+    return XpTableLevel.get(index);
+  }
 }

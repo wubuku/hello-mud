@@ -57,4 +57,12 @@ library ShipInventoryLib {
     }
     return inventory_;
   }
+
+  function getInventoryCount(uint256 shipId) internal view returns (uint64) {
+    return ShipInventoryCount.get(shipId);
+  }
+
+  function getInventoryByIndex(uint256 shipId, uint64 index) internal view returns (ShipInventoryData memory) {
+    return ShipInventory.get(shipId, index);
+  }
 }
