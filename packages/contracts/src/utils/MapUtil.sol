@@ -5,8 +5,8 @@ import { MapLocationData, MapLocation } from "../codegen/index.sol";
 import { MapLocationType } from "../systems/MapLocationType.sol";
 
 library MapUtil {
-  error LocationNotFound();
-  error LocationNotAnIsland();
+  error LocationNotFound(uint32 x, uint32 y);
+  error LocationNotAnIsland(uint32 x, uint32 y, uint32 actualType);
 
   // Island resource regeneration time in seconds (1 day)
   uint256 constant ISLAND_RESOURCE_REGENERATION_TIME = 60 * 60 * 24;
@@ -24,11 +24,11 @@ library MapUtil {
   function getIslandResourcesQuantityToGather(uint32 x, uint32 y, uint64 nowTime) internal view returns (uint32) {
     MapLocationData memory location = MapLocation.get(x, y);
     if (location.existing != true) {
-      revert LocationNotFound();
+      revert LocationNotFound(x, y);
     }
 
     if (location.type_ != MapLocationType.ISLAND) {
-      revert LocationNotAnIsland();
+      revert LocationNotAnIsland(x, y, location.type_);
     }
 
     uint64 elapsedTime = nowTime - location.gatheredAt;

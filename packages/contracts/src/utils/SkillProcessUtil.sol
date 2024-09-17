@@ -7,9 +7,9 @@ import "../systems/SkillProcessId.sol";
 import { SkillProcessData } from "../codegen/index.sol";
 
 library SkillProcessUtil {
-  error InvalidPlayerId();
-  error IncorrectSkillType();
-  error IncorrectItemId();
+  error InvalidPlayerId(uint256 expectedPlayerId, uint256 actualPlayerId);
+  error IncorrectSkillType(uint8 expectedSkillType, uint8 actualSkillType);
+  error IncorrectItemId(uint32 expectedItemId, uint32 actualItemId);
 
   function skillTypeMaxSequenceNumber(uint8 skillType) public pure returns (uint8) {
     return skillType == SkillType.FARMING ? 1 : 0;
@@ -21,10 +21,10 @@ library SkillProcessUtil {
     SkillProcessId memory skillProcessId
   ) public pure returns (uint256, uint8, uint32) {
     uint256 _playerId = skillProcessId.playerId;
-    if (playerId != _playerId) revert InvalidPlayerId();
+    if (playerId != _playerId) revert InvalidPlayerId(playerId, _playerId);
 
     uint8 skillType = itemCreationId.skillType;
-    if (skillType != skillProcessId.skillType) revert IncorrectSkillType();
+    if (skillType != skillProcessId.skillType) revert IncorrectSkillType(skillType, skillProcessId.skillType);
     uint32 itemId = itemCreationId.itemId;
 
     return (_playerId, skillType, itemId);
@@ -41,7 +41,7 @@ library SkillProcessUtil {
       itemCreationId,
       skillProcessId
     );
-    if (itemId != skillProcessData.itemId) revert IncorrectItemId();
+    if (itemId != skillProcessData.itemId) revert IncorrectItemId(itemId, skillProcessData.itemId);
     return (_playerId, skillType, itemId);
   }
 }

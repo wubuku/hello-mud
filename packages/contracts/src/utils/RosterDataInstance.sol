@@ -10,16 +10,16 @@ library RosterDataInstance {
   uint256 private constant MIN_DISTANCE_TO_TRANSFER = 3000;
 
   error EmptyRosterShipIds();
-  error InvalidRosterStatus();
-  error TargetCoordinatesNotSet();
-  error InvalidRosterUpdateTime();
-  error OriginCoordinatesNotSet();
-  error PlayerHasNoClaimedIsland();
-  error InconsistentRosterShipId();
-  error RosterIsFull();
+  error InvalidRosterStatus(uint8 expectedStatus, uint8 actualStatus);
+  error TargetCoordinatesNotSet(uint32 targetX, uint32 targetY);
+  error InvalidRosterUpdateTime(uint64 currentTimestamp, uint64 coordinatesUpdatedAt);
+  error OriginCoordinatesNotSet(uint32 originX, uint32 originY);
+  error PlayerHasNoClaimedIsland(uint32 playerClaimedIslandX, uint32 playerClaimedIslandY);
+  error InconsistentRosterShipId(uint256 expectedShipId, uint256 actualShipId);
+  error RosterIsFull(uint256 currentShipCount);
   error IsEnvironmentRoster();
-  error RosterIslandNotCloseEnough();
-  error ShipDoesNotExist();
+  error RosterIslandNotCloseEnough(uint256 distance, uint256 minDistance);
+  error ShipDoesNotExist(uint256 shipId);
 
   function areRostersCloseEnoughToTransfer(
     RosterData memory roster1,
@@ -50,7 +50,7 @@ library RosterDataInstance {
 
   function assertRosterShipsNotFull(RosterData memory roster) internal pure {
     if (roster.shipIds.length >= 4) {
-      revert RosterIsFull();
+      revert RosterIsFull(roster.shipIds.length);
     }
   }
 
@@ -69,7 +69,7 @@ library RosterDataInstance {
       revert IsEnvironmentRoster();
     }
     if (playerClaimedIslandX == uint32(0) && playerClaimedIslandY == uint32(0)) {
-      revert PlayerHasNoClaimedIsland();
+      revert PlayerHasNoClaimedIsland(playerClaimedIslandX, playerClaimedIslandY);
     }
     uint256 distance = DirectRouteUtil.getDistance(
       roster.updatedCoordinatesX,
@@ -78,7 +78,7 @@ library RosterDataInstance {
       playerClaimedIslandY
     );
     if (distance >= MIN_DISTANCE_TO_TRANSFER) {
-      revert RosterIslandNotCloseEnough();
+      revert RosterIslandNotCloseEnough(distance, MIN_DISTANCE_TO_TRANSFER);
     }
   }
 
@@ -119,25 +119,25 @@ library RosterDataInstance {
 
   function isCurrentLocationUpdatable(
     RosterData memory roster,
-    uint256 currentTimestamp,
-    uint256 updatedCoordinatesX,
-    uint256 updatedCoordinatesY
+    uint64 currentTimestamp,
+    uint32 updatedCoordinatesX,
+    uint32 updatedCoordinatesY
   ) internal pure returns (bool, uint256, uint8) {
     uint8 oldStatus = roster.status;
-    uint256 coordinatesUpdatedAt = roster.coordinatesUpdatedAt;
+    uint64 coordinatesUpdatedAt = roster.coordinatesUpdatedAt;
 
-    if (updatedCoordinatesX == 0 || updatedCoordinatesY == 0) {
+    if (updatedCoordinatesX == uint32(0) || updatedCoordinatesY == uint32(0)) {
       return (false, coordinatesUpdatedAt, oldStatus);
     }
 
     if (oldStatus != 2) {
-      revert InvalidRosterStatus();
+      revert InvalidRosterStatus(2, oldStatus);
     }
     if (roster.targetCoordinatesX == 0 && roster.targetCoordinatesY == 0) {
-      revert TargetCoordinatesNotSet();
+      revert TargetCoordinatesNotSet(roster.targetCoordinatesX, roster.targetCoordinatesY);
     }
     if (roster.originCoordinatesX == 0 && roster.originCoordinatesY == 0) {
-      revert OriginCoordinatesNotSet();
+      revert OriginCoordinatesNotSet(roster.originCoordinatesX, roster.originCoordinatesY);
     }
 
     uint8 newStatus = oldStatus;
@@ -145,7 +145,7 @@ library RosterDataInstance {
       roster.speed
     );
     if (currentTimestamp < coordinatesUpdatedAt) {
-      revert InvalidRosterUpdateTime();
+      revert InvalidRosterUpdateTime(currentTimestamp, coordinatesUpdatedAt);
     }
     uint256 elapsedTime = currentTimestamp - coordinatesUpdatedAt;
 
@@ -169,7 +169,7 @@ library RosterDataInstance {
       ship.playerId == 0 &&
       ship.rosterSequenceNumber == 0
     ) {
-      revert ShipDoesNotExist();
+      revert ShipDoesNotExist(shipId);
     }
     return ship;
   }

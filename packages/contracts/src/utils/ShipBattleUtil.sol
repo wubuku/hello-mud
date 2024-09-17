@@ -8,15 +8,25 @@ import "./SortedVectorUtil.sol";
 import "./TsRandomUtil.sol";
 
 library ShipBattleUtil {
-  error InitiatorBattleIdMismatch();
-  error ResponderBattleIdMismatch();
-  error InitiatorIdMismatch();
-  error ResponderIdMismatch();
-  error ShipNotFoundById();
+  error InitiatorBattleIdMismatch(uint256 expectedId, uint256 actualId);
+  error ResponderBattleIdMismatch(uint256 expectedId, uint256 actualId);
+  error InitiatorIdMismatch(
+    uint256 expectedPlayerId,
+    uint256 actualPlayerId,
+    uint256 expectedSequenceNumber,
+    uint256 actualSequenceNumber
+  );
+  error ResponderIdMismatch(
+    uint256 expectedPlayerId,
+    uint256 actualPlayerId,
+    uint256 expectedSequenceNumber,
+    uint256 actualSequenceNumber
+  );
+  error ShipNotFoundById(uint256 shipId);
   error NoLivingShips();
   error RoundMoverNotSet();
-  error InvalidSide();
-  error PlayerIsNotRosterOwner();
+  error InvalidSide(uint8 side);
+  error PlayerIsNotRosterOwner(uint256 expectedPlayerId, uint256 actualPlayerId);
 
   uint256 constant MIN_DISTANCE_TO_BATTLE = 1000;
 
@@ -29,7 +39,7 @@ library ShipBattleUtil {
     } else if (side == RESPONDER) {
       return INITIATOR;
     } else {
-      revert InvalidSide();
+      revert InvalidSide(side);
     }
   }
 
@@ -62,7 +72,7 @@ library ShipBattleUtil {
   }
 
   function assertPlayerIsRosterOwner(uint256 playerId, RosterId memory rosterId) internal pure {
-    if (playerId != rosterId.playerId) revert PlayerIsNotRosterOwner();
+    if (playerId != rosterId.playerId) revert PlayerIsNotRosterOwner(rosterId.playerId, playerId);
   }
 
   function assertIdsAreConsistent(
@@ -73,16 +83,28 @@ library ShipBattleUtil {
     RosterId memory responderId,
     RosterData memory responder
   ) internal pure {
-    if (shipBattleId != initiator.shipBattleId) revert InitiatorBattleIdMismatch();
-    if (shipBattleId != responder.shipBattleId) revert ResponderBattleIdMismatch();
+    if (shipBattleId != initiator.shipBattleId) revert InitiatorBattleIdMismatch(shipBattleId, initiator.shipBattleId);
+    if (shipBattleId != responder.shipBattleId) revert ResponderBattleIdMismatch(shipBattleId, responder.shipBattleId);
     if (
       shipBattle.initiatorRosterPlayerId != initiatorId.playerId ||
       shipBattle.initiatorRosterSequenceNumber != initiatorId.sequenceNumber
-    ) revert InitiatorIdMismatch();
+    )
+      revert InitiatorIdMismatch(
+        shipBattle.initiatorRosterPlayerId,
+        initiatorId.playerId,
+        shipBattle.initiatorRosterSequenceNumber,
+        initiatorId.sequenceNumber
+      );
     if (
       shipBattle.initiatorRosterPlayerId != responderId.playerId ||
       shipBattle.initiatorRosterSequenceNumber != responderId.sequenceNumber
-    ) revert ResponderIdMismatch();
+    )
+      revert ResponderIdMismatch(
+        shipBattle.initiatorRosterPlayerId,
+        responderId.playerId,
+        shipBattle.initiatorRosterSequenceNumber,
+        responderId.sequenceNumber
+      );
   }
 
   function areRostersCloseEnough(RosterData memory roster1, RosterData memory roster2) internal pure returns (bool) {

@@ -6,7 +6,7 @@ import "../systems/ItemIdQuantityPair.sol";
 import { ShipData, ShipInventoryData } from "../codegen/index.sol";
 
 library LootUtil {
-  error BuildingExpensesLengthMismatch();
+  error BuildingExpensesLengthMismatch(uint256 itemIdsLength, uint256 quantitiesLength);
 
   function calculateLoot(
     uint256 shipId,
@@ -15,7 +15,10 @@ library LootUtil {
     ShipInventoryData[] memory inventory = ShipInventoryLib.getAllInventory_(shipId);
 
     if (ship.buildingExpensesItemIds.length != ship.buildingExpensesQuantities.length) {
-      revert BuildingExpensesLengthMismatch();
+      revert BuildingExpensesLengthMismatch(
+        ship.buildingExpensesItemIds.length,
+        ship.buildingExpensesQuantities.length
+      );
     }
 
     uint256 totalItems = inventory.length + ship.buildingExpensesItemIds.length;

@@ -4,9 +4,9 @@ pragma solidity ^0.8.24;
 import { TsRandomUtil } from "./TsRandomUtil.sol";
 
 library FightToDeath {
-  error InvalidSelfHealth();
-  error InvalidOpponentHealth();
-  error BothAlive();
+  error InvalidSelfHealth(uint32 selfHealth);
+  error InvalidOpponentHealth(uint32 opponentHealth);
+  error BothAlive(uint32 selfDamageTaken, uint32 opponentDamageTaken);
   error BothDead();
 
   function perform(
@@ -18,8 +18,8 @@ library FightToDeath {
     uint32 opponentProtection,
     uint32 opponentHealth
   ) internal view returns (uint32, uint32) {
-    if (selfHealth == 0) revert InvalidSelfHealth();
-    if (opponentHealth == 0) revert InvalidOpponentHealth();
+    if (selfHealth == 0) revert InvalidSelfHealth(selfHealth);
+    if (opponentHealth == 0) revert InvalidOpponentHealth(opponentHealth);
 
     if ((selfHealth == 1 && opponentHealth > 2) || (opponentHealth == 1 && selfHealth > 2)) {
       return (1, 1);
@@ -112,7 +112,8 @@ library FightToDeath {
     }
 
     if (selfDamageTaken == selfHealth && opponentDamageTaken == opponentHealth) revert BothDead();
-    if (selfDamageTaken != selfHealth && opponentDamageTaken != opponentHealth) revert BothAlive();
+    if (selfDamageTaken != selfHealth && opponentDamageTaken != opponentHealth)
+      revert BothAlive(selfDamageTaken, opponentDamageTaken);
 
     return (selfDamageTaken, opponentDamageTaken);
   }

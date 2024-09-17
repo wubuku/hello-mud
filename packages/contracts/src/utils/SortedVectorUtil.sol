@@ -8,19 +8,19 @@ library SortedVectorUtil {
   uint8 private constant LESS_THAN = 1;
   uint8 private constant GREATER_THAN = 2;
 
-  error ItemAlreadyExists();
-  error InsufficientQuantity();
-  error ItemNotFound();
+  error ItemAlreadyExists(uint256 itemId);
+  error InsufficientQuantity(uint32 itemId, uint32 available, uint32 requested);
+  error ItemNotFound(uint32 itemId);
   error EmptyList();
-  error IncorrectListLength();
-  error CustomError(uint256 errorCode);
+  error IncorrectListLength(uint256 itemIdListLength, uint256 itemQuantityListLength);
+  error CustomError(uint256 errorCode, uint32 itemId);
 
   function newItemIdQuantityPairs(
     uint32[] memory itemIdList,
     uint32[] memory itemQuantityList
   ) internal pure returns (ItemIdQuantityPair[] memory) {
     if (itemIdList.length == 0) revert EmptyList();
-    if (itemIdList.length != itemQuantityList.length) revert IncorrectListLength();
+    if (itemIdList.length != itemQuantityList.length) revert IncorrectListLength(itemIdList.length, itemQuantityList.length);
 
     ItemIdQuantityPair[] memory items = new ItemIdQuantityPair[](0);
     for (uint i = 0; i < itemIdList.length; i++) {
@@ -88,10 +88,10 @@ library SortedVectorUtil {
   ) internal pure returns (ItemIdQuantityPair[] memory) {
     (bool found, uint index) = binarySearchItemIdQuantityPair(v, pair.itemId);
     if (!found) {
-      revert ItemNotFound();
+      revert ItemNotFound(pair.itemId);
     }
     if (v[index].quantity < pair.quantity) {
-      revert InsufficientQuantity();
+      revert InsufficientQuantity(pair.itemId, v[index].quantity, pair.quantity);
     }
     v[index].quantity -= pair.quantity;
     if (v[index].quantity == 0) {
@@ -114,7 +114,7 @@ library SortedVectorUtil {
   ) internal pure returns (ItemIdQuantityPair memory) {
     (bool found, uint index) = binarySearchItemIdQuantityPair(v, itemId);
     if (!found) {
-      revert CustomError(err);
+      revert CustomError(err, itemId);
     }
     return v[index];
   }
@@ -141,7 +141,7 @@ library SortedVectorUtil {
   function addId(uint256[] storage v, uint256 id) internal {
     (bool found, uint index) = binarySearchId(v, id);
     if (found) {
-      revert ItemAlreadyExists();
+      revert ItemAlreadyExists(id);
     }
     v.push(id);
     for (uint i = v.length - 1; i > index; i--) {
@@ -153,7 +153,7 @@ library SortedVectorUtil {
   function removeId(uint256[] storage v, uint256 id) internal {
     (bool found, uint index) = binarySearchId(v, id);
     if (!found) {
-      revert ItemNotFound();
+      revert ItemNotFound(uint32(id));
     }
     for (uint i = index; i < v.length - 1; i++) {
       v[i] = v[i + 1];
