@@ -19,6 +19,10 @@ import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 struct MapLocationData {
   uint32 type_;
   address occupiedBy;
+  uint64 gatheredAt;
+  bool existing;
+  uint32[] resourcesItemIds;
+  uint32[] resourcesQuantities;
 }
 
 library MapLocation {
@@ -26,12 +30,12 @@ library MapLocation {
   ResourceId constant _tableId = ResourceId.wrap(0x746261707000000000000000000000004d61704c6f636174696f6e0000000000);
 
   FieldLayout constant _fieldLayout =
-    FieldLayout.wrap(0x0018020004140000000000000000000000000000000000000000000000000000);
+    FieldLayout.wrap(0x0021040204140801000000000000000000000000000000000000000000000000);
 
   // Hex-encoded key schema of (uint32, uint32)
   Schema constant _keySchema = Schema.wrap(0x0008020003030000000000000000000000000000000000000000000000000000);
-  // Hex-encoded value schema of (uint32, address)
-  Schema constant _valueSchema = Schema.wrap(0x0018020003610000000000000000000000000000000000000000000000000000);
+  // Hex-encoded value schema of (uint32, address, uint64, bool, uint32[], uint32[])
+  Schema constant _valueSchema = Schema.wrap(0x0021040203610760656500000000000000000000000000000000000000000000);
 
   /**
    * @notice Get the table's key field names.
@@ -48,9 +52,13 @@ library MapLocation {
    * @return fieldNames An array of strings with the names of value fields.
    */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
-    fieldNames = new string[](2);
+    fieldNames = new string[](6);
     fieldNames[0] = "type_";
     fieldNames[1] = "occupiedBy";
+    fieldNames[2] = "gatheredAt";
+    fieldNames[3] = "existing";
+    fieldNames[4] = "resourcesItemIds";
+    fieldNames[5] = "resourcesQuantities";
   }
 
   /**
@@ -160,6 +168,450 @@ library MapLocation {
   }
 
   /**
+   * @notice Get gatheredAt.
+   */
+  function getGatheredAt(uint32 x, uint32 y) internal view returns (uint64 gatheredAt) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
+    return (uint64(bytes8(_blob)));
+  }
+
+  /**
+   * @notice Get gatheredAt.
+   */
+  function _getGatheredAt(uint32 x, uint32 y) internal view returns (uint64 gatheredAt) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
+    return (uint64(bytes8(_blob)));
+  }
+
+  /**
+   * @notice Set gatheredAt.
+   */
+  function setGatheredAt(uint32 x, uint32 y, uint64 gatheredAt) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((gatheredAt)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set gatheredAt.
+   */
+  function _setGatheredAt(uint32 x, uint32 y, uint64 gatheredAt) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((gatheredAt)), _fieldLayout);
+  }
+
+  /**
+   * @notice Get existing.
+   */
+  function getExisting(uint32 x, uint32 y) internal view returns (bool existing) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
+    return (_toBool(uint8(bytes1(_blob))));
+  }
+
+  /**
+   * @notice Get existing.
+   */
+  function _getExisting(uint32 x, uint32 y) internal view returns (bool existing) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
+    return (_toBool(uint8(bytes1(_blob))));
+  }
+
+  /**
+   * @notice Set existing.
+   */
+  function setExisting(uint32 x, uint32 y, bool existing) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((existing)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set existing.
+   */
+  function _setExisting(uint32 x, uint32 y, bool existing) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((existing)), _fieldLayout);
+  }
+
+  /**
+   * @notice Get resourcesItemIds.
+   */
+  function getResourcesItemIds(uint32 x, uint32 y) internal view returns (uint32[] memory resourcesItemIds) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    bytes memory _blob = StoreSwitch.getDynamicField(_tableId, _keyTuple, 0);
+    return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_uint32());
+  }
+
+  /**
+   * @notice Get resourcesItemIds.
+   */
+  function _getResourcesItemIds(uint32 x, uint32 y) internal view returns (uint32[] memory resourcesItemIds) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    bytes memory _blob = StoreCore.getDynamicField(_tableId, _keyTuple, 0);
+    return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_uint32());
+  }
+
+  /**
+   * @notice Set resourcesItemIds.
+   */
+  function setResourcesItemIds(uint32 x, uint32 y, uint32[] memory resourcesItemIds) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    StoreSwitch.setDynamicField(_tableId, _keyTuple, 0, EncodeArray.encode((resourcesItemIds)));
+  }
+
+  /**
+   * @notice Set resourcesItemIds.
+   */
+  function _setResourcesItemIds(uint32 x, uint32 y, uint32[] memory resourcesItemIds) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    StoreCore.setDynamicField(_tableId, _keyTuple, 0, EncodeArray.encode((resourcesItemIds)));
+  }
+
+  /**
+   * @notice Get the length of resourcesItemIds.
+   */
+  function lengthResourcesItemIds(uint32 x, uint32 y) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    uint256 _byteLength = StoreSwitch.getDynamicFieldLength(_tableId, _keyTuple, 0);
+    unchecked {
+      return _byteLength / 4;
+    }
+  }
+
+  /**
+   * @notice Get the length of resourcesItemIds.
+   */
+  function _lengthResourcesItemIds(uint32 x, uint32 y) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    uint256 _byteLength = StoreCore.getDynamicFieldLength(_tableId, _keyTuple, 0);
+    unchecked {
+      return _byteLength / 4;
+    }
+  }
+
+  /**
+   * @notice Get an item of resourcesItemIds.
+   * @dev Reverts with Store_IndexOutOfBounds if `_index` is out of bounds for the array.
+   */
+  function getItemResourcesItemIds(uint32 x, uint32 y, uint256 _index) internal view returns (uint32) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    unchecked {
+      bytes memory _blob = StoreSwitch.getDynamicFieldSlice(_tableId, _keyTuple, 0, _index * 4, (_index + 1) * 4);
+      return (uint32(bytes4(_blob)));
+    }
+  }
+
+  /**
+   * @notice Get an item of resourcesItemIds.
+   * @dev Reverts with Store_IndexOutOfBounds if `_index` is out of bounds for the array.
+   */
+  function _getItemResourcesItemIds(uint32 x, uint32 y, uint256 _index) internal view returns (uint32) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    unchecked {
+      bytes memory _blob = StoreCore.getDynamicFieldSlice(_tableId, _keyTuple, 0, _index * 4, (_index + 1) * 4);
+      return (uint32(bytes4(_blob)));
+    }
+  }
+
+  /**
+   * @notice Push an element to resourcesItemIds.
+   */
+  function pushResourcesItemIds(uint32 x, uint32 y, uint32 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    StoreSwitch.pushToDynamicField(_tableId, _keyTuple, 0, abi.encodePacked((_element)));
+  }
+
+  /**
+   * @notice Push an element to resourcesItemIds.
+   */
+  function _pushResourcesItemIds(uint32 x, uint32 y, uint32 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    StoreCore.pushToDynamicField(_tableId, _keyTuple, 0, abi.encodePacked((_element)));
+  }
+
+  /**
+   * @notice Pop an element from resourcesItemIds.
+   */
+  function popResourcesItemIds(uint32 x, uint32 y) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    StoreSwitch.popFromDynamicField(_tableId, _keyTuple, 0, 4);
+  }
+
+  /**
+   * @notice Pop an element from resourcesItemIds.
+   */
+  function _popResourcesItemIds(uint32 x, uint32 y) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    StoreCore.popFromDynamicField(_tableId, _keyTuple, 0, 4);
+  }
+
+  /**
+   * @notice Update an element of resourcesItemIds at `_index`.
+   */
+  function updateResourcesItemIds(uint32 x, uint32 y, uint256 _index, uint32 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    unchecked {
+      bytes memory _encoded = abi.encodePacked((_element));
+      StoreSwitch.spliceDynamicData(_tableId, _keyTuple, 0, uint40(_index * 4), uint40(_encoded.length), _encoded);
+    }
+  }
+
+  /**
+   * @notice Update an element of resourcesItemIds at `_index`.
+   */
+  function _updateResourcesItemIds(uint32 x, uint32 y, uint256 _index, uint32 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    unchecked {
+      bytes memory _encoded = abi.encodePacked((_element));
+      StoreCore.spliceDynamicData(_tableId, _keyTuple, 0, uint40(_index * 4), uint40(_encoded.length), _encoded);
+    }
+  }
+
+  /**
+   * @notice Get resourcesQuantities.
+   */
+  function getResourcesQuantities(uint32 x, uint32 y) internal view returns (uint32[] memory resourcesQuantities) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    bytes memory _blob = StoreSwitch.getDynamicField(_tableId, _keyTuple, 1);
+    return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_uint32());
+  }
+
+  /**
+   * @notice Get resourcesQuantities.
+   */
+  function _getResourcesQuantities(uint32 x, uint32 y) internal view returns (uint32[] memory resourcesQuantities) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    bytes memory _blob = StoreCore.getDynamicField(_tableId, _keyTuple, 1);
+    return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_uint32());
+  }
+
+  /**
+   * @notice Set resourcesQuantities.
+   */
+  function setResourcesQuantities(uint32 x, uint32 y, uint32[] memory resourcesQuantities) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    StoreSwitch.setDynamicField(_tableId, _keyTuple, 1, EncodeArray.encode((resourcesQuantities)));
+  }
+
+  /**
+   * @notice Set resourcesQuantities.
+   */
+  function _setResourcesQuantities(uint32 x, uint32 y, uint32[] memory resourcesQuantities) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    StoreCore.setDynamicField(_tableId, _keyTuple, 1, EncodeArray.encode((resourcesQuantities)));
+  }
+
+  /**
+   * @notice Get the length of resourcesQuantities.
+   */
+  function lengthResourcesQuantities(uint32 x, uint32 y) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    uint256 _byteLength = StoreSwitch.getDynamicFieldLength(_tableId, _keyTuple, 1);
+    unchecked {
+      return _byteLength / 4;
+    }
+  }
+
+  /**
+   * @notice Get the length of resourcesQuantities.
+   */
+  function _lengthResourcesQuantities(uint32 x, uint32 y) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    uint256 _byteLength = StoreCore.getDynamicFieldLength(_tableId, _keyTuple, 1);
+    unchecked {
+      return _byteLength / 4;
+    }
+  }
+
+  /**
+   * @notice Get an item of resourcesQuantities.
+   * @dev Reverts with Store_IndexOutOfBounds if `_index` is out of bounds for the array.
+   */
+  function getItemResourcesQuantities(uint32 x, uint32 y, uint256 _index) internal view returns (uint32) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    unchecked {
+      bytes memory _blob = StoreSwitch.getDynamicFieldSlice(_tableId, _keyTuple, 1, _index * 4, (_index + 1) * 4);
+      return (uint32(bytes4(_blob)));
+    }
+  }
+
+  /**
+   * @notice Get an item of resourcesQuantities.
+   * @dev Reverts with Store_IndexOutOfBounds if `_index` is out of bounds for the array.
+   */
+  function _getItemResourcesQuantities(uint32 x, uint32 y, uint256 _index) internal view returns (uint32) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    unchecked {
+      bytes memory _blob = StoreCore.getDynamicFieldSlice(_tableId, _keyTuple, 1, _index * 4, (_index + 1) * 4);
+      return (uint32(bytes4(_blob)));
+    }
+  }
+
+  /**
+   * @notice Push an element to resourcesQuantities.
+   */
+  function pushResourcesQuantities(uint32 x, uint32 y, uint32 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    StoreSwitch.pushToDynamicField(_tableId, _keyTuple, 1, abi.encodePacked((_element)));
+  }
+
+  /**
+   * @notice Push an element to resourcesQuantities.
+   */
+  function _pushResourcesQuantities(uint32 x, uint32 y, uint32 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    StoreCore.pushToDynamicField(_tableId, _keyTuple, 1, abi.encodePacked((_element)));
+  }
+
+  /**
+   * @notice Pop an element from resourcesQuantities.
+   */
+  function popResourcesQuantities(uint32 x, uint32 y) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    StoreSwitch.popFromDynamicField(_tableId, _keyTuple, 1, 4);
+  }
+
+  /**
+   * @notice Pop an element from resourcesQuantities.
+   */
+  function _popResourcesQuantities(uint32 x, uint32 y) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    StoreCore.popFromDynamicField(_tableId, _keyTuple, 1, 4);
+  }
+
+  /**
+   * @notice Update an element of resourcesQuantities at `_index`.
+   */
+  function updateResourcesQuantities(uint32 x, uint32 y, uint256 _index, uint32 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    unchecked {
+      bytes memory _encoded = abi.encodePacked((_element));
+      StoreSwitch.spliceDynamicData(_tableId, _keyTuple, 1, uint40(_index * 4), uint40(_encoded.length), _encoded);
+    }
+  }
+
+  /**
+   * @notice Update an element of resourcesQuantities at `_index`.
+   */
+  function _updateResourcesQuantities(uint32 x, uint32 y, uint256 _index, uint32 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(x));
+    _keyTuple[1] = bytes32(uint256(y));
+
+    unchecked {
+      bytes memory _encoded = abi.encodePacked((_element));
+      StoreCore.spliceDynamicData(_tableId, _keyTuple, 1, uint40(_index * 4), uint40(_encoded.length), _encoded);
+    }
+  }
+
+  /**
    * @notice Get the full data.
    */
   function get(uint32 x, uint32 y) internal view returns (MapLocationData memory _table) {
@@ -194,11 +646,20 @@ library MapLocation {
   /**
    * @notice Set the full data using individual values.
    */
-  function set(uint32 x, uint32 y, uint32 type_, address occupiedBy) internal {
-    bytes memory _staticData = encodeStatic(type_, occupiedBy);
+  function set(
+    uint32 x,
+    uint32 y,
+    uint32 type_,
+    address occupiedBy,
+    uint64 gatheredAt,
+    bool existing,
+    uint32[] memory resourcesItemIds,
+    uint32[] memory resourcesQuantities
+  ) internal {
+    bytes memory _staticData = encodeStatic(type_, occupiedBy, gatheredAt, existing);
 
-    EncodedLengths _encodedLengths;
-    bytes memory _dynamicData;
+    EncodedLengths _encodedLengths = encodeLengths(resourcesItemIds, resourcesQuantities);
+    bytes memory _dynamicData = encodeDynamic(resourcesItemIds, resourcesQuantities);
 
     bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(x));
@@ -210,11 +671,20 @@ library MapLocation {
   /**
    * @notice Set the full data using individual values.
    */
-  function _set(uint32 x, uint32 y, uint32 type_, address occupiedBy) internal {
-    bytes memory _staticData = encodeStatic(type_, occupiedBy);
+  function _set(
+    uint32 x,
+    uint32 y,
+    uint32 type_,
+    address occupiedBy,
+    uint64 gatheredAt,
+    bool existing,
+    uint32[] memory resourcesItemIds,
+    uint32[] memory resourcesQuantities
+  ) internal {
+    bytes memory _staticData = encodeStatic(type_, occupiedBy, gatheredAt, existing);
 
-    EncodedLengths _encodedLengths;
-    bytes memory _dynamicData;
+    EncodedLengths _encodedLengths = encodeLengths(resourcesItemIds, resourcesQuantities);
+    bytes memory _dynamicData = encodeDynamic(resourcesItemIds, resourcesQuantities);
 
     bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(x));
@@ -227,10 +697,10 @@ library MapLocation {
    * @notice Set the full data using the data struct.
    */
   function set(uint32 x, uint32 y, MapLocationData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.type_, _table.occupiedBy);
+    bytes memory _staticData = encodeStatic(_table.type_, _table.occupiedBy, _table.gatheredAt, _table.existing);
 
-    EncodedLengths _encodedLengths;
-    bytes memory _dynamicData;
+    EncodedLengths _encodedLengths = encodeLengths(_table.resourcesItemIds, _table.resourcesQuantities);
+    bytes memory _dynamicData = encodeDynamic(_table.resourcesItemIds, _table.resourcesQuantities);
 
     bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(x));
@@ -243,10 +713,10 @@ library MapLocation {
    * @notice Set the full data using the data struct.
    */
   function _set(uint32 x, uint32 y, MapLocationData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.type_, _table.occupiedBy);
+    bytes memory _staticData = encodeStatic(_table.type_, _table.occupiedBy, _table.gatheredAt, _table.existing);
 
-    EncodedLengths _encodedLengths;
-    bytes memory _dynamicData;
+    EncodedLengths _encodedLengths = encodeLengths(_table.resourcesItemIds, _table.resourcesQuantities);
+    bytes memory _dynamicData = encodeDynamic(_table.resourcesItemIds, _table.resourcesQuantities);
 
     bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(x));
@@ -258,24 +728,53 @@ library MapLocation {
   /**
    * @notice Decode the tightly packed blob of static data using this table's field layout.
    */
-  function decodeStatic(bytes memory _blob) internal pure returns (uint32 type_, address occupiedBy) {
+  function decodeStatic(
+    bytes memory _blob
+  ) internal pure returns (uint32 type_, address occupiedBy, uint64 gatheredAt, bool existing) {
     type_ = (uint32(Bytes.getBytes4(_blob, 0)));
 
     occupiedBy = (address(Bytes.getBytes20(_blob, 4)));
+
+    gatheredAt = (uint64(Bytes.getBytes8(_blob, 24)));
+
+    existing = (_toBool(uint8(Bytes.getBytes1(_blob, 32))));
+  }
+
+  /**
+   * @notice Decode the tightly packed blob of dynamic data using the encoded lengths.
+   */
+  function decodeDynamic(
+    EncodedLengths _encodedLengths,
+    bytes memory _blob
+  ) internal pure returns (uint32[] memory resourcesItemIds, uint32[] memory resourcesQuantities) {
+    uint256 _start;
+    uint256 _end;
+    unchecked {
+      _end = _encodedLengths.atIndex(0);
+    }
+    resourcesItemIds = (SliceLib.getSubslice(_blob, _start, _end).decodeArray_uint32());
+
+    _start = _end;
+    unchecked {
+      _end += _encodedLengths.atIndex(1);
+    }
+    resourcesQuantities = (SliceLib.getSubslice(_blob, _start, _end).decodeArray_uint32());
   }
 
   /**
    * @notice Decode the tightly packed blobs using this table's field layout.
    * @param _staticData Tightly packed static fields.
-   *
-   *
+   * @param _encodedLengths Encoded lengths of dynamic fields.
+   * @param _dynamicData Tightly packed dynamic fields.
    */
   function decode(
     bytes memory _staticData,
-    EncodedLengths,
-    bytes memory
+    EncodedLengths _encodedLengths,
+    bytes memory _dynamicData
   ) internal pure returns (MapLocationData memory _table) {
-    (_table.type_, _table.occupiedBy) = decodeStatic(_staticData);
+    (_table.type_, _table.occupiedBy, _table.gatheredAt, _table.existing) = decodeStatic(_staticData);
+
+    (_table.resourcesItemIds, _table.resourcesQuantities) = decodeDynamic(_encodedLengths, _dynamicData);
   }
 
   /**
@@ -304,8 +803,38 @@ library MapLocation {
    * @notice Tightly pack static (fixed length) data using this table's schema.
    * @return The static data, encoded into a sequence of bytes.
    */
-  function encodeStatic(uint32 type_, address occupiedBy) internal pure returns (bytes memory) {
-    return abi.encodePacked(type_, occupiedBy);
+  function encodeStatic(
+    uint32 type_,
+    address occupiedBy,
+    uint64 gatheredAt,
+    bool existing
+  ) internal pure returns (bytes memory) {
+    return abi.encodePacked(type_, occupiedBy, gatheredAt, existing);
+  }
+
+  /**
+   * @notice Tightly pack dynamic data lengths using this table's schema.
+   * @return _encodedLengths The lengths of the dynamic fields (packed into a single bytes32 value).
+   */
+  function encodeLengths(
+    uint32[] memory resourcesItemIds,
+    uint32[] memory resourcesQuantities
+  ) internal pure returns (EncodedLengths _encodedLengths) {
+    // Lengths are effectively checked during copy by 2**40 bytes exceeding gas limits
+    unchecked {
+      _encodedLengths = EncodedLengthsLib.pack(resourcesItemIds.length * 4, resourcesQuantities.length * 4);
+    }
+  }
+
+  /**
+   * @notice Tightly pack dynamic (variable length) data using this table's schema.
+   * @return The dynamic data, encoded into a sequence of bytes.
+   */
+  function encodeDynamic(
+    uint32[] memory resourcesItemIds,
+    uint32[] memory resourcesQuantities
+  ) internal pure returns (bytes memory) {
+    return abi.encodePacked(EncodeArray.encode((resourcesItemIds)), EncodeArray.encode((resourcesQuantities)));
   }
 
   /**
@@ -314,11 +843,18 @@ library MapLocation {
    * @return The lengths of the dynamic fields (packed into a single bytes32 value).
    * @return The dynamic (variable length) data, encoded into a sequence of bytes.
    */
-  function encode(uint32 type_, address occupiedBy) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
-    bytes memory _staticData = encodeStatic(type_, occupiedBy);
+  function encode(
+    uint32 type_,
+    address occupiedBy,
+    uint64 gatheredAt,
+    bool existing,
+    uint32[] memory resourcesItemIds,
+    uint32[] memory resourcesQuantities
+  ) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
+    bytes memory _staticData = encodeStatic(type_, occupiedBy, gatheredAt, existing);
 
-    EncodedLengths _encodedLengths;
-    bytes memory _dynamicData;
+    EncodedLengths _encodedLengths = encodeLengths(resourcesItemIds, resourcesQuantities);
+    bytes memory _dynamicData = encodeDynamic(resourcesItemIds, resourcesQuantities);
 
     return (_staticData, _encodedLengths, _dynamicData);
   }
@@ -332,5 +868,17 @@ library MapLocation {
     _keyTuple[1] = bytes32(uint256(y));
 
     return _keyTuple;
+  }
+}
+
+/**
+ * @notice Cast a value to a bool.
+ * @dev Boolean values are encoded as uint8 (1 = true, 0 = false), but Solidity doesn't allow casting between uint8 and bool.
+ * @param value The uint8 value to convert.
+ * @return result The boolean value.
+ */
+function _toBool(uint8 value) pure returns (bool result) {
+  assembly {
+    result := value
   }
 }

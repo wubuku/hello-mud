@@ -15,7 +15,7 @@ library RosterCreateLogic {
   }
 
   function mutate(
-    RosterCreated memory createEvent,
+    RosterCreated memory rosterCreated,
     RosterData memory rosterData
   ) internal pure returns (RosterData memory) {
     // TODO ...

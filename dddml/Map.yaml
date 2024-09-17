@@ -22,6 +22,17 @@ singletonObjects:
             type: u32
           OccupiedBy:
             type: address
+          GatheredAt:
+            type: u64
+          Existing:
+            type: bool
+            # Set to true when the location is created
+          #Resources:
+          #  itemType: ItemIdQuantityPair
+          ResourcesItemIds:
+            type: uint32[]
+          ResourcesQuantities:
+            type: uint32[]
 
     methods:
       AddIsland:
