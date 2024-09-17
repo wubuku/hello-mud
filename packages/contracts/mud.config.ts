@@ -286,7 +286,7 @@ export default defineWorld({
     },
     ExperienceTable: {
       schema: {
-        reservedBool1: "bool",
+        existing: "bool",
       },
       key: [],
     },

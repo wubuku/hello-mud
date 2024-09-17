@@ -42,7 +42,7 @@ library ExperienceTable {
    */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
     fieldNames = new string[](1);
-    fieldNames[0] = "reservedBool1";
+    fieldNames[0] = "existing";
   }
 
   /**
@@ -60,9 +60,9 @@ library ExperienceTable {
   }
 
   /**
-   * @notice Get reservedBool1.
+   * @notice Get existing.
    */
-  function getReservedBool1() internal view returns (bool reservedBool1) {
+  function getExisting() internal view returns (bool existing) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
@@ -70,9 +70,9 @@ library ExperienceTable {
   }
 
   /**
-   * @notice Get reservedBool1.
+   * @notice Get existing.
    */
-  function _getReservedBool1() internal view returns (bool reservedBool1) {
+  function _getExisting() internal view returns (bool existing) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
@@ -80,9 +80,9 @@ library ExperienceTable {
   }
 
   /**
-   * @notice Get reservedBool1.
+   * @notice Get existing.
    */
-  function get() internal view returns (bool reservedBool1) {
+  function get() internal view returns (bool existing) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
@@ -90,9 +90,9 @@ library ExperienceTable {
   }
 
   /**
-   * @notice Get reservedBool1.
+   * @notice Get existing.
    */
-  function _get() internal view returns (bool reservedBool1) {
+  function _get() internal view returns (bool existing) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
@@ -100,39 +100,39 @@ library ExperienceTable {
   }
 
   /**
-   * @notice Set reservedBool1.
+   * @notice Set existing.
    */
-  function setReservedBool1(bool reservedBool1) internal {
+  function setExisting(bool existing) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((reservedBool1)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((existing)), _fieldLayout);
   }
 
   /**
-   * @notice Set reservedBool1.
+   * @notice Set existing.
    */
-  function _setReservedBool1(bool reservedBool1) internal {
+  function _setExisting(bool existing) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((reservedBool1)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((existing)), _fieldLayout);
   }
 
   /**
-   * @notice Set reservedBool1.
+   * @notice Set existing.
    */
-  function set(bool reservedBool1) internal {
+  function set(bool existing) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((reservedBool1)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((existing)), _fieldLayout);
   }
 
   /**
-   * @notice Set reservedBool1.
+   * @notice Set existing.
    */
-  function _set(bool reservedBool1) internal {
+  function _set(bool existing) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((reservedBool1)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((existing)), _fieldLayout);
   }
 
   /**
@@ -157,8 +157,8 @@ library ExperienceTable {
    * @notice Tightly pack static (fixed length) data using this table's schema.
    * @return The static data, encoded into a sequence of bytes.
    */
-  function encodeStatic(bool reservedBool1) internal pure returns (bytes memory) {
-    return abi.encodePacked(reservedBool1);
+  function encodeStatic(bool existing) internal pure returns (bytes memory) {
+    return abi.encodePacked(existing);
   }
 
   /**
@@ -167,8 +167,8 @@ library ExperienceTable {
    * @return The lengths of the dynamic fields (packed into a single bytes32 value).
    * @return The dynamic (variable length) data, encoded into a sequence of bytes.
    */
-  function encode(bool reservedBool1) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
-    bytes memory _staticData = encodeStatic(reservedBool1);
+  function encode(bool existing) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
+    bytes memory _staticData = encodeStatic(existing);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;

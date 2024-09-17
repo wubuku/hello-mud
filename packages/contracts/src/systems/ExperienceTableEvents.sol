@@ -16,10 +16,10 @@ struct ExperienceLevelUpdated {
 }
 
 struct ExperienceTableCreated {
-  bool reservedBool1;
+  bool existing;
 }
 
 struct ExperienceTableUpdated {
-  bool reservedBool1;
+  bool existing;
 }
 

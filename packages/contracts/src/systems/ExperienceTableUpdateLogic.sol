@@ -15,7 +15,7 @@ library ExperienceTableUpdateLogic {
     ExperienceTableUpdated memory experienceTableUpdated,
     bool reservedBool1
   ) internal pure returns (bool) {
-    reservedBool1 = experienceTableUpdated.reservedBool1;
+    reservedBool1 = experienceTableUpdated.existing;
     return reservedBool1;
   }
 }

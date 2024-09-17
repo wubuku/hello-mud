@@ -21,9 +21,9 @@ contract ExperienceTableSystem is System {
 
   event ExperienceLevelUpdatedEvent(uint16 level, uint32 experience, uint32 difference);
 
-  event ExperienceTableCreatedEvent(bool reservedBool1);
+  event ExperienceTableCreatedEvent(bool existing);
 
-  event ExperienceTableUpdatedEvent(bool reservedBool1);
+  event ExperienceTableUpdatedEvent(bool existing);
 
   function _requireNamespaceOwner() internal view {
     ResourceId _thisSystemId = SystemRegistry.get(address(this));
@@ -33,52 +33,52 @@ contract ExperienceTableSystem is System {
 
   function experienceTableAddLevel(uint16 level, uint32 experience, uint32 difference) public {
     _requireNamespaceOwner();
-    bool reservedBool1 = ExperienceTable.get();
+    bool existing = ExperienceTable.get();
     require(
-      !(reservedBool1 == false),
+      !(existing == false),
       "ExperienceTable does not exist"
     );
-    ExperienceLevelAdded memory experienceLevelAdded = ExperienceTableAddLevelLogic.verify(level, experience, difference, reservedBool1);
+    ExperienceLevelAdded memory experienceLevelAdded = ExperienceTableAddLevelLogic.verify(level, experience, difference, existing);
     emit ExperienceLevelAddedEvent(experienceLevelAdded.level, experienceLevelAdded.experience, experienceLevelAdded.difference);
-    bool updatedReservedBool1 = ExperienceTableAddLevelLogic.mutate(experienceLevelAdded, reservedBool1);
-    ExperienceTable.set(updatedReservedBool1);
+    bool updatedExisting = ExperienceTableAddLevelLogic.mutate(experienceLevelAdded, existing);
+    ExperienceTable.set(updatedExisting);
   }
 
   function experienceTableUpdateLevel(uint16 level, uint32 experience, uint32 difference) public {
     _requireNamespaceOwner();
-    bool reservedBool1 = ExperienceTable.get();
+    bool existing = ExperienceTable.get();
     require(
-      !(reservedBool1 == false),
+      !(existing == false),
       "ExperienceTable does not exist"
     );
-    ExperienceLevelUpdated memory experienceLevelUpdated = ExperienceTableUpdateLevelLogic.verify(level, experience, difference, reservedBool1);
+    ExperienceLevelUpdated memory experienceLevelUpdated = ExperienceTableUpdateLevelLogic.verify(level, experience, difference, existing);
     emit ExperienceLevelUpdatedEvent(experienceLevelUpdated.level, experienceLevelUpdated.experience, experienceLevelUpdated.difference);
-    bool updatedReservedBool1 = ExperienceTableUpdateLevelLogic.mutate(experienceLevelUpdated, reservedBool1);
-    ExperienceTable.set(updatedReservedBool1);
+    bool updatedExisting = ExperienceTableUpdateLevelLogic.mutate(experienceLevelUpdated, existing);
+    ExperienceTable.set(updatedExisting);
   }
 
-  function experienceTableCreate(bool reservedBool1) public {
-    bool __reservedBool1 = ExperienceTable.get();
+  function experienceTableCreate(bool existing) public {
+    bool __existing = ExperienceTable.get();
     require(
-      __reservedBool1 == false,
+      __existing == false,
       "ExperienceTable already exists"
     );
-    ExperienceTableCreated memory experienceTableCreated = ExperienceTableCreateLogic.verify(reservedBool1);
-    emit ExperienceTableCreatedEvent(experienceTableCreated.reservedBool1);
-    bool new__ReservedBool1 = ExperienceTableCreateLogic.mutate(experienceTableCreated);
-    ExperienceTable.set(new__ReservedBool1);
+    ExperienceTableCreated memory experienceTableCreated = ExperienceTableCreateLogic.verify(existing);
+    emit ExperienceTableCreatedEvent(experienceTableCreated.existing);
+    bool new__Existing = ExperienceTableCreateLogic.mutate(experienceTableCreated);
+    ExperienceTable.set(new__Existing);
   }
 
-  function experienceTableUpdate(bool reservedBool1) public {
-    bool __reservedBool1 = ExperienceTable.get();
+  function experienceTableUpdate(bool existing) public {
+    bool __existing = ExperienceTable.get();
     require(
-      !(__reservedBool1 == false),
+      !(__existing == false),
       "ExperienceTable does not exist"
     );
-    ExperienceTableUpdated memory experienceTableUpdated = ExperienceTableUpdateLogic.verify(reservedBool1, __reservedBool1);
-    emit ExperienceTableUpdatedEvent(experienceTableUpdated.reservedBool1);
-    bool updated__ReservedBool1 = ExperienceTableUpdateLogic.mutate(experienceTableUpdated, __reservedBool1);
-    ExperienceTable.set(updated__ReservedBool1);
+    ExperienceTableUpdated memory experienceTableUpdated = ExperienceTableUpdateLogic.verify(existing, __existing);
+    emit ExperienceTableUpdatedEvent(experienceTableUpdated.existing);
+    bool updated__Existing = ExperienceTableUpdateLogic.mutate(experienceTableUpdated, __existing);
+    ExperienceTable.set(updated__Existing);
   }
 
 }

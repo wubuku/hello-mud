@@ -13,6 +13,7 @@ import { Energy } from "../src/tokens/Energy.sol";
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+import { SkillType } from "../src/systems/SkillType.sol";
 import { PlayerIdGenerator } from "../src/codegen/index.sol";
 
 contract PostDeploy is Script {
@@ -65,6 +66,16 @@ contract PostDeploy is Script {
     createItemProductions(world);
     console.log("Created item productions");
 
+    world.app__experienceTableCreate(true);
+    console.log("Created experience table");
+
+    // Add levels to experience table
+    world.app__experienceTableAddLevel(0, 0, 0);
+    world.app__experienceTableAddLevel(1, 0, 0);
+    world.app__experienceTableAddLevel(2, 83, 83);
+    world.app__experienceTableAddLevel(3, 174, 91);
+    console.log("Added levels to experience table");
+
     world.app__playerCreate("TestPlayer");
     uint256 playerId = PlayerIdGenerator.getId();
     console.log("Created test player, playerId:", playerId);
@@ -103,7 +114,7 @@ contract PostDeploy is Script {
   function createItemCreations(IWorld world) internal {
     // Mining
     world.app__itemCreationCreate(
-      3, // skillType (mining)
+      uint8(SkillType.MINING), // skillType (mining)
       301, // itemId (CopperOre)
       1, // requirementsLevel
       1, // baseQuantity
@@ -116,7 +127,7 @@ contract PostDeploy is Script {
 
     // Woodcutting
     world.app__itemCreationCreate(
-      2, // skillType (woodcutting)
+      uint8(SkillType.WOODCUTTING), // skillType (woodcutting)
       200, // itemId (NormalLogs)
       1, // requirementsLevel
       1, // baseQuantity
@@ -137,7 +148,7 @@ contract PostDeploy is Script {
     cottonMaterialItemQuantities[0] = 1;
 
     world.app__itemProductionCreate(
-      0, // skillType (farming)
+      uint8(SkillType.FARMING), // skillType (farming)
       102, // itemId (Cottons)
       1, // requirementsLevel
       1, // baseQuantity
@@ -161,7 +172,7 @@ contract PostDeploy is Script {
     shipMaterialItemQuantities[2] = 3; // 3 CopperOre
 
     world.app__itemProductionCreate(
-      4, // skillType (crafting, assuming 4 is for crafting)
+      uint8(SkillType.CRAFTING),
       1000000001, // itemId (Ship)
       1, // requirementsLevel
       1, // baseQuantity

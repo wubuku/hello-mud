@@ -5,16 +5,16 @@ import { ExperienceTableCreated } from "./ExperienceTableEvents.sol";
 
 library ExperienceTableCreateLogic {
   function verify(
-    bool reservedBool1
+    bool existing
   ) internal pure returns (ExperienceTableCreated memory) {
-    return ExperienceTableCreated(reservedBool1);
+    return ExperienceTableCreated(existing);
   }
 
   function mutate(
     ExperienceTableCreated memory experienceTableCreated
   ) internal pure returns (bool) {
-    bool reservedBool1;
-    reservedBool1 = experienceTableCreated.reservedBool1;
-    return reservedBool1;
+    bool existing;
+    existing = experienceTableCreated.existing;
+    return existing;
   }
 }

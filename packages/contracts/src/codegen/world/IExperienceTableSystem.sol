@@ -13,7 +13,7 @@ interface IExperienceTableSystem {
 
   function app__experienceTableUpdateLevel(uint16 level, uint32 experience, uint32 difference) external;
 
-  function app__experienceTableCreate(bool reservedBool1) external;
+  function app__experienceTableCreate(bool existing) external;
 
-  function app__experienceTableUpdate(bool reservedBool1) external;
+  function app__experienceTableUpdate(bool existing) external;
 }
