@@ -20,6 +20,8 @@ library MapClaimIslandLogic {
   ) internal view returns (MapIslandClaimed memory) {
     if (!MapLocation.getExisting(coordinatesX, coordinatesY)) {
       revert ELocationNotFound();
+      // cast sig 'ELocationNotFound()'
+      // 0x48cc66e4
     }
 
     uint32 locationType = MapLocation.getType_(coordinatesX, coordinatesY);

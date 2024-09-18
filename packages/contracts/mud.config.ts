@@ -312,6 +312,20 @@ export default defineWorld({
       key: [],
     },
   },
+  systems: {
+    ShipFriendSystem: {
+      openAccess: false,
+    },
+    RosterFriendSystem: {
+      openAccess: false,
+    },
+    SkillProcessFriendSystem: {
+      openAccess: false,
+    },
+    MapFriendSystem: {
+      openAccess: false,
+    },
+  },
   modules: [
     {
       artifactPath: "./out/AppNamespaceDelegationModule.sol/AppNamespaceDelegationModule.json",
