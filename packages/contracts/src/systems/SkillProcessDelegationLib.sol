@@ -12,16 +12,16 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 library SkillProcessDelegationLib {
 
   function startProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber, uint32 batchSize, uint32 itemId) internal {
-    ResourceId skillProcessSystemId = WorldResourceIdLib.encode({
+    ResourceId skillProcessFriendSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "SkillProcessSyst" // NOTE: Only the first 16 characters are used. Original: "SkillProcessSystem"
+      name: "SkillProcessFrie" // NOTE: Only the first 16 characters are used. Original: "SkillProcessFriendSystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
     world.callFrom(
       WorldContextConsumerLib._msgSender(),
-      skillProcessSystemId,
+      skillProcessFriendSystemId,
       abi.encodeWithSignature(
         "skillProcessStartProduction(uint8,uint256,uint8,uint32,uint32)",
         skillType, playerId, sequenceNumber, batchSize, itemId
@@ -50,16 +50,16 @@ library SkillProcessDelegationLib {
   }
 
   function startShipProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber, ItemIdQuantityPair[] memory productionMaterials, uint32 itemId) internal {
-    ResourceId skillProcessSystemId = WorldResourceIdLib.encode({
+    ResourceId skillProcessFriendSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "SkillProcessSyst" // NOTE: Only the first 16 characters are used. Original: "SkillProcessSystem"
+      name: "SkillProcessFrie" // NOTE: Only the first 16 characters are used. Original: "SkillProcessFriendSystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
     world.callFrom(
       WorldContextConsumerLib._msgSender(),
-      skillProcessSystemId,
+      skillProcessFriendSystemId,
       abi.encodeWithSignature(
         "skillProcessStartShipProduction(uint8,uint256,uint8,(uint32,uint32)[],uint32)",
         skillType, playerId, sequenceNumber, productionMaterials, itemId
@@ -88,16 +88,16 @@ library SkillProcessDelegationLib {
   }
 
   function startCreation(uint8 skillType, uint256 playerId, uint8 sequenceNumber, uint32 batchSize, uint32 itemId) internal {
-    ResourceId skillProcessSystemId = WorldResourceIdLib.encode({
+    ResourceId skillProcessFriendSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "SkillProcessSyst" // NOTE: Only the first 16 characters are used. Original: "SkillProcessSystem"
+      name: "SkillProcessFrie" // NOTE: Only the first 16 characters are used. Original: "SkillProcessFriendSystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
     world.callFrom(
       WorldContextConsumerLib._msgSender(),
-      skillProcessSystemId,
+      skillProcessFriendSystemId,
       abi.encodeWithSignature(
         "skillProcessStartCreation(uint8,uint256,uint8,uint32,uint32)",
         skillType, playerId, sequenceNumber, batchSize, itemId

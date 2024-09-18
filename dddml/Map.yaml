@@ -83,6 +83,7 @@ singletonObjects:
           #  referenceType: Clock
           #  isIgnoredInEvent: true
         result:
+          name: GatheredResources
           itemType: ItemIdQuantityPair
         event:
           name: IslandResourcesGathered

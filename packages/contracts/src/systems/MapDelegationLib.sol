@@ -15,7 +15,7 @@ library MapDelegationLib {
     ResourceId mapSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "MapFriendSystem"
+      name: "MapSystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
@@ -31,7 +31,7 @@ library MapDelegationLib {
   }
 
   function claimIsland(uint32 coordinatesX, uint32 coordinatesY, uint256 claimedBy, uint64 claimedAt) internal {
-    ResourceId mapSystemId = WorldResourceIdLib.encode({
+    ResourceId mapFriendSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
       name: "MapFriendSystem"
@@ -40,7 +40,7 @@ library MapDelegationLib {
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
     world.callFrom(
       WorldContextConsumerLib._msgSender(),
-      mapSystemId,
+      mapFriendSystemId,
       abi.encodeWithSignature(
         "mapClaimIsland(uint32,uint32,uint256,uint64)",
         coordinatesX, coordinatesY, claimedBy, claimedAt
@@ -49,23 +49,24 @@ library MapDelegationLib {
 
   }
 
-  function gatherIslandResources(uint256 playerId, uint32 coordinatesX, uint32 coordinatesY) internal {
-    ResourceId mapSystemId = WorldResourceIdLib.encode({
+  function gatherIslandResources(uint256 playerId, uint32 coordinatesX, uint32 coordinatesY) internal returns (ItemIdQuantityPair[] memory) {
+    ResourceId mapFriendSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "MapSystem"
+      name: "MapFriendSystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
-    world.callFrom(
+    bytes memory returnData = world.callFrom(
       WorldContextConsumerLib._msgSender(),
-      mapSystemId,
+      mapFriendSystemId,
       abi.encodeWithSignature(
         "mapGatherIslandResources(uint256,uint32,uint32)",
         playerId, coordinatesX, coordinatesY
       )
     );
 
+    return abi.decode(returnData, (ItemIdQuantityPair[]));
   }
 
   function create(bool existing, uint32 width, uint32 height) internal {

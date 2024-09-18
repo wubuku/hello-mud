@@ -12,16 +12,16 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 library RosterDelegationLib {
 
   function create(uint256 playerId, uint32 sequenceNumber) internal returns (uint256, uint32) {
-    ResourceId rosterSystemId = WorldResourceIdLib.encode({
+    ResourceId rosterFriendSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "RosterSystem"
+      name: "RosterFriendSyst" // NOTE: Only the first 16 characters are used. Original: "RosterFriendSystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
     bytes memory returnData = world.callFrom(
       WorldContextConsumerLib._msgSender(),
-      rosterSystemId,
+      rosterFriendSystemId,
       abi.encodeWithSignature(
         "rosterCreate(uint256,uint32)",
         playerId, sequenceNumber
@@ -51,16 +51,16 @@ library RosterDelegationLib {
   }
 
   function addShip(uint256 playerId, uint32 sequenceNumber, uint256 shipId, uint64 position) internal {
-    ResourceId rosterSystemId = WorldResourceIdLib.encode({
+    ResourceId rosterFriendSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "RosterSystem"
+      name: "RosterFriendSyst" // NOTE: Only the first 16 characters are used. Original: "RosterFriendSystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
     world.callFrom(
       WorldContextConsumerLib._msgSender(),
-      rosterSystemId,
+      rosterFriendSystemId,
       abi.encodeWithSignature(
         "rosterAddShip(uint256,uint32,uint256,uint64)",
         playerId, sequenceNumber, shipId, position
