@@ -15,7 +15,7 @@ library MapDelegationLib {
     ResourceId mapSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "MapSystem"
+      name: "MapFriendSystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
@@ -25,6 +25,44 @@ library MapDelegationLib {
       abi.encodeWithSignature(
         "mapAddIsland(uint32,uint32,(uint32,uint32)[])",
         coordinatesX, coordinatesY, resources
+      )
+    );
+
+  }
+
+  function claimIsland(uint32 coordinatesX, uint32 coordinatesY, uint256 claimedBy, uint64 claimedAt) internal {
+    ResourceId mapSystemId = WorldResourceIdLib.encode({
+      typeId: RESOURCE_SYSTEM,
+      namespace: "app",
+      name: "MapFriendSystem"
+    });
+
+    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
+    world.callFrom(
+      WorldContextConsumerLib._msgSender(),
+      mapSystemId,
+      abi.encodeWithSignature(
+        "mapClaimIsland(uint32,uint32,uint256,uint64)",
+        coordinatesX, coordinatesY, claimedBy, claimedAt
+      )
+    );
+
+  }
+
+  function gatherIslandResources(uint256 playerId, uint32 coordinatesX, uint32 coordinatesY) internal {
+    ResourceId mapSystemId = WorldResourceIdLib.encode({
+      typeId: RESOURCE_SYSTEM,
+      namespace: "app",
+      name: "MapSystem"
+    });
+
+    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
+    world.callFrom(
+      WorldContextConsumerLib._msgSender(),
+      mapSystemId,
+      abi.encodeWithSignature(
+        "mapGatherIslandResources(uint256,uint32,uint32)",
+        playerId, coordinatesX, coordinatesY
       )
     );
 

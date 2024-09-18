@@ -9,6 +9,30 @@ import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
 
 contract AppFriendDelegationControl is DelegationControl {
+  ResourceId constant SHIP_SYSTEM =
+    ResourceId.wrap(bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16("ShipSystem"))));
+
+  ResourceId constant SHIP_FRIEND_SYSTEM =
+    ResourceId.wrap(bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16("ShipFriendSystem"))));
+
+  ResourceId constant SKILL_PROCESS_SYSTEM =
+    ResourceId.wrap(
+      bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16(bytes("SkillProcessSystem"))))
+      // NOTE: Only 16 bytes are used: "SkillProcessSyst"
+    );
+
+  ResourceId constant ROSTER_SYSTEM =
+    ResourceId.wrap(bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16("RosterSystem"))));
+
+  ResourceId constant ROSTER_FRIEND_SYSTEM =
+    ResourceId.wrap(
+      bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16(bytes("RosterFriendSystem"))))
+      // NOTE: Only 16 bytes are used: "RosterFriendSyst"
+    );
+
+  ResourceId constant PLAYER_SYSTEM =
+    ResourceId.wrap(bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16("PlayerSystem"))));
+
   ResourceId constant SHIP_BATTLE_SYSTEM =
     ResourceId.wrap(bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16("ShipBattleSystem"))));
 
@@ -18,20 +42,62 @@ contract AppFriendDelegationControl is DelegationControl {
       // NOTE: Only 16 bytes are used: "ShipBattleServic"
     );
 
+  ResourceId constant SKILL_PROCESS_FRIEND_SYSTEM =
+    ResourceId.wrap(
+      bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16(bytes("SkillProcessFriendSystem"))))
+      // NOTE: Only 16 bytes are used: "SkillProcessFrie"
+    );
+
+  ResourceId constant AGGREGATOR_SERVICE_SYSTEM =
+    ResourceId.wrap(
+      bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16(bytes("AggregatorServiceSystem"))))
+      // NOTE: Only 16 bytes are used: "AggregatorServic"
+    );
+
   ResourceId constant MAP_SYSTEM =
     ResourceId.wrap(bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16("MapSystem"))));
 
-  ResourceId constant PLAYER_SYSTEM =
-    ResourceId.wrap(bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16("PlayerSystem"))));
+  ResourceId constant MAP_FRIEND_SYSTEM =
+    ResourceId.wrap(bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16("MapFriendSystem"))));
 
   function verify(address /*delegator*/, ResourceId systemId, bytes memory /*callData*/) public view returns (bool) {
     ResourceId callerSystemId = SystemRegistry.get(_msgSender());
     return
+      ResourceId.unwrap(systemId) == ResourceId.unwrap(SHIP_SYSTEM) &&
+      (
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(SKILL_PROCESS_SYSTEM) ||
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(ROSTER_SYSTEM)
+      ) ||
+      ResourceId.unwrap(systemId) == ResourceId.unwrap(SHIP_FRIEND_SYSTEM) &&
+      (
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(SKILL_PROCESS_SYSTEM) ||
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(ROSTER_SYSTEM)
+      ) ||
+      ResourceId.unwrap(systemId) == ResourceId.unwrap(ROSTER_SYSTEM) &&
+      (
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(PLAYER_SYSTEM)
+      ) ||
+      ResourceId.unwrap(systemId) == ResourceId.unwrap(ROSTER_FRIEND_SYSTEM) &&
+      (
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(PLAYER_SYSTEM)
+      ) ||
       ResourceId.unwrap(systemId) == ResourceId.unwrap(SHIP_BATTLE_SYSTEM) &&
       (
         ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(SHIP_BATTLE_SERVICE_SYSTEM)
       ) ||
+      ResourceId.unwrap(systemId) == ResourceId.unwrap(SKILL_PROCESS_SYSTEM) &&
+      (
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(AGGREGATOR_SERVICE_SYSTEM)
+      ) ||
+      ResourceId.unwrap(systemId) == ResourceId.unwrap(SKILL_PROCESS_FRIEND_SYSTEM) &&
+      (
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(AGGREGATOR_SERVICE_SYSTEM)
+      ) ||
       ResourceId.unwrap(systemId) == ResourceId.unwrap(MAP_SYSTEM) &&
+      (
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(PLAYER_SYSTEM)
+      ) ||
+      ResourceId.unwrap(systemId) == ResourceId.unwrap(MAP_FRIEND_SYSTEM) &&
       (
         ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(PLAYER_SYSTEM)
       );

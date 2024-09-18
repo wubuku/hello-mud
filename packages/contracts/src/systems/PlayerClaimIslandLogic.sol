@@ -3,7 +3,7 @@ pragma solidity >=0.8.24;
 
 import { IslandClaimed } from "./PlayerEvents.sol";
 import { PlayerData, MapLocation } from "../codegen/index.sol";
-import { MapAggregateLib } from "./MapAggregateLib.sol";
+import { MapDelegationLib } from "./MapDelegationLib.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 import { SkillType } from "./SkillType.sol";
 import { PlayerInventoryLib, PlayerInventoryData } from "./PlayerInventoryLib.sol";
@@ -75,7 +75,7 @@ library PlayerClaimIslandLogic {
     addInventoryByIslandResources(playerId, coordinatesX, coordinatesY);
 
     // Claim island in map
-    MapAggregateLib.claimIsland(coordinatesX, coordinatesY, playerId, claimedAt);
+    MapDelegationLib.claimIsland(coordinatesX, coordinatesY, playerId, claimedAt);
 
     //createSkillProcesses(playerId);
 

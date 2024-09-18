@@ -1,6 +1,8 @@
 
 aggregates:
   Roster:
+    friends:
+      - Player.ClaimIsland
     id:
       name: RosterId
       type: RosterId
@@ -35,7 +37,9 @@ aggregates:
 
     methods:
       Create:
-        isInternal: true
+        metadata:
+          IsOnlyOpenToFriends: true
+        # isInternal: true
         result:
           isObjectReturned: true
         event:
@@ -64,7 +68,9 @@ aggregates:
           #isObjectShared: true
 
       AddShip:
-        isInternal: true
+        metadata:
+          IsOnlyOpenToFriends: true
+        # isInternal: true
         parameters:
           ShipId:
             type: u256 #Ship

@@ -6,7 +6,7 @@ aggregates:
       CRUD_IT_NO_DELETE: true
     friends:
       #- SkillProcessService
-      #- AggregatorService
+      - AggregatorService
     id:
       name: SkillProcessId
       type: SkillProcessId
@@ -67,8 +67,10 @@ aggregates:
       #   verificationLogic:
 
       StartProduction:
+        metadata:
+          IsOnlyOpenToFriends: true
         inheritsFrom: SkillProcessTemplate.StartProduction
-        isInternal: true
+        # isInternal: true
         parameters:
           BatchSize:
             type: u32
@@ -81,8 +83,10 @@ aggregates:
           name: ProductionProcessCompleted
 
       StartShipProduction:
+        metadata:
+          IsOnlyOpenToFriends: true
         inheritsFrom: SkillProcessTemplate.StartProduction
-        isInternal: true
+        # isInternal: true
         parameters:
           ProductionMaterials:
             itemType: ItemIdQuantityPair
@@ -102,8 +106,10 @@ aggregates:
         #  type: Ship
 
       StartCreation:
+        metadata:
+          IsOnlyOpenToFriends: true
         inheritsFrom: SkillProcessTemplate.StartCreation
-        isInternal: true
+        # isInternal: true
         parameters:
           BatchSize:
             type: u32

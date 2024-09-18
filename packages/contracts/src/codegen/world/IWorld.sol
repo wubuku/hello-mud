@@ -13,13 +13,17 @@ import { IIncrementSystem } from "./IIncrementSystem.sol";
 import { IItemCreationSystem } from "./IItemCreationSystem.sol";
 import { IItemProductionSystem } from "./IItemProductionSystem.sol";
 import { IItemSystem } from "./IItemSystem.sol";
+import { IMapFriendSystem } from "./IMapFriendSystem.sol";
 import { IMapSystem } from "./IMapSystem.sol";
 import { IPlayerSystem } from "./IPlayerSystem.sol";
 import { IPositionSystem } from "./IPositionSystem.sol";
+import { IRosterFriendSystem } from "./IRosterFriendSystem.sol";
 import { IRosterSystem } from "./IRosterSystem.sol";
 import { IShipBattleServiceSystem } from "./IShipBattleServiceSystem.sol";
 import { IShipBattleSystem } from "./IShipBattleSystem.sol";
+import { IShipFriendSystem } from "./IShipFriendSystem.sol";
 import { IShipSystem } from "./IShipSystem.sol";
+import { ISkillProcessFriendSystem } from "./ISkillProcessFriendSystem.sol";
 import { ISkillProcessSystem } from "./ISkillProcessSystem.sol";
 import { ITerrainSystem } from "./ITerrainSystem.sol";
 
@@ -41,13 +45,17 @@ interface IWorld is
   IItemCreationSystem,
   IItemProductionSystem,
   IItemSystem,
+  IMapFriendSystem,
   IMapSystem,
   IPlayerSystem,
   IPositionSystem,
+  IRosterFriendSystem,
   IRosterSystem,
   IShipBattleServiceSystem,
   IShipBattleSystem,
+  IShipFriendSystem,
   IShipSystem,
+  ISkillProcessFriendSystem,
   ISkillProcessSystem,
   ITerrainSystem
 {}

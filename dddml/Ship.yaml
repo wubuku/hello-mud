@@ -5,6 +5,9 @@ aggregates:
       CRUD_IT_NO_UPDATE: true
       CRUD_IT_NO_DELETE: true
       #ShouldIssuePublisherObject: true
+    friends:
+      - SkillProcess.CompleteShipProduction
+      - Roster.CreateEnvironmentRoster
     id:
       name: Id
       type: u256
@@ -40,7 +43,9 @@ aggregates:
 
     methods:
       Create:
-        isInternal: true
+        metadata:
+          IsOnlyOpenToFriends: true
+        # isInternal: true
         result:
           isObjectReturned: true
 
