@@ -8,10 +8,10 @@ import { Map, MapData } from "../codegen/index.sol";
 import { MapIslandClaimed, IslandResourcesGathered } from "./MapEvents.sol";
 import { MapClaimIslandLogic } from "./MapClaimIslandLogic.sol";
 import { MapGatherIslandResourcesLogic } from "./MapGatherIslandResourcesLogic.sol";
+import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
 import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
 import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
-import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 contract MapFriendSystem is System {
   using WorldResourceIdInstance for ResourceId;

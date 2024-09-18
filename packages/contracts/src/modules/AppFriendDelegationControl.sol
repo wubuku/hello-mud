@@ -75,11 +75,15 @@ contract AppFriendDelegationControl is DelegationControl {
       ) ||
       ResourceId.unwrap(systemId) == ResourceId.unwrap(ROSTER_SYSTEM) &&
       (
-        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(PLAYER_SYSTEM)
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(PLAYER_SYSTEM) ||
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(SHIP_BATTLE_SYSTEM) ||
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(SKILL_PROCESS_SYSTEM)
       ) ||
       ResourceId.unwrap(systemId) == ResourceId.unwrap(ROSTER_FRIEND_SYSTEM) &&
       (
-        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(PLAYER_SYSTEM)
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(PLAYER_SYSTEM) ||
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(SHIP_BATTLE_SYSTEM) ||
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(SKILL_PROCESS_SYSTEM)
       ) ||
       ResourceId.unwrap(systemId) == ResourceId.unwrap(SHIP_BATTLE_SYSTEM) &&
       (
@@ -87,10 +91,12 @@ contract AppFriendDelegationControl is DelegationControl {
       ) ||
       ResourceId.unwrap(systemId) == ResourceId.unwrap(SKILL_PROCESS_SYSTEM) &&
       (
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(PLAYER_SYSTEM) ||
         ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(AGGREGATOR_SERVICE_SYSTEM)
       ) ||
       ResourceId.unwrap(systemId) == ResourceId.unwrap(SKILL_PROCESS_FRIEND_SYSTEM) &&
       (
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(PLAYER_SYSTEM) ||
         ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(AGGREGATOR_SERVICE_SYSTEM)
       ) ||
       ResourceId.unwrap(systemId) == ResourceId.unwrap(MAP_SYSTEM) &&

@@ -4,11 +4,16 @@ pragma solidity >=0.8.24;
 import { IslandClaimed } from "./PlayerEvents.sol";
 import { PlayerData, MapLocation } from "../codegen/index.sol";
 import { MapDelegationLib } from "./MapDelegationLib.sol";
+import { RosterDelegationLib } from "./RosterDelegationLib.sol";
+import { SkillProcessDelegationLib } from "./SkillProcessDelegationLib.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 import { SkillType } from "./SkillType.sol";
 import { PlayerInventoryLib, PlayerInventoryData } from "./PlayerInventoryLib.sol";
 import { SkillProcess, SkillProcessData } from "../codegen/index.sol";
 import { SkillProcessUtil } from "../utils/SkillProcessUtil.sol";
+// import { IBaseWorld } from "@latticexyz/world/src/codegen/interfaces/IBaseWorld.sol";
+// import { ResourceId, WorldResourceIdLib } from "@latticexyz/world/src/WorldResourceId.sol";
+// import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 
 library PlayerClaimIslandLogic {
   error ESenderHasNoPermission(address sender, address owner);
@@ -77,19 +82,12 @@ library PlayerClaimIslandLogic {
     // Claim island in map
     MapDelegationLib.claimIsland(coordinatesX, coordinatesY, playerId, claimedAt);
 
-    //createSkillProcesses(playerId);
+    createSkillProcesses(playerId);
 
-    // // Create rosters
-    // for (uint32 rosterSequenceNumber = 0; rosterSequenceNumber < 5; rosterSequenceNumber++) {
-    //   RosterLib.create(
-    //     playerId,
-    //     rosterSequenceNumber,
-    //     RosterLib.RosterStatus.AT_ANCHOR,
-    //     0,
-    //     RosterLib.getRosterOriginCoordinates(coordinatesX, coordinatesY, rosterSequenceNumber),
-    //     0
-    //   );
-    // }
+    // Create rosters
+    for (uint32 rosterSequenceNumber = 0; rosterSequenceNumber < 5; rosterSequenceNumber++) {
+      RosterDelegationLib.create(playerId, rosterSequenceNumber, coordinatesX, coordinatesY);
+    }
 
     return playerData;
   }
@@ -139,31 +137,18 @@ library PlayerClaimIslandLogic {
     }
   }
 
-  // function createSkillProcesses(uint256 playerId) internal {
-  //   uint8[4] memory skillTypes = [
-  //     uint8(SkillType.MINING),
-  //     uint8(SkillType.WOODCUTTING),
-  //     uint8(SkillType.FARMING),
-  //     uint8(SkillType.CRAFTING)
-  //   ];
-  //   for (uint i = 0; i < skillTypes.length; i++) {
-  //     uint8 maxSeqNumber = SkillProcessUtil.skillTypeMaxSequenceNumber(skillTypes[i]);
-  //     for (uint8 seqNumber = 0; seqNumber <= maxSeqNumber; seqNumber++) {
-  //       createSkillProcess(skillTypes[i], playerId, seqNumber);
-  //     }
-  //   }
-  // }
-
-  // function createSkillProcess(uint8 skillType, uint256 playerId, uint8 sequenceNumber) private {
-  //   //todo use SkillProcessAggregateLib instead.
-  //   SkillProcessData memory newSkillProcess = SkillProcessData({
-  //     itemId: 0,
-  //     startedAt: 0,
-  //     creationTime: 0,
-  //     completed: false,
-  //     endedAt: 0,
-  //     batchSize: 0
-  //   });
-  //   SkillProcess.set(skillType, playerId, sequenceNumber, newSkillProcess);
-  // }
+  function createSkillProcesses(uint256 playerId) internal {
+    uint8[4] memory skillTypes = [
+      uint8(SkillType.MINING),
+      uint8(SkillType.WOODCUTTING),
+      uint8(SkillType.FARMING),
+      uint8(SkillType.CRAFTING)
+    ];
+    for (uint i = 0; i < skillTypes.length; i++) {
+      uint8 maxSeqNumber = SkillProcessUtil.skillTypeMaxSequenceNumber(skillTypes[i]);
+      for (uint8 seqNumber = 0; seqNumber <= maxSeqNumber; seqNumber++) {
+        SkillProcessDelegationLib.create(skillTypes[i], playerId, seqNumber, 0, 0, 0, false, 0, 0);
+      }
+    }
+  }
 }

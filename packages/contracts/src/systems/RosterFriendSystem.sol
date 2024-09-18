@@ -15,7 +15,7 @@ import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/World
 contract RosterFriendSystem is System {
   using WorldResourceIdInstance for ResourceId;
 
-  event RosterCreatedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber);
+  event RosterCreatedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint32 coordinatesX, uint32 coordinatesY);
 
   event RosterShipAddedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256 shipId, uint64 position);
 
@@ -25,18 +25,18 @@ contract RosterFriendSystem is System {
     require(_thisNamespaceOwner == _msgSender(), "Require namespace owner");
   }
 
-  function rosterCreate(uint256 playerId, uint32 sequenceNumber) public returns (uint256, uint32) {
+  function rosterCreate(uint256 playerId, uint32 sequenceNumber, uint32 coordinatesX, uint32 coordinatesY) public returns (uint256, uint32) {
     RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
     require(
-      !(rosterData.status == uint8(0) && rosterData.speed == uint32(0) && rosterData.baseExperience == uint32(0) && rosterData.environmentOwned == false && rosterData.updatedCoordinatesX == uint32(0) && rosterData.updatedCoordinatesY == uint32(0) && rosterData.coordinatesUpdatedAt == uint64(0) && rosterData.targetCoordinatesX == uint32(0) && rosterData.targetCoordinatesY == uint32(0) && rosterData.originCoordinatesX == uint32(0) && rosterData.originCoordinatesY == uint32(0) && rosterData.sailDuration == uint64(0) && rosterData.setSailAt == uint64(0) && rosterData.shipBattleId == uint256(0) && rosterData.shipIds.length == 0),
-      "Roster does not exist"
+      rosterData.status == uint8(0) && rosterData.speed == uint32(0) && rosterData.baseExperience == uint32(0) && rosterData.environmentOwned == false && rosterData.updatedCoordinatesX == uint32(0) && rosterData.updatedCoordinatesY == uint32(0) && rosterData.coordinatesUpdatedAt == uint64(0) && rosterData.targetCoordinatesX == uint32(0) && rosterData.targetCoordinatesY == uint32(0) && rosterData.originCoordinatesX == uint32(0) && rosterData.originCoordinatesY == uint32(0) && rosterData.sailDuration == uint64(0) && rosterData.setSailAt == uint64(0) && rosterData.shipBattleId == uint256(0) && rosterData.shipIds.length == 0,
+      "Roster already exists"
     );
-    RosterCreated memory rosterCreated = RosterCreateLogic.verify(playerId, sequenceNumber, rosterData);
+    RosterCreated memory rosterCreated = RosterCreateLogic.verify(playerId, sequenceNumber, coordinatesX, coordinatesY);
     rosterCreated.playerId = playerId;
     rosterCreated.sequenceNumber = sequenceNumber;
-    emit RosterCreatedEvent(rosterCreated.playerId, rosterCreated.sequenceNumber);
-    RosterData memory updatedRosterData = RosterCreateLogic.mutate(rosterCreated, rosterData);
-    Roster.set(playerId, sequenceNumber, updatedRosterData);
+    emit RosterCreatedEvent(rosterCreated.playerId, rosterCreated.sequenceNumber, rosterCreated.coordinatesX, rosterCreated.coordinatesY);
+    RosterData memory newRosterData = RosterCreateLogic.mutate(rosterCreated);
+    Roster.set(playerId, sequenceNumber, newRosterData);
     return (playerId, sequenceNumber);
   }
 

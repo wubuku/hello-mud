@@ -5,18 +5,36 @@ pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
 import { SkillProcess, SkillProcessData } from "../codegen/index.sol";
-import { ProductionProcessStarted, ShipProductionProcessStarted, CreationProcessStarted } from "./SkillProcessEvents.sol";
+import { SkillProcessCreated, ProductionProcessStarted, ShipProductionProcessStarted, CreationProcessStarted } from "./SkillProcessEvents.sol";
+import { SkillProcessCreateLogic } from "./SkillProcessCreateLogic.sol";
 import { SkillProcessStartProductionLogic } from "./SkillProcessStartProductionLogic.sol";
 import { SkillProcessStartShipProductionLogic } from "./SkillProcessStartShipProductionLogic.sol";
 import { SkillProcessStartCreationLogic } from "./SkillProcessStartCreationLogic.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 contract SkillProcessFriendSystem is System {
+  event SkillProcessCreatedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime, bool completed, uint64 endedAt, uint32 batchSize);
+
   event ProductionProcessStartedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 batchSize, uint32 itemId, uint64 energyCost, uint64 startedAt, uint64 creationTime);
 
   event ShipProductionProcessStartedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 itemId, uint64 energyCost, uint64 startedAt, uint64 creationTime);
 
   event CreationProcessStartedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 batchSize, uint32 itemId, uint64 energyCost, uint32 resourceCost, uint64 startedAt, uint64 creationTime);
+
+  function skillProcessCreate(uint8 skillType, uint256 playerId, uint8 sequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime, bool completed, uint64 endedAt, uint32 batchSize) public {
+    SkillProcessData memory skillProcessData = SkillProcess.get(skillType, playerId, sequenceNumber);
+    require(
+      skillProcessData.itemId == uint32(0) && skillProcessData.startedAt == uint64(0) && skillProcessData.creationTime == uint64(0) && skillProcessData.completed == false && skillProcessData.endedAt == uint64(0) && skillProcessData.batchSize == uint32(0),
+      "SkillProcess already exists"
+    );
+    SkillProcessCreated memory skillProcessCreated = SkillProcessCreateLogic.verify(skillType, playerId, sequenceNumber, itemId, startedAt, creationTime, completed, endedAt, batchSize);
+    skillProcessCreated.skillType = skillType;
+    skillProcessCreated.playerId = playerId;
+    skillProcessCreated.sequenceNumber = sequenceNumber;
+    emit SkillProcessCreatedEvent(skillProcessCreated.skillType, skillProcessCreated.playerId, skillProcessCreated.sequenceNumber, skillProcessCreated.itemId, skillProcessCreated.startedAt, skillProcessCreated.creationTime, skillProcessCreated.completed, skillProcessCreated.endedAt, skillProcessCreated.batchSize);
+    SkillProcessData memory newSkillProcessData = SkillProcessCreateLogic.mutate(skillProcessCreated);
+    SkillProcess.set(skillType, playerId, sequenceNumber, newSkillProcessData);
+  }
 
   function skillProcessStartProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber, uint32 batchSize, uint32 itemId) public {
     SkillProcessData memory skillProcessData = SkillProcess.get(skillType, playerId, sequenceNumber);

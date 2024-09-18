@@ -1,8 +1,17 @@
 
 aggregates:
   Roster:
+    metadata:
+      #Preprocessors: [ "CRUD_IT" ]
+      #CRUD_IT_NO_UPDATE: true
+      #CRUD_IT_NO_DELETE: true
     friends:
       - Player.ClaimIsland
+      - ShipBattle.InitiateBattle
+      - ShipBattle.MakeMove
+      - ShipBattle.TakeLoot
+      #- Player.NftHolderClaimIsland
+      - SkillProcess.CompleteShipProduction
     id:
       name: RosterId
       type: RosterId
@@ -40,6 +49,10 @@ aggregates:
         metadata:
           IsOnlyOpenToFriends: true
         # isInternal: true
+        isCreationCommand: true
+        parameters:
+          Coordinates:
+            type: Coordinates
         result:
           isObjectReturned: true
         event:

@@ -5,7 +5,7 @@ aggregates:
       CRUD_IT_NO_UPDATE: true
       CRUD_IT_NO_DELETE: true
     friends:
-      #- SkillProcessService
+      - Player.ClaimIsland
       - AggregatorService
     id:
       name: SkillProcessId
@@ -44,7 +44,9 @@ aggregates:
         description: "Actual input materials for production"
 
     methods:
-      # Create:
+      Create:
+        metadata:
+          IsOnlyOpenToFriends: true
       #   parameters:
       #     Player:
       #       referenceType: Player

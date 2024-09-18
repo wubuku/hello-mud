@@ -8,6 +8,8 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 struct RosterCreated {
   uint256 playerId;
   uint32 sequenceNumber;
+  uint32 coordinatesX;
+  uint32 coordinatesY;
 }
 
 struct EnvironmentRosterCreated {

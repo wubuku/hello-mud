@@ -14,16 +14,4 @@ interface ISkillProcessSystem {
   function app__skillProcessCompleteShipProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber) external;
 
   function app__skillProcessCompleteCreation(uint8 skillType, uint256 playerId, uint8 sequenceNumber) external;
-
-  function app__skillProcessCreate(
-    uint8 skillType,
-    uint256 playerId,
-    uint8 sequenceNumber,
-    uint32 itemId,
-    uint64 startedAt,
-    uint64 creationTime,
-    bool completed,
-    uint64 endedAt,
-    uint32 batchSize
-  ) external;
 }

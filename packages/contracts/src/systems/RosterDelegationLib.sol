@@ -11,7 +11,7 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 library RosterDelegationLib {
 
-  function create(uint256 playerId, uint32 sequenceNumber) internal returns (uint256, uint32) {
+  function create(uint256 playerId, uint32 sequenceNumber, uint32 coordinatesX, uint32 coordinatesY) internal returns (uint256, uint32) {
     ResourceId rosterFriendSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -23,8 +23,8 @@ library RosterDelegationLib {
       WorldContextConsumerLib._msgSender(),
       rosterFriendSystemId,
       abi.encodeWithSignature(
-        "rosterCreate(uint256,uint32)",
-        playerId, sequenceNumber
+        "rosterCreate(uint256,uint32,uint32,uint32)",
+        playerId, sequenceNumber, coordinatesX, coordinatesY
       )
     );
 
