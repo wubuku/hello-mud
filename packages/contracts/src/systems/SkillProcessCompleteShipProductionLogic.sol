@@ -2,7 +2,7 @@
 pragma solidity >=0.8.24;
 
 import { ShipProductionProcessCompleted } from "./SkillProcessEvents.sol";
-import { SkillProcessData, SkillPrcMtrlData, PlayerData, ItemProductionData, RosterData, Roster } from "../codegen/index.sol";
+import { SkillProcessData, SkillPrcMtrlData, PlayerData, ItemProductionData } from "../codegen/index.sol";
 import { SkillProcessUtil } from "../utils/SkillProcessUtil.sol";
 import { ItemIds } from "../utils/ItemIds.sol";
 import { Player, ItemProduction } from "../codegen/index.sol";
@@ -15,7 +15,7 @@ import { RosterSequenceNumber } from "./RosterSequenceNumber.sol";
 import { ShipUtil } from "../utils/ShipUtil.sol";
 import { ShipDelegationLib } from "./ShipDelegationLib.sol";
 import { SkillPrcMtrlLib } from "./SkillPrcMtrlLib.sol";
-import { RosterUtil } from "../utils/RosterUtil.sol";
+import { RosterDelegationLib } from "./RosterDelegationLib.sol";
 
 error ProcessNotStarted(uint32 itemId, bool completed);
 error ItemIdIsNotShip(uint32 itemId);
@@ -93,10 +93,6 @@ library SkillProcessCompleteShipProductionLogic {
       return skillProcessData;
     }
     uint256 playerId = shipProductionProcessCompleted.playerId;
-    RosterData memory unassignedShips = Roster.get(playerId, RosterSequenceNumber.UNASSIGNED_SHIPS);
-    if (unassignedShips.status == 0) {
-      revert RosterUnassignedShipsNotFound(playerId);
-    }
 
     // Use SkillPrcMtrlLib to get production materials
     SkillPrcMtrlData[] memory productionMaterials = SkillPrcMtrlLib.getAllProductionMaterials(
@@ -132,11 +128,7 @@ library SkillProcessCompleteShipProductionLogic {
       buildingExpensesQuantities
     );
 
-    // Add created ship addition to unassigned ships roster
-    uint256[] memory shipIds = unassignedShips.shipIds;
-    shipIds = RosterUtil.addShipIdToEnd(shipIds, shipId);
-    unassignedShips.shipIds = shipIds;
-    Roster.set(playerId, RosterSequenceNumber.UNASSIGNED_SHIPS, unassignedShips);
+    RosterDelegationLib.addShip(playerId, RosterSequenceNumber.UNASSIGNED_SHIPS, shipId, type(uint64).max);
 
     ItemIdQuantityPair[] memory emptyItems = new ItemIdQuantityPair[](0);
     PlayerDelegationLib.increaseExperienceAndItems(
