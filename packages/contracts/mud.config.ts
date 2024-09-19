@@ -313,6 +313,9 @@ export default defineWorld({
     },
   },
   systems: {
+    PlayerFriendSystem: {
+      openAccess: false,
+    },
     ShipFriendSystem: {
       openAccess: false,
     },

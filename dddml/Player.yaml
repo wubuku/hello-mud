@@ -65,6 +65,32 @@ aggregates:
         event:
           name: PlayerIslandResourcesGathered
 
+      DeductItems:
+        metadata:
+          IsOnlyOpenToFriends: true
+        #isInternal: true
+        parameters:
+          Items:
+            itemType: ItemIdQuantityPair
+        event:
+          name: PlayerItemsDeducted
+
+      IncreaseExperienceAndItems:
+        metadata:
+          IsOnlyOpenToFriends: true
+        #isInternal: true
+        parameters:
+          ExperienceGained:
+            type: u32
+          Items:
+            itemType: ItemIdQuantityPair
+          NewLevel:
+            type: u16
+          #UnassignedShips:
+          #  itemType: ID # Ship ID
+        event:
+          name: PlayerXpAndItemsIncreased
+
 
 superObjects:
   PlayerTemplate:

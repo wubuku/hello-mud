@@ -15,6 +15,7 @@ import { IItemProductionSystem } from "./IItemProductionSystem.sol";
 import { IItemSystem } from "./IItemSystem.sol";
 import { IMapFriendSystem } from "./IMapFriendSystem.sol";
 import { IMapSystem } from "./IMapSystem.sol";
+import { IPlayerFriendSystem } from "./IPlayerFriendSystem.sol";
 import { IPlayerSystem } from "./IPlayerSystem.sol";
 import { IPositionSystem } from "./IPositionSystem.sol";
 import { IRosterFriendSystem } from "./IRosterFriendSystem.sol";
@@ -47,6 +48,7 @@ interface IWorld is
   IItemSystem,
   IMapFriendSystem,
   IMapSystem,
+  IPlayerFriendSystem,
   IPlayerSystem,
   IPositionSystem,
   IRosterFriendSystem,
