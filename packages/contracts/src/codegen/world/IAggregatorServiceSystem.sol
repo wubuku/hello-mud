@@ -36,9 +36,8 @@ interface IAggregatorServiceSystem {
   ) external;
 
   function app__uniApiRosterSetSail(
-    uint256 rosterPlayerId,
-    uint32 rosterSequenceNumber,
     uint256 playerId,
+    uint32 rosterSequenceNumber,
     uint32 targetCoordinatesX,
     uint32 targetCoordinatesY,
     uint64 energyAmount,

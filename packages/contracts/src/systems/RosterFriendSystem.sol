@@ -5,9 +5,10 @@ pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
 import { Roster, RosterData } from "../codegen/index.sol";
-import { RosterCreated, RosterShipAdded } from "./RosterEvents.sol";
+import { RosterCreated, RosterShipAdded, RosterSetSail } from "./RosterEvents.sol";
 import { RosterCreateLogic } from "./RosterCreateLogic.sol";
 import { RosterAddShipLogic } from "./RosterAddShipLogic.sol";
+import { RosterSetSailLogic } from "./RosterSetSailLogic.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
 import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
 import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
@@ -18,6 +19,8 @@ contract RosterFriendSystem is System {
   event RosterCreatedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint32 coordinatesX, uint32 coordinatesY);
 
   event RosterShipAddedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256 shipId, uint64 position);
+
+  event RosterSetSailEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint32 targetCoordinatesX, uint32 targetCoordinatesY, uint64 sailDuration, uint64 setSailAt, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY, uint64 energyCost);
 
   function _requireNamespaceOwner() internal view {
     ResourceId _thisSystemId = SystemRegistry.get(address(this));
@@ -51,6 +54,20 @@ contract RosterFriendSystem is System {
     rosterShipAdded.sequenceNumber = sequenceNumber;
     emit RosterShipAddedEvent(rosterShipAdded.playerId, rosterShipAdded.sequenceNumber, rosterShipAdded.shipId, rosterShipAdded.position);
     RosterData memory updatedRosterData = RosterAddShipLogic.mutate(rosterShipAdded, rosterData);
+    Roster.set(playerId, sequenceNumber, updatedRosterData);
+  }
+
+  function rosterSetSail(uint256 playerId, uint32 sequenceNumber, uint32 targetCoordinatesX, uint32 targetCoordinatesY, uint64 sailDuration, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY) public {
+    RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
+    require(
+      !(rosterData.status == uint8(0) && rosterData.speed == uint32(0) && rosterData.baseExperience == uint32(0) && rosterData.environmentOwned == false && rosterData.updatedCoordinatesX == uint32(0) && rosterData.updatedCoordinatesY == uint32(0) && rosterData.coordinatesUpdatedAt == uint64(0) && rosterData.targetCoordinatesX == uint32(0) && rosterData.targetCoordinatesY == uint32(0) && rosterData.originCoordinatesX == uint32(0) && rosterData.originCoordinatesY == uint32(0) && rosterData.sailDuration == uint64(0) && rosterData.setSailAt == uint64(0) && rosterData.shipBattleId == uint256(0) && rosterData.shipIds.length == 0),
+      "Roster does not exist"
+    );
+    RosterSetSail memory rosterSetSail_e = RosterSetSailLogic.verify(playerId, sequenceNumber, targetCoordinatesX, targetCoordinatesY, sailDuration, updatedCoordinatesX, updatedCoordinatesY, rosterData);
+    rosterSetSail_e.playerId = playerId;
+    rosterSetSail_e.sequenceNumber = sequenceNumber;
+    emit RosterSetSailEvent(rosterSetSail_e.playerId, rosterSetSail_e.sequenceNumber, rosterSetSail_e.targetCoordinatesX, rosterSetSail_e.targetCoordinatesY, rosterSetSail_e.sailDuration, rosterSetSail_e.setSailAt, rosterSetSail_e.updatedCoordinatesX, rosterSetSail_e.updatedCoordinatesY, rosterSetSail_e.energyCost);
+    RosterData memory updatedRosterData = RosterSetSailLogic.mutate(rosterSetSail_e, rosterData);
     Roster.set(playerId, sequenceNumber, updatedRosterData);
   }
 

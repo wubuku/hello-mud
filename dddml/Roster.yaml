@@ -95,8 +95,10 @@ aggregates:
 
 
       SetSail:
+        metadata:
+          IsOnlyOpenToFriends: true
         #requiredPermission: Owner # _to_do_
-        isInternal: true
+        #isInternal: true
         parameters:
           # Player:
           #   referenceType: Player

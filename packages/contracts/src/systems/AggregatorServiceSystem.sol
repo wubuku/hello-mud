@@ -8,6 +8,7 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { EnergyToken } from "../codegen/index.sol";
 import { SafeERC20, IERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import { SkillProcessDelegationLib } from "./SkillProcessDelegationLib.sol";
+import { RosterDelegationLib } from "./RosterDelegationLib.sol";
 
 contract AggregatorServiceSystem is System {
   using SafeERC20 for IERC20;
@@ -66,13 +67,18 @@ contract AggregatorServiceSystem is System {
     // SafeERC20 处理了转账失败的情况，会自动回滚交易
     token.safeTransferFrom(_msgSender(), address(this), amount);
 
-    SkillProcessDelegationLib.startShipProduction(skillType, playerId, skillProcessSequenceNumber, itemId, productionMaterials);
+    SkillProcessDelegationLib.startShipProduction(
+      skillType,
+      playerId,
+      skillProcessSequenceNumber,
+      itemId,
+      productionMaterials
+    );
   }
 
   function uniApiRosterSetSail(
-    uint256 rosterPlayerId,
-    uint32 rosterSequenceNumber,
     uint256 playerId,
+    uint32 rosterSequenceNumber,
     uint32 targetCoordinatesX,
     uint32 targetCoordinatesY,
     uint64 energyAmount,
@@ -80,6 +86,23 @@ contract AggregatorServiceSystem is System {
     uint32 updatedCoordinatesX,
     uint32 updatedCoordinatesY
   ) public {
-    // TODO ...
+    uint256 amount = 1; // TODO: Only for testing
+    address tokenAddress = EnergyToken.get();
+    require(tokenAddress != address(0), "Invalid token address");
+    require(amount > 0, "Amount must be greater than 0");
+
+    IERC20 token = IERC20(tokenAddress);
+    // SafeERC20 处理了转账失败的情况，会自动回滚交易
+    token.safeTransferFrom(_msgSender(), address(this), amount);
+
+    RosterDelegationLib.setSail(
+      playerId,
+      rosterSequenceNumber,
+      targetCoordinatesX,
+      targetCoordinatesY,
+      sailDuration,
+      updatedCoordinatesX,
+      updatedCoordinatesY
+    );
   }
 }

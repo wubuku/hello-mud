@@ -74,11 +74,13 @@ services:
   #   methods:
       RosterSetSail: # SetSail
         parameters:
-          Roster:
-            type: RosterId #referenceType: Roster
-            #isMutableReference: true
           PlayerId:
             type: u256 #referenceType: Player
+          RosterSequenceNumber:
+            type: u32
+          #Roster:
+          #  type: RosterId #referenceType: Roster
+          #  #isMutableReference: true
           TargetCoordinates:
             type: Coordinates
           #Clock:
