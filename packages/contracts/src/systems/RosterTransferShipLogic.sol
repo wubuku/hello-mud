@@ -71,19 +71,25 @@ library RosterTransferShipLogic {
     uint64 toPosition = rosterShipTransferred.toPosition;
     uint64 transferredAt = rosterShipTransferred.transferredAt;
 
-    rosterData.shipIds = ShipIdUtil.removeShipId(rosterData.shipIds, shipId);
     if (rosterData.shipIds.length == 0) {
       revert ShipNotFoundInSourceRoster(shipId, rosterShipTransferred.playerId, rosterShipTransferred.sequenceNumber);
     }
+    rosterData.shipIds = ShipIdUtil.removeShipId(rosterData.shipIds, shipId);
     rosterData.speed = rosterData.calculateRosterSpeed();
+    rosterData.coordinatesUpdatedAt = transferredAt; // Update the coordinatesUpdatedAt timestamp here?
 
+    //
+    // Note: The consistency of the two-way relationship between Roster and Ship is maintained here.
+    //
     toRoster.shipIds = ShipIdUtil.addShipId(toRoster.shipIds, shipId, toPosition);
     toRoster.speed = toRoster.calculateRosterSpeed();
-
-    rosterData.coordinatesUpdatedAt = transferredAt;
-    toRoster.coordinatesUpdatedAt = transferredAt;
-
+    toRoster.coordinatesUpdatedAt = transferredAt; // Update the coordinatesUpdatedAt timestamp here?
     Roster.set(rosterShipTransferred.toRosterPlayerId, rosterShipTransferred.toRosterSequenceNumber, toRoster);
+
+    ShipData memory shipData = Ship.get(shipId);
+    shipData.playerId = rosterShipTransferred.toRosterPlayerId;
+    shipData.rosterSequenceNumber = rosterShipTransferred.toRosterSequenceNumber;
+    Ship.set(shipId, shipData);
 
     return rosterData;
   }

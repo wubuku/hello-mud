@@ -137,6 +137,14 @@ contract PostDeploy is Script {
     '6' '1' '0'
     */
 
+    // Transfer ship from unassigned roster to first roster
+    /*
+    cast send --private-key __YOUR_PRIVATE_KEY__ \
+    __WORLD_CONTRACT_ADDRESS__ \
+    "app__rosterTransferShip(uint256,uint32,uint256,uint256,uint32,uint64)" \
+    '1' '0' '1' '1' '1' '9999999999999'
+    */
+
 
     // Tests...
     // Call increment on the world via the registered function selector
