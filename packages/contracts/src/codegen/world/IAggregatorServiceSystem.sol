@@ -12,33 +12,27 @@ import { ItemIdQuantityPair } from "../../systems/ItemIdQuantityPair.sol";
  */
 interface IAggregatorServiceSystem {
   function app__uniApiStartCreation(
-    uint8 skillProcessIdSkillType,
-    uint256 skillProcessIdPlayerId,
-    uint8 skillProcessIdSequenceNumber,
-    uint32 batchSize,
+    uint8 skillType,
     uint256 playerId,
-    uint8 itemCreationIdSkillType,
-    uint32 itemCreationIdItemId
+    uint8 skillProcessSequenceNumber,
+    uint32 itemId,
+    uint32 batchSize
   ) external;
 
   function app__uniApiStartProduction(
-    uint8 skillProcessIdSkillType,
-    uint256 skillProcessIdPlayerId,
-    uint8 skillProcessIdSequenceNumber,
-    uint32 batchSize,
+    uint8 skillType,
     uint256 playerId,
-    uint8 itemProductionIdSkillType,
-    uint32 itemProductionIdItemId
+    uint8 skillProcessSequenceNumber,
+    uint32 itemId,
+    uint32 batchSize
   ) external;
 
   function app__uniApiStartShipProduction(
-    uint8 skillProcessIdSkillType,
-    uint256 skillProcessIdPlayerId,
-    uint8 skillProcessIdSequenceNumber,
-    ItemIdQuantityPair[] memory productionMaterials,
+    uint8 skillType,
     uint256 playerId,
-    uint8 itemProductionIdSkillType,
-    uint32 itemProductionIdItemId
+    uint8 skillProcessSequenceNumber,
+    uint32 itemId,
+    ItemIdQuantityPair[] memory productionMaterials
   ) external;
 
   function app__uniApiRosterSetSail(

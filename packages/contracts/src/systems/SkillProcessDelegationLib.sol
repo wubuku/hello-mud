@@ -11,7 +11,7 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 library SkillProcessDelegationLib {
 
-  function create(uint8 skillType, uint256 playerId, uint8 sequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime, bool completed, uint64 endedAt, uint32 batchSize) internal {
+  function create(uint8 skillType, uint256 playerId, uint8 sequenceNumber) internal {
     ResourceId skillProcessFriendSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -23,14 +23,14 @@ library SkillProcessDelegationLib {
       WorldContextConsumerLib._msgSender(),
       skillProcessFriendSystemId,
       abi.encodeWithSignature(
-        "skillProcessCreate(uint8,uint256,uint8,uint32,uint64,uint64,bool,uint64,uint32)",
-        skillType, playerId, sequenceNumber, itemId, startedAt, creationTime, completed, endedAt, batchSize
+        "skillProcessCreate(uint8,uint256,uint8)",
+        skillType, playerId, sequenceNumber
       )
     );
 
   }
 
-  function startProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber, uint32 batchSize, uint32 itemId) internal {
+  function startProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber, uint32 itemId, uint32 batchSize) internal {
     ResourceId skillProcessFriendSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -43,7 +43,7 @@ library SkillProcessDelegationLib {
       skillProcessFriendSystemId,
       abi.encodeWithSignature(
         "skillProcessStartProduction(uint8,uint256,uint8,uint32,uint32)",
-        skillType, playerId, sequenceNumber, batchSize, itemId
+        skillType, playerId, sequenceNumber, itemId, batchSize
       )
     );
 
@@ -106,7 +106,7 @@ library SkillProcessDelegationLib {
 
   }
 
-  function startCreation(uint8 skillType, uint256 playerId, uint8 sequenceNumber, uint32 batchSize, uint32 itemId) internal {
+  function startCreation(uint8 skillType, uint256 playerId, uint8 sequenceNumber, uint32 itemId, uint32 batchSize) internal {
     ResourceId skillProcessFriendSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -119,7 +119,7 @@ library SkillProcessDelegationLib {
       skillProcessFriendSystemId,
       abi.encodeWithSignature(
         "skillProcessStartCreation(uint8,uint256,uint8,uint32,uint32)",
-        skillType, playerId, sequenceNumber, batchSize, itemId
+        skillType, playerId, sequenceNumber, itemId, batchSize
       )
     );
 

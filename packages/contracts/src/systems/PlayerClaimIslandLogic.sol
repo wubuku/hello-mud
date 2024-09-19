@@ -11,6 +11,7 @@ import { SkillType } from "./SkillType.sol";
 import { PlayerInventoryLib, PlayerInventoryData } from "./PlayerInventoryLib.sol";
 import { SkillProcess, SkillProcessData } from "../codegen/index.sol";
 import { SkillProcessUtil } from "../utils/SkillProcessUtil.sol";
+
 // import { IBaseWorld } from "@latticexyz/world/src/codegen/interfaces/IBaseWorld.sol";
 // import { ResourceId, WorldResourceIdLib } from "@latticexyz/world/src/WorldResourceId.sol";
 // import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
@@ -147,7 +148,7 @@ library PlayerClaimIslandLogic {
     for (uint i = 0; i < skillTypes.length; i++) {
       uint8 maxSeqNumber = SkillProcessUtil.skillTypeMaxSequenceNumber(skillTypes[i]);
       for (uint8 seqNumber = 0; seqNumber <= maxSeqNumber; seqNumber++) {
-        SkillProcessDelegationLib.create(skillTypes[i], playerId, seqNumber, 0, 0, 0, false, 0, 0);
+        SkillProcessDelegationLib.create(skillTypes[i], playerId, seqNumber); //, 0, 0, 0, false, 0, 0);
       }
     }
   }

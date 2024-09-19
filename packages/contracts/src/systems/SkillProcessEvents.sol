@@ -9,12 +9,6 @@ struct SkillProcessCreated {
   uint8 skillType;
   uint256 playerId;
   uint8 sequenceNumber;
-  uint32 itemId;
-  uint64 startedAt;
-  uint64 creationTime;
-  bool completed;
-  uint64 endedAt;
-  uint32 batchSize;
 }
 
 struct ProductionProcessStarted {

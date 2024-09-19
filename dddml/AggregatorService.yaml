@@ -6,14 +6,20 @@ services:
     methods:
       StartCreation:
         parameters:
-          SkillProcessId:
-            type: SkillProcessId
-          BatchSize:
-            type: u32
+          SkillType:
+            type: u8
           PlayerId:
             type: u256
-          ItemCreationId:
-            type: SkillTypeItemIdPair
+          SkillProcessSequenceNumber:
+            type: u8
+          ItemId:
+            type: u32
+          BatchSize:
+            type: u32
+          # SkillProcessId:
+          #   type: SkillProcessId
+          # ItemCreationId:
+          #   type: SkillTypeItemIdPair
           #Clock:
           #  referenceType: Clock
           #Energy:
@@ -22,14 +28,20 @@ services:
 
       StartProduction:
         parameters:
-          SkillProcessId:
-            type: SkillProcessId
-          BatchSize:
-            type: u32
+          SkillType:
+            type: u8
           PlayerId:
             type: u256
-          ItemProductionId:
-            type: SkillTypeItemIdPair
+          SkillProcessSequenceNumber:
+            type: u8
+          ItemId:
+            type: u32
+          BatchSize:
+            type: u32
+          #SkillProcessId:
+          #  type: SkillProcessId
+          # ItemProductionId:
+          #  type: SkillTypeItemIdPair
           #Clock:
           #  referenceType: Clock
           #Energy:
@@ -37,14 +49,22 @@ services:
 
       StartShipProduction:
         parameters:
-          SkillProcessId:
-            type: SkillProcessId
-          ProductionMaterials:
-            itemType: ItemIdQuantityPair
+          SkillType:
+            type: u8
           PlayerId:
             type: u256
-          ItemProductionId:
-            type: SkillTypeItemIdPair
+          SkillProcessSequenceNumber:
+            type: u8
+          ItemId:
+            type: u32
+          ProductionMaterials:
+            itemType: ItemIdQuantityPair
+          # SkillProcessId:
+          #   type: SkillProcessId
+          # PlayerId:
+          #   type: u256
+          # ItemProductionId:
+          #   type: SkillTypeItemIdPair
           #Clock:
           #  referenceType: Clock
           #Energy:

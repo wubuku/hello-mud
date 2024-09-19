@@ -11,24 +11,14 @@ import { ItemIdQuantityPair } from "../../systems/ItemIdQuantityPair.sol";
  * @dev This interface is automatically generated from the corresponding system contract. Do not edit manually.
  */
 interface ISkillProcessFriendSystem {
-  function app__skillProcessCreate(
-    uint8 skillType,
-    uint256 playerId,
-    uint8 sequenceNumber,
-    uint32 itemId,
-    uint64 startedAt,
-    uint64 creationTime,
-    bool completed,
-    uint64 endedAt,
-    uint32 batchSize
-  ) external;
+  function app__skillProcessCreate(uint8 skillType, uint256 playerId, uint8 sequenceNumber) external;
 
   function app__skillProcessStartProduction(
     uint8 skillType,
     uint256 playerId,
     uint8 sequenceNumber,
-    uint32 batchSize,
-    uint32 itemId
+    uint32 itemId,
+    uint32 batchSize
   ) external;
 
   function app__skillProcessStartShipProduction(
@@ -43,7 +33,7 @@ interface ISkillProcessFriendSystem {
     uint8 skillType,
     uint256 playerId,
     uint8 sequenceNumber,
-    uint32 batchSize,
-    uint32 itemId
+    uint32 itemId,
+    uint32 batchSize
   ) external;
 }

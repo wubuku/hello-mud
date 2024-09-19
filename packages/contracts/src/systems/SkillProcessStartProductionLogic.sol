@@ -23,8 +23,8 @@ library SkillProcessStartProductionLogic {
     uint8 skillType,
     uint256 playerId,
     uint8 sequenceNumber,
-    uint32 batchSize,
     uint32 itemId,
+    uint32 batchSize,
     SkillProcessData memory skillProcessData
   ) internal view returns (ProductionProcessStarted memory) {
     PlayerData memory playerData = Player.get(playerId);
@@ -74,8 +74,8 @@ library SkillProcessStartProductionLogic {
         skillType: _skillType,
         playerId: _playerId,
         sequenceNumber: sequenceNumber,
-        batchSize: batchSize,
         itemId: _itemId,
+        batchSize: batchSize,
         energyCost: uint64(energyCost),
         startedAt: uint64(block.timestamp),
         creationTime: creationTime,

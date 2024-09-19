@@ -96,6 +96,9 @@ contract PostDeploy is Script {
     world.app__playerClaimIsland(playerId, firstIslandX, firstIslandY);
     console.log("An island claimed by test player");
 
+    world.app__uniApiStartCreation(uint8(SkillType.MINING), playerId, 0, 301, 1);
+    console.log("Started mining of 1 CopperOre");
+
     // Tests...
     // Call increment on the world via the registered function selector
     //uint32 newValue = IWorld(worldAddress).app__increment();

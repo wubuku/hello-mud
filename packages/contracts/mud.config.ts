@@ -234,6 +234,7 @@ export default defineWorld({
         completed: "bool",
         endedAt: "uint64",
         batchSize: "uint32",
+        existing: "bool",
       },
       key: ["skillProcessIdSkillType", "skillProcessIdPlayerId", "skillProcessIdSequenceNumber"],
     },

@@ -21,6 +21,8 @@ library PlayerCreateLogic {
     PlayerData memory playerData;
     playerData.name = playerCreated.name;
     playerData.owner = playerCreated.owner;
+    playerData.level = 1;
+    playerData.experience = 0;
     return playerData;
   }
 }

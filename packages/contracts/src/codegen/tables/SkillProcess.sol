@@ -23,6 +23,7 @@ struct SkillProcessData {
   bool completed;
   uint64 endedAt;
   uint32 batchSize;
+  bool existing;
 }
 
 library SkillProcess {
@@ -30,12 +31,12 @@ library SkillProcess {
   ResourceId constant _tableId = ResourceId.wrap(0x74626170700000000000000000000000536b696c6c50726f6365737300000000);
 
   FieldLayout constant _fieldLayout =
-    FieldLayout.wrap(0x0021060004080801080400000000000000000000000000000000000000000000);
+    FieldLayout.wrap(0x0022070004080801080401000000000000000000000000000000000000000000);
 
   // Hex-encoded key schema of (uint8, uint256, uint8)
   Schema constant _keySchema = Schema.wrap(0x00220300001f0000000000000000000000000000000000000000000000000000);
-  // Hex-encoded value schema of (uint32, uint64, uint64, bool, uint64, uint32)
-  Schema constant _valueSchema = Schema.wrap(0x0021060003070760070300000000000000000000000000000000000000000000);
+  // Hex-encoded value schema of (uint32, uint64, uint64, bool, uint64, uint32, bool)
+  Schema constant _valueSchema = Schema.wrap(0x0022070003070760070360000000000000000000000000000000000000000000);
 
   /**
    * @notice Get the table's key field names.
@@ -53,13 +54,14 @@ library SkillProcess {
    * @return fieldNames An array of strings with the names of value fields.
    */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
-    fieldNames = new string[](6);
+    fieldNames = new string[](7);
     fieldNames[0] = "itemId";
     fieldNames[1] = "startedAt";
     fieldNames[2] = "creationTime";
     fieldNames[3] = "completed";
     fieldNames[4] = "endedAt";
     fieldNames[5] = "batchSize";
+    fieldNames[6] = "existing";
   }
 
   /**
@@ -485,6 +487,74 @@ library SkillProcess {
   }
 
   /**
+   * @notice Get existing.
+   */
+  function getExisting(
+    uint8 skillProcessIdSkillType,
+    uint256 skillProcessIdPlayerId,
+    uint8 skillProcessIdSequenceNumber
+  ) internal view returns (bool existing) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(skillProcessIdSkillType));
+    _keyTuple[1] = bytes32(uint256(skillProcessIdPlayerId));
+    _keyTuple[2] = bytes32(uint256(skillProcessIdSequenceNumber));
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 6, _fieldLayout);
+    return (_toBool(uint8(bytes1(_blob))));
+  }
+
+  /**
+   * @notice Get existing.
+   */
+  function _getExisting(
+    uint8 skillProcessIdSkillType,
+    uint256 skillProcessIdPlayerId,
+    uint8 skillProcessIdSequenceNumber
+  ) internal view returns (bool existing) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(skillProcessIdSkillType));
+    _keyTuple[1] = bytes32(uint256(skillProcessIdPlayerId));
+    _keyTuple[2] = bytes32(uint256(skillProcessIdSequenceNumber));
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 6, _fieldLayout);
+    return (_toBool(uint8(bytes1(_blob))));
+  }
+
+  /**
+   * @notice Set existing.
+   */
+  function setExisting(
+    uint8 skillProcessIdSkillType,
+    uint256 skillProcessIdPlayerId,
+    uint8 skillProcessIdSequenceNumber,
+    bool existing
+  ) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(skillProcessIdSkillType));
+    _keyTuple[1] = bytes32(uint256(skillProcessIdPlayerId));
+    _keyTuple[2] = bytes32(uint256(skillProcessIdSequenceNumber));
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 6, abi.encodePacked((existing)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set existing.
+   */
+  function _setExisting(
+    uint8 skillProcessIdSkillType,
+    uint256 skillProcessIdPlayerId,
+    uint8 skillProcessIdSequenceNumber,
+    bool existing
+  ) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(skillProcessIdSkillType));
+    _keyTuple[1] = bytes32(uint256(skillProcessIdPlayerId));
+    _keyTuple[2] = bytes32(uint256(skillProcessIdSequenceNumber));
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 6, abi.encodePacked((existing)), _fieldLayout);
+  }
+
+  /**
    * @notice Get the full data.
    */
   function get(
@@ -538,9 +608,10 @@ library SkillProcess {
     uint64 creationTime,
     bool completed,
     uint64 endedAt,
-    uint32 batchSize
+    uint32 batchSize,
+    bool existing
   ) internal {
-    bytes memory _staticData = encodeStatic(itemId, startedAt, creationTime, completed, endedAt, batchSize);
+    bytes memory _staticData = encodeStatic(itemId, startedAt, creationTime, completed, endedAt, batchSize, existing);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
@@ -565,9 +636,10 @@ library SkillProcess {
     uint64 creationTime,
     bool completed,
     uint64 endedAt,
-    uint32 batchSize
+    uint32 batchSize,
+    bool existing
   ) internal {
-    bytes memory _staticData = encodeStatic(itemId, startedAt, creationTime, completed, endedAt, batchSize);
+    bytes memory _staticData = encodeStatic(itemId, startedAt, creationTime, completed, endedAt, batchSize, existing);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
@@ -595,7 +667,8 @@ library SkillProcess {
       _table.creationTime,
       _table.completed,
       _table.endedAt,
-      _table.batchSize
+      _table.batchSize,
+      _table.existing
     );
 
     EncodedLengths _encodedLengths;
@@ -624,7 +697,8 @@ library SkillProcess {
       _table.creationTime,
       _table.completed,
       _table.endedAt,
-      _table.batchSize
+      _table.batchSize,
+      _table.existing
     );
 
     EncodedLengths _encodedLengths;
@@ -646,7 +720,15 @@ library SkillProcess {
   )
     internal
     pure
-    returns (uint32 itemId, uint64 startedAt, uint64 creationTime, bool completed, uint64 endedAt, uint32 batchSize)
+    returns (
+      uint32 itemId,
+      uint64 startedAt,
+      uint64 creationTime,
+      bool completed,
+      uint64 endedAt,
+      uint32 batchSize,
+      bool existing
+    )
   {
     itemId = (uint32(Bytes.getBytes4(_blob, 0)));
 
@@ -659,6 +741,8 @@ library SkillProcess {
     endedAt = (uint64(Bytes.getBytes8(_blob, 21)));
 
     batchSize = (uint32(Bytes.getBytes4(_blob, 29)));
+
+    existing = (_toBool(uint8(Bytes.getBytes1(_blob, 33))));
   }
 
   /**
@@ -678,7 +762,8 @@ library SkillProcess {
       _table.creationTime,
       _table.completed,
       _table.endedAt,
-      _table.batchSize
+      _table.batchSize,
+      _table.existing
     ) = decodeStatic(_staticData);
   }
 
@@ -724,9 +809,10 @@ library SkillProcess {
     uint64 creationTime,
     bool completed,
     uint64 endedAt,
-    uint32 batchSize
+    uint32 batchSize,
+    bool existing
   ) internal pure returns (bytes memory) {
-    return abi.encodePacked(itemId, startedAt, creationTime, completed, endedAt, batchSize);
+    return abi.encodePacked(itemId, startedAt, creationTime, completed, endedAt, batchSize, existing);
   }
 
   /**
@@ -741,9 +827,10 @@ library SkillProcess {
     uint64 creationTime,
     bool completed,
     uint64 endedAt,
-    uint32 batchSize
+    uint32 batchSize,
+    bool existing
   ) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
-    bytes memory _staticData = encodeStatic(itemId, startedAt, creationTime, completed, endedAt, batchSize);
+    bytes memory _staticData = encodeStatic(itemId, startedAt, creationTime, completed, endedAt, batchSize, existing);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;

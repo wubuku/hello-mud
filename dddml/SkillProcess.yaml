@@ -1,9 +1,9 @@
 aggregates:
   SkillProcess:
     metadata:
-      Preprocessors: [ "CRUD_IT" ]
-      CRUD_IT_NO_UPDATE: true
-      CRUD_IT_NO_DELETE: true
+      #Preprocessors: [ "CRUD_IT" ]
+      #CRUD_IT_NO_UPDATE: true
+      #CRUD_IT_NO_DELETE: true
     friends:
       - Player.ClaimIsland
       - AggregatorService
@@ -38,6 +38,10 @@ aggregates:
         type: u32
         #defaultLogic:
         #  Move: "1"
+      Existing:
+        type: bool
+        # When all other properties of a legally existing object may have default values,
+        # we need a specialized property to identify whether it exists or not
       ProductionMaterials:
         itemType: ItemIdQuantityPair
         tableName: SkillPrcMtrl
@@ -47,12 +51,11 @@ aggregates:
       Create:
         metadata:
           IsOnlyOpenToFriends: true
-      #   parameters:
-      #     Player:
-      #       referenceType: Player
-      #       isIgnoredInEvent: true
-      #   event:
-      #     isObjectShared: true # Share the object after created.
+        isCreationCommand: true
+        parameters:
+        event:
+          name: SkillProcessCreated
+          #isObjectShared: true # Share the object after created.
       #   constants:
       #     EInvalidPlayerId:
       #       constantExpression:
@@ -76,6 +79,7 @@ aggregates:
         parameters:
           BatchSize:
             type: u32
+            sequenceNumber: 100
         event:
           name: ProductionProcessStarted
 
@@ -115,6 +119,7 @@ aggregates:
         parameters:
           BatchSize:
             type: u32
+            sequenceNumber: 100
         event:
           name: CreationProcessStarted
 

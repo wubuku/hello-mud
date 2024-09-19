@@ -3,20 +3,21 @@ pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
+import { System } from "@latticexyz/world/src/System.sol";
+import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { EnergyToken } from "../codegen/index.sol";
 import { SafeERC20, IERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import { SkillProcessDelegationLib } from "./SkillProcessDelegationLib.sol";
 
 contract AggregatorServiceSystem is System {
   using SafeERC20 for IERC20;
 
   function uniApiStartCreation(
-    uint8 skillProcessIdSkillType,
-    uint256 skillProcessIdPlayerId,
-    uint8 skillProcessIdSequenceNumber,
-    uint32 batchSize,
+    uint8 skillType,
     uint256 playerId,
-    uint8 itemCreationIdSkillType,
-    uint32 itemCreationIdItemId
+    uint8 skillProcessSequenceNumber,
+    uint32 itemId,
+    uint32 batchSize
   ) public {
     uint256 amount = 1; // TODO: Only for testing
     address tokenAddress = EnergyToken.get();
@@ -26,30 +27,26 @@ contract AggregatorServiceSystem is System {
     IERC20 token = IERC20(tokenAddress);
     // SafeERC20 处理了转账失败的情况，会自动回滚交易
     token.safeTransferFrom(_msgSender(), address(this), amount);
-
-    // TODO ...
+    //uint8 skillType, uint256 playerId, uint8 sequenceNumber, uint32 itemId
+    SkillProcessDelegationLib.startCreation(skillType, playerId, skillProcessSequenceNumber, itemId, batchSize);
   }
 
   function uniApiStartProduction(
-    uint8 skillProcessIdSkillType,
-    uint256 skillProcessIdPlayerId,
-    uint8 skillProcessIdSequenceNumber,
-    uint32 batchSize,
+    uint8 skillType,
     uint256 playerId,
-    uint8 itemProductionIdSkillType,
-    uint32 itemProductionIdItemId
+    uint8 skillProcessSequenceNumber,
+    uint32 itemId,
+    uint32 batchSize
   ) public {
     // TODO ...
   }
 
   function uniApiStartShipProduction(
-    uint8 skillProcessIdSkillType,
-    uint256 skillProcessIdPlayerId,
-    uint8 skillProcessIdSequenceNumber,
-    ItemIdQuantityPair[] memory productionMaterials,
+    uint8 skillType,
     uint256 playerId,
-    uint8 itemProductionIdSkillType,
-    uint32 itemProductionIdItemId
+    uint8 skillProcessSequenceNumber,
+    uint32 itemId,
+    ItemIdQuantityPair[] memory productionMaterials
   ) public {
     // TODO ...
   }

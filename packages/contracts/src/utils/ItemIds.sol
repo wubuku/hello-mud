@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.24;
 
-
 //uint256 constant EInvalidSkillType = 10;
 uint32 constant UNUSED_ITEM = 0;
 uint32 constant RESOURCE_TYPE_WOODCUTTING = 2000000001;
@@ -20,6 +19,8 @@ uint32 constant COTTONS = 102;
 uint32 constant COPPER_ORE = 301;
 uint32 constant TIN_ORE = 302;
 uint32 constant BRONZE_BAR = 1001;
+
+import { SkillType } from "../systems/SkillType.sol";
 
 library ItemIds {
   function unusedItem() internal pure returns (uint32) {
@@ -47,11 +48,11 @@ library ItemIds {
   }
 
   function resourceTypeRequiredForSkill(uint32 skillType) internal pure returns (uint32) {
-    if (skillType == 1) {
+    if (skillType == SkillType.WOODCUTTING) {
       return RESOURCE_TYPE_WOODCUTTING;
-    } else if (skillType == 2) {
+    } else if (skillType == SkillType.FISHING) {
       return RESOURCE_TYPE_FISHING;
-    } else if (skillType == 3) {
+    } else if (skillType == SkillType.MINING) {
       return RESOURCE_TYPE_MINING;
     } else {
       revert("Invalid skill type");
