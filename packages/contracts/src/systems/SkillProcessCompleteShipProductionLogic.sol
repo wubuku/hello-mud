@@ -94,18 +94,17 @@ library SkillProcessCompleteShipProductionLogic {
     }
     uint256 playerId = shipProductionProcessCompleted.playerId;
     RosterData memory unassignedShips = Roster.get(playerId, RosterSequenceNumber.UNASSIGNED_SHIPS);
-    // TODO if (!unassignedShips.getExisting()) {
-    //   revert RosterUnassignedShipsNotFound(playerId);
-    // }
+    if (unassignedShips.status == 0) {
+      revert RosterUnassignedShipsNotFound(playerId);
+    }
 
-    // 使用 SkillPrcMtrlLib 获取生产材料
+    // Use SkillPrcMtrlLib to get production materials
     SkillPrcMtrlData[] memory productionMaterials = SkillPrcMtrlLib.getAllProductionMaterials(
       shipProductionProcessCompleted.skillType,
       shipProductionProcessCompleted.playerId,
       shipProductionProcessCompleted.sequenceNumber
     );
 
-    // 填充 buildingExpenses, buildingExpensesItemIds, 和 buildingExpensesQuantities
     ItemIdQuantityPair[] memory buildingExpenses = new ItemIdQuantityPair[](productionMaterials.length);
     uint32[] memory buildingExpensesItemIds = new uint32[](productionMaterials.length);
     uint32[] memory buildingExpensesQuantities = new uint32[](productionMaterials.length);
@@ -137,6 +136,7 @@ library SkillProcessCompleteShipProductionLogic {
     uint256[] memory shipIds = unassignedShips.shipIds;
     shipIds = RosterUtil.addShipIdToEnd(shipIds, shipId);
     unassignedShips.shipIds = shipIds;
+    Roster.set(playerId, RosterSequenceNumber.UNASSIGNED_SHIPS, unassignedShips);
 
     ItemIdQuantityPair[] memory emptyItems = new ItemIdQuantityPair[](0);
     PlayerDelegationLib.increaseExperienceAndItems(

@@ -99,7 +99,6 @@ contract PostDeploy is Script {
 
     world.app__uniApiStartCreation(uint8(SkillType.MINING), playerId, 0, 301, 1);
     console.log("Started mining of 1 CopperOre");
- 
 
     world.app__skillProcessStartProduction(uint8(SkillType.FARMING), playerId, 0, 102, 1); // Cotton
     console.log("Started farming of 1 Cotton");
@@ -112,7 +111,7 @@ contract PostDeploy is Script {
     console.log("Started ship production");
 
     // You need to wait for the creation time to complete...
-    // Then execute the following command:
+    // Then execute the following commands:
 
     //world.app__skillProcessCompleteCreation(uint8(SkillType.MINING), playerId, 0);
     /*
@@ -129,6 +128,15 @@ contract PostDeploy is Script {
     "app__skillProcessCompleteProduction(uint8,uint256,uint8)" \
     '0' '1' '0'
     */
+
+    //world.app__skillProcessCompleteShipProduction(uint8(SkillType.CRAFTING), playerId, 0);
+    /*
+    cast send --private-key __YOUR_PRIVATE_KEY__ \
+    __WORLD_CONTRACT_ADDRESS__ \
+    "app__skillProcessCompleteShipProduction(uint8,uint256,uint8)" \
+    '6' '1' '0'
+    */
+
 
     // Tests...
     // Call increment on the world via the registered function selector
@@ -245,7 +253,7 @@ contract PostDeploy is Script {
       1, // requirementsLevel
       1, // baseQuantity
       0, // baseExperience (adjusted to 0 as per the script)
-      1, // baseCreationTime 
+      1, // baseCreationTime
       5000000000, // energyCost (adjusted to match the script)
       100, // successRate
       shipMaterialItemIds,

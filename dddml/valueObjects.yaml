@@ -89,8 +89,12 @@ enumObjects:
   RosterStatus:
     baseType: u8
     values:
-      AtAnchor:
+      Unused:
         value: 0
+      AtAnchor:
+        value: 255
+        # We don't use 0 here because we want to
+        # use this value to indicate that the roster is existing
       Underway:
         value: 1
       InBattle:

@@ -27,6 +27,7 @@ library RosterCreateLogic {
     // rosterData.speed = rosterCreated.speed;
     // rosterData.baseExperience = rosterCreated.baseExperience;
     // rosterData.environmentOwned = rosterCreated.environmentOwned;
+    rosterData.status = RosterStatus.AT_ANCHOR;
     rosterData.updatedCoordinatesX = rosterCreated.coordinatesX;
     rosterData.updatedCoordinatesY = rosterCreated.coordinatesY;
     rosterData.coordinatesUpdatedAt = uint64(block.timestamp);
