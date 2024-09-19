@@ -12,13 +12,13 @@ import { ItemIds } from "../utils/ItemIds.sol";
 import { Player, ItemProduction } from "../codegen/index.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 
-library SkillProcessStartProductionLogic {
-  error ProcessAlreadyStarted(uint32 currentItemId, bool completed);
-  error NotEnoughEnergy(uint256 required, uint256 available);
-  error LowerThanRequiredLevel(uint16 required, uint16 current);
-  error SenderHasNoPermission(address sender, address owner);
-  error ItemProducesIndividuals(uint32 itemId);
+error ProcessAlreadyStarted(uint32 currentItemId, bool completed);
+error NotEnoughEnergy(uint256 required, uint256 available);
+error LowerThanRequiredLevel(uint16 required, uint16 current);
+error SenderHasNoPermission(address sender, address owner);
+error ItemProducesIndividuals(uint32 itemId);
 
+library SkillProcessStartProductionLogic {
   function verify(
     uint8 skillType,
     uint256 playerId,
@@ -69,17 +69,18 @@ library SkillProcessStartProductionLogic {
       batchSize
     );
 
-    return ProductionProcessStarted({
-      skillType: _skillType,
-      playerId: _playerId,
-      sequenceNumber: sequenceNumber,
-      batchSize: batchSize,
-      itemId: _itemId,
-      energyCost: uint64(energyCost),
-      startedAt: uint64(block.timestamp),
-      creationTime: creationTime,
-      productionMaterials: productionMaterials
-    });
+    return
+      ProductionProcessStarted({
+        skillType: _skillType,
+        playerId: _playerId,
+        sequenceNumber: sequenceNumber,
+        batchSize: batchSize,
+        itemId: _itemId,
+        energyCost: uint64(energyCost),
+        startedAt: uint64(block.timestamp),
+        creationTime: creationTime,
+        productionMaterials: productionMaterials
+      });
   }
 
   function mutate(

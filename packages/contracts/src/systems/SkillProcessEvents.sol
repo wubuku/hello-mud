@@ -39,7 +39,7 @@ struct ProductionProcessCompleted {
   uint64 endedAt;
   bool successful;
   uint32 quantity;
-  uint32 experience;
+  uint32 experienceGained;
   uint16 newLevel;
 }
 
@@ -64,7 +64,7 @@ struct ShipProductionProcessCompleted {
   uint64 endedAt;
   bool successful;
   uint32 quantity;
-  uint32 experience;
+  uint32 experienceGained;
   uint16 newLevel;
 }
 
@@ -90,7 +90,7 @@ struct CreationProcessCompleted {
   uint64 endedAt;
   bool successful;
   uint32 quantity;
-  uint32 experience;
+  uint32 experienceGained;
   uint16 newLevel;
 }
 

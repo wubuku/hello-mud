@@ -12,12 +12,12 @@ import { ItemIds } from "../utils/ItemIds.sol";
 import { Player, ItemCreation } from "../codegen/index.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 
-library SkillProcessStartCreationLogic {
-  error ProcessAlreadyStarted(uint32 currentItemId, bool completed);
-  error NotEnoughEnergy(uint256 required, uint256 available);
-  error LowerThanRequiredLevel(uint16 required, uint16 current);
-  error SenderHasNoPermission(address sender, address owner);
+error ProcessAlreadyStarted(uint32 currentItemId, bool completed);
+error NotEnoughEnergy(uint256 required, uint256 available);
+error LowerThanRequiredLevel(uint16 required, uint16 current);
+error SenderHasNoPermission(address sender, address owner);
 
+library SkillProcessStartCreationLogic {
   function verify(
     uint8 skillType,
     uint256 playerId,

@@ -11,11 +11,11 @@ import { SkillProcessCompleteShipProductionLogic } from "./SkillProcessCompleteS
 import { SkillProcessCompleteCreationLogic } from "./SkillProcessCompleteCreationLogic.sol";
 
 contract SkillProcessSystem is System {
-  event ProductionProcessCompletedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime, uint64 endedAt, bool successful, uint32 quantity, uint32 experience, uint16 newLevel);
+  event ProductionProcessCompletedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime, uint64 endedAt, bool successful, uint32 quantity, uint32 experienceGained, uint16 newLevel);
 
-  event ShipProductionProcessCompletedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime, uint64 endedAt, bool successful, uint32 quantity, uint32 experience, uint16 newLevel);
+  event ShipProductionProcessCompletedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime, uint64 endedAt, bool successful, uint32 quantity, uint32 experienceGained, uint16 newLevel);
 
-  event CreationProcessCompletedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime, uint64 endedAt, bool successful, uint32 quantity, uint32 experience, uint16 newLevel);
+  event CreationProcessCompletedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime, uint64 endedAt, bool successful, uint32 quantity, uint32 experienceGained, uint16 newLevel);
 
   function skillProcessCompleteProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber) public {
     SkillProcessData memory skillProcessData = SkillProcess.get(skillType, playerId, sequenceNumber);
@@ -27,7 +27,7 @@ contract SkillProcessSystem is System {
     productionProcessCompleted.skillType = skillType;
     productionProcessCompleted.playerId = playerId;
     productionProcessCompleted.sequenceNumber = sequenceNumber;
-    emit ProductionProcessCompletedEvent(productionProcessCompleted.skillType, productionProcessCompleted.playerId, productionProcessCompleted.sequenceNumber, productionProcessCompleted.itemId, productionProcessCompleted.startedAt, productionProcessCompleted.creationTime, productionProcessCompleted.endedAt, productionProcessCompleted.successful, productionProcessCompleted.quantity, productionProcessCompleted.experience, productionProcessCompleted.newLevel);
+    emit ProductionProcessCompletedEvent(productionProcessCompleted.skillType, productionProcessCompleted.playerId, productionProcessCompleted.sequenceNumber, productionProcessCompleted.itemId, productionProcessCompleted.startedAt, productionProcessCompleted.creationTime, productionProcessCompleted.endedAt, productionProcessCompleted.successful, productionProcessCompleted.quantity, productionProcessCompleted.experienceGained, productionProcessCompleted.newLevel);
     SkillProcessData memory updatedSkillProcessData = SkillProcessCompleteProductionLogic.mutate(productionProcessCompleted, skillProcessData);
     SkillProcess.set(skillType, playerId, sequenceNumber, updatedSkillProcessData);
   }
@@ -42,7 +42,7 @@ contract SkillProcessSystem is System {
     shipProductionProcessCompleted.skillType = skillType;
     shipProductionProcessCompleted.playerId = playerId;
     shipProductionProcessCompleted.sequenceNumber = sequenceNumber;
-    emit ShipProductionProcessCompletedEvent(shipProductionProcessCompleted.skillType, shipProductionProcessCompleted.playerId, shipProductionProcessCompleted.sequenceNumber, shipProductionProcessCompleted.itemId, shipProductionProcessCompleted.startedAt, shipProductionProcessCompleted.creationTime, shipProductionProcessCompleted.endedAt, shipProductionProcessCompleted.successful, shipProductionProcessCompleted.quantity, shipProductionProcessCompleted.experience, shipProductionProcessCompleted.newLevel);
+    emit ShipProductionProcessCompletedEvent(shipProductionProcessCompleted.skillType, shipProductionProcessCompleted.playerId, shipProductionProcessCompleted.sequenceNumber, shipProductionProcessCompleted.itemId, shipProductionProcessCompleted.startedAt, shipProductionProcessCompleted.creationTime, shipProductionProcessCompleted.endedAt, shipProductionProcessCompleted.successful, shipProductionProcessCompleted.quantity, shipProductionProcessCompleted.experienceGained, shipProductionProcessCompleted.newLevel);
     SkillProcessData memory updatedSkillProcessData = SkillProcessCompleteShipProductionLogic.mutate(shipProductionProcessCompleted, skillProcessData);
     SkillProcess.set(skillType, playerId, sequenceNumber, updatedSkillProcessData);
   }
@@ -57,7 +57,7 @@ contract SkillProcessSystem is System {
     creationProcessCompleted.skillType = skillType;
     creationProcessCompleted.playerId = playerId;
     creationProcessCompleted.sequenceNumber = sequenceNumber;
-    emit CreationProcessCompletedEvent(creationProcessCompleted.skillType, creationProcessCompleted.playerId, creationProcessCompleted.sequenceNumber, creationProcessCompleted.itemId, creationProcessCompleted.startedAt, creationProcessCompleted.creationTime, creationProcessCompleted.endedAt, creationProcessCompleted.successful, creationProcessCompleted.quantity, creationProcessCompleted.experience, creationProcessCompleted.newLevel);
+    emit CreationProcessCompletedEvent(creationProcessCompleted.skillType, creationProcessCompleted.playerId, creationProcessCompleted.sequenceNumber, creationProcessCompleted.itemId, creationProcessCompleted.startedAt, creationProcessCompleted.creationTime, creationProcessCompleted.endedAt, creationProcessCompleted.successful, creationProcessCompleted.quantity, creationProcessCompleted.experienceGained, creationProcessCompleted.newLevel);
     SkillProcessData memory updatedSkillProcessData = SkillProcessCompleteCreationLogic.mutate(creationProcessCompleted, skillProcessData);
     SkillProcess.set(skillType, playerId, sequenceNumber, updatedSkillProcessData);
   }

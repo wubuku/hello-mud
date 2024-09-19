@@ -199,9 +199,8 @@ superObjects:
               type: bool
             Quantity:
               type: u32
-            Experience:
+            ExperienceGained:
               type: u32
-              description: "Increased experience value"
             NewLevel:
               type: u16
 
@@ -265,8 +264,7 @@ superObjects:
               type: bool
             Quantity:
               type: u32
-            Experience:
+            ExperienceGained:
               type: u32
-              description: "Increased experience value"
             NewLevel:
               type: u16
