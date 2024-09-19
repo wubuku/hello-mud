@@ -5,7 +5,7 @@ import "../systems/ItemIdQuantityPair.sol";
 import "./SortedVectorUtil.sol";
 import { COPPER_ORE, NORMAL_LOGS, COTTONS } from "./ItemIds.sol";
 
-library ShipUtils {
+library ShipUtil {
   uint256 private constant NORMAL_LOGS_NOT_FOUND = 1;
   uint256 private constant COTTONS_NOT_FOUND = 2;
   uint256 private constant COPPER_ORES_NOT_FOUND = 3;

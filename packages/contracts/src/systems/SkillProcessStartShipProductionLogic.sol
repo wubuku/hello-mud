@@ -2,7 +2,7 @@
 pragma solidity >=0.8.24;
 
 import { ShipProductionProcessStarted } from "./SkillProcessEvents.sol";
-import { SkillProcessData, PlayerData, ItemProductionData } from "../codegen/index.sol";
+import { SkillProcessData, PlayerData, ItemProductionData, SkillPrcMtrlData } from "../codegen/index.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { PlayerInventoryUpdateUtil } from "./PlayerInventoryUpdateUtil.sol";
 import { SkillProcessUtil } from "../utils/SkillProcessUtil.sol";
@@ -11,6 +11,7 @@ import { SkillTypeItemIdPair } from "../systems/SkillTypeItemIdPair.sol";
 import { ItemIds, SHIP } from "../utils/ItemIds.sol";
 import { Player, ItemProduction } from "../codegen/index.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
+import { SkillPrcMtrlLib } from "./SkillPrcMtrlLib.sol";
 
 error ProcessAlreadyStarted(uint32 currentItemId, bool completed);
 error NotEnoughEnergy(uint256 required, uint256 available);
@@ -99,6 +100,36 @@ library SkillProcessStartShipProductionLogic {
       shipProductionProcessStarted.playerId,
       shipProductionProcessStarted.productionMaterials
     );
+
+    // 清除所有现有的生产材料
+    uint64 existingCount = SkillPrcMtrlLib.getProductionMaterialCount(
+      shipProductionProcessStarted.skillType,
+      shipProductionProcessStarted.playerId,
+      shipProductionProcessStarted.sequenceNumber
+    );
+    for (uint64 i = 0; i < existingCount; i++) {
+      SkillPrcMtrlLib.removeProductionMaterial(
+        shipProductionProcessStarted.skillType,
+        shipProductionProcessStarted.playerId,
+        shipProductionProcessStarted.sequenceNumber,
+        existingCount - 1 - i
+      );
+    }
+
+    // 添加新的生产材料
+    for (uint i = 0; i < shipProductionProcessStarted.productionMaterials.length; i++) {
+      SkillPrcMtrlData memory materialData = SkillPrcMtrlData({
+        productionMaterialItemId: shipProductionProcessStarted.productionMaterials[i].itemId,
+        productionMaterialQuantity: shipProductionProcessStarted.productionMaterials[i].quantity
+      });
+
+      SkillPrcMtrlLib.addProductionMaterial(
+        shipProductionProcessStarted.skillType,
+        shipProductionProcessStarted.playerId,
+        shipProductionProcessStarted.sequenceNumber,
+        materialData
+      );
+    }
 
     return skillProcessData;
   }
