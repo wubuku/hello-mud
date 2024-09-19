@@ -51,13 +51,13 @@ contract SkillProcessFriendSystem is System {
     SkillProcess.set(skillType, playerId, sequenceNumber, updatedSkillProcessData);
   }
 
-  function skillProcessStartShipProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber, ItemIdQuantityPair[] memory productionMaterials, uint32 itemId) public {
+  function skillProcessStartShipProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber, uint32 itemId, ItemIdQuantityPair[] memory productionMaterials) public {
     SkillProcessData memory skillProcessData = SkillProcess.get(skillType, playerId, sequenceNumber);
     require(
       !(skillProcessData.itemId == uint32(0) && skillProcessData.startedAt == uint64(0) && skillProcessData.creationTime == uint64(0) && skillProcessData.completed == false && skillProcessData.endedAt == uint64(0) && skillProcessData.batchSize == uint32(0) && skillProcessData.existing == false),
       "SkillProcess does not exist"
     );
-    ShipProductionProcessStarted memory shipProductionProcessStarted = SkillProcessStartShipProductionLogic.verify(skillType, playerId, sequenceNumber, productionMaterials, itemId, skillProcessData);
+    ShipProductionProcessStarted memory shipProductionProcessStarted = SkillProcessStartShipProductionLogic.verify(skillType, playerId, sequenceNumber, itemId, productionMaterials, skillProcessData);
     shipProductionProcessStarted.skillType = skillType;
     shipProductionProcessStarted.playerId = playerId;
     shipProductionProcessStarted.sequenceNumber = sequenceNumber;

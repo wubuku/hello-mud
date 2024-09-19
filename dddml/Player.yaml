@@ -1,5 +1,9 @@
 aggregates:
   Player:
+    friends:
+      - SkillProcess.SkillProcessCompleteCreation
+      - SkillProcess.SkillProcessCompleteProduction
+      - SkillProcess.SkillProcessCompleteShipProduction
     metadata:
     id:
       name: Id

@@ -10,8 +10,8 @@ library SkillProcessStartShipProductionLogic {
     uint8 skillType,
     uint256 playerId,
     uint8 sequenceNumber,
-    ItemIdQuantityPair[] memory productionMaterials,
     uint32 itemId,
+    ItemIdQuantityPair[] memory productionMaterials,
     SkillProcessData memory skillProcessData
   ) internal pure returns (ShipProductionProcessStarted memory) {
     // TODO ...

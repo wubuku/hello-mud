@@ -98,6 +98,29 @@ contract PostDeploy is Script {
 
     world.app__uniApiStartCreation(uint8(SkillType.MINING), playerId, 0, 301, 1);
     console.log("Started mining of 1 CopperOre");
+ 
+
+    world.app__skillProcessStartProduction(uint8(SkillType.FARMING), playerId, 0, 102, 1); // Cotton
+    console.log("Started farming of 1 Cotton");
+
+    // You need to wait for the creation time to complete...
+    // Then execute the following command:
+
+    //world.app__skillProcessCompleteCreation(uint8(SkillType.MINING), playerId, 0);
+    /*
+    cast send --private-key __YOUR_PRIVATE_KEY__ \
+    __WORLD_CONTRACT_ADDRESS__ \
+    "app__skillProcessCompleteCreation(uint8,uint256,uint8)" \
+    '3' '1' '0'
+    */
+
+    //world.app__skillProcessCompleteProduction(uint8(SkillType.FARMING), playerId, 0);
+    /*
+    cast send --private-key __YOUR_PRIVATE_KEY__ \
+    __WORLD_CONTRACT_ADDRESS__ \
+    "app__skillProcessCompleteProduction(uint8,uint256,uint8)" \
+    '0' '1' '0'
+    */
 
     // Tests...
     // Call increment on the world via the registered function selector
@@ -156,7 +179,7 @@ contract PostDeploy is Script {
       1, // requirementsLevel
       1, // baseQuantity
       0, // baseExperience
-      3, // baseCreationTime
+      1, // baseCreationTime // Let's speed up the game for testing purposes
       1000000000, // energyCost
       100, // successRate
       1 // resourceCost
@@ -169,7 +192,7 @@ contract PostDeploy is Script {
       1, // requirementsLevel
       1, // baseQuantity
       0, // baseExperience
-      3, // baseCreationTime
+      1, // baseCreationTime
       1000000000, // energyCost
       100, // successRate
       1 // resourceCost
@@ -190,7 +213,7 @@ contract PostDeploy is Script {
       1, // requirementsLevel
       1, // baseQuantity
       5, // baseExperience
-      15, // baseCreationTime
+      1, // baseCreationTime
       5000000000, // energyCost
       100, // successRate
       cottonMaterialItemIds,
@@ -214,7 +237,7 @@ contract PostDeploy is Script {
       1, // requirementsLevel
       1, // baseQuantity
       0, // baseExperience (adjusted to 0 as per the script)
-      15, // baseCreationTime (adjusted to 15 seconds as per the script)
+      1, // baseCreationTime 
       5000000000, // energyCost (adjusted to match the script)
       100, // successRate
       shipMaterialItemIds,

@@ -68,7 +68,7 @@ library SkillProcessDelegationLib {
 
   }
 
-  function startShipProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber, ItemIdQuantityPair[] memory productionMaterials, uint32 itemId) internal {
+  function startShipProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber, uint32 itemId, ItemIdQuantityPair[] memory productionMaterials) internal {
     ResourceId skillProcessFriendSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -80,8 +80,8 @@ library SkillProcessDelegationLib {
       WorldContextConsumerLib._msgSender(),
       skillProcessFriendSystemId,
       abi.encodeWithSignature(
-        "skillProcessStartShipProduction(uint8,uint256,uint8,(uint32,uint32)[],uint32)",
-        skillType, playerId, sequenceNumber, productionMaterials, itemId
+        "skillProcessStartShipProduction(uint8,uint256,uint8,uint32,(uint32,uint32)[])",
+        skillType, playerId, sequenceNumber, itemId, productionMaterials
       )
     );
 

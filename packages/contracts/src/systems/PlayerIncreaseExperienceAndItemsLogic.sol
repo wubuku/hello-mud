@@ -6,11 +6,11 @@ import { PlayerData } from "../codegen/index.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { PlayerInventoryUpdateUtil } from "./PlayerInventoryUpdateUtil.sol";
 
-library PlayerIncreaseExperienceAndItemsLogic {
-  error PlayerIdZero();
-  error ExperienceGainedZeroOrNegative(uint32 experienceGained);
-  error NewLevelLowerThanCurrent(uint16 newLevel, uint16 currentLevel);
+error PlayerIdZero();
+//error ExperienceGainedZeroOrNegative(uint32 experienceGained);
+error NewLevelLowerThanCurrent(uint16 newLevel, uint16 currentLevel);
 
+library PlayerIncreaseExperienceAndItemsLogic {
   function verify(
     uint256 id,
     uint32 experienceGained,
@@ -19,7 +19,7 @@ library PlayerIncreaseExperienceAndItemsLogic {
     PlayerData memory playerData
   ) internal pure returns (PlayerXpAndItemsIncreased memory) {
     if (id == 0) revert PlayerIdZero();
-    if (experienceGained == 0) revert ExperienceGainedZeroOrNegative(experienceGained);
+    //if (experienceGained == 0) revert ExperienceGainedZeroOrNegative(experienceGained);
     if (newLevel < playerData.level) revert NewLevelLowerThanCurrent(newLevel, playerData.level);
 
     return PlayerXpAndItemsIncreased(id, experienceGained, items, newLevel);

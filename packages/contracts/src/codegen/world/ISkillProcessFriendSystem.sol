@@ -25,8 +25,8 @@ interface ISkillProcessFriendSystem {
     uint8 skillType,
     uint256 playerId,
     uint8 sequenceNumber,
-    ItemIdQuantityPair[] memory productionMaterials,
-    uint32 itemId
+    uint32 itemId,
+    ItemIdQuantityPair[] memory productionMaterials
   ) external;
 
   function app__skillProcessStartCreation(

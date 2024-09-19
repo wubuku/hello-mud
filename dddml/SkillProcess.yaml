@@ -96,6 +96,7 @@ aggregates:
         parameters:
           ProductionMaterials:
             itemType: ItemIdQuantityPair
+            sequenceNumber: 100
         event:
           name: ShipProductionProcessStarted
 

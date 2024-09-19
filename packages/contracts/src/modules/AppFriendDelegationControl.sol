@@ -9,17 +9,26 @@ import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
 
 contract AppFriendDelegationControl is DelegationControl {
-  ResourceId constant SHIP_SYSTEM =
-    ResourceId.wrap(bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16("ShipSystem"))));
+  ResourceId constant PLAYER_SYSTEM =
+    ResourceId.wrap(bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16("PlayerSystem"))));
 
-  ResourceId constant SHIP_FRIEND_SYSTEM =
-    ResourceId.wrap(bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16("ShipFriendSystem"))));
+  ResourceId constant PLAYER_FRIEND_SYSTEM =
+    ResourceId.wrap(
+      bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16(bytes("PlayerFriendSystem"))))
+      // NOTE: Only 16 bytes are used: "PlayerFriendSyst"
+    );
 
   ResourceId constant SKILL_PROCESS_SYSTEM =
     ResourceId.wrap(
       bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16(bytes("SkillProcessSystem"))))
       // NOTE: Only 16 bytes are used: "SkillProcessSyst"
     );
+
+  ResourceId constant SHIP_SYSTEM =
+    ResourceId.wrap(bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16("ShipSystem"))));
+
+  ResourceId constant SHIP_FRIEND_SYSTEM =
+    ResourceId.wrap(bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16("ShipFriendSystem"))));
 
   ResourceId constant ROSTER_SYSTEM =
     ResourceId.wrap(bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16("RosterSystem"))));
@@ -29,9 +38,6 @@ contract AppFriendDelegationControl is DelegationControl {
       bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16(bytes("RosterFriendSystem"))))
       // NOTE: Only 16 bytes are used: "RosterFriendSyst"
     );
-
-  ResourceId constant PLAYER_SYSTEM =
-    ResourceId.wrap(bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16("PlayerSystem"))));
 
   ResourceId constant SHIP_BATTLE_SYSTEM =
     ResourceId.wrap(bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16("ShipBattleSystem"))));
@@ -63,6 +69,14 @@ contract AppFriendDelegationControl is DelegationControl {
   function verify(address /*delegator*/, ResourceId systemId, bytes memory /*callData*/) public view returns (bool) {
     ResourceId callerSystemId = SystemRegistry.get(_msgSender());
     return
+      ResourceId.unwrap(systemId) == ResourceId.unwrap(PLAYER_SYSTEM) &&
+      (
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(SKILL_PROCESS_SYSTEM)
+      ) ||
+      ResourceId.unwrap(systemId) == ResourceId.unwrap(PLAYER_FRIEND_SYSTEM) &&
+      (
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(SKILL_PROCESS_SYSTEM)
+      ) ||
       ResourceId.unwrap(systemId) == ResourceId.unwrap(SHIP_SYSTEM) &&
       (
         ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(SKILL_PROCESS_SYSTEM) ||

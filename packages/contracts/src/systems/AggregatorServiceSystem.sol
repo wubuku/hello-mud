@@ -38,7 +38,16 @@ contract AggregatorServiceSystem is System {
     uint32 itemId,
     uint32 batchSize
   ) public {
-    // TODO ...
+    uint256 amount = 1; // TODO: Only for testing
+    address tokenAddress = EnergyToken.get();
+    require(tokenAddress != address(0), "Invalid token address");
+    require(amount > 0, "Amount must be greater than 0");
+
+    IERC20 token = IERC20(tokenAddress);
+    // SafeERC20 处理了转账失败的情况，会自动回滚交易
+    token.safeTransferFrom(_msgSender(), address(this), amount);
+
+    SkillProcessDelegationLib.startProduction(skillType, playerId, skillProcessSequenceNumber, itemId, batchSize);
   }
 
   function uniApiStartShipProduction(
@@ -48,7 +57,16 @@ contract AggregatorServiceSystem is System {
     uint32 itemId,
     ItemIdQuantityPair[] memory productionMaterials
   ) public {
-    // TODO ...
+    uint256 amount = 1; // TODO: Only for testing
+    address tokenAddress = EnergyToken.get();
+    require(tokenAddress != address(0), "Invalid token address");
+    require(amount > 0, "Amount must be greater than 0");
+
+    IERC20 token = IERC20(tokenAddress);
+    // SafeERC20 处理了转账失败的情况，会自动回滚交易
+    token.safeTransferFrom(_msgSender(), address(this), amount);
+
+    SkillProcessDelegationLib.startShipProduction(skillType, playerId, skillProcessSequenceNumber, itemId, productionMaterials);
   }
 
   function uniApiRosterSetSail(
