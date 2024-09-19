@@ -47,24 +47,4 @@ library ShipUtil {
       return 1;
     }
   }
-
-  function removeShipId(uint256[] storage shipIds, uint256 shipId) internal {
-    for (uint i = 0; i < shipIds.length; i++) {
-      if (shipIds[i] == shipId) {
-        shipIds[i] = shipIds[shipIds.length - 1];
-        shipIds.pop();
-        return;
-      }
-    }
-    revert("Ship ID not found");
-  }
-
-  function findShipId(uint256[] memory shipIds, uint256 shipId) internal pure returns (uint256, bool) {
-    for (uint i = 0; i < shipIds.length; i++) {
-      if (shipIds[i] == shipId) {
-        return (i, true);
-      }
-    }
-    return (0, false);
-  }
 }

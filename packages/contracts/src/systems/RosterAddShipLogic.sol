@@ -3,7 +3,7 @@ pragma solidity >=0.8.24;
 
 import { RosterShipAdded } from "./RosterEvents.sol";
 import { RosterData, Roster } from "../codegen/index.sol";
-import { RosterUtil } from "../utils/RosterUtil.sol";
+import { ShipIdUtil } from "../utils/ShipIdUtil.sol";
 
 library RosterAddShipLogic {
   function verify(
@@ -22,7 +22,7 @@ library RosterAddShipLogic {
   ) internal view returns (RosterData memory) {
     uint256 shipId = rosterShipAdded.shipId;
     uint256[] memory shipIds = rosterData.shipIds;
-    shipIds = RosterUtil.addShipId(shipIds, shipId, rosterShipAdded.position);
+    shipIds = ShipIdUtil.addShipId(shipIds, shipId, rosterShipAdded.position);
     rosterData.shipIds = shipIds;
     return rosterData;
   }
