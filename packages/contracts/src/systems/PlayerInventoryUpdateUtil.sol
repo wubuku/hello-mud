@@ -3,6 +3,7 @@ pragma solidity >=0.8.24;
 
 import { PlayerInventoryData } from "../codegen/index.sol";
 import { PlayerInventoryLib } from "./PlayerInventoryLib.sol";
+import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 library PlayerInventoryUpdateUtil {
   error InsufficientItemQuantity(uint32 itemId, uint32 available, uint32 requested);
@@ -30,6 +31,15 @@ library PlayerInventoryUpdateUtil {
         inventoryQuantity: quantityIncreased
       });
       PlayerInventoryLib.addInventory(playerId, newItem);
+    }
+  }
+
+  function subtractMultipleFromInventory(
+    uint256 playerId,
+    ItemIdQuantityPair[] memory items
+  ) internal {
+    for (uint i = 0; i < items.length; i++) {
+      subtractFromInventory(playerId, items[i].itemId, items[i].quantity);
     }
   }
 
