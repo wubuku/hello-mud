@@ -26,10 +26,11 @@ library SkillProcessCompleteProductionLogic {
     PlayerData memory playerData = Player.get(playerId);
     ItemProductionData memory itemProductionData = ItemProduction.get(skillType, skillProcessData.itemId);
 
-    (uint256 _playerId, uint8 _skillType, uint32 itemId) = SkillProcessUtil.assertIdsAreConsistentForStartingCreation(
+    (uint256 _playerId, uint8 _skillType, uint32 itemId) = SkillProcessUtil.assertIdsAreConsistentForCompletingProduction(
       playerId,
       SkillTypeItemIdPair(skillType, skillProcessData.itemId),
-      SkillProcessId(skillType, playerId, sequenceNumber)
+      SkillProcessId(skillType, playerId, sequenceNumber),
+      skillProcessData
     );
 
     if (itemId == ItemIds.unusedItem() || skillProcessData.completed) {

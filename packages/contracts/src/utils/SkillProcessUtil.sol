@@ -15,7 +15,16 @@ library SkillProcessUtil {
     return skillType == SkillType.FARMING ? 1 : 0;
   }
 
+  // Alias of `assertIdsAreConsistentForStartingProduction`.
   function assertIdsAreConsistentForStartingCreation(
+    uint256 playerId,
+    SkillTypeItemIdPair memory itemCreationId,
+    SkillProcessId memory skillProcessId
+  ) internal pure returns (uint256, uint8, uint32) {
+    return assertIdsAreConsistentForStartingProduction(playerId, itemCreationId, skillProcessId);
+  }
+
+  function assertIdsAreConsistentForStartingProduction(
     uint256 playerId,
     SkillTypeItemIdPair memory itemCreationId,
     SkillProcessId memory skillProcessId
@@ -31,6 +40,15 @@ library SkillProcessUtil {
   }
 
   function assertIdsAreConsistentForCompletingCreation(
+    uint256 playerId,
+    SkillTypeItemIdPair memory itemCreationId,
+    SkillProcessId memory skillProcessId,
+    SkillProcessData memory skillProcessData
+  ) internal pure returns (uint256, uint8, uint32) {
+    return assertIdsAreConsistentForCompletingProduction(playerId, itemCreationId, skillProcessId, skillProcessData);
+  }
+
+  function assertIdsAreConsistentForCompletingProduction(
     uint256 playerId,
     SkillTypeItemIdPair memory itemCreationId,
     SkillProcessId memory skillProcessId,

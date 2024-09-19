@@ -25,10 +25,11 @@ library SkillProcessCompleteCreationLogic {
     PlayerData memory playerData = Player.get(playerId);
     ItemCreationData memory itemCreationData = ItemCreation.get(skillType, skillProcessData.itemId);
 
-    (uint256 _playerId, uint8 _skillType, uint32 itemId) = SkillProcessUtil.assertIdsAreConsistentForStartingCreation(
+    (uint256 _playerId, uint8 _skillType, uint32 itemId) = SkillProcessUtil.assertIdsAreConsistentForCompletingCreation(
       playerId,
       SkillTypeItemIdPair(skillType, skillProcessData.itemId),
-      SkillProcessId(skillType, playerId, sequenceNumber)
+      SkillProcessId(skillType, playerId, sequenceNumber),
+      skillProcessData
     );
 
     require(itemId != ItemIds.unusedItem() && !skillProcessData.completed, "Process not started");

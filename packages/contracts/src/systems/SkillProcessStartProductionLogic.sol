@@ -42,7 +42,7 @@ library SkillProcessStartProductionLogic {
     SkillTypeItemIdPair memory itemProductionId = SkillTypeItemIdPair(skillType, itemId);
     SkillProcessId memory skillProcessId = SkillProcessId(skillType, playerId, sequenceNumber);
 
-    (uint256 _playerId, uint8 _skillType, uint32 _itemId) = SkillProcessUtil.assertIdsAreConsistentForStartingCreation(
+    (uint256 _playerId, uint8 _skillType, uint32 _itemId) = SkillProcessUtil.assertIdsAreConsistentForStartingProduction(
       playerId,
       itemProductionId,
       skillProcessId

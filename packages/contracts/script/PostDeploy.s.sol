@@ -91,6 +91,7 @@ contract PostDeploy is Script {
     world.app__playerAirdrop(playerId, 200, 200); // 200 NormalLogs
     world.app__playerAirdrop(playerId, 301, 150); // 150 CopperOre
     world.app__playerAirdrop(playerId, 302, 150); // 150 TinOre
+    world.app__playerAirdrop(playerId, 102, 100); // 100 Cottons
     console.log("Airdropped items to test player");
 
     world.app__playerClaimIsland(playerId, firstIslandX, firstIslandY);
@@ -102,6 +103,13 @@ contract PostDeploy is Script {
 
     world.app__skillProcessStartProduction(uint8(SkillType.FARMING), playerId, 0, 102, 1); // Cotton
     console.log("Started farming of 1 Cotton");
+
+    ItemIdQuantityPair[] memory shipProductionMaterials = new ItemIdQuantityPair[](3);
+    shipProductionMaterials[0] = ItemIdQuantityPair(102, 5); // Cotton
+    shipProductionMaterials[1] = ItemIdQuantityPair(200, 5); // NormalLogs
+    shipProductionMaterials[2] = ItemIdQuantityPair(301, 5); // CopperOre
+    world.app__uniApiStartShipProduction(uint8(SkillType.CRAFTING), playerId, 0, 1000000001, shipProductionMaterials);
+    console.log("Started ship production");
 
     // You need to wait for the creation time to complete...
     // Then execute the following command:
