@@ -130,8 +130,8 @@ library RosterDataInstance {
       return (false, coordinatesUpdatedAt, oldStatus);
     }
 
-    if (oldStatus != 2) {
-      revert InvalidRosterStatus(2, oldStatus);
+    if (oldStatus != RosterStatus.UNDERWAY) {
+      revert InvalidRosterStatus(RosterStatus.UNDERWAY, oldStatus);
     }
     if (roster.targetCoordinatesX == 0 && roster.targetCoordinatesY == 0) {
       revert TargetCoordinatesNotSet(roster.targetCoordinatesX, roster.targetCoordinatesY);
@@ -154,7 +154,7 @@ library RosterDataInstance {
     // Use speedNumerator, speedDenominator, elapsedTime, and origin coordinates as needed
     // Just to silence the warning
     require(speedNumerator != 0 && speedDenominator != 0, "Invalid speed");
-    require(elapsedTime != 0, "Elapsed time is zero");
+    //require(elapsedTime != 0, "Elapsed time is zero"); // DONT check this!
 
     if (roster.targetCoordinatesX == updatedCoordinatesX && roster.targetCoordinatesY == updatedCoordinatesY) {
       newStatus = RosterStatus.AT_ANCHOR;

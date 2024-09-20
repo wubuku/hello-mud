@@ -101,7 +101,7 @@ contract ManualSmokeTest is Script {
       type(uint64).max
     );
     console.log("Transferred ship from unassigned ships to first roster");
-  
+
     // //////////////////////////////////////////////////////////////
     uint32 firstIslandX = 2147483647;
     uint32 firstIslandY = 2147483647;
@@ -124,6 +124,39 @@ contract ManualSmokeTest is Script {
       firstIslandY
     );
     console.log("Set sail a roster to target coordinates");
+
+    // //////////////////////////////////////////////////////////////
+    uint256 environmentRosterPlayerId = type(uint256).max;
+    uint32 environmentRosterSequenceNumber = 100;
+    uint32 environmentRosterCoordinatesX = originCoordinatesX;
+    uint32 environmentRosterCoordinatesY = originCoordinatesX;
+    uint32 environmentRosterShipResourceQuantity = 15;
+    uint32 environmentRosterShipBaseResourceQuantity = 3;
+    uint32 environmentRosterBaseExperience = 10;
+
+    world.app__rosterCreateEnvironmentRoster(
+      environmentRosterPlayerId,
+      environmentRosterSequenceNumber,
+      environmentRosterCoordinatesX,
+      environmentRosterCoordinatesY,
+      environmentRosterShipResourceQuantity,
+      environmentRosterShipBaseResourceQuantity,
+      environmentRosterBaseExperience
+    );
+    console.log("Created another environment roster");
+
+    world.app__shipBattleInitiateBattle(
+      playerId,
+      playerId,
+      currentRosterSequenceNumber,
+      environmentRosterPlayerId,
+      environmentRosterSequenceNumber,
+      environmentRosterCoordinatesX,
+      environmentRosterCoordinatesY,
+      environmentRosterCoordinatesX,
+      environmentRosterCoordinatesY
+    );
+    console.log("Initiated a ship battle");
 
     vm.stopBroadcast();
   }
