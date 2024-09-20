@@ -6,25 +6,14 @@ import "./SortedVectorUtil.sol";
 import { COPPER_ORE, NORMAL_LOGS, COTTONS } from "./ItemIds.sol";
 
 library ShipUtil {
-  uint256 private constant NORMAL_LOGS_NOT_FOUND = 1;
-  uint256 private constant COTTONS_NOT_FOUND = 2;
-  uint256 private constant COPPER_ORES_NOT_FOUND = 3;
-  uint256 private constant SHIP_ID_NOT_FOUND = 4;
-
   uint32 internal constant DEFAULT_SHIP_HEALTH_POINTS = 20;
 
   function calculateShipAttributes(
     ItemIdQuantityPair[] memory buildingExpenses
   ) internal pure returns (uint32, uint32, uint32, uint32) {
-    uint32 copperOreQuantity = SortedVectorUtil
-      .getItemIdQuantityPairOrRevert(buildingExpenses, COPPER_ORE, COPPER_ORES_NOT_FOUND)
-      .quantity;
-    uint32 normalLogQuantity = SortedVectorUtil
-      .getItemIdQuantityPairOrRevert(buildingExpenses, NORMAL_LOGS, NORMAL_LOGS_NOT_FOUND)
-      .quantity;
-    uint32 cottonsQuantity = SortedVectorUtil
-      .getItemIdQuantityPairOrRevert(buildingExpenses, COTTONS, COTTONS_NOT_FOUND)
-      .quantity;
+    uint32 copperOreQuantity = SortedVectorUtil.getItemIdQuantityPairOrRevert(buildingExpenses, COPPER_ORE).quantity;
+    uint32 normalLogQuantity = SortedVectorUtil.getItemIdQuantityPairOrRevert(buildingExpenses, NORMAL_LOGS).quantity;
+    uint32 cottonsQuantity = SortedVectorUtil.getItemIdQuantityPairOrRevert(buildingExpenses, COTTONS).quantity;
 
     return (DEFAULT_SHIP_HEALTH_POINTS, copperOreQuantity, normalLogQuantity, cottonsQuantity);
   }

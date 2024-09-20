@@ -115,6 +115,25 @@ contract PostDeploy is Script {
     world.app__uniApiStartShipProduction(uint8(SkillType.CRAFTING), playerId, 0, 1000000001, shipProductionMaterials);
     console.log("Started ship production");
 
+    uint256 environmentRosterPlayerId = type(uint256).max;
+    uint32 environmentRosterSequenceNumber = 1;
+    uint32 environmentRosterCoordinatesX = firstIslandX + 300;
+    uint32 environmentRosterCoordinatesY = firstIslandY + 300;
+    uint32 environmentRosterShipResourceQuantity = 15;
+    uint32 environmentRosterShipBaseResourceQuantity = 3;
+    uint32 environmentRosterBaseExperience = 10;
+
+    world.app__rosterCreateEnvironmentRoster(
+      environmentRosterPlayerId,
+      environmentRosterSequenceNumber,
+      environmentRosterCoordinatesX,
+      environmentRosterCoordinatesY,
+      environmentRosterShipResourceQuantity,
+      environmentRosterShipBaseResourceQuantity,
+      environmentRosterBaseExperience
+    );
+    console.log("Created an environment roster");
+
     // You need to wait for the creation time to complete...
     // Then execute the ManualSmokeTest script
 

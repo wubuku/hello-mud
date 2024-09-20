@@ -42,7 +42,7 @@ library RosterSetSailLogic {
       newUpdatedCoordinatesX = rosterData.updatedCoordinatesX;
       newUpdatedCoordinatesY = rosterData.updatedCoordinatesY;
     } else if (status == uint8(RosterStatus.UNDERWAY)) {
-      (bool updatable, uint64 coordinatesUpdatedAt, uint8 newStatus) = rosterData.isCurrentLocationUpdatable(
+      (bool updatable, uint64 _coordinatesUpdatedAt, uint8 _newStatus) = rosterData.isCurrentLocationUpdatable(
         uint64(block.timestamp),
         updatedCoordinatesX,
         updatedCoordinatesY

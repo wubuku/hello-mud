@@ -11,6 +11,7 @@ import { SkillType } from "./SkillType.sol";
 import { PlayerInventoryLib, PlayerInventoryData } from "./PlayerInventoryLib.sol";
 import { SkillProcess, SkillProcessData } from "../codegen/index.sol";
 import { SkillProcessUtil } from "../utils/SkillProcessUtil.sol";
+import { RosterUtil } from "../utils/RosterUtil.sol";
 
 // import { IBaseWorld } from "@latticexyz/world/src/codegen/interfaces/IBaseWorld.sol";
 // import { ResourceId, WorldResourceIdLib } from "@latticexyz/world/src/WorldResourceId.sol";
@@ -87,7 +88,8 @@ library PlayerClaimIslandLogic {
 
     // Create rosters
     for (uint32 rosterSequenceNumber = 0; rosterSequenceNumber < 5; rosterSequenceNumber++) {
-      RosterDelegationLib.create(playerId, rosterSequenceNumber, coordinatesX, coordinatesY);
+      (uint32 x, uint32 y) = RosterUtil.getRosterOriginCoordinates(coordinatesX, coordinatesY, rosterSequenceNumber);
+      RosterDelegationLib.create(playerId, rosterSequenceNumber, x, y);
     }
 
     return playerData;

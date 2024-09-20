@@ -13,7 +13,7 @@ library SortedVectorUtil {
   error ItemNotFound(uint32 itemId);
   error EmptyList();
   error IncorrectListLength(uint256 itemIdListLength, uint256 itemQuantityListLength);
-  error CustomError(uint256 errorCode, uint32 itemId);
+  error GetItemIdQuantityPairError(uint32 itemId);
 
   function newItemIdQuantityPairs(
     uint32[] memory itemIdList,
@@ -109,12 +109,11 @@ library SortedVectorUtil {
 
   function getItemIdQuantityPairOrRevert(
     ItemIdQuantityPair[] memory v,
-    uint32 itemId,
-    uint256 err
+    uint32 itemId
   ) internal pure returns (ItemIdQuantityPair memory) {
     (bool found, uint index) = binarySearchItemIdQuantityPair(v, itemId);
     if (!found) {
-      revert CustomError(err, itemId);
+      revert GetItemIdQuantityPairError(itemId);
     }
     return v[index];
   }

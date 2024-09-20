@@ -16,6 +16,7 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { SkillType } from "../src/systems/SkillType.sol";
 import { PlayerIdGenerator } from "../src/codegen/index.sol";
 import { ItemIdQuantityPair } from "../src/systems/ItemIdQuantityPair.sol";
+import { RosterUtil } from "../src/utils/RosterUtil.sol";
 
 contract ManualSmokeTest is Script {
   //
@@ -96,6 +97,27 @@ contract ManualSmokeTest is Script {
       type(uint64).max
     );
     console.log("Transferred ship from unassigned ships to first roster");
+
+    uint32 firstIslandX = 2147483647;
+    uint32 firstIslandY = 2147483647;
+    uint32 currentRosterSequenceNumber = 1;
+    (uint32 originCoordinatesX, uint32 originCoordinatesY) = RosterUtil.getRosterOriginCoordinates(
+      firstIslandX,
+      firstIslandY,
+      currentRosterSequenceNumber
+    );
+    uint32 targetCoordinatesX = originCoordinatesX + 10;
+    uint32 targetCoordinatesY = originCoordinatesY + 10;
+    world.app__rosterSetSail(
+      playerId,
+      currentRosterSequenceNumber,
+      targetCoordinatesX,
+      targetCoordinatesY,
+      1,
+      firstIslandX,
+      firstIslandY
+    );
+    console.log("Set sail a roster to target coordinates");
 
     vm.stopBroadcast();
   }

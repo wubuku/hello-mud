@@ -16,6 +16,7 @@ library PlayerAirdropLogic {
     uint32 quantity,
     PlayerData memory playerData
   ) internal pure returns (PlayerAirdropped memory) {
+    playerData.owner; // silence the warning
     if (id == 0) revert PlayerIdZero();
     if (itemId == 0) revert ItemIdZero();
     if (quantity == 0) revert QuantityZeroOrNegative(quantity);
