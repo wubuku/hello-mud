@@ -96,13 +96,13 @@ library ShipBattleUtil {
         initiatorId.sequenceNumber
       );
     if (
-      shipBattle.initiatorRosterPlayerId != responderId.playerId ||
-      shipBattle.initiatorRosterSequenceNumber != responderId.sequenceNumber
+      shipBattle.responderRosterPlayerId != responderId.playerId ||
+      shipBattle.responderRosterSequenceNumber != responderId.sequenceNumber
     )
       revert ResponderIdMismatch(
-        shipBattle.initiatorRosterPlayerId,
+        shipBattle.responderRosterPlayerId,
         responderId.playerId,
-        shipBattle.initiatorRosterSequenceNumber,
+        shipBattle.responderRosterSequenceNumber,
         responderId.sequenceNumber
       );
   }
