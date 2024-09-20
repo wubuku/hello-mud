@@ -152,6 +152,9 @@ library RosterDataInstance {
     // TODO: Implement the rest of the function
     bool updatable = true;
     // Use speedNumerator, speedDenominator, elapsedTime, and origin coordinates as needed
+    // Just to silence the warning
+    require(speedNumerator != 0 && speedDenominator != 0, "Invalid speed");
+    require(elapsedTime != 0, "Elapsed time is zero");
 
     if (roster.targetCoordinatesX == updatedCoordinatesX && roster.targetCoordinatesY == updatedCoordinatesY) {
       newStatus = RosterStatus.AT_ANCHOR;

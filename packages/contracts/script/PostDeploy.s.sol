@@ -34,6 +34,11 @@ contract PostDeploy is Script {
     uint256 balance = deployerAddress.balance;
     console.log("Account balance:", balance);
 
+    // Tests...
+    // Call increment on the world via the registered function selector
+    //uint32 newValue = IWorld(worldAddress).app__increment();
+    //console.log("Increment via IWorld:", newValue);
+
     Energy energyToken = new Energy(deployerAddress);
     address energyTokenAddress = address(energyToken);
     console.log("ENERGY Token address:", energyTokenAddress);
@@ -145,11 +150,6 @@ contract PostDeploy is Script {
     '1' '0' '1' '1' '1' '9999999999999'
     */
 
-
-    // Tests...
-    // Call increment on the world via the registered function selector
-    //uint32 newValue = IWorld(worldAddress).app__increment();
-    //console.log("Increment via IWorld:", newValue);
 
     vm.stopBroadcast();
   }

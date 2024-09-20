@@ -46,7 +46,7 @@ library PlayerClaimIslandLogic {
     // }
     // if (claimIslandSetting != FOR_EVERYONE) {
     //   if (claimIslandSetting == FOR_WHITELISTED_ACCOUNTS_ONLY) {
-    //     if (!MapAggregateLib.isWhitelisted(WorldContextConsumerLib._msgSender())) {
+    //     if (!Xx.isWhitelisted(WorldContextConsumerLib._msgSender())) {
     //       revert ENotForEveryone(WorldContextConsumerLib._msgSender());
     //     }
     //   } else {

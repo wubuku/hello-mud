@@ -11,11 +11,11 @@ import { SkillTypeItemIdPair } from "../systems/SkillTypeItemIdPair.sol";
 import { ItemIds } from "../utils/ItemIds.sol";
 import { Player, ItemProduction } from "../codegen/index.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
+import { PlayerUtil } from "../utils/PlayerUtil.sol";
 
 error ProcessAlreadyStarted(uint32 currentItemId, bool completed);
 error NotEnoughEnergy(uint256 required, uint256 available);
 error LowerThanRequiredLevel(uint16 required, uint16 current);
-error SenderHasNoPermission(address sender, address owner);
 error ItemProducesIndividuals(uint32 itemId);
 
 library SkillProcessStartProductionLogic {
@@ -27,13 +27,9 @@ library SkillProcessStartProductionLogic {
     uint32 batchSize,
     SkillProcessData memory skillProcessData
   ) internal view returns (ProductionProcessStarted memory) {
-    PlayerData memory playerData = Player.get(playerId);
+    PlayerData memory playerData = PlayerUtil.assertSenderIsPlayerOwner(playerId);
     ItemProductionData memory itemProductionData = ItemProduction.get(skillType, itemId);
     // TODO: Check retrieved PlayerData and ItemProductionData
-
-    if (WorldContextConsumerLib._msgSender() != playerData.owner) {
-      revert SenderHasNoPermission(WorldContextConsumerLib._msgSender(), playerData.owner);
-    }
 
     if (skillProcessData.itemId != ItemIds.unusedItem() && !skillProcessData.completed) {
       revert ProcessAlreadyStarted(skillProcessData.itemId, skillProcessData.completed);
