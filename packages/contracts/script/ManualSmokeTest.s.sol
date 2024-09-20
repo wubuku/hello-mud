@@ -85,6 +85,7 @@ contract ManualSmokeTest is Script {
     uint32 unassignedShipsRosterSequenceNumber = 0;
     uint256 toRosterPlayerId = playerId;
     uint32 toRosterSequenceNumber = 1;
+    //playerShipId = 11111; // 11111 is a ship id that doesn't exist, just for test fail case
     /*
     cast send --private-key __YOUR_PRIVATE_KEY__ \
     __WORLD_CONTRACT_ADDRESS__ \

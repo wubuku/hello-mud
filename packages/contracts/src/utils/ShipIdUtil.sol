@@ -6,8 +6,16 @@ import "./SortedVectorUtil.sol";
 
 library ShipIdUtil {
   error ShipIdNotFound(uint256 shipId);
+  error EmptyShipIds();
+  error InvalidShipId();
 
   function removeShipId(uint256[] memory shipIds, uint256 shipId) internal pure returns (uint256[] memory) {
+    if (shipId == uint256(0)) {
+      revert InvalidShipId();
+    }
+    if (shipIds.length == 0) {
+      revert EmptyShipIds();
+    }
     uint256[] memory newShipIds = new uint256[](shipIds.length - 1);
     uint256 j = 0;
     for (uint i = 0; i < shipIds.length; i++) {
@@ -55,11 +63,6 @@ library ShipIdUtil {
   }
 
   function addShipIdToEnd(uint256[] memory shipIds, uint256 shipId) internal pure returns (uint256[] memory) {
-    uint256[] memory newShipIds = new uint256[](shipIds.length + 1);
-    for (uint256 i = 0; i < shipIds.length; i++) {
-      newShipIds[i] = shipIds[i];
-    }
-    newShipIds[shipIds.length] = shipId;
-    return newShipIds;
+    return addShipId(shipIds, shipId, shipIds.length);
   }
 }

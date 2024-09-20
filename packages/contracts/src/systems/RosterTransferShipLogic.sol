@@ -9,6 +9,7 @@ import { RosterSequenceNumber } from "./RosterSequenceNumber.sol";
 import { RosterUtil } from "../utils/RosterUtil.sol";
 import { RosterId } from "./RosterId.sol";
 import { PlayerUtil } from "../utils/PlayerUtil.sol";
+import { ShipUtil } from "../utils/ShipUtil.sol";
 
 error EmptyShipIdsInSourceRoster(uint256 shipId, uint256 rosterPlayerId, uint32 rosterSequenceNumber);
 error RostersTooFarAway(
@@ -78,11 +79,17 @@ library RosterTransferShipLogic {
       revert RosterNotExists(rosterShipTransferred.toRosterPlayerId, rosterShipTransferred.toRosterSequenceNumber);
     }
     uint256 shipId = rosterShipTransferred.shipId;
+    uint256 playerId = rosterShipTransferred.playerId;
+    uint32 sequenceNumber = rosterShipTransferred.sequenceNumber;
+    ShipData memory shipData = Ship.get(shipId);
+    
+    ShipUtil.assertShipOwnership(shipData, shipId, playerId, sequenceNumber);
+
     uint64 toPosition = rosterShipTransferred.toPosition;
     uint64 transferredAt = rosterShipTransferred.transferredAt;
 
     if (rosterData.shipIds.length == 0) {
-      revert EmptyShipIdsInSourceRoster(shipId, rosterShipTransferred.playerId, rosterShipTransferred.sequenceNumber);
+      revert EmptyShipIdsInSourceRoster(shipId, playerId, sequenceNumber);
     }
     rosterData.shipIds = ShipIdUtil.removeShipId(rosterData.shipIds, shipId);
     rosterData.speed = rosterData.calculateRosterSpeed();
@@ -96,11 +103,11 @@ library RosterTransferShipLogic {
     toRoster.coordinatesUpdatedAt = transferredAt; // Update the coordinatesUpdatedAt timestamp here?
     Roster.set(rosterShipTransferred.toRosterPlayerId, rosterShipTransferred.toRosterSequenceNumber, toRoster);
 
-    ShipData memory shipData = Ship.get(shipId);
     shipData.playerId = rosterShipTransferred.toRosterPlayerId;
     shipData.rosterSequenceNumber = rosterShipTransferred.toRosterSequenceNumber;
     Ship.set(shipId, shipData);
 
     return rosterData;
   }
+
 }
