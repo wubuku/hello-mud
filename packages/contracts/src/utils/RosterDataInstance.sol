@@ -122,7 +122,7 @@ library RosterDataInstance {
     uint64 currentTimestamp,
     uint32 updatedCoordinatesX,
     uint32 updatedCoordinatesY
-  ) internal pure returns (bool, uint256, uint8) {
+  ) internal pure returns (bool, uint64, uint8) {
     uint8 oldStatus = roster.status;
     uint64 coordinatesUpdatedAt = roster.coordinatesUpdatedAt;
 

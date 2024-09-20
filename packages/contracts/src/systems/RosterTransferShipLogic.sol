@@ -33,8 +33,8 @@ library RosterTransferShipLogic {
     RosterData memory rosterData
   ) internal view returns (RosterShipTransferred memory) {
     PlayerUtil.assertSenderIsPlayerOwner(playerId);
-    RosterUtil.assertPlayerIsRosterOwner(playerId, RosterId(playerId, sequenceNumber));
-    RosterUtil.assertPlayerIsRosterOwner(playerId, RosterId(toRosterPlayerId, toRosterSequenceNumber));
+    //RosterUtil.assertPlayerIsRosterOwner(playerId, RosterId(playerId, sequenceNumber));
+    //RosterUtil.assertPlayerIsRosterOwner(playerId, RosterId(toRosterPlayerId, toRosterSequenceNumber));
 
     RosterData memory toRoster = Roster.get(toRosterPlayerId, toRosterSequenceNumber);
     uint64 currentTimestamp = uint64(block.timestamp);
