@@ -14,7 +14,7 @@ import { Energy } from "../src/tokens/Energy.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import { SkillType } from "../src/systems/SkillType.sol";
-import { PlayerIdGenerator } from "../src/codegen/index.sol";
+import { PlayerIdGenerator, ShipIdGenerator } from "../src/codegen/index.sol";
 import { ItemIdQuantityPair } from "../src/systems/ItemIdQuantityPair.sol";
 import { RosterUtil } from "../src/utils/RosterUtil.sol";
 
@@ -51,6 +51,7 @@ contract ManualSmokeTest is Script {
     // console.log("Set ENERGY token address for the world");
 
     uint256 playerId = 1;
+
     /*
     cast send --private-key __YOUR_PRIVATE_KEY__ \
     __WORLD_CONTRACT_ADDRESS__ \
@@ -78,8 +79,10 @@ contract ManualSmokeTest is Script {
     world.app__skillProcessCompleteShipProduction(uint8(SkillType.CRAFTING), playerId, 0);
     console.log("Completed skill process ship production for CRAFTING");
 
+    uint256 playerShipId = ShipIdGenerator.get();
+    console.log("Player ship ID:", playerShipId);
+
     uint32 unassignedShipsRosterSequenceNumber = 0;
-    uint256 shipId = 1;
     uint256 toRosterPlayerId = playerId;
     uint32 toRosterSequenceNumber = 1;
     /*
@@ -91,13 +94,14 @@ contract ManualSmokeTest is Script {
     world.app__rosterTransferShip(
       playerId,
       unassignedShipsRosterSequenceNumber,
-      shipId,
-      playerId,
+      playerShipId,
+      toRosterPlayerId,
       toRosterSequenceNumber,
       type(uint64).max
     );
     console.log("Transferred ship from unassigned ships to first roster");
-
+  
+    // //////////////////////////////////////////////////////////////
     uint32 firstIslandX = 2147483647;
     uint32 firstIslandY = 2147483647;
     uint32 currentRosterSequenceNumber = 1;
@@ -108,12 +112,13 @@ contract ManualSmokeTest is Script {
     );
     uint32 targetCoordinatesX = originCoordinatesX + 10;
     uint32 targetCoordinatesY = originCoordinatesY + 10;
+    uint64 sailDuration = 2;
     world.app__rosterSetSail(
       playerId,
       currentRosterSequenceNumber,
       targetCoordinatesX,
       targetCoordinatesY,
-      1,
+      sailDuration,
       firstIslandX,
       firstIslandY
     );

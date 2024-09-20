@@ -10,7 +10,7 @@ import { RosterUtil } from "../utils/RosterUtil.sol";
 import { RosterId } from "./RosterId.sol";
 import { PlayerUtil } from "../utils/PlayerUtil.sol";
 
-error ShipNotFoundInSourceRoster(uint256 shipId, uint256 rosterPlayerId, uint32 rosterSequenceNumber);
+error EmptyShipIdsInSourceRoster(uint256 shipId, uint256 rosterPlayerId, uint32 rosterSequenceNumber);
 error RostersTooFarAway(
   uint256 rosterPlayerId,
   uint32 rosterSequenceNumber,
@@ -19,6 +19,7 @@ error RostersTooFarAway(
 );
 error RosterInBattle(uint256 rosterPlayerId, uint32 rosterSequenceNumber, uint256 battleId);
 error ToRosterInBattle(uint256 toRosterPlayerId, uint32 toRosterSequenceNumber, uint256 battleId);
+error RosterNotExists(uint256 rosterPlayerId, uint32 rosterSequenceNumber);
 
 library RosterTransferShipLogic {
   using RosterDataInstance for RosterData;
@@ -73,12 +74,15 @@ library RosterTransferShipLogic {
       rosterShipTransferred.toRosterPlayerId,
       rosterShipTransferred.toRosterSequenceNumber
     );
+    if (toRoster.status == uint8(0)) {
+      revert RosterNotExists(rosterShipTransferred.toRosterPlayerId, rosterShipTransferred.toRosterSequenceNumber);
+    }
     uint256 shipId = rosterShipTransferred.shipId;
     uint64 toPosition = rosterShipTransferred.toPosition;
     uint64 transferredAt = rosterShipTransferred.transferredAt;
 
     if (rosterData.shipIds.length == 0) {
-      revert ShipNotFoundInSourceRoster(shipId, rosterShipTransferred.playerId, rosterShipTransferred.sequenceNumber);
+      revert EmptyShipIdsInSourceRoster(shipId, rosterShipTransferred.playerId, rosterShipTransferred.sequenceNumber);
     }
     rosterData.shipIds = ShipIdUtil.removeShipId(rosterData.shipIds, shipId);
     rosterData.speed = rosterData.calculateRosterSpeed();
