@@ -116,40 +116,7 @@ contract PostDeploy is Script {
     console.log("Started ship production");
 
     // You need to wait for the creation time to complete...
-    // Then execute the following commands:
-
-    //world.app__skillProcessCompleteCreation(uint8(SkillType.MINING), playerId, 0);
-    /*
-    cast send --private-key __YOUR_PRIVATE_KEY__ \
-    __WORLD_CONTRACT_ADDRESS__ \
-    "app__skillProcessCompleteCreation(uint8,uint256,uint8)" \
-    '3' '1' '0'
-    */
-
-    //world.app__skillProcessCompleteProduction(uint8(SkillType.FARMING), playerId, 0);
-    /*
-    cast send --private-key __YOUR_PRIVATE_KEY__ \
-    __WORLD_CONTRACT_ADDRESS__ \
-    "app__skillProcessCompleteProduction(uint8,uint256,uint8)" \
-    '0' '1' '0'
-    */
-
-    //world.app__skillProcessCompleteShipProduction(uint8(SkillType.CRAFTING), playerId, 0);
-    /*
-    cast send --private-key __YOUR_PRIVATE_KEY__ \
-    __WORLD_CONTRACT_ADDRESS__ \
-    "app__skillProcessCompleteShipProduction(uint8,uint256,uint8)" \
-    '6' '1' '0'
-    */
-
-    // Transfer ship from unassigned roster to first roster
-    /*
-    cast send --private-key __YOUR_PRIVATE_KEY__ \
-    __WORLD_CONTRACT_ADDRESS__ \
-    "app__rosterTransferShip(uint256,uint32,uint256,uint256,uint32,uint64)" \
-    '1' '0' '1' '1' '1' '9999999999999'
-    */
-
+    // Then execute the ManualSmokeTest script
 
     vm.stopBroadcast();
   }
