@@ -26,7 +26,7 @@ aggregates:
       Winner:
         type: u8
         #optional: true
-        description: "1: Initiator, 0: Responder"
+        description: "1: INITIATOR, 2: RESPONDER" # NOTE: DON'T use 0, because it's the default value in Solidity
         #defaultLogic:
         #  Move: "std::option::none()"
       RoundNumber:
@@ -37,8 +37,7 @@ aggregates:
         type: u64
       RoundMover:
         type: u8
-        #optional: true
-        description: "1: Initiator, 0: Responder"
+        description: "1: INITIATOR, 2: RESPONDER"
       RoundAttackerShip:
         type: u256
         optional: true
@@ -132,7 +131,6 @@ aggregates:
             Winner:
               type: u8
               optional: true
-              description: "1: Initiator, 0: Responder"
             NextRoundStartedAt:
               type: u64
             NextRoundMover:
@@ -171,7 +169,7 @@ aggregates:
           #   referenceType: Clock
           #   isIgnoredInEvent: true
           ##Winner:
-          ##  type: u8 # 1: Initiator, 0: Responder
+          ##  type: u8
           Choice:
             type: u8
             description: "1: Take all, 0: Leave it"

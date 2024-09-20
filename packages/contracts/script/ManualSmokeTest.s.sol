@@ -14,7 +14,7 @@ import { Energy } from "../src/tokens/Energy.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import { SkillType } from "../src/systems/SkillType.sol";
-import { PlayerIdGenerator, ShipIdGenerator } from "../src/codegen/index.sol";
+import { PlayerIdGenerator, ShipIdGenerator, ShipBattleIdGenerator } from "../src/codegen/index.sol";
 import { ItemIdQuantityPair } from "../src/systems/ItemIdQuantityPair.sol";
 import { RosterUtil } from "../src/utils/RosterUtil.sol";
 
@@ -157,6 +157,10 @@ contract ManualSmokeTest is Script {
       environmentRosterCoordinatesY
     );
     console.log("Initiated a ship battle");
+
+    uint256 shipBattleId = ShipBattleIdGenerator.get();
+    world.app__shipBattleMakeMove(shipBattleId, 1);
+    console.log("Made a move in the ship battle");
 
     vm.stopBroadcast();
   }

@@ -32,13 +32,15 @@ contract FightToDeathTest is Test {
       seed = abi.encodePacked(seed, uint8(i));
 
       (uint32 selfDamageTaken, uint32 opponentDamageTaken) = FightToDeath.perform(
-        seed,
-        selfAttack,
-        selfProtection,
-        selfHealth,
-        opponentAttack,
-        opponentProtection,
-        opponentHealth
+        FightToDeath.FightToDeathParams(
+          seed,
+          selfAttack,
+          selfProtection,
+          selfHealth,
+          opponentAttack,
+          opponentProtection,
+          opponentHealth
+        )
       );
 
       console.log("Self damage taken:", selfDamageTaken);
@@ -63,20 +65,22 @@ contract FightToDeathTest is Test {
     bytes memory seed = "testSeed";
 
     // 测试双方都只有1点生命值的情况
-    (uint32 selfDamage, uint32 opponentDamage) = FightToDeath.perform(seed, 5, 5, 1, 5, 5, 1);
+    (uint32 selfDamage, uint32 opponentDamage) = FightToDeath.perform(
+      FightToDeath.FightToDeathParams(seed, 5, 5, 1, 5, 5, 1)
+    );
     //assertEq(selfDamage, 1, "Self should take 1 damage");
     //assertEq(opponentDamage, 1, "Opponent should take 1 damage");
     console.log("testEdgeCases(), Self damage:", selfDamage);
     console.log("testEdgeCases(), Opponent damage:", opponentDamage);
 
     // 测试一方生命值为1，另一方生命值大于2的情况
-    (selfDamage, opponentDamage) = FightToDeath.perform(seed, 5, 5, 1, 5, 5, 3);
+    (selfDamage, opponentDamage) = FightToDeath.perform(FightToDeath.FightToDeathParams(seed, 5, 5, 1, 5, 5, 3));
     //assertEq(selfDamage, 1, "Self should take 1 damage");
     // assertEq(opponentDamage, 1, "Opponent should take 1 damage");
     console.log("testEdgeCases(), Self damage:", selfDamage);
     console.log("testEdgeCases(), Opponent damage:", opponentDamage);
 
-    (selfDamage, opponentDamage) = FightToDeath.perform(seed, 5, 5, 3, 5, 5, 1);
+    (selfDamage, opponentDamage) = FightToDeath.perform(FightToDeath.FightToDeathParams(seed, 5, 5, 3, 5, 5, 1));
     // assertEq(selfDamage, 1, "Self should take 1 damage");
     // assertEq(opponentDamage, 1, "Opponent should take 1 damage");
     console.log("testEdgeCases(), Self damage:", selfDamage);
@@ -88,10 +92,9 @@ contract FightToDeathTest is Test {
 
     // 测试自身生命值为0的情况
     vm.expectRevert(abi.encodeWithSelector(FightToDeath.InvalidSelfHealth.selector, 0));
-    FightToDeath.perform(seed, 5, 5, 0, 5, 5, 5);
-
+    FightToDeath.perform(FightToDeath.FightToDeathParams(seed, 5, 5, 0, 5, 5, 5));
     // 测试对手生命值为0的情况
     vm.expectRevert(abi.encodeWithSelector(FightToDeath.InvalidSelfHealth.selector, 0));
-    FightToDeath.perform(seed, 5, 5, 5, 5, 5, 0);
+    FightToDeath.perform(FightToDeath.FightToDeathParams(seed, 5, 5, 5, 5, 5, 0));
   }
 }

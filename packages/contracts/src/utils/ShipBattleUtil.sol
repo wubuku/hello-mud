@@ -31,7 +31,7 @@ library ShipBattleUtil {
   uint256 constant MIN_DISTANCE_TO_BATTLE = 1000;
 
   uint8 constant INITIATOR = 1;
-  uint8 constant RESPONDER = 0;
+  uint8 constant RESPONDER = 2; // NOTE: DON'T use 0, it's the default value in Solidity
 
   function oppositeSide(uint8 side) internal pure returns (uint8) {
     if (side == INITIATOR) {

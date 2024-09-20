@@ -9,17 +9,27 @@ library FightToDeath {
   error BothAlive(uint32 selfDamageTaken, uint32 opponentDamageTaken);
   error BothDead();
 
-  function perform(
-    bytes memory seed,
-    uint32 selfAttack,
-    uint32 selfProtection,
-    uint32 selfHealth,
-    uint32 opponentAttack,
-    uint32 opponentProtection,
-    uint32 opponentHealth
-  ) internal view returns (uint32, uint32) {
-    if (selfHealth == 0) revert InvalidSelfHealth(selfHealth);
-    if (opponentHealth == 0) revert InvalidOpponentHealth(opponentHealth);
+  struct FightToDeathParams {
+    bytes seed;
+    uint32 selfAttack;
+    uint32 selfProtection;
+    uint32 selfHealth;
+    uint32 opponentAttack;
+    uint32 opponentProtection;
+    uint32 opponentHealth;
+  }
+
+  function perform(FightToDeathParams memory params) internal view returns (uint32, uint32) {
+    bytes memory seed = params.seed;
+    uint32 selfAttack = params.selfAttack;
+    uint32 selfProtection = params.selfProtection;
+    uint32 selfHealth = params.selfHealth;
+    uint32 opponentAttack = params.opponentAttack;
+    uint32 opponentProtection = params.opponentProtection;
+    uint32 opponentHealth = params.opponentHealth;
+
+    if (params.selfHealth == 0) revert InvalidSelfHealth(params.selfHealth);
+    if (params.opponentHealth == 0) revert InvalidOpponentHealth(params.opponentHealth);
 
     if ((selfHealth == 1 && opponentHealth > 2) || (opponentHealth == 1 && selfHealth > 2)) {
       return (1, 1);
