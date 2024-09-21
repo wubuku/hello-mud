@@ -148,6 +148,8 @@ aggregates:
               optional: true
 
       TakeLoot:
+        metadata:
+          MudSystemName: ShipBattleTakeLootSystem
         parameters:
           # Player:
           #   referenceType: Player

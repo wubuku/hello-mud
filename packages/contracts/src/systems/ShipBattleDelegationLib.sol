@@ -50,16 +50,16 @@ library ShipBattleDelegationLib {
   }
 
   function takeLoot(uint256 id, uint8 choice) internal {
-    ResourceId shipBattleSystemId = WorldResourceIdLib.encode({
+    ResourceId shipBattleTakeLootSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "ShipBattleSystem"
+      name: "ShipBattleTakeLo" // NOTE: Only the first 16 characters are used. Original: "ShipBattleTakeLootSystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
     world.callFrom(
       WorldContextConsumerLib._msgSender(),
-      shipBattleSystemId,
+      shipBattleTakeLootSystemId,
       abi.encodeWithSignature(
         "shipBattleTakeLoot(uint256,uint8)",
         id, choice

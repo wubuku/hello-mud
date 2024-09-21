@@ -23,6 +23,7 @@ import { IRosterSystem } from "./IRosterSystem.sol";
 import { IShipBattleInitiateSystem } from "./IShipBattleInitiateSystem.sol";
 import { IShipBattleServiceSystem } from "./IShipBattleServiceSystem.sol";
 import { IShipBattleSystem } from "./IShipBattleSystem.sol";
+import { IShipBattleTakeLootSystem } from "./IShipBattleTakeLootSystem.sol";
 import { IShipFriendSystem } from "./IShipFriendSystem.sol";
 import { ISkillProcessFriendSystem } from "./ISkillProcessFriendSystem.sol";
 import { ISkillProcessSystem } from "./ISkillProcessSystem.sol";
@@ -56,6 +57,7 @@ interface IWorld is
   IShipBattleInitiateSystem,
   IShipBattleServiceSystem,
   IShipBattleSystem,
+  IShipBattleTakeLootSystem,
   IShipFriendSystem,
   ISkillProcessFriendSystem,
   ISkillProcessSystem,
