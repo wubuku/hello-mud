@@ -9,18 +9,6 @@ pragma solidity >=0.8.24;
  * @dev This interface is automatically generated from the corresponding system contract. Do not edit manually.
  */
 interface IShipBattleSystem {
-  function app__shipBattleInitiateBattle(
-    uint256 playerId,
-    uint256 initiatorRosterPlayerId,
-    uint32 initiatorRosterSequenceNumber,
-    uint256 responderRosterPlayerId,
-    uint32 responderRosterSequenceNumber,
-    uint32 initiatorCoordinatesX,
-    uint32 initiatorCoordinatesY,
-    uint32 responderCoordinatesX,
-    uint32 responderCoordinatesY
-  ) external returns (uint256);
-
   function app__shipBattleMakeMove(uint256 id, uint8 attackerCommand) external;
 
   function app__shipBattleTakeLoot(uint256 id, uint8 choice) external;

@@ -1,5 +1,4 @@
 aggregates:
-
   ShipBattle:
     metadata:
       MudStoreValueCheckMaxFieldCount: 6
@@ -51,6 +50,11 @@ aggregates:
 
     methods:
       InitiateBattle:
+        metadata:
+          # To generate a separate system for this method due to contract size limitations
+          MudSystemName: ShipBattleInitiateSystem
+          # Set a short global name for the function of the generated system
+          GlobalName: InitiateShipBattle
         isCreationCommand: true
         parameters:
           PlayerId:
@@ -143,7 +147,6 @@ aggregates:
               type: u256 #ID
               optional: true
 
-
       TakeLoot:
         parameters:
           # Player:
@@ -189,5 +192,3 @@ aggregates:
               type: u32
             LoserNewLevel:
               type: u16
-
-

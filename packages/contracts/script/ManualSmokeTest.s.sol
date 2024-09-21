@@ -145,7 +145,7 @@ contract ManualSmokeTest is Script {
     );
     console.log("Created another environment roster");
 
-    world.app__shipBattleInitiateBattle(
+    world.app__initiateShipBattle(
       playerId,
       playerId,
       currentRosterSequenceNumber,

@@ -20,10 +20,10 @@ import { IPlayerSystem } from "./IPlayerSystem.sol";
 import { IPositionSystem } from "./IPositionSystem.sol";
 import { IRosterFriendSystem } from "./IRosterFriendSystem.sol";
 import { IRosterSystem } from "./IRosterSystem.sol";
+import { IShipBattleInitiateSystem } from "./IShipBattleInitiateSystem.sol";
 import { IShipBattleServiceSystem } from "./IShipBattleServiceSystem.sol";
 import { IShipBattleSystem } from "./IShipBattleSystem.sol";
 import { IShipFriendSystem } from "./IShipFriendSystem.sol";
-import { IShipSystem } from "./IShipSystem.sol";
 import { ISkillProcessFriendSystem } from "./ISkillProcessFriendSystem.sol";
 import { ISkillProcessSystem } from "./ISkillProcessSystem.sol";
 import { ITerrainSystem } from "./ITerrainSystem.sol";
@@ -53,10 +53,10 @@ interface IWorld is
   IPositionSystem,
   IRosterFriendSystem,
   IRosterSystem,
+  IShipBattleInitiateSystem,
   IShipBattleServiceSystem,
   IShipBattleSystem,
   IShipFriendSystem,
-  IShipSystem,
   ISkillProcessFriendSystem,
   ISkillProcessSystem,
   ITerrainSystem
