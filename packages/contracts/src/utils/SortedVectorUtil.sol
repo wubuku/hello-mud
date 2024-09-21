@@ -20,7 +20,8 @@ library SortedVectorUtil {
     uint32[] memory itemQuantityList
   ) internal pure returns (ItemIdQuantityPair[] memory) {
     if (itemIdList.length == 0) revert EmptyList();
-    if (itemIdList.length != itemQuantityList.length) revert IncorrectListLength(itemIdList.length, itemQuantityList.length);
+    if (itemIdList.length != itemQuantityList.length)
+      revert IncorrectListLength(itemIdList.length, itemQuantityList.length);
 
     ItemIdQuantityPair[] memory items = new ItemIdQuantityPair[](0);
     for (uint i = 0; i < itemIdList.length; i++) {
@@ -137,27 +138,35 @@ library SortedVectorUtil {
     return (false, low);
   }
 
-  function addId(uint256[] storage v, uint256 id) internal {
+  function addId(uint256[] memory v, uint256 id) internal pure returns (uint256[] memory) {
     (bool found, uint index) = binarySearchId(v, id);
     if (found) {
       revert ItemAlreadyExists(id);
     }
-    v.push(id);
-    for (uint i = v.length - 1; i > index; i--) {
-      v[i] = v[i - 1];
+    uint256[] memory newV = new uint256[](v.length + 1);
+    for (uint i = 0; i < index; i++) {
+      newV[i] = v[i];
     }
-    v[index] = id;
+    newV[index] = id;
+    for (uint i = index; i < v.length; i++) {
+      newV[i + 1] = v[i];
+    }
+    return newV;
   }
 
-  function removeId(uint256[] storage v, uint256 id) internal {
+  function removeId(uint256[] memory v, uint256 id) internal pure returns (uint256[] memory) {
     (bool found, uint index) = binarySearchId(v, id);
     if (!found) {
       revert ItemNotFound(uint32(id));
     }
-    for (uint i = index; i < v.length - 1; i++) {
-      v[i] = v[i + 1];
+    uint256[] memory newV = new uint256[](v.length - 1);
+    for (uint i = 0; i < index; i++) {
+      newV[i] = v[i];
     }
-    v.pop();
+    for (uint i = index + 1; i < v.length; i++) {
+      newV[i - 1] = v[i];
+    }
+    return newV;
   }
 
   function findId(uint256[] memory v, uint256 id) internal pure returns (bool, uint256) {

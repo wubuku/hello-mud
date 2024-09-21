@@ -117,9 +117,9 @@ contract ShipBattleServiceSystem is System {
       //   shipBattleSystemId,
       //   abi.encodeWithSignature("shipBattleMakeMove(uint256,uint8)", shipBattleId, ShipBattleCommand.ATTACK)
       // );
-      if (i == 0) {
-        break; // Test just the first round
-      }
+      //if (i == 0) {
+      //  break; // Test just the first round
+      //}
     }
   }
 

@@ -14,7 +14,7 @@ library RosterDataInstance {
   error TargetCoordinatesNotSet(uint32 targetX, uint32 targetY);
   error InvalidRosterUpdateTime(uint64 currentTimestamp, uint64 coordinatesUpdatedAt);
   error OriginCoordinatesNotSet(uint32 originX, uint32 originY);
-  error PlayerHasNoClaimedIsland(uint32 playerClaimedIslandX, uint32 playerClaimedIslandY);
+  error PlayerHasNoClaimedIsland();
   error InconsistentRosterShipId(uint256 expectedShipId, uint256 actualShipId);
   error RosterIsFull(uint256 currentShipCount);
   error IsEnvironmentRoster();
@@ -69,7 +69,7 @@ library RosterDataInstance {
       revert IsEnvironmentRoster();
     }
     if (playerClaimedIslandX == uint32(0) && playerClaimedIslandY == uint32(0)) {
-      revert PlayerHasNoClaimedIsland(playerClaimedIslandX, playerClaimedIslandY);
+      revert PlayerHasNoClaimedIsland();
     }
     uint256 distance = DirectRouteUtil.getDistance(
       roster.updatedCoordinatesX,
