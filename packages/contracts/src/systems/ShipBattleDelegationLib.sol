@@ -11,16 +11,16 @@ import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol"
 library ShipBattleDelegationLib {
 
   function initiateBattle(uint256 playerId, uint256 initiatorRosterPlayerId, uint32 initiatorRosterSequenceNumber, uint256 responderRosterPlayerId, uint32 responderRosterSequenceNumber, uint32 initiatorCoordinatesX, uint32 initiatorCoordinatesY, uint32 responderCoordinatesX, uint32 responderCoordinatesY) internal returns (uint256) {
-    ResourceId shipBattleSystemId = WorldResourceIdLib.encode({
+    ResourceId shipBattleInitiateSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "ShipBattleSystem"
+      name: "ShipBattleInitia" // NOTE: Only the first 16 characters are used. Original: "ShipBattleInitiateSystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
     bytes memory returnData = world.callFrom(
       WorldContextConsumerLib._msgSender(),
-      shipBattleSystemId,
+      shipBattleInitiateSystemId,
       abi.encodeWithSignature(
         "initiateShipBattle(uint256,uint256,uint32,uint256,uint32,uint32,uint32,uint32,uint32)",
         playerId, initiatorRosterPlayerId, initiatorRosterSequenceNumber, responderRosterPlayerId, responderRosterSequenceNumber, initiatorCoordinatesX, initiatorCoordinatesY, responderCoordinatesX, responderCoordinatesY

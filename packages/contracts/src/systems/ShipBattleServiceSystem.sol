@@ -5,20 +5,21 @@ import { System } from "@latticexyz/world/src/System.sol";
 import { IBaseWorld } from "@latticexyz/world/src/codegen/interfaces/IBaseWorld.sol";
 import { ResourceId, WorldResourceIdLib, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
 import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
-// import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 
-// import { BattleStatus } from "./BattleStatus.sol";
 import { ShipBattleCommand } from "./ShipBattleCommand.sol";
 import { ShipBattle } from "../codegen/index.sol";
-// import { ShipBattleSystem } from "./ShipBattleSystem.sol";
 import { ShipBattleDelegationLib } from "./ShipBattleDelegationLib.sol";
+
+import { BattleStatus } from "./BattleStatus.sol";
+
+// import { ShipBattleSystem } from "./ShipBattleSystem.sol";
+// import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
+
+// event ErrorOccurred(string reason);
+// event LowLevelError(bytes data);
 
 contract ShipBattleServiceSystem is System {
   uint256 constant MAX_NUMBER_OF_ROUNDS = 100;
-
-  // // 在合约的顶部定义这些事件
-  // event ErrorOccurred(string reason);
-  // event LowLevelError(bytes data);
 
   function shipBattleServiceInitiateBattleAndAutoPlayTillEnd(
     uint256 playerId,
@@ -31,6 +32,20 @@ contract ShipBattleServiceSystem is System {
     uint32 responderCoordinatesX,
     uint32 responderCoordinatesY
   ) public {
+    uint256 shipBattleId = ShipBattleDelegationLib.initiateBattle(
+      playerId,
+      initiatorRosterPlayerId,
+      initiatorRosterSequenceNumber,
+      responderRosterPlayerId,
+      responderRosterSequenceNumber,
+      initiatorCoordinatesX,
+      initiatorCoordinatesY,
+      responderCoordinatesX,
+      responderCoordinatesY
+    );
+    require(shipBattleId != 0, "ShipBattle initiation failed");
+    shipBattleServiceAutoPlayTillEnd(shipBattleId, playerId);
+
     // ResourceId shipBattleSystemId = WorldResourceIdLib.encode({
     //   typeId: RESOURCE_SYSTEM,
     //   namespace: "app",
@@ -81,48 +96,32 @@ contract ShipBattleServiceSystem is System {
     //   // server returned an error response: error code 3: execution reverted: revert:
     //   // Low level error occurred: 0xc86745f9000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000a93bbb2b14d6e0a4c2954f5b6fbf60c4fa5a8089
     // }
-
-    uint256 shipBattleId = ShipBattleDelegationLib.initiateBattle(
-      playerId,
-      initiatorRosterPlayerId,
-      initiatorRosterSequenceNumber,
-      responderRosterPlayerId,
-      responderRosterSequenceNumber,
-      initiatorCoordinatesX,
-      initiatorCoordinatesY,
-      responderCoordinatesX,
-      responderCoordinatesY
-    );
-    require(shipBattleId != 0, "ShipBattle initiation failed");
-    shipBattleServiceAutoPlayTillEnd(shipBattleId, playerId);
   }
 
   function shipBattleServiceAutoPlayTillEnd(uint256 shipBattleId, uint256 playerId) public {
-    ResourceId shipBattleSystemId = WorldResourceIdLib.encode({
-      typeId: RESOURCE_SYSTEM,
-      namespace: "app",
-      name: "ShipBattleSystem"
-    });
+    // ResourceId shipBattleSystemId = WorldResourceIdLib.encode({
+    //   typeId: RESOURCE_SYSTEM,
+    //   namespace: "app",
+    //   name: "ShipBattleSystem"
+    // });
+    // IBaseWorld world = IBaseWorld(_world());
 
-    IBaseWorld world = IBaseWorld(_world());
     for (uint256 i = 0; i < MAX_NUMBER_OF_ROUNDS; i++) {
-      //uint8 status = ShipBattle.getStatus(shipBattleId);
-      // TODO if (status == BattleStatus.ENDED) {
-      //  break;
-      //}
-
-      // call shipBattleSystem.shipBattleMakeMove(shipBattleId, ShipBattleCommand.ATTACK);
-      world.callFrom(
-        _msgSender(),
-        shipBattleSystemId,
-        abi.encodeWithSignature("shipBattleMakeMove(uint256,uint8)", shipBattleId, ShipBattleCommand.ATTACK)
-      );
-      if (i == 1) {
+      uint8 status = ShipBattle.getStatus(shipBattleId);
+      if (status == BattleStatus.ENDED) {
         break;
+      }
+      ShipBattleDelegationLib.makeMove(shipBattleId, ShipBattleCommand.ATTACK);
+      // world.callFrom(
+      //   _msgSender(),
+      //   shipBattleSystemId,
+      //   abi.encodeWithSignature("shipBattleMakeMove(uint256,uint8)", shipBattleId, ShipBattleCommand.ATTACK)
+      // );
+      if (i == 0) {
+        break; // Test just the first round
       }
     }
   }
-
 
   function _getPanicReason(uint errorCode) internal pure returns (string memory) {
     if (errorCode == 0x01) return "Assertion failed";
@@ -165,5 +164,4 @@ contract ShipBattleServiceSystem is System {
     }
     return string(str);
   }
-
 }

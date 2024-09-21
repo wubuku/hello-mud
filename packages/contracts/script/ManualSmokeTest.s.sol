@@ -145,7 +145,26 @@ contract ManualSmokeTest is Script {
     );
     console.log("Created another environment roster");
 
-    world.app__initiateShipBattle(
+    //return;
+
+    // world.app__initiateShipBattle(
+    //   playerId,
+    //   playerId,
+    //   currentRosterSequenceNumber,
+    //   environmentRosterPlayerId,
+    //   environmentRosterSequenceNumber,
+    //   environmentRosterCoordinatesX,
+    //   environmentRosterCoordinatesY,
+    //   environmentRosterCoordinatesX,
+    //   environmentRosterCoordinatesY
+    // );
+    // console.log("Initiated a ship battle");
+
+    // uint256 shipBattleId = ShipBattleIdGenerator.get();
+    // world.app__shipBattleMakeMove(shipBattleId, 1);
+    // console.log("Made a move in the ship battle");
+
+    world.app__shipBattleServiceInitiateBattleAndAutoPlayTillEnd(
       playerId,
       playerId,
       currentRosterSequenceNumber,
@@ -156,11 +175,7 @@ contract ManualSmokeTest is Script {
       environmentRosterCoordinatesX,
       environmentRosterCoordinatesY
     );
-    console.log("Initiated a ship battle");
-
-    uint256 shipBattleId = ShipBattleIdGenerator.get();
-    world.app__shipBattleMakeMove(shipBattleId, 1);
-    console.log("Made a move in the ship battle");
+    console.log("Initiated a ship battle and auto played till end");
 
     vm.stopBroadcast();
   }
