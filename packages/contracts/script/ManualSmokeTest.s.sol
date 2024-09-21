@@ -147,24 +147,7 @@ contract ManualSmokeTest is Script {
 
     //return;
 
-    // world.app__initiateShipBattle(
-    //   playerId,
-    //   playerId,
-    //   currentRosterSequenceNumber,
-    //   environmentRosterPlayerId,
-    //   environmentRosterSequenceNumber,
-    //   environmentRosterCoordinatesX,
-    //   environmentRosterCoordinatesY,
-    //   environmentRosterCoordinatesX,
-    //   environmentRosterCoordinatesY
-    // );
-    // console.log("Initiated a ship battle");
-
-    // uint256 shipBattleId = ShipBattleIdGenerator.get();
-    // world.app__shipBattleMakeMove(shipBattleId, 1);
-    // console.log("Made a move in the ship battle");
-
-    world.app__shipBattleServiceInitiateBattleAndAutoPlayTillEnd(
+    world.app__initiateShipBattle(
       playerId,
       playerId,
       currentRosterSequenceNumber,
@@ -175,7 +158,24 @@ contract ManualSmokeTest is Script {
       environmentRosterCoordinatesX,
       environmentRosterCoordinatesY
     );
-    console.log("Initiated a ship battle and auto played till end");
+    console.log("Initiated a ship battle");
+
+    uint256 shipBattleId = ShipBattleIdGenerator.get();
+    world.app__shipBattleMakeMove(shipBattleId, 1);
+    console.log("Made a move in the ship battle");
+
+    // world.app__shipBattleServiceInitiateBattleAndAutoPlayTillEnd(
+    //   playerId,
+    //   playerId,
+    //   currentRosterSequenceNumber,
+    //   environmentRosterPlayerId,
+    //   environmentRosterSequenceNumber,
+    //   environmentRosterCoordinatesX,
+    //   environmentRosterCoordinatesY,
+    //   environmentRosterCoordinatesX,
+    //   environmentRosterCoordinatesY
+    // );
+    // console.log("Initiated a ship battle and auto played till end");
 
     vm.stopBroadcast();
   }

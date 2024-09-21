@@ -24,6 +24,7 @@ library ShipBattleMakeMoveLogic {
   error WinnerNotSet();
   error WinnerSetButBattleNotEnded();
   error InvalidWinner();
+  error BattleNotOngoing();
 
   uint32 constant PLAYER_SHIP_EXPERIENCE = 8;
 
@@ -31,7 +32,9 @@ library ShipBattleMakeMoveLogic {
     uint256 id,
     uint8 attackerCommand,
     ShipBattleData memory shipBattleData
-  ) internal view returns (ShipBattleMoveMade memory) {
+  ) internal returns (ShipBattleMoveMade memory) {
+    if (shipBattleData.status != uint8(BattleStatus.IN_PROGRESS)) revert BattleNotOngoing();
+
     RosterId memory initiatorId = RosterId(
       shipBattleData.initiatorRosterPlayerId,
       shipBattleData.initiatorRosterSequenceNumber
@@ -80,41 +83,60 @@ library ShipBattleMakeMoveLogic {
 
     if (defenderDamageTaken >= defenderShipHp) {
       defenderDamageTaken = defenderShipHp;
-      defenderShipHp = 0;
+      defenderShipHp = uint32(0);
     } else {
       defenderShipHp -= defenderDamageTaken;
     }
 
     bool isBattleEnded = false;
-    uint8 winner = 0;
+    uint8 winner = uint8(0);
 
     RosterData memory attackerRoster = shipBattleData.roundMover == ShipBattleUtil.INITIATOR ? initiator : responder;
     RosterData memory defenderRoster = shipBattleData.roundMover == ShipBattleUtil.INITIATOR ? responder : initiator;
+    bool isAttackerEnvOwned = attackerRoster.environmentOwned;
+    bool isDefenderEnvOwned = defenderRoster.environmentOwned;
 
-    if (defenderShipHp == 0 && defenderRoster.isDestroyedExceptShip(shipBattleData.roundDefenderShip)) {
+    if (defenderShipHp == uint32(0) && defenderRoster.isDestroyedExceptShip(shipBattleData.roundDefenderShip)) {
       isBattleEnded = true;
       winner = shipBattleData.roundMover;
     }
 
-    if (attackerDamageTaken > 0) {
+    if (attackerDamageTaken > uint32(0)) {
       if (attackerDamageTaken >= attackerShipHp) {
         attackerDamageTaken = attackerShipHp;
-        attackerShipHp = 0;
+        attackerShipHp = uint32(0);
       } else {
         attackerShipHp -= attackerDamageTaken;
       }
 
-      if (attackerShipHp == 0 && attackerRoster.isDestroyedExceptShip(shipBattleData.roundAttackerShip)) {
+      if (attackerShipHp == uint32(0) && attackerRoster.isDestroyedExceptShip(shipBattleData.roundAttackerShip)) {
         isBattleEnded = true;
         winner = ShipBattleUtil.oppositeSide(shipBattleData.roundMover);
       }
     }
 
-    uint8 nextRoundMover = 0;
-    uint256 nextRoundAttackerShip = 0;
-    uint256 nextRoundDefenderShip = 0;
+    ShipBattleMoveMade memory _event;
+    _event.id = id;
+    _event.attackerCommand = attackerCommand;
+    _event.defenderCommand = defenderCommand;
+    _event.roundNumber = currentRoundNumber;
+    _event.defenderDamageTaken = defenderDamageTaken;
+    _event.attackerDamageTaken = attackerDamageTaken;
+    _event.isBattleEnded = isBattleEnded;
+    _event.winner = winner;
+
+    //
+    // NOTE: Update the ships' health_points first!
+    // That way you won't pick a ship that has already been destroyed.
+    //
+    updateShipHealthPoints(shipBattleData, _event);
+    updateExperiencePoints(shipBattleData, _event, isAttackerEnvOwned, isDefenderEnvOwned);
+
+    uint8 nextRoundMover = uint8(0);
+    uint256 nextRoundAttackerShip = uint256(0);
+    uint256 nextRoundDefenderShip = uint256(0);
     uint64 nextRoundStartedAt = nowTime;
-    uint8 rosterIndicator = 0;
+    uint8 rosterIndicator = uint8(0);
 
     if (!isBattleEnded) {
       uint32 nextRoundNumber = currentRoundNumber + 1;
@@ -128,15 +150,6 @@ library ShipBattleMakeMoveLogic {
       nextRoundMover = rosterIndicator == 1 ? ShipBattleUtil.INITIATOR : ShipBattleUtil.RESPONDER;
     }
 
-    ShipBattleMoveMade memory _event;
-    _event.id = id;
-    _event.attackerCommand = attackerCommand;
-    _event.defenderCommand = defenderCommand;
-    _event.roundNumber = currentRoundNumber;
-    _event.defenderDamageTaken = defenderDamageTaken;
-    _event.attackerDamageTaken = attackerDamageTaken;
-    _event.isBattleEnded = isBattleEnded;
-    _event.winner = winner;
     _event.nextRoundStartedAt = nextRoundStartedAt;
     _event.nextRoundMover = nextRoundMover;
     _event.nextRoundAttackerShip = nextRoundAttackerShip;
@@ -152,11 +165,11 @@ library ShipBattleMakeMoveLogic {
     if (shipBattleMoveMade.isBattleEnded) {
       shipBattleData.status = uint8(BattleStatus.ENDED);
       shipBattleData.endedAt = shipBattleMoveMade.nextRoundStartedAt;
-      if (shipBattleMoveMade.winner == 0) revert WinnerNotSet();
+      if (shipBattleMoveMade.winner == uint8(0)) revert WinnerNotSet();
       shipBattleData.winner = shipBattleMoveMade.winner;
     } else {
       shipBattleData.roundNumber++;
-      if (shipBattleMoveMade.winner != 0) revert WinnerSetButBattleNotEnded();
+      if (shipBattleMoveMade.winner != uint8(0)) revert WinnerSetButBattleNotEnded();
     }
 
     shipBattleData.roundMover = shipBattleMoveMade.nextRoundMover;
@@ -164,11 +177,8 @@ library ShipBattleMakeMoveLogic {
     shipBattleData.roundDefenderShip = shipBattleMoveMade.nextRoundDefenderShip;
     shipBattleData.roundStartedAt = shipBattleMoveMade.nextRoundStartedAt;
 
-    updateShipHealthPoints(shipBattleData, shipBattleMoveMade);
-    updateExperiencePoints(shipBattleData, shipBattleMoveMade);
-
     if (shipBattleMoveMade.isBattleEnded) {
-      updateRosterStatus(shipBattleData, shipBattleMoveMade.winner);
+      updateLoserRosterStatus(shipBattleData, shipBattleMoveMade.winner);
     }
 
     return shipBattleData;
@@ -185,10 +195,10 @@ library ShipBattleMakeMoveLogic {
 
     attackerShip.healthPoints = attackerShip.healthPoints > shipBattleMoveMade.attackerDamageTaken
       ? attackerShip.healthPoints - shipBattleMoveMade.attackerDamageTaken
-      : 0;
+      : uint32(0);
     defenderShip.healthPoints = defenderShip.healthPoints > shipBattleMoveMade.defenderDamageTaken
       ? defenderShip.healthPoints - shipBattleMoveMade.defenderDamageTaken
-      : 0;
+      : uint32(0);
 
     Ship.set(attackerShipId, attackerShip);
     Ship.set(defenderShipId, defenderShip);
@@ -196,20 +206,22 @@ library ShipBattleMakeMoveLogic {
 
   function updateExperiencePoints(
     ShipBattleData memory shipBattleData,
-    ShipBattleMoveMade memory shipBattleMoveMade
-  ) internal view {
+    ShipBattleMoveMade memory _event,
+    bool isAttackerEnvOwned, //= roster::environment_owned(attacker_roster);
+    bool isDefenderEnvOwned //= roster::environment_owned(defender_roster);
+  ) private view {
     ShipData memory attackerShip = Ship.get(shipBattleData.roundAttackerShip);
     ShipData memory defenderShip = Ship.get(shipBattleData.roundDefenderShip);
 
     uint32 attackerXpGained = 0;
     uint32 defenderXpGained = 0;
 
-    if (defenderShip.healthPoints == 0 && shipBattleMoveMade.defenderDamageTaken > 0) {
-      attackerXpGained = calculateShipExperience(defenderShip);
+    if (defenderShip.healthPoints == 0 && _event.defenderDamageTaken > 0) {
+      attackerXpGained = calculateShipExperience(defenderShip, isDefenderEnvOwned);
     }
 
-    if (attackerShip.healthPoints == 0 && shipBattleMoveMade.attackerDamageTaken > 0) {
-      defenderXpGained = calculateShipExperience(attackerShip);
+    if (attackerShip.healthPoints == 0 && _event.attackerDamageTaken > 0) {
+      defenderXpGained = calculateShipExperience(attackerShip, isAttackerEnvOwned);
     }
 
     if (shipBattleData.roundMover == ShipBattleUtil.INITIATOR) {
@@ -229,7 +241,7 @@ library ShipBattleMakeMoveLogic {
     }
   }
 
-  function updateRosterStatus(ShipBattleData memory shipBattleData, uint8 winner) internal {
+  function updateLoserRosterStatus(ShipBattleData memory shipBattleData, uint8 winner) internal {
     RosterId memory loserRosterId;
     if (winner == ShipBattleUtil.INITIATOR) {
       loserRosterId = RosterId(shipBattleData.responderRosterPlayerId, shipBattleData.responderRosterSequenceNumber);
@@ -244,12 +256,16 @@ library ShipBattleMakeMoveLogic {
     Roster.set(loserRosterId.playerId, loserRosterId.sequenceNumber, loserRoster);
   }
 
-  function calculateShipExperience(ShipData memory ship) internal pure returns (uint32) {
-    ItemIdQuantityPair[] memory buildingExpenses = SortedVectorUtil.newItemIdQuantityPairs(
-      ship.buildingExpensesItemIds,
-      ship.buildingExpensesQuantities
-    );
-    return ShipUtil.calculateEnvironmentShipExperience(buildingExpenses);
+  function calculateShipExperience(ShipData memory ship, bool isEnvironmentOwned) internal pure returns (uint32) {
+    if (isEnvironmentOwned) {
+      ItemIdQuantityPair[] memory buildingExpenses = SortedVectorUtil.newItemIdQuantityPairs(
+        ship.buildingExpensesItemIds,
+        ship.buildingExpensesQuantities
+      );
+      return ShipUtil.calculateEnvironmentShipExperience(buildingExpenses);
+    } else {
+      return PLAYER_SHIP_EXPERIENCE;
+    }
   }
 
   function appendToArray(uint32[] memory arr, uint32 value) internal pure returns (uint32[] memory) {
