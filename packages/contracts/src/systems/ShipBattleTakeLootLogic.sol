@@ -40,8 +40,72 @@ library ShipBattleTakeLootLogic {
     if (shipBattleData.status != uint8(BattleStatus.ENDED)) revert BattleNotEnded(shipBattleData.status);
     if (shipBattleData.winner == 0) revert WinnerNotSet();
 
-    uint64 nowTime = uint64(block.timestamp);
+    (
+      RosterId memory winnerRosterId,
+      RosterData memory winnerRoster,
+      RosterId memory loserRosterId,
+      RosterData memory loserRoster,
+      uint256 winnerPlayerId,
+      uint256 loserPlayerId,
+      uint32 winnerIncreasedExperience,
+      uint32 loserIncreasedExperience
+    ) = determineWinnerAndLoser(id, shipBattleData);
 
+    choice = determineChoice(choice, winnerRoster, shipBattleData.endedAt);
+
+    if (loserRoster.status != uint8(RosterStatus.DESTROYED)) revert InvalidLoserStatus(loserRoster.status);
+
+    (uint256[] memory shipIds, ItemIdQuantityPair[] memory loot) = removeLooserShipsAndCalculateLoot(
+      loserRoster,
+      choice
+    );
+    loserRoster.shipIds = shipIds;
+
+    (winnerRoster.shipIds, winnerRoster.speed) = removeDestroyedWinnerShips(winnerRoster);
+
+    uint64 lootedAt = uint64(block.timestamp);
+    winnerRoster = updateWinnerRosterStatus(winnerRoster, lootedAt);
+    loserRoster = updateLoserRosterStatus(
+      loserRosterId.sequenceNumber,
+      loserRoster,
+      Player.get(loserPlayerId),
+      lootedAt
+    );
+    shipBattleData.status = uint8(BattleStatus.LOOTED);
+
+    Roster.set(winnerRosterId.playerId, winnerRosterId.sequenceNumber, winnerRoster);
+    Roster.set(loserRosterId.playerId, loserRosterId.sequenceNumber, loserRoster);
+
+    return
+      createShipBattleLootTaken(
+        id,
+        choice,
+        loot,
+        lootedAt,
+        winnerPlayerId,
+        loserPlayerId,
+        winnerIncreasedExperience,
+        loserIncreasedExperience
+      );
+  }
+
+  function determineWinnerAndLoser(
+    uint256 shipBattleId,
+    ShipBattleData memory shipBattleData
+  )
+    private
+    view
+    returns (
+      RosterId memory winnerRosterId,
+      RosterData memory winnerRoster,
+      RosterId memory loserRosterId,
+      RosterData memory loserRoster,
+      uint256 winnerPlayerId,
+      uint256 loserPlayerId,
+      uint32 winnerIncreasedExperience,
+      uint32 loserIncreasedExperience
+    )
+  {
     RosterId memory initiatorId = RosterId(
       shipBattleData.initiatorRosterPlayerId,
       shipBattleData.initiatorRosterSequenceNumber
@@ -53,73 +117,79 @@ library ShipBattleTakeLootLogic {
     RosterData memory initiator = Roster.get(initiatorId.playerId, initiatorId.sequenceNumber);
     RosterData memory responder = Roster.get(responderId.playerId, responderId.sequenceNumber);
 
-    ShipBattleUtil.assertIdsAreConsistent(id, shipBattleData, initiatorId, initiator, responderId, responder);
-
-    uint256 winnerPlayerId;
-    PlayerData memory winnerPlayer;
-    uint256 loserPlayerId;
-    PlayerData memory loserPlayer;
-    RosterId memory winnerRosterId;
-    RosterData memory winnerRoster;
-    RosterData memory loserRoster;
-    uint32 winnerIncreasedExperience;
-    uint32 loserIncreasedExperience;
+    ShipBattleUtil.assertIdsAreConsistent(shipBattleId, shipBattleData, initiatorId, initiator, responderId, responder);
 
     if (shipBattleData.winner == ShipBattleUtil.INITIATOR) {
       if (!responder.isDestroyed()) revert ResponderNotDestroyed(responderId.playerId, responderId.sequenceNumber);
       winnerRosterId = initiatorId;
       winnerRoster = initiator;
+      loserRosterId = responderId;
       loserRoster = responder;
       winnerPlayerId = initiatorId.playerId;
-      winnerPlayer = Player.get(winnerPlayerId);
       loserPlayerId = responderId.playerId;
-      loserPlayer = Player.get(loserPlayerId);
       winnerIncreasedExperience = getWinnerIncreasedExperience(shipBattleData.initiatorExperiences);
       loserIncreasedExperience = getLoserIncreasedExperience(shipBattleData.responderExperiences);
     } else if (shipBattleData.winner == ShipBattleUtil.RESPONDER) {
       if (!initiator.isDestroyed()) revert InitiatorNotDestroyed(initiatorId.playerId, initiatorId.sequenceNumber);
       winnerRosterId = responderId;
       winnerRoster = responder;
+      loserRosterId = initiatorId;
       loserRoster = initiator;
       winnerPlayerId = responderId.playerId;
-      winnerPlayer = Player.get(winnerPlayerId);
       loserPlayerId = initiatorId.playerId;
-      loserPlayer = Player.get(loserPlayerId);
       winnerIncreasedExperience = getWinnerIncreasedExperience(shipBattleData.responderExperiences);
       loserIncreasedExperience = getLoserIncreasedExperience(shipBattleData.initiatorExperiences);
     } else {
       revert InvalidWinner(shipBattleData.winner);
     }
 
+    return (
+      winnerRosterId,
+      winnerRoster,
+      loserRosterId,
+      loserRoster,
+      winnerPlayerId,
+      loserPlayerId,
+      winnerIncreasedExperience,
+      loserIncreasedExperience
+    );
+  }
+
+  function determineChoice(
+    uint8 choice,
+    //uint256 winnerPlayerId,
+    //uint32 winnerRosterSequenceNumber,
+    RosterData memory winnerRoster,
+    uint64 endedAt
+  ) private view returns (uint8) {
     if (winnerRoster.environmentOwned) {
-      choice = CHOICE_TAKE_ALL;
+      return CHOICE_TAKE_ALL;
     } else {
-      if (shipBattleData.endedAt == 0) revert BattleEndedAtNotSet();
-      if (nowTime >= shipBattleData.endedAt + LOOT_TAKING_TIME_LIMIT) {
-        choice = CHOICE_TAKE_ALL;
+      if (endedAt == 0) revert BattleEndedAtNotSet();
+      if (uint64(block.timestamp) >= endedAt + LOOT_TAKING_TIME_LIMIT) {
+        return CHOICE_TAKE_ALL;
       } else {
-        RosterUtil.assertPlayerIsRosterOwner(
-          winnerPlayerId,
-          RosterId(winnerRosterId.playerId, winnerRosterId.sequenceNumber)
-        );
+        // RosterUtil.assertPlayerIsRosterOwner(
+        //   winnerPlayerId,
+        //   RosterId(winnerPlayerId, winnerRosterSequenceNumber)
+        // );
+        return choice;
       }
     }
+  }
 
-    if (loserRoster.status != uint8(RosterStatus.DESTROYED)) revert InvalidLoserStatus(loserRoster.status);
-
-    (uint256[] memory shipIds, ItemIdQuantityPair[] memory loot) = removeLooserShipsAndCalculateLoot(
-      loserRoster,
-      choice
-    );
-    loserRoster.shipIds = shipIds;
-
-    (uint256[] memory winnerShipIds, uint32 newSpeed) = removeDestroyedWinnerShips(winnerRoster);
-    winnerRoster.shipIds = winnerShipIds;
-    winnerRoster.speed = newSpeed;
-
-    if (loserRoster.environmentOwned && loserRoster.baseExperience > winnerIncreasedExperience) {
-      winnerIncreasedExperience = loserRoster.baseExperience;
-    }
+  function createShipBattleLootTaken(
+    uint256 id,
+    uint8 choice,
+    ItemIdQuantityPair[] memory loot,
+    uint64 lootedAt,
+    uint256 winnerPlayerId,
+    uint256 loserPlayerId,
+    uint32 winnerIncreasedExperience,
+    uint32 loserIncreasedExperience
+  ) private view returns (ShipBattleLootTaken memory) {
+    PlayerData memory winnerPlayer = Player.get(winnerPlayerId);
+    PlayerData memory loserPlayer = Player.get(loserPlayerId);
 
     uint16 newLevel = ExperienceTableUtil.calculateNewLevel(
       uint16(winnerPlayer.level),
@@ -138,7 +208,7 @@ library ShipBattleTakeLootLogic {
         id: id,
         choice: choice,
         loot: loot,
-        lootedAt: nowTime,
+        lootedAt: lootedAt,
         increasedExperience: winnerIncreasedExperience,
         newLevel: newLevel,
         loserIncreasedExperience: loserIncreasedExperience,
@@ -192,23 +262,12 @@ library ShipBattleTakeLootLogic {
       revert InvalidWinner(shipBattleData.winner);
     }
 
-    winnerRoster = updateWinnerRosterStatus(winnerRoster, shipBattleLootTaken.lootedAt);
-    loserRoster = updateLoserRosterStatus(
-      loserRosterId.sequenceNumber,
-      loserRoster,
-      loserPlayer,
-      shipBattleLootTaken.lootedAt
-    );
-    shipBattleData.status = uint8(BattleStatus.LOOTED);
-
-    Roster.set(winnerRosterId.playerId, winnerRosterId.sequenceNumber, winnerRoster);
-    Roster.set(loserRosterId.playerId, loserRosterId.sequenceNumber, loserRoster);
-    
     //updateWinnerInventory(winnerRoster, shipBattleLootTaken.loot);
     uint256 lastShipId = winnerRoster.getLastShipId();
     ShipDelegationLib.increaseShipInventory(lastShipId, shipBattleLootTaken.loot);
 
     //todo invoke Player.IncreaseExperienceAndItems
+    //todo and not increase environment owned player's experience
     winnerPlayer.experience += shipBattleLootTaken.increasedExperience;
     winnerPlayer.level = shipBattleLootTaken.newLevel;
 
@@ -217,7 +276,6 @@ library ShipBattleTakeLootLogic {
 
     Player.set(winnerPlayerId, winnerPlayer);
     Player.set(loserPlayerId, loserPlayer);
-
 
     return shipBattleData;
   }
