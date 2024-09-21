@@ -7,6 +7,7 @@ import { ResourceId, WorldResourceIdLib } from "@latticexyz/world/src/WorldResou
 import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 import { IBaseWorld } from "@latticexyz/world/src/codegen/interfaces/IBaseWorld.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
+import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 library ShipDelegationLib {
 
@@ -28,6 +29,25 @@ library ShipDelegationLib {
     );
 
     return abi.decode(returnData, (uint256));
+  }
+
+  function increaseShipInventory(uint256 id, ItemIdQuantityPair[] memory items) internal {
+    ResourceId shipFriendSystemId = WorldResourceIdLib.encode({
+      typeId: RESOURCE_SYSTEM,
+      namespace: "app",
+      name: "ShipFriendSystem"
+    });
+
+    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
+    world.callFrom(
+      WorldContextConsumerLib._msgSender(),
+      shipFriendSystemId,
+      abi.encodeWithSignature(
+        "shipIncreaseShipInventory(uint256,(uint32,uint32)[])",
+        id, items
+      )
+    );
+
   }
 
 }

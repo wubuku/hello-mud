@@ -8,6 +8,7 @@ aggregates:
     friends:
       - SkillProcess.CompleteShipProduction
       - Roster.CreateEnvironmentRoster
+      - ShipBattle.TakeLoot
     id:
       name: Id
       type: u256
@@ -49,3 +50,12 @@ aggregates:
         result:
           isObjectReturned: true
 
+      IncreaseShipInventory:
+        metadata:
+          IsOnlyOpenToFriends: true
+        #isInternal: true
+        parameters:
+          Items:
+            itemType: ItemIdQuantityPair
+        event:
+          name: ShipInventoryIncreased

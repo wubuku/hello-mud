@@ -14,8 +14,7 @@ import { SortedVectorUtil } from "../utils/SortedVectorUtil.sol";
 import { ShipIdUtil } from "../utils/ShipIdUtil.sol";
 import { RosterId } from "../systems/RosterId.sol";
 import { RosterDataInstance } from "../utils/RosterDataInstance.sol";
-import { ShipInventoryLib } from "../systems/ShipInventoryLib.sol";
-import { ShipInventoryData } from "../codegen/index.sol";
+import { ShipDelegationLib } from "./ShipDelegationLib.sol";
 
 library ShipBattleTakeLootLogic {
   using RosterDataInstance for RosterData;
@@ -193,7 +192,6 @@ library ShipBattleTakeLootLogic {
       revert InvalidWinner(shipBattleData.winner);
     }
 
-    updateWinnerInventory(winnerRoster, shipBattleLootTaken.loot);
     winnerRoster = updateWinnerRosterStatus(winnerRoster, shipBattleLootTaken.lootedAt);
     loserRoster = updateLoserRosterStatus(
       loserRosterId.sequenceNumber,
@@ -201,9 +199,16 @@ library ShipBattleTakeLootLogic {
       loserPlayer,
       shipBattleLootTaken.lootedAt
     );
-
     shipBattleData.status = uint8(BattleStatus.LOOTED);
 
+    Roster.set(winnerRosterId.playerId, winnerRosterId.sequenceNumber, winnerRoster);
+    Roster.set(loserRosterId.playerId, loserRosterId.sequenceNumber, loserRoster);
+    
+    //updateWinnerInventory(winnerRoster, shipBattleLootTaken.loot);
+    uint256 lastShipId = winnerRoster.getLastShipId();
+    ShipDelegationLib.increaseShipInventory(lastShipId, shipBattleLootTaken.loot);
+
+    //todo invoke Player.IncreaseExperienceAndItems
     winnerPlayer.experience += shipBattleLootTaken.increasedExperience;
     winnerPlayer.level = shipBattleLootTaken.newLevel;
 
@@ -213,8 +218,6 @@ library ShipBattleTakeLootLogic {
     Player.set(winnerPlayerId, winnerPlayer);
     Player.set(loserPlayerId, loserPlayer);
 
-    Roster.set(winnerRosterId.playerId, winnerRosterId.sequenceNumber, winnerRoster);
-    Roster.set(loserRosterId.playerId, loserRosterId.sequenceNumber, loserRoster);
 
     return shipBattleData;
   }
@@ -276,39 +279,6 @@ library ShipBattleTakeLootLogic {
 
     uint32 newSpeed = winnerRoster.calculateRosterSpeed();
     return (remainingShipIds, newSpeed);
-  }
-
-  function updateWinnerInventory(RosterData memory winnerRoster, ItemIdQuantityPair[] memory loot) internal {
-    uint256 lastShipId = winnerRoster.getLastShipId();
-    ShipInventoryData[] memory currentInventory = ShipInventoryLib.getAllInventory_(lastShipId);
-    ItemIdQuantityPair[] memory currentInventoryPairs = convertToItemIdQuantityPairs(currentInventory);
-    ItemIdQuantityPair[] memory mergedInventory = SortedVectorUtil.mergeItemIdQuantityPairs(
-      currentInventoryPairs,
-      loot
-    );
-    updateShipInventory(lastShipId, mergedInventory);
-  }
-
-  function convertToItemIdQuantityPairs(
-    ShipInventoryData[] memory inventory
-  ) internal pure returns (ItemIdQuantityPair[] memory) {
-    ItemIdQuantityPair[] memory pairs = new ItemIdQuantityPair[](inventory.length);
-    for (uint i = 0; i < inventory.length; i++) {
-      pairs[i] = ItemIdQuantityPair(inventory[i].inventoryItemId, inventory[i].inventoryQuantity);
-    }
-    return pairs;
-  }
-
-  function updateShipInventory(uint256 shipId, ItemIdQuantityPair[] memory newInventory) internal {
-    // Remove all
-    uint64 currentCount = ShipInventoryLib.getInventoryCount(shipId);
-    for (uint64 i = 0; i < currentCount; i++) {
-      ShipInventoryLib.removeLastInventory(shipId);
-    }
-    for (uint i = 0; i < newInventory.length; i++) {
-      ShipInventoryData memory inventoryData = ShipInventoryData(newInventory[i].itemId, newInventory[i].quantity);
-      ShipInventoryLib.addInventory(shipId, inventoryData);
-    }
   }
 
   function updateWinnerRosterStatus(

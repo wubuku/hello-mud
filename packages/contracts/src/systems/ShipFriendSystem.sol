@@ -5,11 +5,15 @@ pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
 import { Ship, ShipData, ShipIdGenerator } from "../codegen/index.sol";
-import { ShipCreated } from "./ShipEvents.sol";
+import { ShipCreated, ShipInventoryIncreased } from "./ShipEvents.sol";
 import { ShipCreateLogic } from "./ShipCreateLogic.sol";
+import { ShipIncreaseShipInventoryLogic } from "./ShipIncreaseShipInventoryLogic.sol";
+import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 contract ShipFriendSystem is System {
   event ShipCreatedEvent(uint256 indexed id, uint256 rosterIdPlayerId, uint32 rosterIdSequenceNumber, uint32 healthPoints, uint32 attack, uint32 protection, uint32 speed, uint32[] buildingExpensesItemIds, uint32[] buildingExpensesQuantities);
+
+  event ShipInventoryIncreasedEvent(uint256 indexed id);
 
   function shipCreate(uint256 rosterIdPlayerId, uint32 rosterIdSequenceNumber, uint32 healthPoints, uint32 attack, uint32 protection, uint32 speed, uint32[] memory buildingExpensesItemIds, uint32[] memory buildingExpensesQuantities) public returns (uint256) {
     uint256 id = ShipIdGenerator.get() + 1;
@@ -25,6 +29,19 @@ contract ShipFriendSystem is System {
     ShipData memory newShipData = ShipCreateLogic.mutate(shipCreated);
     Ship.set(id, newShipData);
     return id;
+  }
+
+  function shipIncreaseShipInventory(uint256 id, ItemIdQuantityPair[] memory items) public {
+    ShipData memory shipData = Ship.get(id);
+    require(
+      !(shipData.playerId == uint256(0) && shipData.rosterSequenceNumber == uint32(0) && shipData.healthPoints == uint32(0) && shipData.attack == uint32(0) && shipData.protection == uint32(0) && shipData.speed == uint32(0) && shipData.buildingExpensesItemIds.length == 0 && shipData.buildingExpensesQuantities.length == 0),
+      "Ship does not exist"
+    );
+    ShipInventoryIncreased memory shipInventoryIncreased = ShipIncreaseShipInventoryLogic.verify(id, items, shipData);
+    shipInventoryIncreased.id = id;
+    emit ShipInventoryIncreasedEvent(shipInventoryIncreased.id);
+    ShipData memory updatedShipData = ShipIncreaseShipInventoryLogic.mutate(shipInventoryIncreased, shipData);
+    Ship.set(id, updatedShipData);
   }
 
 }
