@@ -121,6 +121,21 @@ In the directory `packages/contracts/src/systems`, you can see a number of files
 
 你需要这些文件中实现模型中定义的方法对应的操作业务逻辑。
 
+
+### 让 AI 发挥作用
+
+因为我们已经开发过游戏的 Move 版本，在 AI 的帮助下，我们可以快速地将 Move 代码转换为 Solidity 代码。
+
+我们把 Move 版本的代码拷贝到低代码工具生成的 `XxxLogic.sol` 文件中，放置在一个注释块里面 `/* Move 版本的业务逻辑实现代码 */`，
+然后让 AI 先生成代码。使用提示词：
+
+```text
+请将当前文件（注释中）的 Move 代码转换为 Solidity 版本。代码的缩进量为两个空格。提示：Move 是类 Rust 的智能合约语言。转换请考虑语言的特性差异和 Solidity 的最佳实践。错误处理尽可能使用 revert；在 revert error 时尽可能将相关信息放入参数内。比如：`revert InitiatorBattleIdMismatch(battleId1, battleId2)`。请不要修改需要实现的函数的签名；如果有什么信息不知如何获取，请声明一个变量作为占位符，然后使用这个占位符继续生成代码。请使用 TODO 注释详细标注接下来可能需要开发者手动调整的代码。
+```
+
+我们发现，大多数情况下，AI 可以生成相当不错的 Solidity 代码。我们往往只需要做一些细微的调整，就可以让代码工作。
+
+
 ## 测试合约
 
 ```shell
@@ -156,7 +171,6 @@ cast call \
 > * `Counter`: `0x436f756e746572`.
 > 
 > 关于 Resource IDs，可以参考此链接的说明：[MUD Resource IDs](https://mud.dev/world/resource-ids).
-
 
 ### 测试 "Position" 合约
 
