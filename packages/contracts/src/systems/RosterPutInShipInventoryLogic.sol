@@ -11,7 +11,7 @@ import { ShipDelegationLib } from "./ShipDelegationLib.sol";
 import { PlayerUtil } from "../utils/PlayerUtil.sol";
 import { RosterId } from "./RosterId.sol";
 import { RosterDataInstance } from "../utils/RosterDataInstance.sol";
-
+import { ShipIdUtil } from "../utils/ShipIdUtil.sol";
 library RosterPutInShipInventoryLogic {
   using RosterDataInstance for RosterData;
 
@@ -19,7 +19,7 @@ library RosterPutInShipInventoryLogic {
   error PlayerNotRosterOwner();
   error RosterIsUnassignedShips();
   error RosterNotCloseEnoughToTransfer();
-
+  error ShipNotInRoster(uint256 shipId);
   function verify(
     uint256 playerId,
     uint32 sequenceNumber,
@@ -34,9 +34,12 @@ library RosterPutInShipInventoryLogic {
     RosterId memory rosterId = RosterId(playerId, sequenceNumber);
     RosterUtil.assertPlayerIsRosterOwner(playerId, rosterId);
     RosterUtil.assertRosterIsNotUnassignedShips(sequenceNumber);
+    // Check if the ship is in the roster
+    if (!ShipIdUtil.containsShipId(rosterData.shipIds, shipId)) {
+      revert ShipNotInRoster(shipId);
+    }
 
     if (rosterData.status == uint8(RosterStatus.UNDERWAY)) {
-      // TODO: Implement clock functionality
       uint64 currentTimestamp = uint64(block.timestamp);
 
       (bool updatable, uint64 coordinatesUpdatedAt, uint8 newStatus) = rosterData.isCurrentLocationUpdatable(

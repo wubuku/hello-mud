@@ -28,6 +28,11 @@ library ShipIdUtil {
     return newShipIds;
   }
 
+  function containsShipId(uint256[] memory shipIds, uint256 shipId) internal pure returns (bool) {
+    (, bool found) = findShipId(shipIds, shipId);
+    return found;
+  }
+
   function findShipId(uint256[] memory shipIds, uint256 shipId) internal pure returns (uint256, bool) {
     for (uint i = 0; i < shipIds.length; i++) {
       if (shipIds[i] == shipId) {
