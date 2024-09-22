@@ -119,40 +119,23 @@ library ShipBattleTakeLootLogic {
 
     ShipBattleUtil.assertIdsAreConsistent(shipBattleId, shipBattleData, initiatorId, initiator, responderId, responder);
 
-    if (shipBattleData.winner == ShipBattleUtil.INITIATOR) {
+    bool isInitiatorWinner = shipBattleData.winner == ShipBattleUtil.INITIATOR;
+
+    if (isInitiatorWinner) {
       if (!responder.isDestroyed()) revert ResponderNotDestroyed(responderId.playerId, responderId.sequenceNumber);
-      winnerRosterId = initiatorId;
-      winnerRoster = initiator;
-      loserRosterId = responderId;
-      loserRoster = responder;
-      winnerPlayerId = initiatorId.playerId;
-      loserPlayerId = responderId.playerId;
+      (winnerRosterId, winnerRoster, loserRosterId, loserRoster) = (initiatorId, initiator, responderId, responder);
+      (winnerPlayerId, loserPlayerId) = (initiatorId.playerId, responderId.playerId);
       winnerIncreasedExperience = getWinnerIncreasedExperience(shipBattleData.initiatorExperiences);
       loserIncreasedExperience = getLoserIncreasedExperience(shipBattleData.responderExperiences);
     } else if (shipBattleData.winner == ShipBattleUtil.RESPONDER) {
       if (!initiator.isDestroyed()) revert InitiatorNotDestroyed(initiatorId.playerId, initiatorId.sequenceNumber);
-      winnerRosterId = responderId;
-      winnerRoster = responder;
-      loserRosterId = initiatorId;
-      loserRoster = initiator;
-      winnerPlayerId = responderId.playerId;
-      loserPlayerId = initiatorId.playerId;
+      (winnerRosterId, winnerRoster, loserRosterId, loserRoster) = (responderId, responder, initiatorId, initiator);
+      (winnerPlayerId, loserPlayerId) = (responderId.playerId, initiatorId.playerId);
       winnerIncreasedExperience = getWinnerIncreasedExperience(shipBattleData.responderExperiences);
       loserIncreasedExperience = getLoserIncreasedExperience(shipBattleData.initiatorExperiences);
     } else {
       revert InvalidWinner(shipBattleData.winner);
     }
-
-    return (
-      winnerRosterId,
-      winnerRoster,
-      loserRosterId,
-      loserRoster,
-      winnerPlayerId,
-      loserPlayerId,
-      winnerIncreasedExperience,
-      loserIncreasedExperience
-    );
   }
 
   function determineChoice(

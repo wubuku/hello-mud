@@ -127,16 +127,16 @@ library RosterDelegationLib {
   }
 
   function transferShipInventory(uint256 playerId, uint32 sequenceNumber, uint256 fromShipId, uint256 toShipId, ItemIdQuantityPair[] memory itemIdQuantityPairs) internal {
-    ResourceId rosterSystemId = WorldResourceIdLib.encode({
+    ResourceId rosterShipInventorySystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "RosterSystem"
+      name: "RosterShipInvent" // NOTE: Only the first 16 characters are used. Original: "RosterShipInventorySystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
     world.callFrom(
       WorldContextConsumerLib._msgSender(),
-      rosterSystemId,
+      rosterShipInventorySystemId,
       abi.encodeWithSignature(
         "rosterTransferShipInventory(uint256,uint32,uint256,uint256,(uint32,uint32)[])",
         playerId, sequenceNumber, fromShipId, toShipId, itemIdQuantityPairs
@@ -146,16 +146,16 @@ library RosterDelegationLib {
   }
 
   function takeOutShipInventory(uint256 playerId, uint32 sequenceNumber, uint256 shipId, ItemIdQuantityPair[] memory itemIdQuantityPairs, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY) internal {
-    ResourceId rosterSystemId = WorldResourceIdLib.encode({
+    ResourceId rosterShipInventorySystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "RosterSystem"
+      name: "RosterShipInvent" // NOTE: Only the first 16 characters are used. Original: "RosterShipInventorySystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
     world.callFrom(
       WorldContextConsumerLib._msgSender(),
-      rosterSystemId,
+      rosterShipInventorySystemId,
       abi.encodeWithSignature(
         "rosterTakeOutShipInventory(uint256,uint32,uint256,(uint32,uint32)[],uint32,uint32)",
         playerId, sequenceNumber, shipId, itemIdQuantityPairs, updatedCoordinatesX, updatedCoordinatesY
@@ -165,16 +165,16 @@ library RosterDelegationLib {
   }
 
   function putInShipInventory(uint256 playerId, uint32 sequenceNumber, uint256 shipId, ItemIdQuantityPair[] memory itemIdQuantityPairs, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY) internal {
-    ResourceId rosterSystemId = WorldResourceIdLib.encode({
+    ResourceId rosterShipInventorySystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "RosterSystem"
+      name: "RosterShipInvent" // NOTE: Only the first 16 characters are used. Original: "RosterShipInventorySystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
     world.callFrom(
       WorldContextConsumerLib._msgSender(),
-      rosterSystemId,
+      rosterShipInventorySystemId,
       abi.encodeWithSignature(
         "rosterPutInShipInventory(uint256,uint32,uint256,(uint32,uint32)[],uint32,uint32)",
         playerId, sequenceNumber, shipId, itemIdQuantityPairs, updatedCoordinatesX, updatedCoordinatesY
