@@ -3,7 +3,7 @@ pragma solidity >=0.8.24;
 
 import { PlayerAirdropped } from "./PlayerEvents.sol";
 import { PlayerData } from "../codegen/index.sol";
-import { PlayerInventoryUpdateUtil } from "./PlayerInventoryUpdateUtil.sol";
+import { PlayerInventoryUpdateUtil } from "../utils/PlayerInventoryUpdateUtil.sol";
 
 library PlayerAirdropLogic {
   error PlayerIdZero();

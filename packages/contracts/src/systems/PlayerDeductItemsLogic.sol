@@ -4,7 +4,7 @@ pragma solidity >=0.8.24;
 import { PlayerItemsDeducted } from "./PlayerEvents.sol";
 import { PlayerData } from "../codegen/index.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
-import { PlayerInventoryUpdateUtil } from "./PlayerInventoryUpdateUtil.sol";
+import { PlayerInventoryUpdateUtil } from "../utils/PlayerInventoryUpdateUtil.sol";
 
 library PlayerDeductItemsLogic {
   function verify(

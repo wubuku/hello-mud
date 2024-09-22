@@ -7,6 +7,7 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { ShipInventoryLib } from "../systems/ShipInventoryLib.sol";
 import { ShipInventoryData } from "../codegen/index.sol";
 import { SortedVectorUtil } from "../utils/SortedVectorUtil.sol";
+import { ShipInventoryUpdateUtil } from "../utils/ShipInventoryUpdateUtil.sol";
 
 library ShipIncreaseShipInventoryLogic {
   function verify(
@@ -24,33 +25,16 @@ library ShipIncreaseShipInventoryLogic {
     uint256 shipId = shipInventoryIncreased.id;
     ItemIdQuantityPair[] memory items = shipInventoryIncreased.items;
     ShipInventoryData[] memory currentInventory = ShipInventoryLib.getAllInventory_(shipId);
-    ItemIdQuantityPair[] memory currentInventoryPairs = convertToItemIdQuantityPairs(currentInventory);
+    ItemIdQuantityPair[] memory currentInventoryPairs = ShipInventoryUpdateUtil.convertToItemIdQuantityPairs(
+      currentInventory
+    );
     ItemIdQuantityPair[] memory mergedInventory = SortedVectorUtil.mergeItemIdQuantityPairs(
       currentInventoryPairs,
       items
     );
 
-    // Remove all
-    uint64 currentCount = ShipInventoryLib.getInventoryCount(shipId);
-    for (uint64 i = 0; i < currentCount; i++) {
-      ShipInventoryLib.removeLastInventory(shipId);
-    }
-    for (uint i = 0; i < mergedInventory.length; i++) {
-      ShipInventoryData memory inventoryData = ShipInventoryData(
-        mergedInventory[i].itemId,
-        mergedInventory[i].quantity
-      );
-      ShipInventoryLib.addInventory(shipId, inventoryData);
-    }
-  }
+    ShipInventoryUpdateUtil.updateShipAllInventory(shipId, mergedInventory);
 
-  function convertToItemIdQuantityPairs(
-    ShipInventoryData[] memory inventory
-  ) internal pure returns (ItemIdQuantityPair[] memory) {
-    ItemIdQuantityPair[] memory pairs = new ItemIdQuantityPair[](inventory.length);
-    for (uint i = 0; i < inventory.length; i++) {
-      pairs[i] = ItemIdQuantityPair(inventory[i].inventoryItemId, inventory[i].inventoryQuantity);
-    }
-    return pairs;
+    return shipData;
   }
 }

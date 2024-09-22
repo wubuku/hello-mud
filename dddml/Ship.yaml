@@ -59,3 +59,13 @@ aggregates:
             itemType: ItemIdQuantityPair
         event:
           name: ShipInventoryIncreased
+
+      DeductShipInventory:
+        metadata:
+          IsOnlyOpenToFriends: true
+        #isInternal: true
+        parameters:
+          Items:
+            itemType: ItemIdQuantityPair
+        event:
+          name: ShipInventoryDeducted

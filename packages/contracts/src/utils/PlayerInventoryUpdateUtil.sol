@@ -2,8 +2,8 @@
 pragma solidity >=0.8.24;
 
 import { PlayerInventoryData } from "../codegen/index.sol";
-import { PlayerInventoryLib } from "./PlayerInventoryLib.sol";
-import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
+import { PlayerInventoryLib } from "../systems/PlayerInventoryLib.sol";
+import { ItemIdQuantityPair } from "../systems/ItemIdQuantityPair.sol";
 
 library PlayerInventoryUpdateUtil {
   error InsufficientItemQuantity(uint32 itemId, uint32 available, uint32 requested);

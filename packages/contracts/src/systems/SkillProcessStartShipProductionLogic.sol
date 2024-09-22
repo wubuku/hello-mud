@@ -4,7 +4,7 @@ pragma solidity >=0.8.24;
 import { ShipProductionProcessStarted } from "./SkillProcessEvents.sol";
 import { SkillProcessData, PlayerData, ItemProductionData, SkillPrcMtrlData } from "../codegen/index.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
-import { PlayerInventoryUpdateUtil } from "./PlayerInventoryUpdateUtil.sol";
+import { PlayerInventoryUpdateUtil } from "../utils/PlayerInventoryUpdateUtil.sol";
 import { SkillProcessUtil } from "../utils/SkillProcessUtil.sol";
 import { SkillProcessId } from "../systems/SkillProcessId.sol";
 import { SkillTypeItemIdPair } from "../systems/SkillTypeItemIdPair.sol";

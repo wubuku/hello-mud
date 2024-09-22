@@ -22,3 +22,8 @@ struct ShipInventoryIncreased {
   ItemIdQuantityPair[] items;
 }
 
+struct ShipInventoryDeducted {
+  uint256 id;
+  ItemIdQuantityPair[] items;
+}
+

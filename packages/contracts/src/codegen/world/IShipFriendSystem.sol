@@ -23,4 +23,6 @@ interface IShipFriendSystem {
   ) external returns (uint256);
 
   function app__shipIncreaseShipInventory(uint256 id, ItemIdQuantityPair[] memory items) external;
+
+  function app__shipDeductShipInventory(uint256 id, ItemIdQuantityPair[] memory items) external;
 }

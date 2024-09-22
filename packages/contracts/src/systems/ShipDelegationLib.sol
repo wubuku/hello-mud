@@ -50,4 +50,23 @@ library ShipDelegationLib {
 
   }
 
+  function deductShipInventory(uint256 id, ItemIdQuantityPair[] memory items) internal {
+    ResourceId shipFriendSystemId = WorldResourceIdLib.encode({
+      typeId: RESOURCE_SYSTEM,
+      namespace: "app",
+      name: "ShipFriendSystem"
+    });
+
+    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
+    world.callFrom(
+      WorldContextConsumerLib._msgSender(),
+      shipFriendSystemId,
+      abi.encodeWithSignature(
+        "shipDeductShipInventory(uint256,(uint32,uint32)[])",
+        id, items
+      )
+    );
+
+  }
+
 }
