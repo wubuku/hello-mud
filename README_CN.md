@@ -124,9 +124,11 @@ In the directory `packages/contracts/src/systems`, you can see a number of files
 
 ### 让 AI 发挥作用
 
+在将游戏移植到 EVM 的过程中，我们发现，使用 AI 辅助代码生成，可以进一步提高开发效率。
+
 因为我们已经开发过游戏的 Move 版本，在 AI 的帮助下，我们可以快速地将 Move 代码转换为 Solidity 代码。
 
-我们把 Move 版本的代码拷贝到低代码工具生成的 `XxxLogic.sol` 文件中，放置在一个注释块里面 `/* Move 版本的业务逻辑实现代码 */`，
+我们把 Move 版本的代码拷贝到低代码工具生成的 `XxxYyyLogic.sol` 文件中，放置在一个注释块里面 `/* Move 版本的业务逻辑实现代码 */`，
 然后让 AI 先生成代码。使用提示词：
 
 ```text
@@ -134,6 +136,10 @@ In the directory `packages/contracts/src/systems`, you can see a number of files
 ```
 
 我们发现，大多数情况下，AI 可以生成相当不错的 Solidity 代码。我们往往只需要做一些细微的调整，就可以让代码工作。
+
+那么，如果没有 Move 版本的代码可供参考呢？
+
+我们相信，如果我们进一步改进低代码工具，把适当的模型信息放置到生成的脚手架代码的注释中，就算没有 Move 版本的代码作为参考，AI 应该也能做得不错。对这个问题，我们接下来会进行更多的尝试。
 
 
 ## 测试合约
