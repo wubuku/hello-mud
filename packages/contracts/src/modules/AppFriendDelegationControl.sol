@@ -24,6 +24,12 @@ contract AppFriendDelegationControl is DelegationControl {
       // NOTE: Only 16 bytes are used: "SkillProcessSyst"
     );
 
+  ResourceId constant ROSTER_SHIP_INVENTORY_SYSTEM =
+    ResourceId.wrap(
+      bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16(bytes("RosterShipInventorySystem"))))
+      // NOTE: Only 16 bytes are used: "RosterShipInvent"
+    );
+
   ResourceId constant SHIP_FRIEND_SYSTEM =
     ResourceId.wrap(bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16("ShipFriendSystem"))));
 
@@ -40,12 +46,6 @@ contract AppFriendDelegationControl is DelegationControl {
     ResourceId.wrap(
       bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16(bytes("RosterFriendSystem"))))
       // NOTE: Only 16 bytes are used: "RosterFriendSyst"
-    );
-
-  ResourceId constant ROSTER_SHIP_INVENTORY_SYSTEM =
-    ResourceId.wrap(
-      bytes32(abi.encodePacked(RESOURCE_SYSTEM, bytes14("app"), bytes16(bytes("RosterShipInventorySystem"))))
-      // NOTE: Only 16 bytes are used: "RosterShipInvent"
     );
 
   ResourceId constant SHIP_BATTLE_INITIATE_SYSTEM =
@@ -86,17 +86,20 @@ contract AppFriendDelegationControl is DelegationControl {
     return
       ResourceId.unwrap(systemId) == ResourceId.unwrap(PLAYER_SYSTEM) &&
       (
-        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(SKILL_PROCESS_SYSTEM)
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(SKILL_PROCESS_SYSTEM) ||
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(ROSTER_SHIP_INVENTORY_SYSTEM)
       ) ||
       ResourceId.unwrap(systemId) == ResourceId.unwrap(PLAYER_FRIEND_SYSTEM) &&
       (
-        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(SKILL_PROCESS_SYSTEM)
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(SKILL_PROCESS_SYSTEM) ||
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(ROSTER_SHIP_INVENTORY_SYSTEM)
       ) ||
       ResourceId.unwrap(systemId) == ResourceId.unwrap(SHIP_FRIEND_SYSTEM) &&
       (
         ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(SKILL_PROCESS_SYSTEM) ||
         ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(ROSTER_SYSTEM) ||
-        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(SHIP_BATTLE_TAKE_LOOT_SYSTEM)
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(SHIP_BATTLE_TAKE_LOOT_SYSTEM) ||
+        ResourceId.unwrap(callerSystemId) == ResourceId.unwrap(ROSTER_SHIP_INVENTORY_SYSTEM)
       ) ||
       ResourceId.unwrap(systemId) == ResourceId.unwrap(ROSTER_FRIEND_SYSTEM) &&
       (

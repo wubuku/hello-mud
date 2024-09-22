@@ -9,6 +9,9 @@ aggregates:
       - SkillProcess.CompleteShipProduction
       - Roster.CreateEnvironmentRoster
       - ShipBattle.TakeLoot
+      - Roster.PutInShipInventory
+      - Roster.TakeOutShipInventory
+      - Roster.TransferShipInventory
     id:
       name: Id
       type: u256

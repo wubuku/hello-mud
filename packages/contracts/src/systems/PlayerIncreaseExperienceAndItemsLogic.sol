@@ -20,8 +20,10 @@ library PlayerIncreaseExperienceAndItemsLogic {
   ) internal pure returns (PlayerXpAndItemsIncreased memory) {
     if (id == 0) revert PlayerIdZero();
     //if (experienceGained == 0) revert ExperienceGainedZeroOrNegative(experienceGained);
-    if (newLevel >= uint16(0) && newLevel < playerData.level)
+    if (newLevel > uint16(0) && newLevel < playerData.level) {
+      // We allow new level to be 0, meaning no level increase
       revert NewLevelLowerThanCurrent(newLevel, playerData.level);
+    }
 
     return PlayerXpAndItemsIncreased(id, experienceGained, items, newLevel);
   }

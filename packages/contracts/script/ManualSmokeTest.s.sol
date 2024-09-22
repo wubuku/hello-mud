@@ -86,12 +86,7 @@ contract ManualSmokeTest is Script {
     uint256 toRosterPlayerId = playerId;
     uint32 toRosterSequenceNumber = 1;
     //playerShipId = 11111; // 11111 is a ship id that doesn't exist, just for test fail case
-    /*
-    cast send --private-key __YOUR_PRIVATE_KEY__ \
-    __WORLD_CONTRACT_ADDRESS__ \
-    "app__rosterTransferShip(uint256,uint32,uint256,uint256,uint32,uint64)" \
-    '1' '0' '1' '1' '1' '9999999999999'
-    */
+    
     world.app__rosterTransferShip(
       playerId,
       unassignedShipsRosterSequenceNumber,
@@ -102,7 +97,6 @@ contract ManualSmokeTest is Script {
     );
     console.log("Transferred ship from unassigned ships to first roster");
 
-    // //////////////////////////////////////////////////////////////
     uint32 firstIslandX = 2147483647;
     uint32 firstIslandY = 2147483647;
     uint32 currentRosterSequenceNumber = 1;
@@ -111,6 +105,9 @@ contract ManualSmokeTest is Script {
       firstIslandY,
       currentRosterSequenceNumber
     );
+
+    // //////////////////////////////////////////////////////////////
+
     uint32 targetCoordinatesX = originCoordinatesX + 10;
     uint32 targetCoordinatesY = originCoordinatesY + 10;
     uint64 sailDuration = 2;

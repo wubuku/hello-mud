@@ -4,6 +4,9 @@ aggregates:
       - SkillProcess.SkillProcessCompleteCreation
       - SkillProcess.SkillProcessCompleteProduction
       - SkillProcess.SkillProcessCompleteShipProduction
+      - Roster.PutInShipInventory
+      - Roster.TakeOutShipInventory
+      - Roster.TransferShipInventory
     metadata:
     id:
       name: Id
