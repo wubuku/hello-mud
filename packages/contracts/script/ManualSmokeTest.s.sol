@@ -177,6 +177,27 @@ contract ManualSmokeTest is Script {
     );
     console.log("Initiated a ship battle and auto played till end");
 
+    // world.app__shipBattleTakeLoot(1, 1); // ShipBattleId, Choice
+    // console.log("Took loot from the ship battle");
+
     vm.stopBroadcast();
   }
+  /*
+    % cast sig 'InitiatorNotDestroyed(uint256,uint32)'                  
+    0xf3b52f34
+    % cast sig 'ResponderNotDestroyed(uint256,uint32)'
+    0x6e9fb9f2
+    % cast sig 'InvalidWinner(uint8)'       
+    0x4b08dceb
+    % cast sig 'BattleNotEnded(uint8)'
+    0xe9971ad4
+    % cast sig 'InvalidLoserStatus(uint8)'
+    0x4964fb7c
+    % cast sig 'WinnerNotSet()'
+    0xd5881ca9
+    % cast sig 'PlayerHasNoClaimedIsland()'
+    0x716ae8d5
+    % cast sig 'BattleEndedAtNotSet()'
+    0xe841ff82
+  */
 }

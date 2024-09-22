@@ -53,6 +53,17 @@ library ShipBattleMakeMoveLogic {
     );
 
     ShipBattleUtil.assertIdsAreConsistent(id, shipBattleData, initiatorId, initiator, responderId, responder);
+    RosterData memory attackerRoster = shipBattleData.roundMover == ShipBattleUtil.INITIATOR ? initiator : responder;
+    RosterData memory defenderRoster = shipBattleData.roundMover == ShipBattleUtil.INITIATOR ? responder : initiator;
+    bool isAttackerEnvOwned = attackerRoster.environmentOwned;
+    bool isDefenderEnvOwned = defenderRoster.environmentOwned;
+    //TODO: Check if the attacker owner is the player
+    // if (!roster::environment_owned(attacker_roster)
+    //     && now_time < ship_battle::round_started_at(ship_battle) + 10 // some seconds
+    // ) {
+    //     permission_util::assert_sender_is_player_owner(player, ctx);
+    //     permission_util::assert_player_is_roster_owner(player, attacker_roster);
+    // };
 
     uint8 defenderCommand = 1; // Assuming attack is always 1
     uint64 nowTime = uint64(block.timestamp);
@@ -90,11 +101,6 @@ library ShipBattleMakeMoveLogic {
 
     bool isBattleEnded = false;
     uint8 winner = uint8(0);
-
-    RosterData memory attackerRoster = shipBattleData.roundMover == ShipBattleUtil.INITIATOR ? initiator : responder;
-    RosterData memory defenderRoster = shipBattleData.roundMover == ShipBattleUtil.INITIATOR ? responder : initiator;
-    bool isAttackerEnvOwned = attackerRoster.environmentOwned;
-    bool isDefenderEnvOwned = defenderRoster.environmentOwned;
 
     if (defenderShipHp == uint32(0) && defenderRoster.isDestroyedExceptShip(shipBattleData.roundDefenderShip)) {
       isBattleEnded = true;

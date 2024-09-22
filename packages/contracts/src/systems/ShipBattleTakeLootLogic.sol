@@ -20,7 +20,7 @@ library ShipBattleTakeLootLogic {
   using RosterDataInstance for RosterData;
 
   uint8 constant CHOICE_TAKE_ALL = 1;
-  uint8 constant CHOICE_LEAVE_IT = 0;
+  uint8 constant CHOICE_LEAVE_IT = 2; // NOTE: DON'T use 0, because it's the default value in Solidity
   uint64 constant LOOT_TAKING_TIME_LIMIT = 30; // 30 seconds
 
   error InitiatorNotDestroyed(uint256 initiatorPlayerId, uint32 initiatorRosterSequenceNumber);
@@ -173,6 +173,8 @@ library ShipBattleTakeLootLogic {
         //   winnerPlayerId,
         //   RosterId(winnerPlayerId, winnerRosterSequenceNumber)
         // );
+        //TODO permission_util::assert_sender_is_player_owner(player, ctx);
+
         return choice;
       }
     }
@@ -266,8 +268,8 @@ library ShipBattleTakeLootLogic {
     uint256 lastShipId = winnerRoster.getLastShipId();
     ShipDelegationLib.increaseShipInventory(lastShipId, shipBattleLootTaken.loot);
 
-    //todo invoke Player.IncreaseExperienceAndItems
-    //todo and not increase environment owned player's experience
+    //NOTE: There is no remote call to Player.IncreaseExperienceAndItems here;
+    // As well as increased the E-Roster Owner's experience.
     winnerPlayer.experience += shipBattleLootTaken.increasedExperience;
     winnerPlayer.level = shipBattleLootTaken.newLevel;
 

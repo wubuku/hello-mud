@@ -177,7 +177,7 @@ aggregates:
           ##  type: u8
           Choice:
             type: u8
-            description: "1: Take all, 0: Leave it"
+            description: "1: Take all, 2: Leave it" # NOTE: DON'T use 0
         event:
           name: ShipBattleLootTaken
           properties:
