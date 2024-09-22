@@ -21,6 +21,7 @@ error RostersTooFarAway(
 error RosterInBattle(uint256 rosterPlayerId, uint32 rosterSequenceNumber, uint256 battleId);
 error ToRosterInBattle(uint256 toRosterPlayerId, uint32 toRosterSequenceNumber, uint256 battleId);
 error RosterNotExists(uint256 rosterPlayerId, uint32 rosterSequenceNumber);
+error ShipNotInRoster(uint256 shipId);
 
 library RosterTransferShipLogic {
   using RosterDataInstance for RosterData;
@@ -37,6 +38,9 @@ library RosterTransferShipLogic {
     PlayerUtil.assertSenderIsPlayerOwner(playerId);
     //RosterUtil.assertPlayerIsRosterOwner(playerId, RosterId(playerId, sequenceNumber));
     //RosterUtil.assertPlayerIsRosterOwner(playerId, RosterId(toRosterPlayerId, toRosterSequenceNumber));
+    if (!ShipIdUtil.containsShipId(rosterData.shipIds, shipId)) {
+      revert ShipNotInRoster(shipId);
+    }
 
     RosterData memory toRoster = Roster.get(toRosterPlayerId, toRosterSequenceNumber);
     uint64 currentTimestamp = uint64(block.timestamp);
@@ -82,7 +86,7 @@ library RosterTransferShipLogic {
     uint256 playerId = rosterShipTransferred.playerId;
     uint32 sequenceNumber = rosterShipTransferred.sequenceNumber;
     ShipData memory shipData = Ship.get(shipId);
-    
+
     ShipUtil.assertShipOwnership(shipData, shipId, playerId, sequenceNumber);
 
     uint64 toPosition = rosterShipTransferred.toPosition;
@@ -109,5 +113,4 @@ library RosterTransferShipLogic {
 
     return rosterData;
   }
-
 }

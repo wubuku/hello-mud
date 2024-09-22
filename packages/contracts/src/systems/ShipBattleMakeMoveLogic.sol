@@ -25,7 +25,7 @@ library ShipBattleMakeMoveLogic {
   error WinnerSetButBattleNotEnded();
   error InvalidWinner();
   error BattleNotOngoing();
-
+  error BothShipsDestroyed(uint256 attackerShipId, uint256 defenderShipId);
   uint32 constant PLAYER_SHIP_EXPERIENCE = 8;
 
   function verify(
@@ -57,11 +57,12 @@ library ShipBattleMakeMoveLogic {
     RosterData memory defenderRoster = shipBattleData.roundMover == ShipBattleUtil.INITIATOR ? responder : initiator;
     bool isAttackerEnvOwned = attackerRoster.environmentOwned;
     bool isDefenderEnvOwned = defenderRoster.environmentOwned;
-    //TODO: Check if the attacker owner is the player
     // if (!roster::environment_owned(attacker_roster)
     //     && now_time < ship_battle::round_started_at(ship_battle) + 10 // some seconds
     // ) {
+    //TODO: Check if the msg sender is the player
     //     permission_util::assert_sender_is_player_owner(player, ctx);
+    //TODO: Check if the attacker owner is the player
     //     permission_util::assert_player_is_roster_owner(player, attacker_roster);
     // };
 
@@ -119,6 +120,9 @@ library ShipBattleMakeMoveLogic {
         isBattleEnded = true;
         winner = ShipBattleUtil.oppositeSide(shipBattleData.roundMover);
       }
+    }
+    if (attackerShipHp == uint32(0) && defenderShipHp == uint32(0)) {
+      revert BothShipsDestroyed(shipBattleData.roundAttackerShip, shipBattleData.roundDefenderShip);
     }
 
     ShipBattleMoveMade memory _event;
