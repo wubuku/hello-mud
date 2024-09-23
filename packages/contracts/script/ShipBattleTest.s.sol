@@ -18,7 +18,7 @@ import { PlayerIdGenerator, ShipIdGenerator, ShipBattleIdGenerator, RosterData, 
 import { ItemIdQuantityPair } from "../src/systems/ItemIdQuantityPair.sol";
 import { RosterUtil } from "../src/utils/RosterUtil.sol";
 
-contract ManualSmokeTest is Script {
+contract ShipBattleTest is Script {
   //
   // forge script script/ManualSmokeTest.s.sol:ManualSmokeTest --sig "run(address)" <WORLD_ADDRESS> --broadcast --rpc-url http://localhost:8545
   //
@@ -52,51 +52,6 @@ contract ManualSmokeTest is Script {
 
     uint256 playerId = 1;
 
-    /*
-    cast send --private-key __YOUR_PRIVATE_KEY__ \
-    __WORLD_CONTRACT_ADDRESS__ \
-    "app__skillProcessCompleteCreation(uint8,uint256,uint8)" \
-    '3' '1' '0'
-    */
-    world.app__skillProcessCompleteCreation(uint8(SkillType.MINING), playerId, 0);
-    console.log("Completed skill process creation for MINING");
-
-    /*
-    cast send --private-key __YOUR_PRIVATE_KEY__ \
-    __WORLD_CONTRACT_ADDRESS__ \
-    "app__skillProcessCompleteProduction(uint8,uint256,uint8)" \
-    '0' '1' '0'
-    */
-    world.app__skillProcessCompleteProduction(uint8(SkillType.FARMING), playerId, 0);
-    console.log("Completed skill process production for FARMING");
-
-    /*
-    cast send --private-key __YOUR_PRIVATE_KEY__ \
-    __WORLD_CONTRACT_ADDRESS__ \
-    "app__skillProcessCompleteShipProduction(uint8,uint256,uint8)" \
-    '6' '1' '0'
-    */
-    world.app__skillProcessCompleteShipProduction(uint8(SkillType.CRAFTING), playerId, 0);
-    console.log("Completed skill process ship production for CRAFTING");
-
-    uint256 playerShipId = ShipIdGenerator.get();
-    console.log("Player ship ID:", playerShipId);
-
-    uint32 unassignedShipsRosterSequenceNumber = 0;
-    uint256 toRosterPlayerId = playerId;
-    uint32 toRosterSequenceNumber = 1;
-    //playerShipId = 11111; // 11111 is a ship id that doesn't exist, just for test fail case
-    
-    world.app__rosterTransferShip(
-      playerId,
-      unassignedShipsRosterSequenceNumber,
-      playerShipId,
-      toRosterPlayerId,
-      toRosterSequenceNumber,
-      type(uint64).max
-    );
-    console.log("Transferred ship from unassigned ships to first roster");
-
     uint32 firstIslandX = 2147483647;
     uint32 firstIslandY = 2147483647;
     uint32 currentRosterSequenceNumber = 1;
@@ -109,24 +64,72 @@ contract ManualSmokeTest is Script {
     RosterData memory rosterData = Roster.get(playerId, currentRosterSequenceNumber);
     console.log("Roster speed:", rosterData.speed);
 
-
     //return;
     // //////////////////////////////////////////////////////////////
 
     uint32 targetCoordinatesX = originCoordinatesX + 10;
     uint32 targetCoordinatesY = originCoordinatesY + 10;
-    uint64 sailDuration = 155;
-    world.app__rosterSetSail(
+
+    // //////////////////////////////////////////////////////////////
+    uint256 environmentRosterPlayerId = type(uint256).max;
+    uint32 environmentRosterSequenceNumber = 100;
+    uint32 environmentRosterCoordinatesX = originCoordinatesX;
+    uint32 environmentRosterCoordinatesY = originCoordinatesX;
+    uint32 environmentRosterShipResourceQuantity = 15;
+    uint32 environmentRosterShipBaseResourceQuantity = 3;
+    uint32 environmentRosterBaseExperience = 10;
+
+    world.app__rosterCreateEnvironmentRoster(
+      environmentRosterPlayerId,
+      environmentRosterSequenceNumber,
+      environmentRosterCoordinatesX,
+      environmentRosterCoordinatesY,
+      environmentRosterShipResourceQuantity,
+      environmentRosterShipBaseResourceQuantity,
+      environmentRosterBaseExperience
+    );
+    console.log("Created another environment roster");
+
+    //return;
+
+    // world.app__initiateShipBattle(
+    //   playerId,
+    //   playerId,
+    //   currentRosterSequenceNumber,
+    //   environmentRosterPlayerId,
+    //   environmentRosterSequenceNumber,
+    //   environmentRosterCoordinatesX,
+    //   environmentRosterCoordinatesY,
+    //   environmentRosterCoordinatesX,
+    //   environmentRosterCoordinatesY
+    // );
+    // console.log("Initiated a ship battle");
+
+    // uint256 shipBattleId = ShipBattleIdGenerator.get();
+    // world.app__shipBattleMakeMove(shipBattleId, 1);
+    // console.log("Made a move in the ship battle");
+
+    world.app__shipBattleServiceInitiateBattleAndAutoPlayTillEnd(
+      playerId,
       playerId,
       currentRosterSequenceNumber,
-      targetCoordinatesX,
-      targetCoordinatesY,
-      sailDuration,
-      originCoordinatesX,
-      originCoordinatesY
+      environmentRosterPlayerId,
+      environmentRosterSequenceNumber,
+      environmentRosterCoordinatesX,
+      environmentRosterCoordinatesY,
+      environmentRosterCoordinatesX,
+      environmentRosterCoordinatesY
     );
-    console.log("Set sail a roster to target coordinates");
+    console.log("Initiated a ship battle and auto played till end");
 
+    // world.app__shipBattleTakeLoot(1, 1); // ShipBattleId, Choice
+    // console.log("Took loot from the ship battle");
+    /*
+    cast send --private-key __YOUR_PRIVATE_KEY__ \
+    __WORLD_CONTRACT_ADDRESS__ \
+    "app__shipBattleTakeLoot(uint256,uint8)"\
+    '1' '1'
+    */
 
     vm.stopBroadcast();
   }

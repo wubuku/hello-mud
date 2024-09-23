@@ -104,6 +104,16 @@ contract ShipInventoryTransferTest is Script {
     );
     console.log("Taken out ship inventory");
 
+    world.app__rosterPutInShipInventory(
+      toRosterPlayerId,
+      toRosterSequenceNumber,
+      playerShipId,
+      itemIdQuantityPairs,
+      originCoordinatesX,
+      originCoordinatesY
+    );
+    console.log("Put in ship inventory again");
+
     world.app__rosterTransferShipInventory(
       toRosterPlayerId,
       toRosterSequenceNumber,
