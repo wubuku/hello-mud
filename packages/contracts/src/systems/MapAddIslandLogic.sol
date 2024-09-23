@@ -35,7 +35,7 @@ library MapAddIslandLogic {
     // Create a new island location
     MapLocation.setExisting(coordinatesX, coordinatesY, true);
     MapLocation.setType_(coordinatesX, coordinatesY, MapLocationType.ISLAND);
-    MapLocation.setOccupiedBy(coordinatesX, coordinatesY, address(0)); // Not occupied initially
+    MapLocation.setOccupiedBy(coordinatesX, coordinatesY, uint256(0)); // Not occupied initially
 
     // Set the resources for the island
     uint32[] memory itemIds = new uint32[](islandAdded.resources.length);

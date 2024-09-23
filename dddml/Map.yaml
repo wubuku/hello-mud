@@ -27,7 +27,7 @@ singletonObjects:
           Type:
             type: u32
           OccupiedBy:
-            type: address
+            type: u256 # PlayerId
           GatheredAt:
             type: u64
           Existing:

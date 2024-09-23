@@ -12,6 +12,7 @@ import { PlayerInventoryLib, PlayerInventoryData } from "./PlayerInventoryLib.so
 import { SkillProcess, SkillProcessData } from "../codegen/index.sol";
 import { SkillProcessUtil } from "../utils/SkillProcessUtil.sol";
 import { RosterUtil } from "../utils/RosterUtil.sol";
+import { PlayerInventoryUpdateUtil } from "../utils/PlayerInventoryUpdateUtil.sol";
 
 // import { IBaseWorld } from "@latticexyz/world/src/codegen/interfaces/IBaseWorld.sol";
 // import { ResourceId, WorldResourceIdLib } from "@latticexyz/world/src/WorldResourceId.sol";
@@ -88,8 +89,8 @@ library PlayerClaimIslandLogic {
 
     // Create rosters
     for (uint32 rosterSequenceNumber = 0; rosterSequenceNumber < 5; rosterSequenceNumber++) {
-      (uint32 x, uint32 y) = RosterUtil.getRosterOriginCoordinates(coordinatesX, coordinatesY, rosterSequenceNumber);
-      RosterDelegationLib.create(playerId, rosterSequenceNumber, x, y);
+      RosterUtil.getRosterOriginCoordinates(coordinatesX, coordinatesY, rosterSequenceNumber);
+      RosterDelegationLib.create(playerId, rosterSequenceNumber, coordinatesX, coordinatesY);
     }
 
     return playerData;
@@ -104,7 +105,7 @@ library PlayerClaimIslandLogic {
     }
 
     for (uint i = 0; i < resourceItemIds.length; i++) {
-      addOrUpdatePlayerInventory(playerId, resourceItemIds[i], resourceQuantities[i]);
+      PlayerInventoryUpdateUtil.addOrUpdateInventory(playerId, resourceItemIds[i], resourceQuantities[i]);
     }
 
     //
@@ -115,30 +116,6 @@ library PlayerClaimIslandLogic {
     // MapLocation.setResourcesQuantities(coordinatesX, coordinatesY, emptyArray);
   }
 
-  function addOrUpdatePlayerInventory(uint256 playerId, uint32 itemId, uint32 quantity) private {
-    uint64 inventoryCount = PlayerInventoryLib.getInventoryCount(playerId);
-    bool itemFound = false;
-
-    for (uint64 i = 0; i < inventoryCount; i++) {
-      PlayerInventoryData memory item = PlayerInventoryLib.getInventoryByIndex(playerId, i);
-      if (item.inventoryItemId == itemId) {
-        // Update existing item quantity
-        item.inventoryQuantity += quantity;
-        PlayerInventoryLib.updateInventory(playerId, i, item);
-        itemFound = true;
-        break;
-      }
-    }
-
-    if (!itemFound) {
-      // Add new inventory item
-      PlayerInventoryData memory newItem = PlayerInventoryData({
-        inventoryItemId: itemId,
-        inventoryQuantity: quantity
-      });
-      PlayerInventoryLib.addInventory(playerId, newItem);
-    }
-  }
 
   function createSkillProcesses(uint256 playerId) internal {
     uint8[4] memory skillTypes = [

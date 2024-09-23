@@ -29,8 +29,8 @@ library MapClaimIslandLogic {
       revert ELocationTypeMismatch();
     }
 
-    address occupiedBy = MapLocation.getOccupiedBy(coordinatesX, coordinatesY);
-    if (occupiedBy != address(0)) {
+    uint256 occupiedBy = MapLocation.getOccupiedBy(coordinatesX, coordinatesY);
+    if (occupiedBy != uint256(0)) {
       revert EIslandAlreadyClaimed();
     }
 
@@ -42,7 +42,7 @@ library MapClaimIslandLogic {
     uint32 coordinatesY = mapIslandClaimed.coordinatesY;
 
     // Set the island as occupied
-    MapLocation.setOccupiedBy(coordinatesX, coordinatesY, address(uint160(mapIslandClaimed.claimedBy)));
+    MapLocation.setOccupiedBy(coordinatesX, coordinatesY, mapIslandClaimed.claimedBy);
 
     // Remove all resources from the island
     uint32[] memory emptyArray = new uint32[](0);

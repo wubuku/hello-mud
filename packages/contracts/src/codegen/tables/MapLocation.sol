@@ -18,7 +18,7 @@ import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 
 struct MapLocationData {
   uint32 type_;
-  address occupiedBy;
+  uint256 occupiedBy;
   uint64 gatheredAt;
   bool existing;
   uint32[] resourcesItemIds;
@@ -30,12 +30,12 @@ library MapLocation {
   ResourceId constant _tableId = ResourceId.wrap(0x746261707000000000000000000000004d61704c6f636174696f6e0000000000);
 
   FieldLayout constant _fieldLayout =
-    FieldLayout.wrap(0x0021040204140801000000000000000000000000000000000000000000000000);
+    FieldLayout.wrap(0x002d040204200801000000000000000000000000000000000000000000000000);
 
   // Hex-encoded key schema of (uint32, uint32)
   Schema constant _keySchema = Schema.wrap(0x0008020003030000000000000000000000000000000000000000000000000000);
-  // Hex-encoded value schema of (uint32, address, uint64, bool, uint32[], uint32[])
-  Schema constant _valueSchema = Schema.wrap(0x0021040203610760656500000000000000000000000000000000000000000000);
+  // Hex-encoded value schema of (uint32, uint256, uint64, bool, uint32[], uint32[])
+  Schema constant _valueSchema = Schema.wrap(0x002d0402031f0760656500000000000000000000000000000000000000000000);
 
   /**
    * @notice Get the table's key field names.
@@ -124,31 +124,31 @@ library MapLocation {
   /**
    * @notice Get occupiedBy.
    */
-  function getOccupiedBy(uint32 x, uint32 y) internal view returns (address occupiedBy) {
+  function getOccupiedBy(uint32 x, uint32 y) internal view returns (uint256 occupiedBy) {
     bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(x));
     _keyTuple[1] = bytes32(uint256(y));
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
-    return (address(bytes20(_blob)));
+    return (uint256(bytes32(_blob)));
   }
 
   /**
    * @notice Get occupiedBy.
    */
-  function _getOccupiedBy(uint32 x, uint32 y) internal view returns (address occupiedBy) {
+  function _getOccupiedBy(uint32 x, uint32 y) internal view returns (uint256 occupiedBy) {
     bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(x));
     _keyTuple[1] = bytes32(uint256(y));
 
     bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
-    return (address(bytes20(_blob)));
+    return (uint256(bytes32(_blob)));
   }
 
   /**
    * @notice Set occupiedBy.
    */
-  function setOccupiedBy(uint32 x, uint32 y, address occupiedBy) internal {
+  function setOccupiedBy(uint32 x, uint32 y, uint256 occupiedBy) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(x));
     _keyTuple[1] = bytes32(uint256(y));
@@ -159,7 +159,7 @@ library MapLocation {
   /**
    * @notice Set occupiedBy.
    */
-  function _setOccupiedBy(uint32 x, uint32 y, address occupiedBy) internal {
+  function _setOccupiedBy(uint32 x, uint32 y, uint256 occupiedBy) internal {
     bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(x));
     _keyTuple[1] = bytes32(uint256(y));
@@ -650,7 +650,7 @@ library MapLocation {
     uint32 x,
     uint32 y,
     uint32 type_,
-    address occupiedBy,
+    uint256 occupiedBy,
     uint64 gatheredAt,
     bool existing,
     uint32[] memory resourcesItemIds,
@@ -675,7 +675,7 @@ library MapLocation {
     uint32 x,
     uint32 y,
     uint32 type_,
-    address occupiedBy,
+    uint256 occupiedBy,
     uint64 gatheredAt,
     bool existing,
     uint32[] memory resourcesItemIds,
@@ -730,14 +730,14 @@ library MapLocation {
    */
   function decodeStatic(
     bytes memory _blob
-  ) internal pure returns (uint32 type_, address occupiedBy, uint64 gatheredAt, bool existing) {
+  ) internal pure returns (uint32 type_, uint256 occupiedBy, uint64 gatheredAt, bool existing) {
     type_ = (uint32(Bytes.getBytes4(_blob, 0)));
 
-    occupiedBy = (address(Bytes.getBytes20(_blob, 4)));
+    occupiedBy = (uint256(Bytes.getBytes32(_blob, 4)));
 
-    gatheredAt = (uint64(Bytes.getBytes8(_blob, 24)));
+    gatheredAt = (uint64(Bytes.getBytes8(_blob, 36)));
 
-    existing = (_toBool(uint8(Bytes.getBytes1(_blob, 32))));
+    existing = (_toBool(uint8(Bytes.getBytes1(_blob, 44))));
   }
 
   /**
@@ -805,7 +805,7 @@ library MapLocation {
    */
   function encodeStatic(
     uint32 type_,
-    address occupiedBy,
+    uint256 occupiedBy,
     uint64 gatheredAt,
     bool existing
   ) internal pure returns (bytes memory) {
@@ -845,7 +845,7 @@ library MapLocation {
    */
   function encode(
     uint32 type_,
-    address occupiedBy,
+    uint256 occupiedBy,
     uint64 gatheredAt,
     bool existing,
     uint32[] memory resourcesItemIds,

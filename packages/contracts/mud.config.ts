@@ -277,7 +277,7 @@ export default defineWorld({
         x: "uint32",
         y: "uint32",
         type_: "uint32",
-        occupiedBy: "address",
+        occupiedBy: "uint256",
         gatheredAt: "uint64",
         existing: "bool",
         resourcesItemIds: "uint32[]",

@@ -176,6 +176,12 @@ contract ManualSmokeTest is Script {
 
     // world.app__shipBattleTakeLoot(1, 1); // ShipBattleId, Choice
     // console.log("Took loot from the ship battle");
+    /*
+    cast send --private-key __YOUR_PRIVATE_KEY__ \
+    __WORLD_CONTRACT_ADDRESS__ \
+    "app__shipBattleTakeLoot(uint256,uint8)"\
+    '1' '1'
+    */
 
     vm.stopBroadcast();
   }
