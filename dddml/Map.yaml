@@ -54,7 +54,7 @@ singletonObjects:
       ClaimIsland:
         metadata:
           IsOnlyOpenToFriends: true
-        #isInternal: true
+        # isInternal: true
         parameters:
           Coordinates:
             type: Coordinates

@@ -75,7 +75,7 @@ aggregates:
       DeductItems:
         metadata:
           IsOnlyOpenToFriends: true
-        #isInternal: true
+        # isInternal: true
         parameters:
           Items:
             itemType: ItemIdQuantityPair
@@ -85,7 +85,7 @@ aggregates:
       IncreaseExperienceAndItems:
         metadata:
           IsOnlyOpenToFriends: true
-        #isInternal: true
+        # isInternal: true
         parameters:
           ExperienceGained:
             type: u32
