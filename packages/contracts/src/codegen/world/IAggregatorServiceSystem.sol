@@ -11,6 +11,10 @@ import { ItemIdQuantityPair } from "../../systems/ItemIdQuantityPair.sol";
  * @dev This interface is automatically generated from the corresponding system contract. Do not edit manually.
  */
 interface IAggregatorServiceSystem {
+  error InvalidTokenAddress(address tokenAddress);
+  error InvalidEnergyAmount(uint256 energyCost);
+  error InsufficientEnergy(uint256 requiredEnergy, uint256 providedEnergy);
+
   function app__uniApiStartCreation(
     uint8 skillType,
     uint256 playerId,

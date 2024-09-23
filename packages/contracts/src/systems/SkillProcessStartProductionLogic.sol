@@ -52,8 +52,7 @@ library SkillProcessStartProductionLogic {
       revert LowerThanRequiredLevel(itemProductionData.requirementsLevel, playerData.level);
     }
 
-    uint256 energyCost = itemProductionData.energyCost * batchSize;
-    // TODO: Implement energy check
+    //uint256 energyCost = itemProductionData.energyCost * batchSize;
     // if (availableEnergy < energyCost) {
     //   revert NotEnoughEnergy(energyCost, availableEnergy);
     // }
@@ -72,7 +71,7 @@ library SkillProcessStartProductionLogic {
         sequenceNumber: sequenceNumber,
         itemId: _itemId,
         batchSize: batchSize,
-        energyCost: uint64(energyCost),
+        // energyCost: uint64(energyCost),
         startedAt: uint64(block.timestamp),
         creationTime: creationTime,
         productionMaterials: productionMaterials
@@ -90,7 +89,6 @@ library SkillProcessStartProductionLogic {
     skillProcessData.endedAt = 0;
     skillProcessData.batchSize = productionProcessStarted.batchSize;
 
-    // TODO: Implement energy deduction
     // let energy_vault = skill_process::borrow_mut_energy_vault(skill_process);
     // balance::join(energy_vault, energy);
 

@@ -55,7 +55,7 @@ library SkillProcessStartShipProductionLogic {
       revert LowerThanRequiredLevel(itemProductionData.requirementsLevel, playerData.level);
     }
 
-    uint256 energyCost = itemProductionData.energyCost;
+    // uint256 energyCost = itemProductionData.energyCost;
     // if (availableEnergy < energyCost) {
     //   revert NotEnoughEnergy(energyCost, availableEnergy);
     // }
@@ -72,7 +72,7 @@ library SkillProcessStartShipProductionLogic {
         playerId: _playerId,
         sequenceNumber: sequenceNumber,
         itemId: _itemId,
-        energyCost: uint64(energyCost),
+        // energyCost: uint64(energyCost),
         startedAt: uint64(block.timestamp),
         creationTime: itemProductionData.baseCreationTime,
         productionMaterials: productionMaterials
@@ -89,7 +89,6 @@ library SkillProcessStartShipProductionLogic {
     skillProcessData.completed = false;
     skillProcessData.endedAt = 0;
 
-    // TODO: Implement energy deduction
     // let energy_vault = skill_process::borrow_mut_energy_vault(skill_process);
     // balance::join(energy_vault, energy);
 

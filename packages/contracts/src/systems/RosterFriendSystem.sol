@@ -20,7 +20,7 @@ contract RosterFriendSystem is System {
 
   event RosterShipAddedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256 shipId, uint64 position);
 
-  event RosterSetSailEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint32 targetCoordinatesX, uint32 targetCoordinatesY, uint64 sailDuration, uint64 setSailAt, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY, uint64 energyCost);
+  event RosterSetSailEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint32 targetCoordinatesX, uint32 targetCoordinatesY, uint64 sailDuration, uint64 setSailAt, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY);
 
   function _requireNamespaceOwner() internal view {
     ResourceId _thisSystemId = SystemRegistry.get(address(this));
@@ -66,7 +66,7 @@ contract RosterFriendSystem is System {
     RosterSetSail memory rosterSetSail_e = RosterSetSailLogic.verify(playerId, sequenceNumber, targetCoordinatesX, targetCoordinatesY, sailDuration, updatedCoordinatesX, updatedCoordinatesY, rosterData);
     rosterSetSail_e.playerId = playerId;
     rosterSetSail_e.sequenceNumber = sequenceNumber;
-    emit RosterSetSailEvent(rosterSetSail_e.playerId, rosterSetSail_e.sequenceNumber, rosterSetSail_e.targetCoordinatesX, rosterSetSail_e.targetCoordinatesY, rosterSetSail_e.sailDuration, rosterSetSail_e.setSailAt, rosterSetSail_e.updatedCoordinatesX, rosterSetSail_e.updatedCoordinatesY, rosterSetSail_e.energyCost);
+    emit RosterSetSailEvent(rosterSetSail_e.playerId, rosterSetSail_e.sequenceNumber, rosterSetSail_e.targetCoordinatesX, rosterSetSail_e.targetCoordinatesY, rosterSetSail_e.sailDuration, rosterSetSail_e.setSailAt, rosterSetSail_e.updatedCoordinatesX, rosterSetSail_e.updatedCoordinatesY);
     RosterData memory updatedRosterData = RosterSetSailLogic.mutate(rosterSetSail_e, rosterData);
     Roster.set(playerId, sequenceNumber, updatedRosterData);
   }

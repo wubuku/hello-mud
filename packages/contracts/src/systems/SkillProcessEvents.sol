@@ -17,7 +17,6 @@ struct ProductionProcessStarted {
   uint8 sequenceNumber;
   uint32 batchSize;
   uint32 itemId;
-  uint64 energyCost;
   uint64 startedAt;
   uint64 creationTime;
   ItemIdQuantityPair[] productionMaterials;
@@ -42,7 +41,6 @@ struct ShipProductionProcessStarted {
   uint256 playerId;
   uint8 sequenceNumber;
   uint32 itemId;
-  uint64 energyCost;
   uint64 startedAt;
   uint64 creationTime;
   ItemIdQuantityPair[] productionMaterials;
@@ -68,7 +66,6 @@ struct CreationProcessStarted {
   uint8 sequenceNumber;
   uint32 batchSize;
   uint32 itemId;
-  uint64 energyCost;
   uint32 resourceCost;
   uint64 startedAt;
   uint64 creationTime;

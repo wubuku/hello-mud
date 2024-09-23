@@ -15,11 +15,11 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 contract SkillProcessFriendSystem is System {
   event SkillProcessCreatedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber);
 
-  event ProductionProcessStartedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 batchSize, uint32 itemId, uint64 energyCost, uint64 startedAt, uint64 creationTime);
+  event ProductionProcessStartedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 batchSize, uint32 itemId, uint64 startedAt, uint64 creationTime);
 
-  event ShipProductionProcessStartedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 itemId, uint64 energyCost, uint64 startedAt, uint64 creationTime);
+  event ShipProductionProcessStartedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime);
 
-  event CreationProcessStartedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 batchSize, uint32 itemId, uint64 energyCost, uint32 resourceCost, uint64 startedAt, uint64 creationTime);
+  event CreationProcessStartedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 batchSize, uint32 itemId, uint32 resourceCost, uint64 startedAt, uint64 creationTime);
 
   function skillProcessCreate(uint8 skillType, uint256 playerId, uint8 sequenceNumber) public {
     SkillProcessData memory skillProcessData = SkillProcess.get(skillType, playerId, sequenceNumber);
@@ -46,7 +46,7 @@ contract SkillProcessFriendSystem is System {
     productionProcessStarted.skillType = skillType;
     productionProcessStarted.playerId = playerId;
     productionProcessStarted.sequenceNumber = sequenceNumber;
-    emit ProductionProcessStartedEvent(productionProcessStarted.skillType, productionProcessStarted.playerId, productionProcessStarted.sequenceNumber, productionProcessStarted.batchSize, productionProcessStarted.itemId, productionProcessStarted.energyCost, productionProcessStarted.startedAt, productionProcessStarted.creationTime);
+    emit ProductionProcessStartedEvent(productionProcessStarted.skillType, productionProcessStarted.playerId, productionProcessStarted.sequenceNumber, productionProcessStarted.batchSize, productionProcessStarted.itemId, productionProcessStarted.startedAt, productionProcessStarted.creationTime);
     SkillProcessData memory updatedSkillProcessData = SkillProcessStartProductionLogic.mutate(productionProcessStarted, skillProcessData);
     SkillProcess.set(skillType, playerId, sequenceNumber, updatedSkillProcessData);
   }
@@ -61,7 +61,7 @@ contract SkillProcessFriendSystem is System {
     shipProductionProcessStarted.skillType = skillType;
     shipProductionProcessStarted.playerId = playerId;
     shipProductionProcessStarted.sequenceNumber = sequenceNumber;
-    emit ShipProductionProcessStartedEvent(shipProductionProcessStarted.skillType, shipProductionProcessStarted.playerId, shipProductionProcessStarted.sequenceNumber, shipProductionProcessStarted.itemId, shipProductionProcessStarted.energyCost, shipProductionProcessStarted.startedAt, shipProductionProcessStarted.creationTime);
+    emit ShipProductionProcessStartedEvent(shipProductionProcessStarted.skillType, shipProductionProcessStarted.playerId, shipProductionProcessStarted.sequenceNumber, shipProductionProcessStarted.itemId, shipProductionProcessStarted.startedAt, shipProductionProcessStarted.creationTime);
     SkillProcessData memory updatedSkillProcessData = SkillProcessStartShipProductionLogic.mutate(shipProductionProcessStarted, skillProcessData);
     SkillProcess.set(skillType, playerId, sequenceNumber, updatedSkillProcessData);
   }
@@ -76,7 +76,7 @@ contract SkillProcessFriendSystem is System {
     creationProcessStarted.skillType = skillType;
     creationProcessStarted.playerId = playerId;
     creationProcessStarted.sequenceNumber = sequenceNumber;
-    emit CreationProcessStartedEvent(creationProcessStarted.skillType, creationProcessStarted.playerId, creationProcessStarted.sequenceNumber, creationProcessStarted.batchSize, creationProcessStarted.itemId, creationProcessStarted.energyCost, creationProcessStarted.resourceCost, creationProcessStarted.startedAt, creationProcessStarted.creationTime);
+    emit CreationProcessStartedEvent(creationProcessStarted.skillType, creationProcessStarted.playerId, creationProcessStarted.sequenceNumber, creationProcessStarted.batchSize, creationProcessStarted.itemId, creationProcessStarted.resourceCost, creationProcessStarted.startedAt, creationProcessStarted.creationTime);
     SkillProcessData memory updatedSkillProcessData = SkillProcessStartCreationLogic.mutate(creationProcessStarted, skillProcessData);
     SkillProcess.set(skillType, playerId, sequenceNumber, updatedSkillProcessData);
   }

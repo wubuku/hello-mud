@@ -167,8 +167,8 @@ superObjects:
           properties:
             ItemId:
               type: u32
-            EnergyCost:
-              type: u64
+            #EnergyCost:
+            #  type: u64
             StartedAt:
               type: u64
             CreationTime:
@@ -232,8 +232,8 @@ superObjects:
           properties:
             ItemId: # ItemId to be created
               type: u32
-            EnergyCost:
-              type: u64
+            #EnergyCost:
+            #  type: u64
             ResourceCost:
               type: u32
             StartedAt:

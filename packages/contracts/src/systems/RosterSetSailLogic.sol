@@ -18,7 +18,6 @@ library RosterSetSailLogic {
   error IllegalSailDuration(uint64 required, uint64 provided);
   error InvalidUpdatedCoordinates(uint32 x, uint32 y);
 
-  uint256 private constant ENERGY_AMOUNT_PER_SECOND_PER_SHIP = 1388889;
 
   function verify(
     uint256 playerId,
@@ -31,44 +30,19 @@ library RosterSetSailLogic {
     RosterData memory rosterData
   ) internal view returns (RosterSetSail memory) {
     PlayerData memory playerData = PlayerUtil.assertSenderIsPlayerOwner(playerId);
-    RosterUtil.assertRosterIsNotUnassignedShips(sequenceNumber);
-    rosterData.assertRosterShipsNotEmpty();
 
-    uint32 newUpdatedCoordinatesX;
-    uint32 newUpdatedCoordinatesY;
-    uint8 status = rosterData.status;
+    // uint64 totalTime = SpeedUtil.calculateTotalTime(
+    //   Coordinates(newUpdatedCoordinatesX, newUpdatedCoordinatesY),
+    //   Coordinates(targetCoordinatesX, targetCoordinatesY),
+    //   rosterData.speed
+    // );
 
-    if (status == uint8(RosterStatus.AT_ANCHOR)) {
-      newUpdatedCoordinatesX = rosterData.updatedCoordinatesX;
-      newUpdatedCoordinatesY = rosterData.updatedCoordinatesY;
-    } else if (status == uint8(RosterStatus.UNDERWAY)) {
-      (bool updatable, uint64 _coordinatesUpdatedAt, uint8 _newStatus) = rosterData.isCurrentLocationUpdatable(
-        uint64(block.timestamp),
-        updatedCoordinatesX,
-        updatedCoordinatesY
-      );
-      if (updatable) {
-        newUpdatedCoordinatesX = updatedCoordinatesX;
-        newUpdatedCoordinatesY = updatedCoordinatesY;
-      } else {
-        revert InvalidUpdatedCoordinates(updatedCoordinatesX, updatedCoordinatesY);
-      }
-    } else {
-      revert RosterUnfitToSail(status);
-    }
+    // if (sailDuration < totalTime) {
+    //   revert IllegalSailDuration(totalTime, sailDuration);
+    // }
 
-    uint64 totalTime = SpeedUtil.calculateTotalTime(
-      Coordinates(newUpdatedCoordinatesX, newUpdatedCoordinatesY),
-      Coordinates(targetCoordinatesX, targetCoordinatesY),
-      rosterData.speed
-    );
-
-    if (sailDuration < totalTime) {
-      revert IllegalSailDuration(totalTime, sailDuration);
-    }
-
-    uint256 shipCount = rosterData.shipIds.length;
-    uint64 requiredEnergy = 0; // TODO totalTime * shipCount * ENERGY_AMOUNT_PER_SECOND_PER_SHIP;
+    //uint256 shipCount = rosterData.shipIds.length;
+    //uint64 requiredEnergy = totalTime * shipCount * ENERGY_AMOUNT_PER_SECOND_PER_SHIP;
 
     uint64 setSailAt = uint64(block.timestamp);
 
@@ -80,9 +54,9 @@ library RosterSetSailLogic {
         targetCoordinatesY: targetCoordinatesY,
         sailDuration: sailDuration,
         setSailAt: setSailAt,
-        updatedCoordinatesX: newUpdatedCoordinatesX,
-        updatedCoordinatesY: newUpdatedCoordinatesY,
-        energyCost: requiredEnergy
+        updatedCoordinatesX: updatedCoordinatesX,
+        updatedCoordinatesY: updatedCoordinatesY
+        // energyCost: requiredEnergy
       });
   }
 

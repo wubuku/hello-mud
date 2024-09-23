@@ -38,7 +38,6 @@ struct RosterSetSail {
   uint64 setSailAt;
   uint32 updatedCoordinatesX;
   uint32 updatedCoordinatesY;
-  uint64 energyCost;
 }
 
 struct RosterShipsPositionAdjusted {

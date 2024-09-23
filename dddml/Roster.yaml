@@ -122,8 +122,8 @@ aggregates:
               type: u64
             UpdatedCoordinates:
               type: Coordinates
-            EnergyCost:
-              type: u64
+            #EnergyCost:
+            #  type: u64
 
 
       AdjustShipsPosition:

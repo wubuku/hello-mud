@@ -3,15 +3,18 @@ pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
-import { System } from "@latticexyz/world/src/System.sol";
-import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
-import { EnergyToken } from "../codegen/index.sol";
+import { EnergyToken, ItemCreationData, ItemCreation, ItemProductionData, ItemProduction } from "../codegen/index.sol";
 import { SafeERC20, IERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import { SkillProcessDelegationLib } from "./SkillProcessDelegationLib.sol";
 import { RosterDelegationLib } from "./RosterDelegationLib.sol";
+import { RosterSailUtil } from "../utils/RosterSailUtil.sol";
 
 contract AggregatorServiceSystem is System {
   using SafeERC20 for IERC20;
+
+  error InvalidTokenAddress(address tokenAddress);
+  error InvalidEnergyAmount(uint256 energyCost);
+  error InsufficientEnergy(uint256 requiredEnergy, uint256 providedEnergy);
 
   function uniApiStartCreation(
     uint8 skillType,
@@ -20,15 +23,19 @@ contract AggregatorServiceSystem is System {
     uint32 itemId,
     uint32 batchSize
   ) public {
-    uint256 amount = 1; // TODO: Only for testing
+    ItemCreationData memory itemCreationData = ItemCreation.get(skillType, itemId);
+    uint256 energyCost = itemCreationData.energyCost;
     address tokenAddress = EnergyToken.get();
-    require(tokenAddress != address(0), "Invalid token address");
-    require(amount > 0, "Amount must be greater than 0");
+    if (tokenAddress == address(0)) {
+      revert InvalidTokenAddress(tokenAddress);
+    }
+    if (energyCost <= 0) {
+      revert InvalidEnergyAmount(energyCost);
+    }
 
     IERC20 token = IERC20(tokenAddress);
-    // SafeERC20 处理了转账失败的情况，会自动回滚交易
-    token.safeTransferFrom(_msgSender(), address(this), amount);
-    //uint8 skillType, uint256 playerId, uint8 sequenceNumber, uint32 itemId
+    token.safeTransferFrom(_msgSender(), address(this), energyCost);
+
     SkillProcessDelegationLib.startCreation(skillType, playerId, skillProcessSequenceNumber, itemId, batchSize);
   }
 
@@ -39,14 +46,18 @@ contract AggregatorServiceSystem is System {
     uint32 itemId,
     uint32 batchSize
   ) public {
-    uint256 amount = 1; // TODO: Only for testing
+    ItemProductionData memory itemProductionData = ItemProduction.get(skillType, itemId);
+    uint256 energyCost = itemProductionData.energyCost * batchSize;
     address tokenAddress = EnergyToken.get();
-    require(tokenAddress != address(0), "Invalid token address");
-    require(amount > 0, "Amount must be greater than 0");
+    if (tokenAddress == address(0)) {
+      revert InvalidTokenAddress(tokenAddress);
+    }
+    if (energyCost <= 0) {
+      revert InvalidEnergyAmount(energyCost);
+    }
 
     IERC20 token = IERC20(tokenAddress);
-    // SafeERC20 处理了转账失败的情况，会自动回滚交易
-    token.safeTransferFrom(_msgSender(), address(this), amount);
+    token.safeTransferFrom(_msgSender(), address(this), energyCost);
 
     SkillProcessDelegationLib.startProduction(skillType, playerId, skillProcessSequenceNumber, itemId, batchSize);
   }
@@ -58,14 +69,18 @@ contract AggregatorServiceSystem is System {
     uint32 itemId,
     ItemIdQuantityPair[] memory productionMaterials
   ) public {
-    uint256 amount = 1; // TODO: Only for testing
+    ItemProductionData memory itemProductionData = ItemProduction.get(skillType, itemId);
+    uint256 energyCost = itemProductionData.energyCost;
     address tokenAddress = EnergyToken.get();
-    require(tokenAddress != address(0), "Invalid token address");
-    require(amount > 0, "Amount must be greater than 0");
+    if (tokenAddress == address(0)) {
+      revert InvalidTokenAddress(tokenAddress);
+    }
+    if (energyCost <= 0) {
+      revert InvalidEnergyAmount(energyCost);
+    }
 
     IERC20 token = IERC20(tokenAddress);
-    // SafeERC20 处理了转账失败的情况，会自动回滚交易
-    token.safeTransferFrom(_msgSender(), address(this), amount);
+    token.safeTransferFrom(_msgSender(), address(this), energyCost);
 
     SkillProcessDelegationLib.startShipProduction(
       skillType,
@@ -86,14 +101,29 @@ contract AggregatorServiceSystem is System {
     uint32 updatedCoordinatesX,
     uint32 updatedCoordinatesY
   ) public {
-    uint256 amount = 1; // TODO: Only for testing
+    (uint256 requiredEnergy, uint32 newUpdatedCoordinatesX, uint32 newUpdatedCoordinatesY) = RosterSailUtil
+      .calculateEnergyCost(
+        playerId,
+        rosterSequenceNumber,
+        targetCoordinatesX,
+        targetCoordinatesY,
+        sailDuration,
+        updatedCoordinatesX,
+        updatedCoordinatesY
+      );
+    if (requiredEnergy > energyAmount) {
+      revert InsufficientEnergy(requiredEnergy, energyAmount);
+    }
     address tokenAddress = EnergyToken.get();
-    require(tokenAddress != address(0), "Invalid token address");
-    require(amount > 0, "Amount must be greater than 0");
+    if (tokenAddress == address(0)) {
+      revert InvalidTokenAddress(tokenAddress);
+    }
+    if (energyAmount <= 0) {
+      revert InvalidEnergyAmount(energyAmount);
+    }
 
     IERC20 token = IERC20(tokenAddress);
-    // SafeERC20 处理了转账失败的情况，会自动回滚交易
-    token.safeTransferFrom(_msgSender(), address(this), amount);
+    token.safeTransferFrom(_msgSender(), address(this), energyAmount);
 
     RosterDelegationLib.setSail(
       playerId,
@@ -101,8 +131,8 @@ contract AggregatorServiceSystem is System {
       targetCoordinatesX,
       targetCoordinatesY,
       sailDuration,
-      updatedCoordinatesX,
-      updatedCoordinatesY
+      newUpdatedCoordinatesX,
+      newUpdatedCoordinatesY
     );
   }
 }

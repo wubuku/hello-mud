@@ -49,7 +49,7 @@ library SkillProcessStartCreationLogic {
       revert LowerThanRequiredLevel(itemCreationData.requirementsLevel, playerData.level);
     }
 
-    uint256 energyCost = itemCreationData.energyCost * batchSize;
+    //uint256 energyCost = itemCreationData.energyCost * batchSize;
     // if (availableEnergy < energyCost) {
     //   revert NotEnoughEnergy(energyCost, availableEnergy);
     // }
@@ -64,7 +64,7 @@ library SkillProcessStartCreationLogic {
         sequenceNumber: sequenceNumber,
         itemId: _itemId,
         batchSize: batchSize,
-        energyCost: uint64(energyCost),
+        // energyCost: uint64(energyCost),
         resourceCost: resourceCost,
         startedAt: uint64(block.timestamp),
         creationTime: creationTime
