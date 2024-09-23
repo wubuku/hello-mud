@@ -154,9 +154,22 @@ In the directory `packages/contracts/src/systems`, you can see a number of files
 pnpm dev
 ```
 
+在部署之后，可以手动运行下面的“冒烟”测试（你可能需要视情况调整测试脚本中的参数）：
+
+```shell
+forge script script/ManualSmokeTest.s.sol:ManualSmokeTest --sig "run(address)" __WORLD_ADDRESS__ --broadcast --rpc-url http://localhost:8545
+
+forge script script/ShipInventoryTransferTest.s.sol:ShipInventoryTransferTest --sig "run(address)" __WORLD_ADDRESS__ --broadcast --rpc-url http://localhost:8545
+
+forge script script/ShipBattleTest.s.sol:ShipBattleTest --sig "run(address)" __WORLD_ADDRESS__ --broadcast --rpc-url http://localhost:8545
+
+forge script script/GatherIslandResourcesTest.s.sol:GatherIslandResourcesTest --sig "run(address)" __WORLD_ADDRESS__ --broadcast --rpc-url http://localhost:8545
+```
+
+
 ### 测试 "Counter" 合约
 
-注意将占位符 `__PRIVATE_KEY__` 替换为你实际的私钥：
+注意将占位符 `__PRIVATE_KEY__` 替换为你实际的私钥（假设 world 合约的地址是 `0x8D8b6b8414E1e3DcfD4168561b9be6bD3bF6eC4B`）：
 
 ```shell
 cast send --private-key __PRIVATE_KEY__ \

@@ -162,6 +162,19 @@ We believe that if we further improve our low-code tools by placing appropriate 
 pnpm dev
 ```
 
+After deployment, you can manually run the following "smoke" tests 
+(you may need to adjust the parameters in the test scripts as needed):
+
+```shell
+forge script script/ManualSmokeTest.s.sol:ManualSmokeTest --sig "run(address)" __WORLD_ADDRESS__ --broadcast --rpc-url http://localhost:8545
+
+forge script script/ShipInventoryTransferTest.s.sol:ShipInventoryTransferTest --sig "run(address)" __WORLD_ADDRESS__ --broadcast --rpc-url http://localhost:8545
+
+forge script script/ShipBattleTest.s.sol:ShipBattleTest --sig "run(address)" __WORLD_ADDRESS__ --broadcast --rpc-url http://localhost:8545
+
+forge script script/GatherIslandResourcesTest.s.sol:GatherIslandResourcesTest --sig "run(address)" __WORLD_ADDRESS__ --broadcast --rpc-url http://localhost:8545
+```
+
 ### Test "Counter" contract
 
 Notice replacing the placeholder `__PRIVATE_KEY__` with your actual private key:
@@ -196,7 +209,7 @@ cast call \
 
 ### Test "Position" contract
 
-Create a position record:
+Create a position record (assuming that the world contract address is `0x8D8b6b8414E1e3DcfD4168561b9be6bD3bF6eC4B`):
 
 ```shell
 cast send --private-key __PRIVATE_KEY__ \
