@@ -17,12 +17,16 @@ aggregates:
     properties:
       Owner:
         type: address
+        description: The owner account address of the player
       Level:
         type: u16
+        description: The level of the player
       Experience:
         type: u32
+        description: The experience points of the player
       ClaimedIsland:
         type: Coordinates
+        description: The coordinates of the island that the player has claimed
       Name:
         type: String
         length: 50

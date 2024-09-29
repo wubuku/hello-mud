@@ -60,8 +60,10 @@ singletonObjects:
             type: Coordinates
           ClaimedBy:
             type: u256 # PlayerId
+            description: The player (Id) that is claiming the island
           ClaimedAt:
             type: u64
+            description: The timestamp (unix epoch time in seconds) of the claim
         event:
           name: MapIslandClaimed
 
@@ -79,6 +81,7 @@ singletonObjects:
             type: u256 # ID
           Coordinates:
             type: Coordinates
+            description: The coordinates of the island to gather resources from
           #Clock:
           #  referenceType: Clock
           #  isIgnoredInEvent: true
