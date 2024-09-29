@@ -2,7 +2,7 @@
 pragma solidity >=0.8.24;
 
 import { RosterShipsPositionAdjusted } from "./RosterEvents.sol";
-import { RosterData, PlayerData, Player } from "../codegen/index.sol";
+import { RosterData } from "../codegen/index.sol";
 import { PlayerUtil } from "../utils/PlayerUtil.sol";
 import { RosterUtil } from "../utils/RosterUtil.sol";
 import { ShipIdUtil } from "../utils/ShipIdUtil.sol";
