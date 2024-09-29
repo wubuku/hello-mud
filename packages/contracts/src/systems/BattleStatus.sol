@@ -7,5 +7,10 @@ library BattleStatus {
   uint8 constant IN_PROGRESS = 0;
   uint8 constant ENDED = 1;
   uint8 constant LOOTED = 2;
+
+  function isValid(uint8 v) internal pure returns (bool) {
+    return v == IN_PROGRESS || v == ENDED || v == LOOTED;
+  }
+
 }
 

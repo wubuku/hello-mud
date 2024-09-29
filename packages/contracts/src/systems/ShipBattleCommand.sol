@@ -7,5 +7,10 @@ library ShipBattleCommand {
   uint8 constant ATTACK = 0;
   uint8 constant SWAP_POSITIONS = 1;
   uint8 constant PASS = 2;
+
+  function isValid(uint8 v) internal pure returns (bool) {
+    return v == ATTACK || v == SWAP_POSITIONS || v == PASS;
+  }
+
 }
 

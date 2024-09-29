@@ -5,5 +5,10 @@ pragma solidity >=0.8.24;
 
 library MapLocationType {
   uint32 constant ISLAND = 0;
+
+  function isValid(uint32 v) internal pure returns (bool) {
+    return v == ISLAND;
+  }
+
 }
 

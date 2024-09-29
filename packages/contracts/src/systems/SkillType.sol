@@ -13,5 +13,10 @@ library SkillType {
   uint8 constant CRAFTING = 6;
   uint8 constant TOWNSHIP = 7;
   uint8 constant SAILING = 8;
+
+  function isValid(uint8 v) internal pure returns (bool) {
+    return v == FARMING || v == WOODCUTTING || v == FISHING || v == MINING || v == SMITHING || v == COOKING || v == CRAFTING || v == TOWNSHIP || v == SAILING;
+  }
+
 }
 

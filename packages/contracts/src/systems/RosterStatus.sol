@@ -9,5 +9,10 @@ library RosterStatus {
   uint8 constant UNDERWAY = 1;
   uint8 constant IN_BATTLE = 2;
   uint8 constant DESTROYED = 3;
+
+  function isValid(uint8 v) internal pure returns (bool) {
+    return v == UNUSED || v == AT_ANCHOR || v == UNDERWAY || v == IN_BATTLE || v == DESTROYED;
+  }
+
 }
 

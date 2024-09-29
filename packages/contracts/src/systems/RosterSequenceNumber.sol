@@ -9,5 +9,10 @@ library RosterSequenceNumber {
   uint32 constant SECOND = 2;
   uint32 constant THIRD = 3;
   uint32 constant FOURTH = 4;
+
+  function isValid(uint32 v) internal pure returns (bool) {
+    return v == UNASSIGNED_SHIPS || v == FIRST || v == SECOND || v == THIRD || v == FOURTH;
+  }
+
 }
 

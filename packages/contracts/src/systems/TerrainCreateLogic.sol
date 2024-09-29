@@ -3,7 +3,6 @@ pragma solidity >=0.8.24;
 
 import { TerrainCreated } from "./TerrainEvents.sol";
 import { TerrainData } from "../codegen/index.sol";
-//import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 
 /**
  * @title TerrainCreateLogic Library
