@@ -3,7 +3,6 @@ pragma solidity >=0.8.24;
 
 import { PositionUpdated } from "./PositionEvents.sol";
 import { PositionData } from "../codegen/index.sol";
-//import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 
 /**
  * @title PositionUpdateLogic Library

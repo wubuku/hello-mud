@@ -2,7 +2,6 @@
 pragma solidity >=0.8.24;
 
 import { ExperienceTableCreated } from "./ExperienceTableEvents.sol";
-//import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 
 /**
  * @title ExperienceTableCreateLogic Library

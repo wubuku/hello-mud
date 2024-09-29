@@ -3,7 +3,6 @@ pragma solidity >=0.8.24;
 
 import { ArticleUpdated } from "./ArticleEvents.sol";
 import { ArticleData } from "../codegen/index.sol";
-//import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 
 /**
  * @title ArticleUpdateLogic Library

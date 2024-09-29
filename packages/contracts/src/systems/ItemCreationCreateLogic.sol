@@ -3,7 +3,6 @@ pragma solidity >=0.8.24;
 
 import { ItemCreationCreated } from "./ItemCreationEvents.sol";
 import { ItemCreationData } from "../codegen/index.sol";
-//import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 
 /**
  * @title ItemCreationCreateLogic Library
