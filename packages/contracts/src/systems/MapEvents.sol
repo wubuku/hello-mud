@@ -6,22 +6,46 @@ pragma solidity >=0.8.24;
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 struct IslandAdded {
+  /**
+   * @dev The X of the Coordinates.
+   */
   uint32 coordinatesX;
+  /**
+   * @dev The Y of the Coordinates.
+   */
   uint32 coordinatesY;
   ItemIdQuantityPair[] resources;
 }
 
 struct MapIslandClaimed {
+  /**
+   * @dev The X of the Coordinates.
+   */
   uint32 coordinatesX;
+  /**
+   * @dev The Y of the Coordinates.
+   */
   uint32 coordinatesY;
+  /**
+   * @dev The player (Id) that is claiming the island
+   */
   uint256 claimedBy;
+  /**
+   * @dev The timestamp (unix epoch time in seconds) of the claim
+   */
   uint64 claimedAt;
 }
 
 struct IslandResourcesGathered {
   uint256 playerId;
   uint64 gatheredAt;
+  /**
+   * @dev The X of the Coordinates.
+   */
   uint32 coordinatesX;
+  /**
+   * @dev The Y of the Coordinates.
+   */
   uint32 coordinatesY;
   ItemIdQuantityPair[] resources;
 }

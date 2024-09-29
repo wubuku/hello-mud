@@ -3,8 +3,17 @@ pragma solidity >=0.8.24;
 
 import { ItemCreationCreated } from "./ItemCreationEvents.sol";
 import { ItemCreationData } from "../codegen/index.sol";
+//import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 
+/**
+ * @title ItemCreationCreateLogic Library
+ * @dev Implements the ItemCreation.Create method.
+ */
 library ItemCreationCreateLogic {
+  /**
+   * @notice Verifies the ItemCreation.Create command.
+   * @return A ItemCreationCreated event struct.
+   */
   function verify(
     uint8 skillType,
     uint32 itemId,
@@ -19,6 +28,12 @@ library ItemCreationCreateLogic {
     return ItemCreationCreated(skillType, itemId, requirementsLevel, baseQuantity, baseExperience, baseCreationTime, energyCost, successRate, resourceCost);
   }
 
+  /**
+   * @notice Performs the state mutation operation of ItemCreation.Create method.
+   * @dev This function is called after verification to update the ItemCreation's state.
+   * @param itemCreationCreated The ItemCreationCreated event struct from the verify function.
+   * @return The new state of the ItemCreation.
+   */
   function mutate(
     ItemCreationCreated memory itemCreationCreated
   ) internal pure returns (ItemCreationData memory) {

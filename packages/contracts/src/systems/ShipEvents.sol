@@ -7,7 +7,13 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 struct ShipCreated {
   uint256 id;
+  /**
+   * @dev The PlayerId of the RosterId.
+   */
   uint256 rosterIdPlayerId;
+  /**
+   * @dev The SequenceNumber of the RosterId.
+   */
   uint32 rosterIdSequenceNumber;
   uint32 healthPoints;
   uint32 attack;

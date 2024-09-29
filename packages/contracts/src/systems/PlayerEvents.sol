@@ -13,7 +13,13 @@ struct PlayerCreated {
 
 struct IslandClaimed {
   uint256 id;
+  /**
+   * @dev The X of the Coordinates.
+   */
   uint32 coordinatesX;
+  /**
+   * @dev The Y of the Coordinates.
+   */
   uint32 coordinatesY;
   uint64 claimedAt;
 }

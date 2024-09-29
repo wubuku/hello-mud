@@ -8,13 +8,37 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 struct ShipBattleInitiated {
   uint256 id;
   uint256 playerId;
+  /**
+   * @dev The PlayerId of the InitiatorRoster.
+   */
   uint256 initiatorRosterPlayerId;
+  /**
+   * @dev The SequenceNumber of the InitiatorRoster.
+   */
   uint32 initiatorRosterSequenceNumber;
+  /**
+   * @dev The PlayerId of the ResponderRoster.
+   */
   uint256 responderRosterPlayerId;
+  /**
+   * @dev The SequenceNumber of the ResponderRoster.
+   */
   uint32 responderRosterSequenceNumber;
+  /**
+   * @dev The X of the InitiatorCoordinates.
+   */
   uint32 initiatorCoordinatesX;
+  /**
+   * @dev The Y of the InitiatorCoordinates.
+   */
   uint32 initiatorCoordinatesY;
+  /**
+   * @dev The X of the ResponderCoordinates.
+   */
   uint32 responderCoordinatesX;
+  /**
+   * @dev The Y of the ResponderCoordinates.
+   */
   uint32 responderCoordinatesY;
   uint64 startedAt;
   uint8 firstRoundMover;
@@ -39,8 +63,14 @@ struct ShipBattleMoveMade {
 
 struct ShipBattleLootTaken {
   uint256 id;
+  /**
+   * @dev 1: Take all, 2: Leave it
+   */
   uint8 choice;
   ItemIdQuantityPair[] loot;
+  /**
+   * @dev The time when the loot is taken
+   */
   uint64 lootedAt;
   uint32 increasedExperience;
   uint16 newLevel;

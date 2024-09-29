@@ -3,8 +3,18 @@ pragma solidity >=0.8.24;
 
 import { TerrainUpdated } from "./TerrainEvents.sol";
 import { TerrainData } from "../codegen/index.sol";
+//import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 
+/**
+ * @title TerrainUpdateLogic Library
+ * @dev Implements the Terrain.Update method.
+ */
 library TerrainUpdateLogic {
+  /**
+   * @notice Verifies the Terrain.Update command.
+   * @param terrainData The current state the Terrain.
+   * @return A TerrainUpdated event struct.
+   */
   function verify(
     uint32 x,
     uint32 y,
@@ -16,6 +26,13 @@ library TerrainUpdateLogic {
     return TerrainUpdated(x, y, terrainType, foo, bar);
   }
 
+  /**
+   * @notice Performs the state mutation operation of Terrain.Update method.
+   * @dev This function is called after verification to update the Terrain's state.
+   * @param terrainUpdated The TerrainUpdated event struct from the verify function.
+   * @param terrainData The current state of the Terrain.
+   * @return The new state of the Terrain.
+   */
   function mutate(
     TerrainUpdated memory terrainUpdated,
     TerrainData memory terrainData

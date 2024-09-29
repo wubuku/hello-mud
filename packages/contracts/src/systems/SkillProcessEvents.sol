@@ -6,14 +6,32 @@ pragma solidity >=0.8.24;
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 struct SkillProcessCreated {
+  /**
+   * @dev The SkillType of the SkillProcessId.
+   */
   uint8 skillType;
+  /**
+   * @dev The PlayerId of the SkillProcessId.
+   */
   uint256 playerId;
+  /**
+   * @dev The SequenceNumber of the SkillProcessId.
+   */
   uint8 sequenceNumber;
 }
 
 struct ProductionProcessStarted {
+  /**
+   * @dev The SkillType of the SkillProcessId.
+   */
   uint8 skillType;
+  /**
+   * @dev The PlayerId of the SkillProcessId.
+   */
   uint256 playerId;
+  /**
+   * @dev The SequenceNumber of the SkillProcessId.
+   */
   uint8 sequenceNumber;
   uint32 batchSize;
   uint32 itemId;
@@ -23,8 +41,17 @@ struct ProductionProcessStarted {
 }
 
 struct ProductionProcessCompleted {
+  /**
+   * @dev The SkillType of the SkillProcessId.
+   */
   uint8 skillType;
+  /**
+   * @dev The PlayerId of the SkillProcessId.
+   */
   uint256 playerId;
+  /**
+   * @dev The SequenceNumber of the SkillProcessId.
+   */
   uint8 sequenceNumber;
   uint32 itemId;
   uint64 startedAt;
@@ -37,8 +64,17 @@ struct ProductionProcessCompleted {
 }
 
 struct ShipProductionProcessStarted {
+  /**
+   * @dev The SkillType of the SkillProcessId.
+   */
   uint8 skillType;
+  /**
+   * @dev The PlayerId of the SkillProcessId.
+   */
   uint256 playerId;
+  /**
+   * @dev The SequenceNumber of the SkillProcessId.
+   */
   uint8 sequenceNumber;
   uint32 itemId;
   uint64 startedAt;
@@ -47,8 +83,17 @@ struct ShipProductionProcessStarted {
 }
 
 struct ShipProductionProcessCompleted {
+  /**
+   * @dev The SkillType of the SkillProcessId.
+   */
   uint8 skillType;
+  /**
+   * @dev The PlayerId of the SkillProcessId.
+   */
   uint256 playerId;
+  /**
+   * @dev The SequenceNumber of the SkillProcessId.
+   */
   uint8 sequenceNumber;
   uint32 itemId;
   uint64 startedAt;
@@ -61,8 +106,17 @@ struct ShipProductionProcessCompleted {
 }
 
 struct CreationProcessStarted {
+  /**
+   * @dev The SkillType of the SkillProcessId.
+   */
   uint8 skillType;
+  /**
+   * @dev The PlayerId of the SkillProcessId.
+   */
   uint256 playerId;
+  /**
+   * @dev The SequenceNumber of the SkillProcessId.
+   */
   uint8 sequenceNumber;
   uint32 batchSize;
   uint32 itemId;
@@ -72,8 +126,17 @@ struct CreationProcessStarted {
 }
 
 struct CreationProcessCompleted {
+  /**
+   * @dev The SkillType of the SkillProcessId.
+   */
   uint8 skillType;
+  /**
+   * @dev The PlayerId of the SkillProcessId.
+   */
   uint256 playerId;
+  /**
+   * @dev The SequenceNumber of the SkillProcessId.
+   */
   uint8 sequenceNumber;
   uint32 itemId;
   uint64 startedAt;
