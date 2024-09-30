@@ -143,9 +143,30 @@ In the directory `packages/contracts/src/systems`, you can see a number of files
 
 我们发现，大多数情况下，AI 可以生成相当不错的 Solidity 代码。我们往往只需要做一些细微的调整，就可以让代码工作。
 
+---
+
 那么，如果没有 Move 版本的代码可供参考呢？
 
-我们相信，如果我们进一步改进低代码工具，把适当的模型信息放置到生成的脚手架代码的注释中，就算没有 Move 版本的代码作为参考，AI 应该也能做得不错。对这个问题，我们接下来会进行更多的尝试。
+让我们接下来做一些实验。现在，我们的 dddappp 低代码工具可以把模型信息打入生成的 `XxxYyyLogic.sol` 脚手架代码的注释中。
+你可能觉得这注释量简直是又长又臭，看着让人有点不厌其烦了；
+不过，我们的主要目的是让 AI 可以（当然，你也可以）参考这些注释来完成业务逻辑代码的编写。
+
+我们在 [Cursor IDE](https://www.cursor.com) 中，这样引导 AI 来做业务逻辑代码的“完形填空”：
+* 使用业务逻辑实现代码文件 `XxxYyyLogic.sol`。
+* 使用快捷键 Cmd + A 全选当前文件的代码。（我使用的是 macOS 系统，Windows 系统需要把 Cmd 换成 Ctrl。）
+* 使用快捷键 Cmd + L 打开 Cursor 的 CHAT 窗口（我采用的模型是 claude-3.5-sonnet）。
+* 视情况添加引用文件到 CHAT 窗口。要引用哪些文件，其实在我们生成的代码的注释中已经给出了提示。
+* 输入提示词（见下面的表格），让 AI 尝试完成函数的编码。
+
+我们测试了三个文件，情况如下：
+
+文件名 | 提示词 | AI 生成前的文件 | “完形填空”后的文件 | 提示词引用的文件
+--- | --- | --- | --- | ---
+CounterIncreaseLogic.sol | Complete the functions. | [链接](https://gist.github.com/wubuku/d7a45b868cb8f21b74e41127baf3b28e) | [链接](https://gist.github.com/wubuku/2b3691a9af146316d2811774868eb932) | 
+SkillProcessCreateLogic.sol | Read the comments of the current file, and the file I referenced `SkillType.sol`, and complete the functions in the current file. | [链接](https://gist.github.com/wubuku/ac4f965f5c467190e89cf2128fe0ef7e) | [链接](https://gist.github.com/wubuku/f1b71f20d448edb2e10f53232fa7cb10) | `SkillType.sol`
+ArticleAddTagLogic.sol | Read the comments of the current file, and the files I referenced `ArticleTag.sol`, `ArticleTagLib.sol`, and complete the functions in the current file. | [链接](https://gist.github.com/wubuku/02d6c25e66b6f60afce9f57ba29af2bc) | [链接](https://gist.github.com/wubuku/8b017449e511dac569456df8f4a3d6fe) | `ArticleTag.sol`, `ArticleTagLib.sol`
+
+这里需要说明的是，这三个例子中，AI 第一次生成的代码就通过了编译，而且我们认为没有明显的漏洞。效果实在不错！
 
 
 ## 测试合约
