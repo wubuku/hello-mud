@@ -152,7 +152,7 @@ In the directory `packages/contracts/src/systems`, you can see a number of files
 不过，我们的主要目的是让 AI 可以（当然，你也可以）参考这些注释来完成业务逻辑代码的编写。
 
 我们在 [Cursor IDE](https://www.cursor.com) 中，这样引导 AI 来做业务逻辑代码的“完形填空”：
-* 使用业务逻辑实现代码文件 `XxxYyyLogic.sol`。
+* 打开业务逻辑实现代码文件 `XxxYyyLogic.sol`。
 * 使用快捷键 Cmd + A 全选当前文件的代码。（我使用的是 macOS 系统，Windows 系统需要把 Cmd 换成 Ctrl。）
 * 使用快捷键 Cmd + L 打开 Cursor 的 CHAT 窗口（我采用的模型是 claude-3.5-sonnet）。
 * 视情况添加引用文件到 CHAT 窗口。要引用哪些文件，其实在我们生成的代码的注释中已经给出了提示。
