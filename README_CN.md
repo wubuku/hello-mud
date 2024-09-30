@@ -166,7 +166,9 @@ CounterIncreaseLogic.sol | Complete the functions. | [链接](https://gist.githu
 SkillProcessCreateLogic.sol | Read the comments of the current file, and the file I referenced `SkillType.sol`, and complete the functions in the current file. | [链接](https://gist.github.com/wubuku/ac4f965f5c467190e89cf2128fe0ef7e) | [链接](https://gist.github.com/wubuku/f1b71f20d448edb2e10f53232fa7cb10) | `SkillType.sol`
 ArticleAddTagLogic.sol | Read the comments of the current file, and the files I referenced `ArticleTag.sol`, `ArticleTagLib.sol`, and complete the functions in the current file. | [链接](https://gist.github.com/wubuku/02d6c25e66b6f60afce9f57ba29af2bc) | [链接](https://gist.github.com/wubuku/8b017449e511dac569456df8f4a3d6fe) | `ArticleTag.sol`, `ArticleTagLib.sol`
 
-这里需要说明的是，这三个例子中，AI 第一次生成的代码就通过了编译，而且我们认为没有明显的漏洞。效果实在不错！
+这里需要说明的是，这三个例子中，AI 第一次生成的代码就通过了编译，而且我们认为没有明显的漏洞。效果实在是很不错！
+
+你可以比较 AI 生成的代码以及当前代码库中我们“手写”的版本，看看有什么不同——其实差异很小。
 
 
 ## 测试合约
