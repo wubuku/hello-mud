@@ -3,15 +3,10 @@ pragma solidity >=0.8.24;
 
 import { CommentAdded } from "./ArticleEvents.sol";
 import { ArticleData } from "../codegen/index.sol";
-import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
-import { Comment, CommentData } from "../codegen/index.sol";
 import { CommentSeqIdGenerator } from "../codegen/index.sol";
-
-//import { ArticleTagLib } from "./ArticleTagLib.sol";
-// You may need to use the ArticleTagLib library to access and modify the state (string) of the ArticleTag entity within the Article aggregate
-//import { ArticleTag } from "../codegen/index.sol";
-// You may also need to use the ArticleTag library to access the state of the ArticleTag entity within the Article aggregate
-
+import { CommentData } from "../codegen/index.sol";
+import { Comment } from "../codegen/index.sol";
+import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 
 /**
  * @title ArticleAddCommentLogic Library
@@ -28,16 +23,18 @@ library ArticleAddCommentLogic {
     string memory commenter,
     string memory body,
     ArticleData memory articleData
-  ) internal returns (CommentAdded memory) {
-    require(id > 0, "Invalid article ID");
-    require(bytes(body).length > 0, "Comment body cannot be empty");
-    require(bytes(commenter).length > 0, "Commenter name cannot be empty");
-    
-    address sender = WorldContextConsumerLib._msgSender();
-    require(sender != address(0), "Invalid sender");
+  ) internal view returns (CommentAdded memory) {
+    // Check if the article exists
+    require(bytes(articleData.title).length > 0, "Article does not exist");
 
+    // Check if the comment body is not empty
+    require(bytes(body).length > 0, "Comment body cannot be empty");
+
+    // Check if the commenter name is not empty
+    require(bytes(commenter).length > 0, "Commenter name cannot be empty");
+
+    // Generate the new comment sequence ID
     uint64 commentSeqId = CommentSeqIdGenerator.get(id) + 1;
-    CommentSeqIdGenerator.set(id, commentSeqId);
 
     return CommentAdded({
       id: id,
@@ -58,11 +55,17 @@ library ArticleAddCommentLogic {
     CommentAdded memory commentAdded,
     ArticleData memory articleData
   ) internal returns (ArticleData memory) {
-    // Note: In this implementation, we don't modify the ArticleData directly.
-    // Instead, we assume that the Comment entity is managed separately.
-    // The actual storage of the comment would be handled in the calling contract.
-    Comment.set(commentAdded.id, commentAdded.commentSeqId, commentAdded.commenter, commentAdded.body);
+    // Update the comment sequence ID
+    CommentSeqIdGenerator.set(commentAdded.id, commentAdded.commentSeqId);
 
+    // Create and store the new comment
+    CommentData memory newComment = CommentData({
+      commenter: commentAdded.commenter,
+      body: commentAdded.body
+    });
+    Comment.set(commentAdded.id, commentAdded.commentSeqId, newComment);
+
+    // The ArticleData itself doesn't change, so we return it as is
     return articleData;
   }
 }
