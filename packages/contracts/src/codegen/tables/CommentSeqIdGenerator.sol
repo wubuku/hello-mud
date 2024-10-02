@@ -23,8 +23,8 @@ library CommentSeqIdGenerator {
   FieldLayout constant _fieldLayout =
     FieldLayout.wrap(0x0008010008000000000000000000000000000000000000000000000000000000);
 
-  // Hex-encoded key schema of ()
-  Schema constant _keySchema = Schema.wrap(0x0000000000000000000000000000000000000000000000000000000000000000);
+  // Hex-encoded key schema of (uint64)
+  Schema constant _keySchema = Schema.wrap(0x0008010007000000000000000000000000000000000000000000000000000000);
   // Hex-encoded value schema of (uint64)
   Schema constant _valueSchema = Schema.wrap(0x0008010007000000000000000000000000000000000000000000000000000000);
 
@@ -33,7 +33,8 @@ library CommentSeqIdGenerator {
    * @return keyNames An array of strings with the names of key fields.
    */
   function getKeyNames() internal pure returns (string[] memory keyNames) {
-    keyNames = new string[](0);
+    keyNames = new string[](1);
+    keyNames[0] = "articleId";
   }
 
   /**
@@ -62,8 +63,9 @@ library CommentSeqIdGenerator {
   /**
    * @notice Get commentSeqId.
    */
-  function getCommentSeqId() internal view returns (uint64 commentSeqId) {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function getCommentSeqId(uint64 articleId) internal view returns (uint64 commentSeqId) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(articleId));
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
     return (uint64(bytes8(_blob)));
@@ -72,8 +74,9 @@ library CommentSeqIdGenerator {
   /**
    * @notice Get commentSeqId.
    */
-  function _getCommentSeqId() internal view returns (uint64 commentSeqId) {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function _getCommentSeqId(uint64 articleId) internal view returns (uint64 commentSeqId) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(articleId));
 
     bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
     return (uint64(bytes8(_blob)));
@@ -82,8 +85,9 @@ library CommentSeqIdGenerator {
   /**
    * @notice Get commentSeqId.
    */
-  function get() internal view returns (uint64 commentSeqId) {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function get(uint64 articleId) internal view returns (uint64 commentSeqId) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(articleId));
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
     return (uint64(bytes8(_blob)));
@@ -92,8 +96,9 @@ library CommentSeqIdGenerator {
   /**
    * @notice Get commentSeqId.
    */
-  function _get() internal view returns (uint64 commentSeqId) {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function _get(uint64 articleId) internal view returns (uint64 commentSeqId) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(articleId));
 
     bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
     return (uint64(bytes8(_blob)));
@@ -102,8 +107,9 @@ library CommentSeqIdGenerator {
   /**
    * @notice Set commentSeqId.
    */
-  function setCommentSeqId(uint64 commentSeqId) internal {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function setCommentSeqId(uint64 articleId, uint64 commentSeqId) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(articleId));
 
     StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((commentSeqId)), _fieldLayout);
   }
@@ -111,8 +117,9 @@ library CommentSeqIdGenerator {
   /**
    * @notice Set commentSeqId.
    */
-  function _setCommentSeqId(uint64 commentSeqId) internal {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function _setCommentSeqId(uint64 articleId, uint64 commentSeqId) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(articleId));
 
     StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((commentSeqId)), _fieldLayout);
   }
@@ -120,8 +127,9 @@ library CommentSeqIdGenerator {
   /**
    * @notice Set commentSeqId.
    */
-  function set(uint64 commentSeqId) internal {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function set(uint64 articleId, uint64 commentSeqId) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(articleId));
 
     StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((commentSeqId)), _fieldLayout);
   }
@@ -129,8 +137,9 @@ library CommentSeqIdGenerator {
   /**
    * @notice Set commentSeqId.
    */
-  function _set(uint64 commentSeqId) internal {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function _set(uint64 articleId, uint64 commentSeqId) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(articleId));
 
     StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((commentSeqId)), _fieldLayout);
   }
@@ -138,8 +147,9 @@ library CommentSeqIdGenerator {
   /**
    * @notice Delete all data for given keys.
    */
-  function deleteRecord() internal {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function deleteRecord(uint64 articleId) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(articleId));
 
     StoreSwitch.deleteRecord(_tableId, _keyTuple);
   }
@@ -147,8 +157,9 @@ library CommentSeqIdGenerator {
   /**
    * @notice Delete all data for given keys.
    */
-  function _deleteRecord() internal {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function _deleteRecord(uint64 articleId) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(articleId));
 
     StoreCore.deleteRecord(_tableId, _keyTuple, _fieldLayout);
   }
@@ -179,8 +190,9 @@ library CommentSeqIdGenerator {
   /**
    * @notice Encode keys as a bytes32 array using this table's field layout.
    */
-  function encodeKeyTuple() internal pure returns (bytes32[] memory) {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function encodeKeyTuple(uint64 articleId) internal pure returns (bytes32[] memory) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(articleId));
 
     return _keyTuple;
   }

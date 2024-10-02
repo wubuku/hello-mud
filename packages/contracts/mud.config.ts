@@ -46,9 +46,10 @@ export default defineWorld({
     },
     CommentSeqIdGenerator: {
       schema: {
+        articleId: "uint64",
         commentSeqId: "uint64",
       },
-      key: [],
+      key: ["articleId"],
     },
     Comment: {
       schema: {

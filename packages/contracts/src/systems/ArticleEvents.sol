@@ -26,3 +26,10 @@ struct ArticleDeleted {
   uint64 id;
 }
 
+struct CommentAdded {
+  uint64 id;
+  uint64 commentSeqId;
+  string commenter;
+  string body;
+}
+

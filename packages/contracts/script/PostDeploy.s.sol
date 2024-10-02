@@ -34,10 +34,19 @@ contract PostDeploy is Script {
     uint256 balance = deployerAddress.balance;
     console.log("Account balance:", balance);
 
+    // ************************************************************************************************
     // Tests...
     // Call increment on the world via the registered function selector
     //uint32 newValue = IWorld(worldAddress).app__increment();
     //console.log("Increment via IWorld:", newValue);
+
+    //function app__articleCreate(address author, string memory title, string memory body) external;
+    //function app__articleAddComment(uint64 id, string memory commenter, string memory body) external;
+    IWorld(worldAddress).app__articleCreate(deployerAddress, "My first article", "This is the body of my first article");
+    console.log("Article created");
+    IWorld(worldAddress).app__articleAddComment(1, "TestUser", "This is a test comment");
+    console.log("Comment added");
+    // ************************************************************************************************
 
     Energy energyToken = new Energy(deployerAddress);
     address energyTokenAddress = address(energyToken);
