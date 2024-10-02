@@ -6,7 +6,24 @@ import { ArticleData } from "../codegen/index.sol";
 import { CommentSeqIdGenerator } from "../codegen/index.sol";
 import { CommentData } from "../codegen/index.sol";
 import { Comment } from "../codegen/index.sol";
-import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
+//import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
+//import { CommentData } from "../codegen/index.sol";
+//import { Comment } from "../codegen/index.sol";
+// You may need to use the Comment library to access and modify the state (CommentData) of the Comment entity within the Article aggregate
+
+//import { CommentSeqIdGenerator } from "../codegen/index.sol";
+// You may need to use the CommentSeqIdGenerator library to generate the Id of the Comment entity within the Article aggregate
+//
+// You can get and update the sequence Id of Comment like this:
+//    uint64 articleId;
+//    uint64 commentSeqId = CommentSeqIdGenerator.get(articleId) + 1;
+//    CommentSeqIdGenerator.set(articleId, commentSeqId);
+
+//import { ArticleTagLib } from "./ArticleTagLib.sol";
+// You may need to use the ArticleTagLib library to access and modify the state (string) of the ArticleTag entity within the Article aggregate
+//import { ArticleTag } from "../codegen/index.sol";
+// You may also need to use the ArticleTag library to access the state of the ArticleTag entity within the Article aggregate
+
 
 /**
  * @title ArticleAddCommentLogic Library
@@ -23,25 +40,22 @@ library ArticleAddCommentLogic {
     string memory commenter,
     string memory body,
     ArticleData memory articleData
-  ) internal view returns (CommentAdded memory) {
-    // Check if the article exists
-    require(bytes(articleData.title).length > 0, "Article does not exist");
-
-    // Check if the comment body is not empty
-    require(bytes(body).length > 0, "Comment body cannot be empty");
-
-    // Check if the commenter name is not empty
-    require(bytes(commenter).length > 0, "Commenter name cannot be empty");
-
-    // Generate the new comment sequence ID
-    uint64 commentSeqId = CommentSeqIdGenerator.get(id) + 1;
-
+  ) internal pure returns (CommentAdded memory) {
+    // If necessary, change state mutability modifier of the function from `pure` to `view` or just delete `pure`.
+    //
+    // Note: Do not arbitrarily add parameters to functions or fields to structs.
+    //
+    // The message sender can be obtained like this: `WorldContextConsumerLib._msgSender()`
+    //
+    // TODO: Check arguments, throw if illegal.
+    /*
     return CommentAdded({
-      id: id,
-      commentSeqId: commentSeqId,
-      commenter: commenter,
-      body: body
+      id: // type: uint64
+      commentSeqId: // type: uint64
+      commenter: // type: string
+      body: // type: string
     });
+    */
   }
 
   /**
@@ -54,18 +68,32 @@ library ArticleAddCommentLogic {
   function mutate(
     CommentAdded memory commentAdded,
     ArticleData memory articleData
-  ) internal returns (ArticleData memory) {
-    // Update the comment sequence ID
-    CommentSeqIdGenerator.set(commentAdded.id, commentAdded.commentSeqId);
+  ) internal pure returns (ArticleData memory) {
+    // If necessary, change state mutability modifier of the function from `pure` to `view` or just delete `pure`.
 
-    // Create and store the new comment
-    CommentData memory newComment = CommentData({
-      commenter: commentAdded.commenter,
-      body: commentAdded.body
-    });
-    Comment.set(commentAdded.id, commentAdded.commentSeqId, newComment);
+    // NOTE: The Comment entity is managed separately.
+    // The actual storage of the Comment (CommentData) would be handled by the Comment library.
+    // Note: Functions cannot be declared as pure or view if you modify the state of the Comment entity.
 
-    // The ArticleData itself doesn't change, so we return it as is
+    //
+    // The fields (types and names) of the struct CommentData:
+    //   string commenter
+    //   string body
+    //
+
+    // NOTE: The ArticleTag entity is managed separately.
+    // The actual storage of the ArticleTag (string) would be handled by the ArticleTagLib library.
+    // Note: Functions cannot be declared as pure or view if you modify the state of the ArticleTag entity.
+
+    //
+    // The fields (types and names) of the struct ArticleData:
+    //   address author
+    //   string title
+    //   string body
+    //
+
+    // TODO: update state properties...
+    //articleData.{STATE_PROPERTY} = commentAdded.{EVENT_PROPERTY};
     return articleData;
   }
 }
