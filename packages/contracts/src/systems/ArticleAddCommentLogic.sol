@@ -5,6 +5,7 @@ import { CommentAdded } from "./ArticleEvents.sol";
 import { ArticleData } from "../codegen/index.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 import { Comment, CommentData } from "../codegen/index.sol";
+import { CommentSeqIdGenerator } from "../codegen/index.sol";
 
 //import { ArticleTagLib } from "./ArticleTagLib.sol";
 // You may need to use the ArticleTagLib library to access and modify the state (string) of the ArticleTag entity within the Article aggregate
@@ -24,17 +25,19 @@ library ArticleAddCommentLogic {
    */
   function verify(
     uint64 id,
-    uint64 commentSeqId,
     string memory commenter,
     string memory body,
     ArticleData memory articleData
-  ) internal view returns (CommentAdded memory) {
+  ) internal returns (CommentAdded memory) {
     require(id > 0, "Invalid article ID");
     require(bytes(body).length > 0, "Comment body cannot be empty");
     require(bytes(commenter).length > 0, "Commenter name cannot be empty");
     
     address sender = WorldContextConsumerLib._msgSender();
     require(sender != address(0), "Invalid sender");
+
+    uint64 commentSeqId = CommentSeqIdGenerator.get(id) + 1;
+    CommentSeqIdGenerator.set(id, commentSeqId);
 
     return CommentAdded({
       id: id,
