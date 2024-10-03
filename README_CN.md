@@ -75,6 +75,63 @@ DDD 领域模型是面向对象分析（OOA）模型和面向对象设计（OOD�
 > 关于 DDDML，这里有一篇介绍文章：["Introducing DDDML: The Key to Low-Code Development for Decentralized Applications"](https://github.com/wubuku/Dapp-LCDP-Demo/blob/main/IntroducingDDDML.md).
 
 
+#### 本示例使用的 DDDML 数据类型
+
+在 DDDML 中，你在声明属性和参数的类型时，使用 [MUD 数据模型支持的字段类型](https://mud.dev/store/data-model#field-types)。
+不止于此，DDDML 还能支持更多的数据类型。因为 DDDML 的类型系统是一个更高层次的抽象。它可以将“领域模型”中的抽象类型在生成代码时映射到具体的实现类型。
+
+在我们这个示例的 DDDML 模型文件中，我们使用了以下的一些数据类型。
+
+##### 1. 整数类型
+
+我们用到了以下几种整数类型：
+
+- `u8`，当然，你也可以写作 `uint8`。
+- `u16`，也可以写作 `uint16`。
+- `u32`，也可以写作 `uint32`。
+- `u64`，也可以写作 `uint64`。
+- `u256`，也可以写作 `uint256`。
+- `int32`，可以也写作 `i32`。
+- `uint32`，等同于 `u32`。
+
+##### 2. 布尔类型
+
+- `bool`
+
+##### 3. 字符串类型
+
+- `string`，你也可以写作 `String`。
+
+##### 4. 地址类型
+
+- `address`
+
+##### 5. 字节类型
+
+- `bytes`
+
+##### 6. 数组类型
+
+- `uint32[]`
+- `uint256[]`
+- `uint64[]`
+- `uint8[]`
+
+##### 7. 自定义“值对象”
+
+- `Coordinates`
+- `RosterId`
+- `SkillProcessId`
+- `SkillTypeItemIdPair`
+- `ItemIdQuantityPair`
+
+
+##### 8. 枚举类型
+
+- 各种使用 `u8` 或 `u32` 作为基础类型的枚举
+
+
+
 ### 生成代码
 
 在代码库的跟目录，执行：
