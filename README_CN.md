@@ -124,6 +124,9 @@ In the directory `packages/contracts/src/systems`, you can see a number of files
 
 ### 让 AI 发挥作用
 
+
+#### AI 辅助迁移代码
+
 在将游戏移植到 EVM 的过程中，我们发现，使用 AI 辅助代码生成，可以进一步提高开发效率。
 
 因为我们已经开发过游戏的 Move 版本，在 AI 的帮助下，我们可以快速地将 Move 代码转换为 Solidity 代码。
@@ -143,7 +146,8 @@ In the directory `packages/contracts/src/systems`, you can see a number of files
 
 我们发现，大多数情况下，AI 可以生成相当不错的 Solidity 代码。我们往往只需要做一些细微的调整，就可以让代码工作。
 
----
+
+#### AI 辅助编写业务逻辑代码
 
 那么，如果没有 Move 版本的代码可供参考呢？
 

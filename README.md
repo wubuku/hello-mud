@@ -131,6 +131,9 @@ You can implement the operation business logic in these files.
 
 ### Leveraging AI
 
+
+#### AI-assisted code migration
+
 In the process of porting the game to EVM, we found that using AI-assisted code generation could further improve development efficiency.
 
 Since we have already developed the Move version of the game, with the help of AI, we can quickly convert Move code to Solidity code.
@@ -151,7 +154,8 @@ Please use TODO comments to detail any code that may need manual adjustment by t
 
 We've found that in most cases, AI can generate quite good Solidity code. We often only need to make some minor adjustments to make the code work.
 
----
+
+#### AI-assisted business logic code writing
 
 So, what if there's no Move version of the code available for reference?
 
