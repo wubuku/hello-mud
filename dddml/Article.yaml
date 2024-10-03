@@ -40,8 +40,8 @@ aggregates:
       Comment:
         metadata:
           Preprocessors: [ "CRUD_IT" ]
-          CRUD_IT_NO_UPDATE: true
-          CRUD_IT_NO_DELETE: true
+          # CRUD_IT_NO_UPDATE: true
+          # CRUD_IT_NO_DELETE: true
         id:
           name: CommentSeqId
           type: u64

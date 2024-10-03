@@ -5,12 +5,14 @@ pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
 import { Article, ArticleData, ArticleIdGenerator } from "../codegen/index.sol";
-import { TagAdded, ArticleCreated, ArticleUpdated, ArticleDeleted, CommentAdded } from "./ArticleEvents.sol";
+import { TagAdded, ArticleCreated, ArticleUpdated, ArticleDeleted, CommentAdded, CommentUpdated, CommentRemoved } from "./ArticleEvents.sol";
 import { ArticleAddTagLogic } from "./ArticleAddTagLogic.sol";
 import { ArticleCreateLogic } from "./ArticleCreateLogic.sol";
 import { ArticleUpdateLogic } from "./ArticleUpdateLogic.sol";
 import { ArticleDeleteLogic } from "./ArticleDeleteLogic.sol";
 import { ArticleAddCommentLogic } from "./ArticleAddCommentLogic.sol";
+import { ArticleUpdateCommentLogic } from "./ArticleUpdateCommentLogic.sol";
+import { ArticleRemoveCommentLogic } from "./ArticleRemoveCommentLogic.sol";
 
 abstract contract ArticleAggregate is System {
   event TagAddedEvent(uint64 indexed id, string tag);
@@ -22,6 +24,10 @@ abstract contract ArticleAggregate is System {
   event ArticleDeletedEvent(uint64 indexed id);
 
   event CommentAddedEvent(uint64 indexed id, uint64 commentSeqId, string commenter, string body);
+
+  event CommentUpdatedEvent(uint64 indexed id, uint64 commentSeqId, string commenter, string body);
+
+  event CommentRemovedEvent(uint64 indexed id, uint64 commentSeqId);
 
   function articleAddTag(uint64 id, string memory tag) public virtual {
     ArticleData memory articleData = Article.get(id);
@@ -87,6 +93,32 @@ abstract contract ArticleAggregate is System {
     commentAdded.id = id;
     emit CommentAddedEvent(commentAdded.id, commentAdded.commentSeqId, commentAdded.commenter, commentAdded.body);
     ArticleData memory updatedArticleData = ArticleAddCommentLogic.mutate(commentAdded, articleData);
+    Article.set(id, updatedArticleData);
+  }
+
+  function articleUpdateComment(uint64 id, uint64 commentSeqId, string memory commenter, string memory body) public virtual {
+    ArticleData memory articleData = Article.get(id);
+    require(
+      !(articleData.author == address(0) && bytes(articleData.title).length == 0 && bytes(articleData.body).length == 0),
+      "Article does not exist"
+    );
+    CommentUpdated memory commentUpdated = ArticleUpdateCommentLogic.verify(id, commentSeqId, commenter, body, articleData);
+    commentUpdated.id = id;
+    emit CommentUpdatedEvent(commentUpdated.id, commentUpdated.commentSeqId, commentUpdated.commenter, commentUpdated.body);
+    ArticleData memory updatedArticleData = ArticleUpdateCommentLogic.mutate(commentUpdated, articleData);
+    Article.set(id, updatedArticleData);
+  }
+
+  function articleRemoveComment(uint64 id, uint64 commentSeqId) public virtual {
+    ArticleData memory articleData = Article.get(id);
+    require(
+      !(articleData.author == address(0) && bytes(articleData.title).length == 0 && bytes(articleData.body).length == 0),
+      "Article does not exist"
+    );
+    CommentRemoved memory commentRemoved = ArticleRemoveCommentLogic.verify(id, commentSeqId, articleData);
+    commentRemoved.id = id;
+    emit CommentRemovedEvent(commentRemoved.id, commentRemoved.commentSeqId);
+    ArticleData memory updatedArticleData = ArticleRemoveCommentLogic.mutate(commentRemoved, articleData);
     Article.set(id, updatedArticleData);
   }
 

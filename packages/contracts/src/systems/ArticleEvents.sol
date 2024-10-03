@@ -33,3 +33,15 @@ struct CommentAdded {
   string body;
 }
 
+struct CommentUpdated {
+  uint64 id;
+  uint64 commentSeqId;
+  string commenter;
+  string body;
+}
+
+struct CommentRemoved {
+  uint64 id;
+  uint64 commentSeqId;
+}
+

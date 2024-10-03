@@ -27,4 +27,12 @@ contract ArticleSystem is ArticleAggregate {
   function articleAddComment(uint64 id, string memory commenter, string memory body) public override {
     super.articleAddComment(id, commenter, body);
   }
+
+  function articleUpdateComment(uint64 id, uint64 commentSeqId, string memory commenter, string memory body) public override {
+    super.articleUpdateComment(id, commentSeqId, commenter, body);
+  }
+
+  function articleRemoveComment(uint64 id, uint64 commentSeqId) public override {
+    super.articleRemoveComment(id, commentSeqId);
+  }
 }

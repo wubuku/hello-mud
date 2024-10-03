@@ -46,6 +46,11 @@ contract PostDeploy is Script {
     console.log("Article created");
     IWorld(worldAddress).app__articleAddComment(1, "TestUser", "This is a test comment");
     console.log("Comment added");
+    IWorld(worldAddress).app__articleUpdateComment(1, 1, "TestUser", "This is an updated comment");
+    console.log("Comment updated");
+    //IWorld(worldAddress).app__articleRemoveComment(1, 1);
+    //console.log("Comment removed");
+    
     // ************************************************************************************************
 
     Energy energyToken = new Energy(deployerAddress);

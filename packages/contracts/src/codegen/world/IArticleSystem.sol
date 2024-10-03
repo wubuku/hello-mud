@@ -18,4 +18,13 @@ interface IArticleSystem {
   function app__articleDelete(uint64 id) external;
 
   function app__articleAddComment(uint64 id, string memory commenter, string memory body) external;
+
+  function app__articleUpdateComment(
+    uint64 id,
+    uint64 commentSeqId,
+    string memory commenter,
+    string memory body
+  ) external;
+
+  function app__articleRemoveComment(uint64 id, uint64 commentSeqId) external;
 }
