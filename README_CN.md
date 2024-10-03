@@ -167,12 +167,15 @@ In the directory `packages/contracts/src/systems`, you can see a number of files
 文件名 | 提示词 | AI 生成前的文件 | “完形填空”后的文件 | 提示词引用的文件
 --- | --- | --- | --- | ---
 CounterIncreaseLogic.sol | Complete the functions. | [链接](https://gist.github.com/wubuku/d7a45b868cb8f21b74e41127baf3b28e) | [链接](https://gist.github.com/wubuku/2b3691a9af146316d2811774868eb932) | 
-SkillProcessCreateLogic.sol | Read the comments of the current file, and the file I referenced `SkillType.sol`, and complete the functions in the current file. | [链接](https://gist.github.com/wubuku/ac4f965f5c467190e89cf2128fe0ef7e) | [链接](https://gist.github.com/wubuku/f1b71f20d448edb2e10f53232fa7cb10) | `SkillType.sol`
-ArticleAddTagLogic.sol | Read the comments of the current file, and the files I referenced `ArticleTag.sol`, `ArticleTagLib.sol`, and complete the functions in the current file. | [链接](https://gist.github.com/wubuku/02d6c25e66b6f60afce9f57ba29af2bc) | [链接](https://gist.github.com/wubuku/8b017449e511dac569456df8f4a3d6fe) | `ArticleTag.sol`, `ArticleTagLib.sol`
+SkillProcessCreateLogic.sol | Read the comments of the current file, and the file I referenced @SkillType.sol , and complete the functions in the current file. | [链接](https://gist.github.com/wubuku/ac4f965f5c467190e89cf2128fe0ef7e) | [链接](https://gist.github.com/wubuku/f1b71f20d448edb2e10f53232fa7cb10) | `SkillType.sol`
+ArticleAddTagLogic.sol | Read the comments of the current file, and the files I referenced @ArticleTag.sol @ArticleTagLib.sol , and complete the functions in the current file. | [链接](https://gist.github.com/wubuku/02d6c25e66b6f60afce9f57ba29af2bc) | [链接](https://gist.github.com/wubuku/8b017449e511dac569456df8f4a3d6fe) | `ArticleTag.sol`, `ArticleTagLib.sol`
+
+> 上面的结果就是我们实验的忠实记录。不过想要说明的是，AI 生成的代码并不稳定，你不是每次都可以得到一样的结果。
 
 这里需要说明的是，这三个例子中，AI 第一次生成的代码就通过了编译，而且我们认为没有明显的漏洞。效果实在是很不错！
 
 你可以比较 AI 生成的代码以及当前代码库中我们“手写”的版本，看看有什么不同——其实差异很小。
+
 
 
 ## 测试合约
