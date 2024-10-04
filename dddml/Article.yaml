@@ -47,7 +47,7 @@ aggregates:
           type: u64
           generator:
             class: sequence
-            structName: CommentSeqIdGenerator
+            # tableName: CommentSeqIdGenerator # This is the default name.
         globalId:
           columnNames:
             - ArticleId
