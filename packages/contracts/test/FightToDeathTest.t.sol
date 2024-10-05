@@ -9,7 +9,7 @@ contract FightToDeathTest is Test {
   using FightToDeath for *;
 
   function setUp() public {
-    // 如果需要任何设置，可以在这里添加
+      //
   }
 
   function testFightToDeath() public {
@@ -64,7 +64,7 @@ contract FightToDeathTest is Test {
   function testEdgeCases() public view {
     bytes memory seed = "testSeed";
 
-    // 测试双方都只有1点生命值的情况
+    // Test both parties have only 1 point of health
     (uint32 selfDamage, uint32 opponentDamage) = FightToDeath.perform(
       FightToDeath.FightToDeathParams(seed, 5, 5, 1, 5, 5, 1)
     );
@@ -73,7 +73,7 @@ contract FightToDeathTest is Test {
     console.log("testEdgeCases(), Self damage:", selfDamage);
     console.log("testEdgeCases(), Opponent damage:", opponentDamage);
 
-    // 测试一方生命值为1，另一方生命值大于2的情况
+    // Test one party has 1 point of health and the other has more than 2 points
     (selfDamage, opponentDamage) = FightToDeath.perform(FightToDeath.FightToDeathParams(seed, 5, 5, 1, 5, 5, 3));
     //assertEq(selfDamage, 1, "Self should take 1 damage");
     // assertEq(opponentDamage, 1, "Opponent should take 1 damage");
@@ -90,10 +90,10 @@ contract FightToDeathTest is Test {
   function testInvalidInputs() public {
     bytes memory seed = "testSeed";
 
-    // 测试自身生命值为0的情况
+    // Test self health is 0
     vm.expectRevert(abi.encodeWithSelector(FightToDeath.InvalidSelfHealth.selector, 0));
     FightToDeath.perform(FightToDeath.FightToDeathParams(seed, 5, 5, 0, 5, 5, 5));
-    // 测试对手生命值为0的情况
+    // Test opponent health is 0
     vm.expectRevert(abi.encodeWithSelector(FightToDeath.InvalidSelfHealth.selector, 0));
     FightToDeath.perform(FightToDeath.FightToDeathParams(seed, 5, 5, 5, 5, 5, 0));
   }
