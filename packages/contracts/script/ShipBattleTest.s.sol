@@ -18,6 +18,9 @@ import { PlayerIdGenerator, ShipIdGenerator, ShipBattleIdGenerator, RosterData, 
 import { ItemIdQuantityPair } from "../src/systems/ItemIdQuantityPair.sol";
 import { RosterUtil } from "../src/utils/RosterUtil.sol";
 
+import { Coordinates } from "../src/systems/Coordinates.sol";
+import { ShipBattleLocationParams } from "../src/systems/ShipBattleLocationParams.sol";
+
 contract ShipBattleTest is Script {
   //
   // forge script script/ManualSmokeTest.s.sol:ManualSmokeTest --sig "run(address)" <WORLD_ADDRESS> --broadcast --rpc-url http://localhost:8545
@@ -115,12 +118,12 @@ contract ShipBattleTest is Script {
       currentRosterSequenceNumber,
       environmentRosterPlayerId,
       environmentRosterSequenceNumber,
-      environmentRosterCoordinatesX,
-      environmentRosterCoordinatesY,
-      0,
-      environmentRosterCoordinatesX,
-      environmentRosterCoordinatesY,
-      0
+      ShipBattleLocationParams({
+        initiatorCoordinates: Coordinates({ x: environmentRosterCoordinatesX, y: environmentRosterCoordinatesY }),
+        updatedInitiatorSailSeg: 0,
+        responderCoordinates: Coordinates({ x: environmentRosterCoordinatesX, y: environmentRosterCoordinatesY }),
+        updatedResponderSailSeg: 0
+      })
     );
     console.log("Initiated a ship battle and auto played till end");
 

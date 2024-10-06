@@ -7,10 +7,11 @@ import { ResourceId, WorldResourceIdLib } from "@latticexyz/world/src/WorldResou
 import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 import { IBaseWorld } from "@latticexyz/world/src/codegen/interfaces/IBaseWorld.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
+import { ShipBattleLocationParams } from "./ShipBattleLocationParams.sol";
 
 library ShipBattleDelegationLib {
 
-  function initiateBattle(uint256 playerId, uint256 initiatorRosterPlayerId, uint32 initiatorRosterSequenceNumber, uint256 responderRosterPlayerId, uint32 responderRosterSequenceNumber, uint32 initiatorCoordinatesX, uint32 initiatorCoordinatesY, uint16 updatedInitiatorSailSeg, uint32 responderCoordinatesX, uint32 responderCoordinatesY, uint16 updatedResponderSailSeg) internal returns (uint256) {
+  function initiateBattle(uint256 playerId, uint256 initiatorRosterPlayerId, uint32 initiatorRosterSequenceNumber, uint256 responderRosterPlayerId, uint32 responderRosterSequenceNumber, ShipBattleLocationParams memory updateLocationParams) internal returns (uint256) {
     ResourceId shipBattleInitiateSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -22,8 +23,8 @@ library ShipBattleDelegationLib {
       WorldContextConsumerLib._msgSender(),
       shipBattleInitiateSystemId,
       abi.encodeWithSignature(
-        "initiateShipBattle(uint256,uint256,uint32,uint256,uint32,uint32,uint32,uint16,uint32,uint32,uint16)",
-        playerId, initiatorRosterPlayerId, initiatorRosterSequenceNumber, responderRosterPlayerId, responderRosterSequenceNumber, initiatorCoordinatesX, initiatorCoordinatesY, updatedInitiatorSailSeg, responderCoordinatesX, responderCoordinatesY, updatedResponderSailSeg
+        "initiateShipBattle(uint256,uint256,uint32,uint256,uint32,((uint32,uint32),uint16,(uint32,uint32),uint16))",
+        playerId, initiatorRosterPlayerId, initiatorRosterSequenceNumber, responderRosterPlayerId, responderRosterSequenceNumber, updateLocationParams
       )
     );
 

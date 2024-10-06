@@ -1,3 +1,17 @@
+valueObjects:
+  ShipBattleLocationParams:
+    properties:
+      InitiatorCoordinates:
+        type: Coordinates
+      UpdatedInitiatorSailSeg:
+        type: u16
+        description: "Last initiator sail segment index to be updated"
+      ResponderCoordinates:
+        type: Coordinates
+      UpdatedResponderSailSeg:
+        type: u16
+        description: "Last responder sail segment index to be updated"
+
 aggregates:
   ShipBattle:
     metadata:
@@ -75,16 +89,8 @@ aggregates:
           # Clock:
           #   referenceType: Clock
           #   isIgnoredInEvent: true
-          InitiatorCoordinates:
-            type: Coordinates
-          UpdatedInitiatorSailSeg:
-            type: u16
-            description: "Last initiator sail segment index to be updated"
-          ResponderCoordinates:
-            type: Coordinates
-          UpdatedResponderSailSeg:
-            type: u16
-            description: "Last responder sail segment index to be updated"
+          UpdateLocationParams:
+            type: ShipBattleLocationParams
 
         result:
           isObjectReturned: true

@@ -9,7 +9,7 @@ import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 import { ShipBattleCommand } from "./ShipBattleCommand.sol";
 import { ShipBattle } from "../codegen/index.sol";
 import { ShipBattleDelegationLib } from "./ShipBattleDelegationLib.sol";
-
+import { ShipBattleLocationParams } from "./ShipBattleLocationParams.sol";
 import { BattleStatus } from "./BattleStatus.sol";
 
 // import { ShipBattleSystem } from "./ShipBattleSystem.sol";
@@ -27,12 +27,13 @@ contract ShipBattleServiceSystem is System {
     uint32 initiatorRosterSequenceNumber,
     uint256 responderRosterPlayerId,
     uint32 responderRosterSequenceNumber,
-    uint32 initiatorCoordinatesX,
-    uint32 initiatorCoordinatesY,
-    uint16 updatedInitiatorSailSeg,
-    uint32 responderCoordinatesX,
-    uint32 responderCoordinatesY,
-    uint16 updatedResponderSailSeg
+    ShipBattleLocationParams memory updateLocationParams
+    // uint32 initiatorCoordinatesX,
+    // uint32 initiatorCoordinatesY,
+    // uint16 updatedInitiatorSailSeg,
+    // uint32 responderCoordinatesX,
+    // uint32 responderCoordinatesY,
+    // uint16 updatedResponderSailSeg
   ) public {
     uint256 shipBattleId = ShipBattleDelegationLib.initiateBattle(
       playerId,
@@ -40,12 +41,7 @@ contract ShipBattleServiceSystem is System {
       initiatorRosterSequenceNumber,
       responderRosterPlayerId,
       responderRosterSequenceNumber,
-      initiatorCoordinatesX,
-      initiatorCoordinatesY,
-      updatedInitiatorSailSeg,
-      responderCoordinatesX,
-      responderCoordinatesY,
-      updatedResponderSailSeg
+      updateLocationParams
     );
     require(shipBattleId != 0, "ShipBattle initiation failed");
     shipBattleServiceAutoPlayTillEnd(shipBattleId, playerId);

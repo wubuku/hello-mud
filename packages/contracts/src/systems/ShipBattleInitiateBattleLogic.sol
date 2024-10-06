@@ -10,6 +10,7 @@ import { RosterUtil } from "../utils/RosterUtil.sol";
 import { ShipBattleUtil } from "../utils/ShipBattleUtil.sol";
 import { RosterDataInstance } from "../utils/RosterDataInstance.sol";
 import { RosterId } from "./RosterId.sol";
+import { ShipBattleLocationParams } from "./ShipBattleLocationParams.sol";
 
 library ShipBattleInitiateBattleLogic {
   using RosterDataInstance for RosterData;
@@ -20,7 +21,6 @@ library ShipBattleInitiateBattleLogic {
   error PlayerDoesNotExist(uint256 playerId);
 
   uint32 constant FIRST_ROUND_NUMBER = 1;
-//    ShipBattleInitiated memory shipBattleInitiated = ShipBattleInitiateBattleLogic.verify(id, playerId, initiatorRosterPlayerId, initiatorRosterSequenceNumber, responderRosterPlayerId, responderRosterSequenceNumber, initiatorCoordinatesX, initiatorCoordinatesY, updatedInitiatorSailSeg, responderCoordinatesX, responderCoordinatesY, updatedResponderSailSeg);
 
   function verify(
     uint256 id,
@@ -29,12 +29,7 @@ library ShipBattleInitiateBattleLogic {
     uint32 initiatorRosterSequenceNumber,
     uint256 responderRosterPlayerId,
     uint32 responderRosterSequenceNumber,
-    uint32 initiatorCoordinatesX,
-    uint32 initiatorCoordinatesY,
-    uint16 updatedInitiatorSailSeg,
-    uint32 responderCoordinatesX,
-    uint32 responderCoordinatesY,
-    uint16 updatedResponderSailSeg
+    ShipBattleLocationParams memory updateLocationParams
   ) internal view returns (ShipBattleInitiated memory) {
     // uint32 initiatorCoordinatesX;
     // uint32 initiatorCoordinatesY;
@@ -70,12 +65,12 @@ library ShipBattleInitiateBattleLogic {
     if (initiator.status == uint8(RosterStatus.UNDERWAY)) {
       (bool updatable, uint64 t, ) = initiator.isCurrentLocationUpdatable(
         currentTimestamp,
-        initiatorCoordinatesX,
-        initiatorCoordinatesY
+        updateLocationParams.initiatorCoordinates.x,
+        updateLocationParams.initiatorCoordinates.y
       );
       if (updatable) {
-        initiator.updatedCoordinatesX = initiatorCoordinatesX;
-        initiator.updatedCoordinatesY = initiatorCoordinatesY;
+        initiator.updatedCoordinatesX = updateLocationParams.initiatorCoordinates.x;
+        initiator.updatedCoordinatesY = updateLocationParams.initiatorCoordinates.y;
         initiator.coordinatesUpdatedAt = t;
       }
     }
@@ -83,12 +78,12 @@ library ShipBattleInitiateBattleLogic {
     if (responder.status == uint8(RosterStatus.UNDERWAY)) {
       (bool updatable, uint64 t, ) = responder.isCurrentLocationUpdatable(
         currentTimestamp,
-        responderCoordinatesX,
-        responderCoordinatesY
+        updateLocationParams.responderCoordinates.x,
+        updateLocationParams.responderCoordinates.y
       );
       if (updatable) {
-        responder.updatedCoordinatesX = responderCoordinatesX;
-        responder.updatedCoordinatesY = responderCoordinatesY;
+        responder.updatedCoordinatesX = updateLocationParams.responderCoordinates.x;
+        responder.updatedCoordinatesY = updateLocationParams.responderCoordinates.y;
         responder.coordinatesUpdatedAt = t;
       }
     }
@@ -114,12 +109,13 @@ library ShipBattleInitiateBattleLogic {
         initiatorRosterSequenceNumber: initiatorRosterSequenceNumber,
         responderRosterPlayerId: responderRosterPlayerId,
         responderRosterSequenceNumber: responderRosterSequenceNumber,
-        initiatorCoordinatesX: initiatorCoordinatesX,
-        initiatorCoordinatesY: initiatorCoordinatesY,
-        updatedInitiatorSailSeg: updatedInitiatorSailSeg,
-        responderCoordinatesX: responderCoordinatesX,
-        responderCoordinatesY: responderCoordinatesY,
-        updatedResponderSailSeg: updatedResponderSailSeg,
+        updateLocationParams: updateLocationParams,
+        // initiatorCoordinatesX: initiatorCoordinatesX,
+        // initiatorCoordinatesY: initiatorCoordinatesY,
+        // updatedInitiatorSailSeg: updatedInitiatorSailSeg,
+        // responderCoordinatesX: responderCoordinatesX,
+        // responderCoordinatesY: responderCoordinatesY,
+        // updatedResponderSailSeg: updatedResponderSailSeg,
         startedAt: currentTimestamp,
         firstRoundMover: firstRoundMover,
         firstRoundAttackerShip: attackerShipId,
