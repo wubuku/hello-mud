@@ -155,10 +155,30 @@ export default defineWorld({
         originCoordinatesY: "uint32",
         sailDuration: "uint64",
         setSailAt: "uint64",
+        currentSailSegment: "uint16",
         shipBattleId: "uint256",
         shipIds: "uint256[]",
       },
       key: ["playerId", "sequenceNumber"],
+    },
+    SailIntPointCount: {
+      schema: {
+        playerId: "uint256",
+        sequenceNumber: "uint32",
+        count: "uint64",
+      },
+      key: ["playerId", "sequenceNumber"],
+    },
+    SailIntPoint: {
+      schema: {
+        playerId: "uint256",
+        sequenceNumber: "uint32",
+        index: "uint64",
+        coordinatesX: "uint32",
+        coordinatesY: "uint32",
+        segmentShouldStartAt: "uint64",
+      },
+      key: ["playerId", "sequenceNumber", "index"],
     },
     ShipBattleIdGenerator: {
       schema: {
@@ -322,6 +342,9 @@ export default defineWorld({
       openAccess: false,
     },
     RosterFriendSystem: {
+      openAccess: false,
+    },
+    RosterSailingSystem: {
       openAccess: false,
     },
     SkillProcessFriendSystem: {

@@ -1,4 +1,14 @@
 
+valueObjects:
+  SailIntermediatePoint:
+    properties:
+      Coordinates:
+        type: Coordinates
+      SegmentShouldStartAt:
+        type: u64
+        description: "The segment after this point should start at this time"
+  
+
 aggregates:
   Roster:
     metadata:
@@ -39,10 +49,22 @@ aggregates:
         type: u64
       SetSailAt:
         type: u64
+      CurrentSailSegment:
+        type: u16
+        description: "The current sail segment index, starting from 0"
       ShipBattleId:
         type: u256
       ShipIds:
         type: uint256[]
+      SailIntermediatePoints:
+        itemType: SailIntermediatePoint
+        isList: true
+        tableName: SailIntPoint
+        indexColumnName: index
+        itemColumnNames:
+          - coordinatesX
+          - coordinatesY
+          - segmentShouldStartAt
 
     methods:
       Create:
@@ -97,7 +119,8 @@ aggregates:
       SetSail:
         metadata:
           IsOnlyOpenToFriends: true
-        #requiredPermission: Owner # _to_do_
+          MudSystemName: RosterSailingSystem
+        #requiredPermission: Owner # TODO: implement "Owner" permission?
         # isInternal: true
         parameters:
           # Player:
@@ -124,6 +147,30 @@ aggregates:
               type: Coordinates
             #EnergyCost:
             #  type: u64
+
+      UpdateLocation:
+        metadata:
+          IsOnlyOpenToFriends: true
+          #MudSystemName: RosterSailingSystem
+        parameters:
+          UpdatedCoordinates:
+            type: Coordinates
+          CurrentSailSegment:
+            type: u16
+          #Clock:
+          #  referenceType: Clock
+          #  isIgnoredInEvent: true
+        event:
+          name: RosterLocationUpdated
+          properties:
+            UpdatedCoordinates:
+              type: Coordinates
+            CoordinatesUpdatedAt:
+              type: u64
+            NewStatus:
+              type: u8
+            OldStatus:
+             type: u8
 
 
       AdjustShipsPosition:

@@ -5,9 +5,9 @@ import "../utils/DirectRouteUtil.sol";
 import "../systems/Coordinates.sol";
 
 library SpeedUtil {
-  uint32 constant STANDARD_SPEED_NUMERATOR = 11784;
+  uint32 constant STANDARD_SPEED_NUMERATOR = 23568;
   uint32 constant STANDARD_SPEED_DENOMINATOR = 1000;
-  uint32 constant SPEED_NUMERATOR_DELTA = 1178;
+  uint32 constant SPEED_NUMERATOR_DELTA = 2356;
 
   function speedPropertyToCoordinateUnitsPerSecond(uint32 speedProperty) internal pure returns (uint32, uint32) {
     uint32 numerator = STANDARD_SPEED_NUMERATOR;

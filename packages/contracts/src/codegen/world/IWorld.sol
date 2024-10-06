@@ -19,6 +19,7 @@ import { IPlayerFriendSystem } from "./IPlayerFriendSystem.sol";
 import { IPlayerSystem } from "./IPlayerSystem.sol";
 import { IPositionSystem } from "./IPositionSystem.sol";
 import { IRosterFriendSystem } from "./IRosterFriendSystem.sol";
+import { IRosterSailingSystem } from "./IRosterSailingSystem.sol";
 import { IRosterShipInventorySystem } from "./IRosterShipInventorySystem.sol";
 import { IRosterSystem } from "./IRosterSystem.sol";
 import { IShipBattleInitiateSystem } from "./IShipBattleInitiateSystem.sol";
@@ -54,6 +55,7 @@ interface IWorld is
   IPlayerSystem,
   IPositionSystem,
   IRosterFriendSystem,
+  IRosterSailingSystem,
   IRosterShipInventorySystem,
   IRosterSystem,
   IShipBattleInitiateSystem,

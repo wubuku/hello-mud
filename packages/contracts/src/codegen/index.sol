@@ -20,6 +20,8 @@ import { Ship, ShipData } from "./tables/Ship.sol";
 import { ShipInventoryCount } from "./tables/ShipInventoryCount.sol";
 import { ShipInventory, ShipInventoryData } from "./tables/ShipInventory.sol";
 import { Roster, RosterData } from "./tables/Roster.sol";
+import { SailIntPointCount } from "./tables/SailIntPointCount.sol";
+import { SailIntPoint, SailIntPointData } from "./tables/SailIntPoint.sol";
 import { ShipBattleIdGenerator } from "./tables/ShipBattleIdGenerator.sol";
 import { ShipBattle, ShipBattleData } from "./tables/ShipBattle.sol";
 import { Item, ItemData } from "./tables/Item.sol";

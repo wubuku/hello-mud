@@ -30,6 +30,7 @@ struct RosterData {
   uint32 originCoordinatesY;
   uint64 sailDuration;
   uint64 setSailAt;
+  uint16 currentSailSegment;
   uint256 shipBattleId;
   uint256[] shipIds;
 }
@@ -39,12 +40,12 @@ library Roster {
   ResourceId constant _tableId = ResourceId.wrap(0x74626170700000000000000000000000526f7374657200000000000000000000);
 
   FieldLayout constant _fieldLayout =
-    FieldLayout.wrap(0x005a0e0101040401040408040404040808200000000000000000000000000000);
+    FieldLayout.wrap(0x005c0f0101040401040408040404040808022000000000000000000000000000);
 
   // Hex-encoded key schema of (uint256, uint32)
   Schema constant _keySchema = Schema.wrap(0x002402001f030000000000000000000000000000000000000000000000000000);
-  // Hex-encoded value schema of (uint8, uint32, uint32, bool, uint32, uint32, uint64, uint32, uint32, uint32, uint32, uint64, uint64, uint256, uint256[])
-  Schema constant _valueSchema = Schema.wrap(0x005a0e01000303600303070303030307071f8100000000000000000000000000);
+  // Hex-encoded value schema of (uint8, uint32, uint32, bool, uint32, uint32, uint64, uint32, uint32, uint32, uint32, uint64, uint64, uint16, uint256, uint256[])
+  Schema constant _valueSchema = Schema.wrap(0x005c0f0100030360030307030303030707011f81000000000000000000000000);
 
   /**
    * @notice Get the table's key field names.
@@ -61,7 +62,7 @@ library Roster {
    * @return fieldNames An array of strings with the names of value fields.
    */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
-    fieldNames = new string[](15);
+    fieldNames = new string[](16);
     fieldNames[0] = "status";
     fieldNames[1] = "speed";
     fieldNames[2] = "baseExperience";
@@ -75,8 +76,9 @@ library Roster {
     fieldNames[10] = "originCoordinatesY";
     fieldNames[11] = "sailDuration";
     fieldNames[12] = "setSailAt";
-    fieldNames[13] = "shipBattleId";
-    fieldNames[14] = "shipIds";
+    fieldNames[13] = "currentSailSegment";
+    fieldNames[14] = "shipBattleId";
+    fieldNames[15] = "shipIds";
   }
 
   /**
@@ -734,6 +736,58 @@ library Roster {
   }
 
   /**
+   * @notice Get currentSailSegment.
+   */
+  function getCurrentSailSegment(
+    uint256 playerId,
+    uint32 sequenceNumber
+  ) internal view returns (uint16 currentSailSegment) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 13, _fieldLayout);
+    return (uint16(bytes2(_blob)));
+  }
+
+  /**
+   * @notice Get currentSailSegment.
+   */
+  function _getCurrentSailSegment(
+    uint256 playerId,
+    uint32 sequenceNumber
+  ) internal view returns (uint16 currentSailSegment) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 13, _fieldLayout);
+    return (uint16(bytes2(_blob)));
+  }
+
+  /**
+   * @notice Set currentSailSegment.
+   */
+  function setCurrentSailSegment(uint256 playerId, uint32 sequenceNumber, uint16 currentSailSegment) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 13, abi.encodePacked((currentSailSegment)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set currentSailSegment.
+   */
+  function _setCurrentSailSegment(uint256 playerId, uint32 sequenceNumber, uint16 currentSailSegment) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(playerId));
+    _keyTuple[1] = bytes32(uint256(sequenceNumber));
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 13, abi.encodePacked((currentSailSegment)), _fieldLayout);
+  }
+
+  /**
    * @notice Get shipBattleId.
    */
   function getShipBattleId(uint256 playerId, uint32 sequenceNumber) internal view returns (uint256 shipBattleId) {
@@ -741,7 +795,7 @@ library Roster {
     _keyTuple[0] = bytes32(uint256(playerId));
     _keyTuple[1] = bytes32(uint256(sequenceNumber));
 
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 13, _fieldLayout);
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 14, _fieldLayout);
     return (uint256(bytes32(_blob)));
   }
 
@@ -753,7 +807,7 @@ library Roster {
     _keyTuple[0] = bytes32(uint256(playerId));
     _keyTuple[1] = bytes32(uint256(sequenceNumber));
 
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 13, _fieldLayout);
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 14, _fieldLayout);
     return (uint256(bytes32(_blob)));
   }
 
@@ -765,7 +819,7 @@ library Roster {
     _keyTuple[0] = bytes32(uint256(playerId));
     _keyTuple[1] = bytes32(uint256(sequenceNumber));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 13, abi.encodePacked((shipBattleId)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 14, abi.encodePacked((shipBattleId)), _fieldLayout);
   }
 
   /**
@@ -776,7 +830,7 @@ library Roster {
     _keyTuple[0] = bytes32(uint256(playerId));
     _keyTuple[1] = bytes32(uint256(sequenceNumber));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 13, abi.encodePacked((shipBattleId)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 14, abi.encodePacked((shipBattleId)), _fieldLayout);
   }
 
   /**
@@ -1006,6 +1060,7 @@ library Roster {
     uint32 originCoordinatesY,
     uint64 sailDuration,
     uint64 setSailAt,
+    uint16 currentSailSegment,
     uint256 shipBattleId,
     uint256[] memory shipIds
   ) internal {
@@ -1023,6 +1078,7 @@ library Roster {
       originCoordinatesY,
       sailDuration,
       setSailAt,
+      currentSailSegment,
       shipBattleId
     );
 
@@ -1055,6 +1111,7 @@ library Roster {
     uint32 originCoordinatesY,
     uint64 sailDuration,
     uint64 setSailAt,
+    uint16 currentSailSegment,
     uint256 shipBattleId,
     uint256[] memory shipIds
   ) internal {
@@ -1072,6 +1129,7 @@ library Roster {
       originCoordinatesY,
       sailDuration,
       setSailAt,
+      currentSailSegment,
       shipBattleId
     );
 
@@ -1103,6 +1161,7 @@ library Roster {
       _table.originCoordinatesY,
       _table.sailDuration,
       _table.setSailAt,
+      _table.currentSailSegment,
       _table.shipBattleId
     );
 
@@ -1134,6 +1193,7 @@ library Roster {
       _table.originCoordinatesY,
       _table.sailDuration,
       _table.setSailAt,
+      _table.currentSailSegment,
       _table.shipBattleId
     );
 
@@ -1169,6 +1229,7 @@ library Roster {
       uint32 originCoordinatesY,
       uint64 sailDuration,
       uint64 setSailAt,
+      uint16 currentSailSegment,
       uint256 shipBattleId
     )
   {
@@ -1198,7 +1259,9 @@ library Roster {
 
     setSailAt = (uint64(Bytes.getBytes8(_blob, 50)));
 
-    shipBattleId = (uint256(Bytes.getBytes32(_blob, 58)));
+    currentSailSegment = (uint16(Bytes.getBytes2(_blob, 58)));
+
+    shipBattleId = (uint256(Bytes.getBytes32(_blob, 60)));
   }
 
   /**
@@ -1241,6 +1304,7 @@ library Roster {
       _table.originCoordinatesY,
       _table.sailDuration,
       _table.setSailAt,
+      _table.currentSailSegment,
       _table.shipBattleId
     ) = decodeStatic(_staticData);
 
@@ -1287,6 +1351,7 @@ library Roster {
     uint32 originCoordinatesY,
     uint64 sailDuration,
     uint64 setSailAt,
+    uint16 currentSailSegment,
     uint256 shipBattleId
   ) internal pure returns (bytes memory) {
     return
@@ -1304,6 +1369,7 @@ library Roster {
         originCoordinatesY,
         sailDuration,
         setSailAt,
+        currentSailSegment,
         shipBattleId
       );
   }
@@ -1347,6 +1413,7 @@ library Roster {
     uint32 originCoordinatesY,
     uint64 sailDuration,
     uint64 setSailAt,
+    uint16 currentSailSegment,
     uint256 shipBattleId,
     uint256[] memory shipIds
   ) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
@@ -1364,6 +1431,7 @@ library Roster {
       originCoordinatesY,
       sailDuration,
       setSailAt,
+      currentSailSegment,
       shipBattleId
     );
 

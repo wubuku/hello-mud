@@ -70,6 +70,25 @@ library RosterDelegationLib {
   }
 
   function setSail(uint256 playerId, uint32 sequenceNumber, uint32 targetCoordinatesX, uint32 targetCoordinatesY, uint64 sailDuration, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY) internal {
+    ResourceId rosterSailingSystemId = WorldResourceIdLib.encode({
+      typeId: RESOURCE_SYSTEM,
+      namespace: "app",
+      name: "RosterSailingSys" // NOTE: Only the first 16 characters are used. Original: "RosterSailingSystem"
+    });
+
+    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
+    world.callFrom(
+      WorldContextConsumerLib._msgSender(),
+      rosterSailingSystemId,
+      abi.encodeWithSignature(
+        "rosterSetSail(uint256,uint32,uint32,uint32,uint64,uint32,uint32)",
+        playerId, sequenceNumber, targetCoordinatesX, targetCoordinatesY, sailDuration, updatedCoordinatesX, updatedCoordinatesY
+      )
+    );
+
+  }
+
+  function updateLocation(uint256 playerId, uint32 sequenceNumber, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY, uint16 currentSailSegment) internal {
     ResourceId rosterFriendSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -81,8 +100,8 @@ library RosterDelegationLib {
       WorldContextConsumerLib._msgSender(),
       rosterFriendSystemId,
       abi.encodeWithSignature(
-        "rosterSetSail(uint256,uint32,uint32,uint32,uint64,uint32,uint32)",
-        playerId, sequenceNumber, targetCoordinatesX, targetCoordinatesY, sailDuration, updatedCoordinatesX, updatedCoordinatesY
+        "rosterUpdateLocation(uint256,uint32,uint32,uint32,uint16)",
+        playerId, sequenceNumber, updatedCoordinatesX, updatedCoordinatesY, currentSailSegment
       )
     );
 

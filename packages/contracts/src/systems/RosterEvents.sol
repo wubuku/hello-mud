@@ -88,6 +88,29 @@ struct RosterSetSail {
   uint32 updatedCoordinatesY;
 }
 
+struct RosterLocationUpdated {
+  /**
+   * @dev The PlayerId of the RosterId.
+   */
+  uint256 playerId;
+  /**
+   * @dev The SequenceNumber of the RosterId.
+   */
+  uint32 sequenceNumber;
+  uint16 currentSailSegment;
+  /**
+   * @dev The X of the UpdatedCoordinates.
+   */
+  uint32 updatedCoordinatesX;
+  /**
+   * @dev The Y of the UpdatedCoordinates.
+   */
+  uint32 updatedCoordinatesY;
+  uint64 coordinatesUpdatedAt;
+  uint8 newStatus;
+  uint8 oldStatus;
+}
+
 struct RosterShipsPositionAdjusted {
   /**
    * @dev The PlayerId of the RosterId.

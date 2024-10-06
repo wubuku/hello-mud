@@ -18,13 +18,11 @@ interface IRosterFriendSystem {
 
   function app__rosterAddShip(uint256 playerId, uint32 sequenceNumber, uint256 shipId, uint64 position) external;
 
-  function app__rosterSetSail(
+  function app__rosterUpdateLocation(
     uint256 playerId,
     uint32 sequenceNumber,
-    uint32 targetCoordinatesX,
-    uint32 targetCoordinatesY,
-    uint64 sailDuration,
     uint32 updatedCoordinatesX,
-    uint32 updatedCoordinatesY
+    uint32 updatedCoordinatesY,
+    uint16 currentSailSegment
   ) external;
 }
