@@ -20,6 +20,7 @@ library ShipBattleInitiateBattleLogic {
   error PlayerDoesNotExist(uint256 playerId);
 
   uint32 constant FIRST_ROUND_NUMBER = 1;
+//    ShipBattleInitiated memory shipBattleInitiated = ShipBattleInitiateBattleLogic.verify(id, playerId, initiatorRosterPlayerId, initiatorRosterSequenceNumber, responderRosterPlayerId, responderRosterSequenceNumber, initiatorCoordinatesX, initiatorCoordinatesY, updatedInitiatorSailSeg, responderCoordinatesX, responderCoordinatesY, updatedResponderSailSeg);
 
   function verify(
     uint256 id,
@@ -30,9 +31,17 @@ library ShipBattleInitiateBattleLogic {
     uint32 responderRosterSequenceNumber,
     uint32 initiatorCoordinatesX,
     uint32 initiatorCoordinatesY,
+    uint16 updatedInitiatorSailSeg,
     uint32 responderCoordinatesX,
-    uint32 responderCoordinatesY
+    uint32 responderCoordinatesY,
+    uint16 updatedResponderSailSeg
   ) internal view returns (ShipBattleInitiated memory) {
+    // uint32 initiatorCoordinatesX;
+    // uint32 initiatorCoordinatesY;
+    // uint16 updatedInitiatorSailSeg;
+    // uint32 responderCoordinatesX;
+    // uint32 responderCoordinatesY;
+    // uint16 updatedResponderSailSeg;
     PlayerData memory playerData = Player.get(playerId);
     if (
       playerData.owner == address(0) &&
@@ -107,8 +116,10 @@ library ShipBattleInitiateBattleLogic {
         responderRosterSequenceNumber: responderRosterSequenceNumber,
         initiatorCoordinatesX: initiatorCoordinatesX,
         initiatorCoordinatesY: initiatorCoordinatesY,
+        updatedInitiatorSailSeg: updatedInitiatorSailSeg,
         responderCoordinatesX: responderCoordinatesX,
         responderCoordinatesY: responderCoordinatesY,
+        updatedResponderSailSeg: updatedResponderSailSeg,
         startedAt: currentTimestamp,
         firstRoundMover: firstRoundMover,
         firstRoundAttackerShip: attackerShipId,

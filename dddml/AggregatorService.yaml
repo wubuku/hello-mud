@@ -93,3 +93,8 @@ services:
             type: u64
           UpdatedCoordinates:
             type: Coordinates
+          UpdatedSailSegment:
+            type: u16
+            description: "Last sail segment index to be updated"
+          IntermediatePoints:
+            itemType: Coordinates

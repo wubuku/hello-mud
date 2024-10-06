@@ -29,8 +29,10 @@ contract ShipBattleServiceSystem is System {
     uint32 responderRosterSequenceNumber,
     uint32 initiatorCoordinatesX,
     uint32 initiatorCoordinatesY,
+    uint16 updatedInitiatorSailSeg,
     uint32 responderCoordinatesX,
-    uint32 responderCoordinatesY
+    uint32 responderCoordinatesY,
+    uint16 updatedResponderSailSeg
   ) public {
     uint256 shipBattleId = ShipBattleDelegationLib.initiateBattle(
       playerId,
@@ -40,8 +42,10 @@ contract ShipBattleServiceSystem is System {
       responderRosterSequenceNumber,
       initiatorCoordinatesX,
       initiatorCoordinatesY,
+      updatedInitiatorSailSeg,
       responderCoordinatesX,
-      responderCoordinatesY
+      responderCoordinatesY,
+      updatedResponderSailSeg
     );
     require(shipBattleId != 0, "ShipBattle initiation failed");
     shipBattleServiceAutoPlayTillEnd(shipBattleId, playerId);

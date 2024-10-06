@@ -25,7 +25,8 @@ interface IRosterShipInventorySystem {
     uint256 shipId,
     ItemIdQuantityPair[] memory itemIdQuantityPairs,
     uint32 updatedCoordinatesX,
-    uint32 updatedCoordinatesY
+    uint32 updatedCoordinatesY,
+    uint16 updatedSailSegment
   ) external;
 
   function app__rosterPutInShipInventory(
@@ -34,6 +35,7 @@ interface IRosterShipInventorySystem {
     uint256 shipId,
     ItemIdQuantityPair[] memory itemIdQuantityPairs,
     uint32 updatedCoordinatesX,
-    uint32 updatedCoordinatesY
+    uint32 updatedCoordinatesY,
+    uint16 updatedSailSegment
   ) external;
 }

@@ -90,7 +90,8 @@ contract ShipInventoryTransferTest is Script {
       playerShipId,
       itemIdQuantityPairs,
       originCoordinatesX,
-      originCoordinatesY
+      originCoordinatesY,
+      0
     );
     console.log("Put in ship inventory");
 
@@ -100,7 +101,8 @@ contract ShipInventoryTransferTest is Script {
       playerShipId,
       itemIdQuantityPairs,
       originCoordinatesX,
-      originCoordinatesY
+      originCoordinatesY,
+      0
     );
     console.log("Taken out ship inventory");
 
@@ -110,7 +112,8 @@ contract ShipInventoryTransferTest is Script {
       playerShipId,
       itemIdQuantityPairs,
       originCoordinatesX,
-      originCoordinatesY
+      originCoordinatesY,
+      0
     );
     console.log("Put in ship inventory again");
 

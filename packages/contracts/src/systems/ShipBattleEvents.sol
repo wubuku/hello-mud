@@ -33,6 +33,10 @@ struct ShipBattleInitiated {
    */
   uint32 initiatorCoordinatesY;
   /**
+   * @dev Last initiator sail segment index to be updated
+   */
+  uint16 updatedInitiatorSailSeg;
+  /**
    * @dev The X of the ResponderCoordinates.
    */
   uint32 responderCoordinatesX;
@@ -40,6 +44,10 @@ struct ShipBattleInitiated {
    * @dev The Y of the ResponderCoordinates.
    */
   uint32 responderCoordinatesY;
+  /**
+   * @dev Last responder sail segment index to be updated
+   */
+  uint16 updatedResponderSailSeg;
   uint64 startedAt;
   uint8 firstRoundMover;
   uint256 firstRoundAttackerShip;

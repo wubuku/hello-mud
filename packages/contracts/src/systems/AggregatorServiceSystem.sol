@@ -8,6 +8,7 @@ import { SafeERC20, IERC20 } from "@openzeppelin/contracts/token/ERC20/utils/Saf
 import { SkillProcessDelegationLib } from "./SkillProcessDelegationLib.sol";
 import { RosterDelegationLib } from "./RosterDelegationLib.sol";
 import { RosterSailUtil } from "../utils/RosterSailUtil.sol";
+import { Coordinates } from "../systems/Coordinates.sol";
 
 contract AggregatorServiceSystem is System {
   using SafeERC20 for IERC20;
@@ -99,7 +100,9 @@ contract AggregatorServiceSystem is System {
     uint64 energyAmount,
     uint64 sailDuration,
     uint32 updatedCoordinatesX,
-    uint32 updatedCoordinatesY
+    uint32 updatedCoordinatesY,
+    uint16 updatedSailSegment,
+    Coordinates[] memory intermediatePoints
   ) public {
     (uint256 requiredEnergy, uint32 newUpdatedCoordinatesX, uint32 newUpdatedCoordinatesY) = RosterSailUtil
       .calculateEnergyCost(
@@ -132,7 +135,9 @@ contract AggregatorServiceSystem is System {
       targetCoordinatesY,
       sailDuration,
       newUpdatedCoordinatesX,
-      newUpdatedCoordinatesY
+      newUpdatedCoordinatesY,
+      updatedSailSegment,
+      intermediatePoints
     );
   }
 }

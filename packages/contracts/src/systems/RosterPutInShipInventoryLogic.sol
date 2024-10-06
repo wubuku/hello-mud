@@ -12,6 +12,7 @@ import { PlayerUtil } from "../utils/PlayerUtil.sol";
 import { RosterId } from "./RosterId.sol";
 import { RosterDataInstance } from "../utils/RosterDataInstance.sol";
 import { ShipIdUtil } from "../utils/ShipIdUtil.sol";
+
 library RosterPutInShipInventoryLogic {
   using RosterDataInstance for RosterData;
 
@@ -20,6 +21,7 @@ library RosterPutInShipInventoryLogic {
   error RosterIsUnassignedShips();
   error RosterNotCloseEnoughToTransfer();
   error ShipNotInRoster(uint256 shipId);
+
   function verify(
     uint256 playerId,
     uint32 sequenceNumber,
@@ -27,6 +29,7 @@ library RosterPutInShipInventoryLogic {
     ItemIdQuantityPair[] memory itemIdQuantityPairs,
     uint32 updatedCoordinatesX,
     uint32 updatedCoordinatesY,
+    uint16 updatedSailSegment,
     RosterData memory rosterData
   ) internal view returns (RosterShipInventoryPutIn memory) {
     PlayerUtil.assertSenderIsPlayerOwner(playerId);
@@ -65,7 +68,8 @@ library RosterPutInShipInventoryLogic {
         shipId: shipId,
         itemIdQuantityPairs: itemIdQuantityPairs,
         updatedCoordinatesX: updatedCoordinatesX,
-        updatedCoordinatesY: updatedCoordinatesY
+        updatedCoordinatesY: updatedCoordinatesY,
+        updatedSailSegment: updatedSailSegment
       });
   }
 

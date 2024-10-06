@@ -27,6 +27,8 @@ library RosterSetSailLogic {
     uint64 sailDuration,
     uint32 updatedCoordinatesX,
     uint32 updatedCoordinatesY,
+    uint16 updatedSailSegment,
+    Coordinates[] memory intermediatePoints,
     RosterData memory rosterData
   ) internal view returns (RosterSetSail memory) {
     PlayerData memory playerData = PlayerUtil.assertSenderIsPlayerOwner(playerId);
@@ -55,7 +57,9 @@ library RosterSetSailLogic {
         sailDuration: sailDuration,
         setSailAt: setSailAt,
         updatedCoordinatesX: updatedCoordinatesX,
-        updatedCoordinatesY: updatedCoordinatesY
+        updatedCoordinatesY: updatedCoordinatesY,
+        updatedSailSegment: updatedSailSegment,
+        intermediatePoints: intermediatePoints
         // energyCost: requiredEnergy
       });
   }
@@ -72,7 +76,7 @@ library RosterSetSailLogic {
     rosterData.originCoordinatesY = rosterSetSail.updatedCoordinatesY;
     rosterData.coordinatesUpdatedAt = rosterSetSail.setSailAt;
     rosterData.setSailAt = rosterSetSail.setSailAt;
-
+    //todo intermediate points
     if (
       rosterSetSail.targetCoordinatesX != rosterSetSail.updatedCoordinatesX ||
       rosterSetSail.targetCoordinatesY != rosterSetSail.updatedCoordinatesY

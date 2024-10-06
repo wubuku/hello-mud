@@ -117,8 +117,10 @@ contract ShipBattleTest is Script {
       environmentRosterSequenceNumber,
       environmentRosterCoordinatesX,
       environmentRosterCoordinatesY,
+      0,
       environmentRosterCoordinatesX,
-      environmentRosterCoordinatesY
+      environmentRosterCoordinatesY,
+      0
     );
     console.log("Initiated a ship battle and auto played till end");
 

@@ -21,8 +21,14 @@ services:
           #  referenceType: Clock
           InitiatorCoordinates:
             type: Coordinates
+          UpdatedInitiatorSailSeg:
+            type: u16
+            description: "Last initiator sail segment index to be updated"
           ResponderCoordinates:
             type: Coordinates
+          UpdatedResponderSailSeg:
+            type: u16
+            description: "Last responder sail segment index to be updated"
 
       AutoPlayTillEnd:
         parameters:

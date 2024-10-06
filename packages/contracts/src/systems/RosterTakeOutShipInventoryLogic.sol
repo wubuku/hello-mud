@@ -29,6 +29,7 @@ library RosterTakeOutShipInventoryLogic {
     ItemIdQuantityPair[] memory itemIdQuantityPairs,
     uint32 updatedCoordinatesX,
     uint32 updatedCoordinatesY,
+    uint16 updatedSailSegment,
     RosterData memory rosterData
   ) internal view returns (RosterShipInventoryTakenOut memory) {
     PlayerUtil.assertSenderIsPlayerOwner(playerId);
@@ -67,7 +68,8 @@ library RosterTakeOutShipInventoryLogic {
         shipId: shipId,
         itemIdQuantityPairs: itemIdQuantityPairs,
         updatedCoordinatesX: updatedCoordinatesX,
-        updatedCoordinatesY: updatedCoordinatesY
+        updatedCoordinatesY: updatedCoordinatesY,
+        updatedSailSegment: updatedSailSegment
       });
   }
 

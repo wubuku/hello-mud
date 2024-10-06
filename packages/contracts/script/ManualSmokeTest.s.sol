@@ -17,6 +17,7 @@ import { SkillType } from "../src/systems/SkillType.sol";
 import { PlayerIdGenerator, ShipIdGenerator, ShipBattleIdGenerator, RosterData, Roster } from "../src/codegen/index.sol";
 import { ItemIdQuantityPair } from "../src/systems/ItemIdQuantityPair.sol";
 import { RosterUtil } from "../src/utils/RosterUtil.sol";
+import { Coordinates } from "../src/systems/Coordinates.sol";
 
 contract ManualSmokeTest is Script {
   //
@@ -116,6 +117,7 @@ contract ManualSmokeTest is Script {
     uint32 targetCoordinatesX = originCoordinatesX + 10;
     uint32 targetCoordinatesY = originCoordinatesY + 10;
     uint64 sailDuration = 155;
+    Coordinates[] memory intermediatePoints = new Coordinates[](0);//todo
     world.app__rosterSetSail(
       playerId,
       currentRosterSequenceNumber,
@@ -123,7 +125,9 @@ contract ManualSmokeTest is Script {
       targetCoordinatesY,
       sailDuration,
       originCoordinatesX,
-      originCoordinatesY
+      originCoordinatesY,
+      0,
+      intermediatePoints
     );
     console.log("Set sail a roster to target coordinates");
 

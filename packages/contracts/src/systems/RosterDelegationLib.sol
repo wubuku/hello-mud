@@ -7,6 +7,7 @@ import { ResourceId, WorldResourceIdLib } from "@latticexyz/world/src/WorldResou
 import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 import { IBaseWorld } from "@latticexyz/world/src/codegen/interfaces/IBaseWorld.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
+import { Coordinates } from "./Coordinates.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 library RosterDelegationLib {
@@ -69,7 +70,7 @@ library RosterDelegationLib {
 
   }
 
-  function setSail(uint256 playerId, uint32 sequenceNumber, uint32 targetCoordinatesX, uint32 targetCoordinatesY, uint64 sailDuration, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY) internal {
+  function setSail(uint256 playerId, uint32 sequenceNumber, uint32 targetCoordinatesX, uint32 targetCoordinatesY, uint64 sailDuration, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY, uint16 updatedSailSegment, Coordinates[] memory intermediatePoints) internal {
     ResourceId rosterSailingSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -81,8 +82,8 @@ library RosterDelegationLib {
       WorldContextConsumerLib._msgSender(),
       rosterSailingSystemId,
       abi.encodeWithSignature(
-        "rosterSetSail(uint256,uint32,uint32,uint32,uint64,uint32,uint32)",
-        playerId, sequenceNumber, targetCoordinatesX, targetCoordinatesY, sailDuration, updatedCoordinatesX, updatedCoordinatesY
+        "rosterSetSail(uint256,uint32,uint32,uint32,uint64,uint32,uint32,uint16,(uint32,uint32)[])",
+        playerId, sequenceNumber, targetCoordinatesX, targetCoordinatesY, sailDuration, updatedCoordinatesX, updatedCoordinatesY, updatedSailSegment, intermediatePoints
       )
     );
 
@@ -164,7 +165,7 @@ library RosterDelegationLib {
 
   }
 
-  function takeOutShipInventory(uint256 playerId, uint32 sequenceNumber, uint256 shipId, ItemIdQuantityPair[] memory itemIdQuantityPairs, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY) internal {
+  function takeOutShipInventory(uint256 playerId, uint32 sequenceNumber, uint256 shipId, ItemIdQuantityPair[] memory itemIdQuantityPairs, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY, uint16 updatedSailSegment) internal {
     ResourceId rosterShipInventorySystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -176,14 +177,14 @@ library RosterDelegationLib {
       WorldContextConsumerLib._msgSender(),
       rosterShipInventorySystemId,
       abi.encodeWithSignature(
-        "rosterTakeOutShipInventory(uint256,uint32,uint256,(uint32,uint32)[],uint32,uint32)",
-        playerId, sequenceNumber, shipId, itemIdQuantityPairs, updatedCoordinatesX, updatedCoordinatesY
+        "rosterTakeOutShipInventory(uint256,uint32,uint256,(uint32,uint32)[],uint32,uint32,uint16)",
+        playerId, sequenceNumber, shipId, itemIdQuantityPairs, updatedCoordinatesX, updatedCoordinatesY, updatedSailSegment
       )
     );
 
   }
 
-  function putInShipInventory(uint256 playerId, uint32 sequenceNumber, uint256 shipId, ItemIdQuantityPair[] memory itemIdQuantityPairs, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY) internal {
+  function putInShipInventory(uint256 playerId, uint32 sequenceNumber, uint256 shipId, ItemIdQuantityPair[] memory itemIdQuantityPairs, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY, uint16 updatedSailSegment) internal {
     ResourceId rosterShipInventorySystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -195,8 +196,8 @@ library RosterDelegationLib {
       WorldContextConsumerLib._msgSender(),
       rosterShipInventorySystemId,
       abi.encodeWithSignature(
-        "rosterPutInShipInventory(uint256,uint32,uint256,(uint32,uint32)[],uint32,uint32)",
-        playerId, sequenceNumber, shipId, itemIdQuantityPairs, updatedCoordinatesX, updatedCoordinatesY
+        "rosterPutInShipInventory(uint256,uint32,uint256,(uint32,uint32)[],uint32,uint32,uint16)",
+        playerId, sequenceNumber, shipId, itemIdQuantityPairs, updatedCoordinatesX, updatedCoordinatesY, updatedSailSegment
       )
     );
 

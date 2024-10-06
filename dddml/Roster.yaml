@@ -138,13 +138,16 @@ aggregates:
             type: u64
           UpdatedCoordinates:
             type: Coordinates
+          UpdatedSailSegment:
+            type: u16
+            description: "Last sail segment index to be updated"
+          IntermediatePoints:
+            itemType: Coordinates
         event:
           name: RosterSetSail
           properties:
             SetSailAt:
               type: u64
-            UpdatedCoordinates:
-              type: Coordinates
             #EnergyCost:
             #  type: u64
 
@@ -163,8 +166,6 @@ aggregates:
         event:
           name: RosterLocationUpdated
           properties:
-            UpdatedCoordinates:
-              type: Coordinates
             CoordinatesUpdatedAt:
               type: u64
             NewStatus:
@@ -266,5 +267,8 @@ superObjects:
             itemType: ItemIdQuantityPair
           UpdatedCoordinates:
             type: Coordinates
+          UpdatedSailSegment:
+            type: u16
+            description: "Last sail segment index to be updated"
 
 
