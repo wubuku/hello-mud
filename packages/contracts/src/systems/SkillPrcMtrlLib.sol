@@ -49,6 +49,15 @@ library SkillPrcMtrlLib {
     SkillPrcMtrl.set(skillProcessIdSkillType, skillProcessIdPlayerId, skillProcessIdSequenceNumber, index, productionMaterial);
   }
 
+  function truncateProductionMaterials(uint8 skillProcessIdSkillType, uint256 skillProcessIdPlayerId, uint8 skillProcessIdSequenceNumber, uint64 newCount) internal {
+    uint64 currentCount = SkillPrcMtrlCount.get(skillProcessIdSkillType, skillProcessIdPlayerId, skillProcessIdSequenceNumber);
+    require(newCount <= currentCount, "New count must be less than or equal to current count");    
+    for (uint64 i = newCount; i < currentCount; i++) {
+      SkillPrcMtrl.deleteRecord(skillProcessIdSkillType, skillProcessIdPlayerId, skillProcessIdSequenceNumber, i);
+    }
+    SkillPrcMtrlCount.set(skillProcessIdSkillType, skillProcessIdPlayerId, skillProcessIdSequenceNumber, newCount);
+  }
+
   function getAllProductionMaterials(uint8 skillProcessIdSkillType, uint256 skillProcessIdPlayerId, uint8 skillProcessIdSequenceNumber) internal view returns (SkillPrcMtrlData[] memory) {
     uint64 count = SkillPrcMtrlCount.get(skillProcessIdSkillType, skillProcessIdPlayerId, skillProcessIdSequenceNumber);
     SkillPrcMtrlData[] memory productionMaterials = new SkillPrcMtrlData[](count);

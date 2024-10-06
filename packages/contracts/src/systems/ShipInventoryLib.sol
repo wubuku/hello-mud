@@ -49,6 +49,15 @@ library ShipInventoryLib {
     ShipInventory.set(shipId, index, inventory);
   }
 
+  function truncateInventory(uint256 shipId, uint64 newCount) internal {
+    uint64 currentCount = ShipInventoryCount.get(shipId);
+    require(newCount <= currentCount, "New count must be less than or equal to current count");
+    for (uint64 i = newCount; i < currentCount; i++) {
+      ShipInventory.deleteRecord(shipId, i);
+    }
+    ShipInventoryCount.set(shipId, newCount);
+  }
+
   function getAllInventory_(uint256 shipId) internal view returns (ShipInventoryData[] memory) {
     uint64 count = ShipInventoryCount.get(shipId);
     ShipInventoryData[] memory inventory_ = new ShipInventoryData[](count);
