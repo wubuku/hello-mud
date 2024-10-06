@@ -69,6 +69,7 @@ aggregates:
           MudSystemName: ShipBattleInitiateSystem
           # Set a short global name for the function of the generated system
           GlobalName: InitiateShipBattle
+          DisableFlatteningForParameters: ["UpdateLocationParams"]
         isCreationCommand: true
         parameters:
           PlayerId:

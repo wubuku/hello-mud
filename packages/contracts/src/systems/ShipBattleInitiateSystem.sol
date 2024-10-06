@@ -8,7 +8,6 @@ import { ShipBattle, ShipBattleData, ShipBattleIdGenerator } from "../codegen/in
 import { ShipBattleInitiated } from "./ShipBattleEvents.sol";
 import { ShipBattleInitiateBattleLogic } from "./ShipBattleInitiateBattleLogic.sol";
 import { ShipBattleLocationParams } from "./ShipBattleLocationParams.sol";
-import { ShipBattleLocationParams } from "./ShipBattleLocationParams.sol";
 
 contract ShipBattleInitiateSystem is System {
   event ShipBattleInitiatedEvent(uint256 indexed id, uint256 playerId, uint256 initiatorRosterPlayerId, uint32 initiatorRosterSequenceNumber, uint256 responderRosterPlayerId, uint32 responderRosterSequenceNumber, ShipBattleLocationParams updateLocationParams, uint64 startedAt, uint8 firstRoundMover, uint256 firstRoundAttackerShip, uint256 firstRoundDefenderShip);
@@ -23,7 +22,7 @@ contract ShipBattleInitiateSystem is System {
     );
     ShipBattleInitiated memory shipBattleInitiated = ShipBattleInitiateBattleLogic.verify(id, playerId, initiatorRosterPlayerId, initiatorRosterSequenceNumber, responderRosterPlayerId, responderRosterSequenceNumber, updateLocationParams);
     shipBattleInitiated.id = id;
-    emit ShipBattleInitiatedEvent(shipBattleInitiated.id, shipBattleInitiated.playerId, shipBattleInitiated.initiatorRosterPlayerId, shipBattleInitiated.initiatorRosterSequenceNumber, shipBattleInitiated.responderRosterPlayerId, shipBattleInitiated.responderRosterSequenceNumber, updateLocationParams, shipBattleInitiated.startedAt, shipBattleInitiated.firstRoundMover, shipBattleInitiated.firstRoundAttackerShip, shipBattleInitiated.firstRoundDefenderShip);
+    emit ShipBattleInitiatedEvent(shipBattleInitiated.id, shipBattleInitiated.playerId, shipBattleInitiated.initiatorRosterPlayerId, shipBattleInitiated.initiatorRosterSequenceNumber, shipBattleInitiated.responderRosterPlayerId, shipBattleInitiated.responderRosterSequenceNumber, shipBattleInitiated.updateLocationParams, shipBattleInitiated.startedAt, shipBattleInitiated.firstRoundMover, shipBattleInitiated.firstRoundAttackerShip, shipBattleInitiated.firstRoundDefenderShip);
     ShipBattleData memory newShipBattleData = ShipBattleInitiateBattleLogic.mutate(shipBattleInitiated);
     ShipBattle.set(id, newShipBattleData);
     return id;
