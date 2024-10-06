@@ -49,6 +49,15 @@ library XpTableLevelLib {
     XpTableLevel.set(index, level);
   }
 
+  function truncateLevels(uint64 newCount) internal {
+    uint64 currentCount = XpTableLevelCount.get();
+    require(newCount <= currentCount, "New count must be less than or equal to current count");    
+    for (uint64 i = newCount; i < currentCount; i++) {
+      XpTableLevel.deleteRecord(i);
+    }
+    XpTableLevelCount.set(newCount);
+  }
+
   function getAllLevels() internal view returns (XpTableLevelData[] memory) {
     uint64 count = XpTableLevelCount.get();
     XpTableLevelData[] memory levels = new XpTableLevelData[](count);

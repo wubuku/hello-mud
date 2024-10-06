@@ -49,6 +49,15 @@ library ArticleTagLib {
     ArticleTag.set(articleId, index, tag);
   }
 
+  function truncateTags(uint64 articleId, uint64 newCount) internal {
+    uint64 currentCount = ArticleTagCount.get(articleId);
+    require(newCount <= currentCount, "New count must be less than or equal to current count");    
+    for (uint64 i = newCount; i < currentCount; i++) {
+      ArticleTag.deleteRecord(articleId, i);
+    }
+    ArticleTagCount.set(articleId, newCount);
+  }
+
   function getAllTags(uint64 articleId) internal view returns (string[] memory) {
     uint64 count = ArticleTagCount.get(articleId);
     string[] memory tags = new string[](count);

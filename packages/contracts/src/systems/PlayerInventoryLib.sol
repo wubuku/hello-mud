@@ -49,6 +49,15 @@ library PlayerInventoryLib {
     PlayerInventory.set(playerId, index, inventory);
   }
 
+  function truncateInventory_(uint256 playerId, uint64 newCount) internal {
+    uint64 currentCount = PlayerInventoryCount.get(playerId);
+    require(newCount <= currentCount, "New count must be less than or equal to current count");    
+    for (uint64 i = newCount; i < currentCount; i++) {
+      PlayerInventory.deleteRecord(playerId, i);
+    }
+    PlayerInventoryCount.set(playerId, newCount);
+  }
+
   function getAllInventory_(uint256 playerId) internal view returns (PlayerInventoryData[] memory) {
     uint64 count = PlayerInventoryCount.get(playerId);
     PlayerInventoryData[] memory inventory_ = new PlayerInventoryData[](count);
