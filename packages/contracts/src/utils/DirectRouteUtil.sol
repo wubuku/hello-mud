@@ -16,6 +16,40 @@ library DirectRouteUtil {
   }
 
   /**
+   * @notice Calculates the current position on a route segment based on elapsed time.
+   * @dev This function assumes linear movement between start and end points.
+   * Note: We intentionally do not check if currentTime is between startTime and endTime.
+   * If necessary, please perform this check in the calling function.
+   * @param start The starting coordinates of the segment
+   * @param end The ending coordinates of the segment
+   * @param startTime The start time of the segment
+   * @param endTime The end time of the segment
+   * @param currentTime The current time to calculate the position for
+   * @return Coordinates The calculated current position coordinates
+   */
+  function calculateCurrentPosition(
+    Coordinates memory start,
+    Coordinates memory end,
+    uint256 startTime,
+    uint256 endTime,
+    uint256 currentTime
+  ) internal pure returns (Coordinates memory) {
+    //require(currentTime >= startTime && currentTime <= endTime, "Current time out of segment bounds");
+
+    uint256 totalDuration = endTime - startTime;
+    uint256 elapsedDuration = currentTime - startTime;
+
+    // Calculate the progress ratio (0 to 1)
+    uint256 progress = (elapsedDuration * 1e18) / totalDuration; // Using 1e18 for precision
+
+    // Calculate the current position
+    uint32 currentX = start.x + uint32(((uint256(end.x) - uint256(start.x)) * progress) / 1e18);
+    uint32 currentY = start.y + uint32(((uint256(end.y) - uint256(start.y)) * progress) / 1e18);
+
+    return Coordinates(currentX, currentY);
+  }
+
+  /**
    * @notice Calculates the distance from a point to a line defined by two points
    * @param a The first point defining the line
    * @param b The second point defining the line
@@ -67,49 +101,5 @@ library DirectRouteUtil {
 
     // Calculate the distance from point P to line AB
     return absCrossProduct / lengthAB;
-  }
-
-  /**
-   * @notice Determines if the orthogonal projection of point P onto line AB falls within the segment AB
-   * @param a Coordinates of point A (start of segment)
-   * @param b Coordinates of point B (end of segment)
-   * @param p Coordinates of point P
-   * @return isWithinSegment True if the projection falls on the segment AB, false otherwise
-   * @return intersection Coordinates of the intersection point (only valid if isWithinSegment is true)
-   */
-  function projectPointOnSegment(
-    Coordinates memory a,
-    Coordinates memory b,
-    Coordinates memory p
-  ) internal pure returns (bool isWithinSegment, Coordinates memory intersection) {
-    // Calculate vectors
-    int256 abX = int256(uint256(b.x)) - int256(uint256(a.x));
-    int256 abY = int256(uint256(b.y)) - int256(uint256(a.y));
-    int256 apX = int256(uint256(p.x)) - int256(uint256(a.x));
-    int256 apY = int256(uint256(p.y)) - int256(uint256(a.y));
-
-    // Calculate dot products
-    int256 dotProductAP_AB = apX * abX + apY * abY;
-    int256 dotProductAB_AB = abX * abX + abY * abY;
-    /*
-    // Check if the projection falls within the segment AB
-    if (dotProductAP_AB >= 0 && dotProductAP_AB <= dotProductAB_AB) {
-      uint256 t = uint256((dotProductAP_AB * 1e18) / dotProductAB_AB);
-      intersection.x = a.x + uint32((uint256(abX) * t) / 1e18);
-      intersection.y = a.y + uint32((uint256(abY) * t) / 1e18);
-      isWithinSegment = true;
-    } else {
-      // Set default values when the projection is not within the segment
-      isWithinSegment = false;
-      intersection.x = 0;
-      intersection.y = 0;
-    }
-    */
-    // Calculate the projection point regardless of whether it's on the segment
-    uint256 t = uint256((dotProductAP_AB * 1e18) / dotProductAB_AB);
-    intersection.x = a.x + uint32((uint256(abX) * t) / 1e18);
-    intersection.y = a.y + uint32((uint256(abY) * t) / 1e18);
-    // Determine if the projection is within the segment
-    isWithinSegment = (dotProductAP_AB >= 0 && dotProductAP_AB <= dotProductAB_AB);
   }
 }
