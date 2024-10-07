@@ -58,6 +58,19 @@ library SkillPrcMtrlLib {
     SkillPrcMtrlCount.set(skillProcessIdSkillType, skillProcessIdPlayerId, skillProcessIdSequenceNumber, newCount);
   }
 
+  function updateAllProductionMaterials(uint8 skillProcessIdSkillType, uint256 skillProcessIdPlayerId, uint8 skillProcessIdSequenceNumber, SkillPrcMtrlData[] memory productionMaterials) internal {
+    uint64 currentCount = SkillPrcMtrlCount.get(skillProcessIdSkillType, skillProcessIdPlayerId, skillProcessIdSequenceNumber);
+    for (uint64 i = 0; i < productionMaterials.length; i++) {
+      SkillPrcMtrl.set(skillProcessIdSkillType, skillProcessIdPlayerId, skillProcessIdSequenceNumber, i, productionMaterials[i]);
+    }
+    if (productionMaterials.length < currentCount) {
+      for (uint256 i = productionMaterials.length; i < currentCount; i++) {
+        SkillPrcMtrl.deleteRecord(skillProcessIdSkillType, skillProcessIdPlayerId, skillProcessIdSequenceNumber, uint64(i));
+      }
+    }
+    SkillPrcMtrlCount.set(skillProcessIdSkillType, skillProcessIdPlayerId, skillProcessIdSequenceNumber, uint64(productionMaterials.length));
+  }
+
   function getAllProductionMaterials(uint8 skillProcessIdSkillType, uint256 skillProcessIdPlayerId, uint8 skillProcessIdSequenceNumber) internal view returns (SkillPrcMtrlData[] memory) {
     uint64 count = SkillPrcMtrlCount.get(skillProcessIdSkillType, skillProcessIdPlayerId, skillProcessIdSequenceNumber);
     SkillPrcMtrlData[] memory productionMaterials = new SkillPrcMtrlData[](count);

@@ -58,6 +58,19 @@ library ShipInventoryLib {
     ShipInventoryCount.set(shipId, newCount);
   }
 
+  function updateAllInventory_(uint256 shipId, ShipInventoryData[] memory inventory_) internal {
+    uint64 currentCount = ShipInventoryCount.get(shipId);
+    for (uint64 i = 0; i < inventory_.length; i++) {
+      ShipInventory.set(shipId, i, inventory_[i]);
+    }
+    if (inventory_.length < currentCount) {
+      for (uint256 i = inventory_.length; i < currentCount; i++) {
+        ShipInventory.deleteRecord(shipId, uint64(i));
+      }
+    }
+    ShipInventoryCount.set(shipId, uint64(inventory_.length));
+  }
+
   function getAllInventory_(uint256 shipId) internal view returns (ShipInventoryData[] memory) {
     uint64 count = ShipInventoryCount.get(shipId);
     ShipInventoryData[] memory inventory_ = new ShipInventoryData[](count);

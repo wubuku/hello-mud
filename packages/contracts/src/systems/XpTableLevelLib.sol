@@ -58,6 +58,19 @@ library XpTableLevelLib {
     XpTableLevelCount.set(newCount);
   }
 
+  function updateAllLevels(XpTableLevelData[] memory levels) internal {
+    uint64 currentCount = XpTableLevelCount.get();
+    for (uint64 i = 0; i < levels.length; i++) {
+      XpTableLevel.set(i, levels[i]);
+    }
+    if (levels.length < currentCount) {
+      for (uint256 i = levels.length; i < currentCount; i++) {
+        XpTableLevel.deleteRecord(uint64(i));
+      }
+    }
+    XpTableLevelCount.set(uint64(levels.length));
+  }
+
   function getAllLevels() internal view returns (XpTableLevelData[] memory) {
     uint64 count = XpTableLevelCount.get();
     XpTableLevelData[] memory levels = new XpTableLevelData[](count);

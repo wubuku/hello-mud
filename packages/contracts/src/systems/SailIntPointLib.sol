@@ -58,6 +58,19 @@ library SailIntPointLib {
     SailIntPointCount.set(playerId, sequenceNumber, newCount);
   }
 
+  function updateAllSailIntermediatePoints(uint256 playerId, uint32 sequenceNumber, SailIntPointData[] memory sailIntermediatePoints) internal {
+    uint64 currentCount = SailIntPointCount.get(playerId, sequenceNumber);
+    for (uint64 i = 0; i < sailIntermediatePoints.length; i++) {
+      SailIntPoint.set(playerId, sequenceNumber, i, sailIntermediatePoints[i]);
+    }
+    if (sailIntermediatePoints.length < currentCount) {
+      for (uint256 i = sailIntermediatePoints.length; i < currentCount; i++) {
+        SailIntPoint.deleteRecord(playerId, sequenceNumber, uint64(i));
+      }
+    }
+    SailIntPointCount.set(playerId, sequenceNumber, uint64(sailIntermediatePoints.length));
+  }
+
   function getAllSailIntermediatePoints(uint256 playerId, uint32 sequenceNumber) internal view returns (SailIntPointData[] memory) {
     uint64 count = SailIntPointCount.get(playerId, sequenceNumber);
     SailIntPointData[] memory sailIntermediatePoints = new SailIntPointData[](count);

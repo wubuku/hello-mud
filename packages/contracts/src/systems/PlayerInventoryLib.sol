@@ -58,6 +58,19 @@ library PlayerInventoryLib {
     PlayerInventoryCount.set(playerId, newCount);
   }
 
+  function updateAllInventory_(uint256 playerId, PlayerInventoryData[] memory inventory_) internal {
+    uint64 currentCount = PlayerInventoryCount.get(playerId);
+    for (uint64 i = 0; i < inventory_.length; i++) {
+      PlayerInventory.set(playerId, i, inventory_[i]);
+    }
+    if (inventory_.length < currentCount) {
+      for (uint256 i = inventory_.length; i < currentCount; i++) {
+        PlayerInventory.deleteRecord(playerId, uint64(i));
+      }
+    }
+    PlayerInventoryCount.set(playerId, uint64(inventory_.length));
+  }
+
   function getAllInventory_(uint256 playerId) internal view returns (PlayerInventoryData[] memory) {
     uint64 count = PlayerInventoryCount.get(playerId);
     PlayerInventoryData[] memory inventory_ = new PlayerInventoryData[](count);

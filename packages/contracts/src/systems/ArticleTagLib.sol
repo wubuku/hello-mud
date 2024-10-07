@@ -58,6 +58,19 @@ library ArticleTagLib {
     ArticleTagCount.set(articleId, newCount);
   }
 
+  function updateAllTags(uint64 articleId, string[] memory tags) internal {
+    uint64 currentCount = ArticleTagCount.get(articleId);
+    for (uint64 i = 0; i < tags.length; i++) {
+      ArticleTag.set(articleId, i, tags[i]);
+    }
+    if (tags.length < currentCount) {
+      for (uint256 i = tags.length; i < currentCount; i++) {
+        ArticleTag.deleteRecord(articleId, uint64(i));
+      }
+    }
+    ArticleTagCount.set(articleId, uint64(tags.length));
+  }
+
   function getAllTags(uint64 articleId) internal view returns (string[] memory) {
     uint64 count = ArticleTagCount.get(articleId);
     string[] memory tags = new string[](count);
