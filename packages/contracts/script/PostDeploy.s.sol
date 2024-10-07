@@ -81,6 +81,10 @@ contract PostDeploy is Script {
     uint32 firstIslandY = 2147483647;
     addInitialIsland(world, firstIslandX, firstIslandY);
 
+    uint32 secondIslandX = 2147483647 + 10000;
+    uint32 secondIslandY = 2147483647 + 10000;
+    addInitialIsland(world, secondIslandX, secondIslandY);
+
     createItems(world);
     console.log("Created items");
 

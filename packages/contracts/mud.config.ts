@@ -336,22 +336,22 @@ export default defineWorld({
   },
   systems: {
     PlayerFriendSystem: {
-      openAccess: false,
+      openAccess: true,
     },
     ShipFriendSystem: {
-      openAccess: false,
+      openAccess: true,
     },
     RosterFriendSystem: {
-      openAccess: false,
+      openAccess: true,
     },
     RosterSailingSystem: {
-      openAccess: false,
+      openAccess: true,
     },
     SkillProcessFriendSystem: {
-      openAccess: false,
+      openAccess: true,
     },
     MapFriendSystem: {
-      openAccess: false,
+      openAccess: true,
     },
   },
   modules: [
