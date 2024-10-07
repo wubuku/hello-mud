@@ -68,4 +68,41 @@ library DirectRouteUtil {
     // Calculate the distance from point P to line AB
     return absCrossProduct / lengthAB;
   }
+
+  /**
+   * @notice Determines if the orthogonal projection of point P onto line AB falls within the segment AB
+   * @param a Coordinates of point A (start of segment)
+   * @param b Coordinates of point B (end of segment)
+   * @param p Coordinates of point P
+   * @return isWithinSegment True if the projection falls on the segment AB, false otherwise
+   * @return intersection Coordinates of the intersection point (only valid if isWithinSegment is true)
+   */
+  function projectPointOnSegment(
+    Coordinates memory a,
+    Coordinates memory b,
+    Coordinates memory p
+  ) internal pure returns (bool isWithinSegment, Coordinates memory intersection) {
+    // Calculate vectors
+    int256 abX = int256(uint256(b.x)) - int256(uint256(a.x));
+    int256 abY = int256(uint256(b.y)) - int256(uint256(a.y));
+    int256 apX = int256(uint256(p.x)) - int256(uint256(a.x));
+    int256 apY = int256(uint256(p.y)) - int256(uint256(a.y));
+
+    // Calculate dot products
+    int256 dotProductAP_AB = apX * abX + apY * abY;
+    int256 dotProductAB_AB = abX * abX + abY * abY;
+
+    // Check if the projection falls within the segment AB
+    if (dotProductAP_AB >= 0 && dotProductAP_AB <= dotProductAB_AB) {
+      uint256 t = uint256((dotProductAP_AB * 1e18) / dotProductAB_AB);
+      intersection.x = a.x + uint32((uint256(abX) * t) / 1e18);
+      intersection.y = a.y + uint32((uint256(abY) * t) / 1e18);
+      isWithinSegment = true;
+    } else {
+      // Set default values when the projection is not within the segment
+      isWithinSegment = false;
+      intersection.x = 0;
+      intersection.y = 0;
+    }
+  }
 }
