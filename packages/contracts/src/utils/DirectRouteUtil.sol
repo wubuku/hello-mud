@@ -91,7 +91,7 @@ library DirectRouteUtil {
     // Calculate dot products
     int256 dotProductAP_AB = apX * abX + apY * abY;
     int256 dotProductAB_AB = abX * abX + abY * abY;
-
+    /*
     // Check if the projection falls within the segment AB
     if (dotProductAP_AB >= 0 && dotProductAP_AB <= dotProductAB_AB) {
       uint256 t = uint256((dotProductAP_AB * 1e18) / dotProductAB_AB);
@@ -104,5 +104,12 @@ library DirectRouteUtil {
       intersection.x = 0;
       intersection.y = 0;
     }
+    */
+    // Calculate the projection point regardless of whether it's on the segment
+    uint256 t = uint256((dotProductAP_AB * 1e18) / dotProductAB_AB);
+    intersection.x = a.x + uint32((uint256(abX) * t) / 1e18);
+    intersection.y = a.y + uint32((uint256(abY) * t) / 1e18);
+    // Determine if the projection is within the segment
+    isWithinSegment = (dotProductAP_AB >= 0 && dotProductAP_AB <= dotProductAB_AB);
   }
 }
