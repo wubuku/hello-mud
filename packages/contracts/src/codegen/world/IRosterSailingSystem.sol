@@ -22,4 +22,12 @@ interface IRosterSailingSystem {
     uint16 updatedSailSegment,
     Coordinates[] memory intermediatePoints
   ) external;
+
+  function app__rosterUpdateLocation(
+    uint256 playerId,
+    uint32 sequenceNumber,
+    uint32 updatedCoordinatesX,
+    uint32 updatedCoordinatesY,
+    uint16 currentSailSegment
+  ) external;
 }

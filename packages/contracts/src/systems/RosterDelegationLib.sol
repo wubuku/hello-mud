@@ -90,16 +90,16 @@ library RosterDelegationLib {
   }
 
   function updateLocation(uint256 playerId, uint32 sequenceNumber, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY, uint16 currentSailSegment) internal {
-    ResourceId rosterFriendSystemId = WorldResourceIdLib.encode({
+    ResourceId rosterSailingSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
-      name: "RosterFriendSyst" // NOTE: Only the first 16 characters are used. Original: "RosterFriendSystem"
+      name: "RosterSailingSys" // NOTE: Only the first 16 characters are used. Original: "RosterSailingSystem"
     });
 
     IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
     world.callFrom(
       WorldContextConsumerLib._msgSender(),
-      rosterFriendSystemId,
+      rosterSailingSystemId,
       abi.encodeWithSignature(
         "rosterUpdateLocation(uint256,uint32,uint32,uint32,uint16)",
         playerId, sequenceNumber, updatedCoordinatesX, updatedCoordinatesY, currentSailSegment

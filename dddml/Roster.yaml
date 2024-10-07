@@ -154,7 +154,7 @@ aggregates:
       UpdateLocation:
         metadata:
           IsOnlyOpenToFriends: true
-          #MudSystemName: RosterSailingSystem
+          MudSystemName: RosterSailingSystem
         parameters:
           UpdatedCoordinates:
             type: Coordinates
