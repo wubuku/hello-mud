@@ -117,52 +117,6 @@ library RosterDataInstance {
     return roster.status == RosterStatus.AT_ANCHOR || roster.status == RosterStatus.UNDERWAY;
   }
 
-  function isCurrentLocationUpdatable(
-    RosterData memory roster,
-    uint64 currentTimestamp,
-    uint32 updatedCoordinatesX,
-    uint32 updatedCoordinatesY
-  ) internal pure returns (bool, uint64, uint8) {
-    uint8 oldStatus = roster.status;
-    uint64 coordinatesUpdatedAt = roster.coordinatesUpdatedAt;
-
-    if (updatedCoordinatesX == uint32(0) || updatedCoordinatesY == uint32(0)) {
-      return (false, coordinatesUpdatedAt, oldStatus);
-    }
-
-    if (oldStatus != RosterStatus.UNDERWAY) {
-      revert InvalidRosterStatus(RosterStatus.UNDERWAY, oldStatus);
-    }
-    if (roster.targetCoordinatesX == 0 && roster.targetCoordinatesY == 0) {
-      revert TargetCoordinatesNotSet(roster.targetCoordinatesX, roster.targetCoordinatesY);
-    }
-    if (roster.originCoordinatesX == 0 && roster.originCoordinatesY == 0) {
-      revert OriginCoordinatesNotSet(roster.originCoordinatesX, roster.originCoordinatesY);
-    }
-
-    uint8 newStatus = oldStatus;
-    (uint256 speedNumerator, uint256 speedDenominator) = SpeedUtil.speedPropertyToCoordinateUnitsPerSecond(
-      roster.speed
-    );
-    if (currentTimestamp < coordinatesUpdatedAt) {
-      revert InvalidRosterUpdateTime(currentTimestamp, coordinatesUpdatedAt);
-    }
-    uint256 elapsedTime = currentTimestamp - coordinatesUpdatedAt;
-
-    // TODO: Implement the rest of the function
-    bool updatable = true;
-    // Use speedNumerator, speedDenominator, elapsedTime, and origin coordinates as needed
-    // Just to silence the warning
-    require(speedNumerator != 0 && speedDenominator != 0, "Invalid speed");
-    //require(elapsedTime != 0, "Elapsed time is zero"); // DONT check this!
-
-    if (roster.targetCoordinatesX == updatedCoordinatesX && roster.targetCoordinatesY == updatedCoordinatesY) {
-      newStatus = RosterStatus.AT_ANCHOR;
-    }
-    coordinatesUpdatedAt = currentTimestamp;
-    return (updatable, coordinatesUpdatedAt, newStatus);
-  }
-
   function getShipAndValidate(uint256 shipId) private view returns (ShipData memory) {
     ShipData memory ship = Ship.get(shipId);
     if (
@@ -176,4 +130,50 @@ library RosterDataInstance {
     }
     return ship;
   }
+
+  // function isCurrentLocationUpdatable(
+  //   RosterData memory roster,
+  //   uint64 currentTimestamp,
+  //   uint32 updatedCoordinatesX,
+  //   uint32 updatedCoordinatesY
+  // ) internal pure returns (bool, uint64, uint8) {
+  //   uint8 oldStatus = roster.status;
+  //   uint64 coordinatesUpdatedAt = roster.coordinatesUpdatedAt;
+
+  //   if (updatedCoordinatesX == uint32(0) || updatedCoordinatesY == uint32(0)) {
+  //     return (false, coordinatesUpdatedAt, oldStatus);
+  //   }
+
+  //   if (oldStatus != RosterStatus.UNDERWAY) {
+  //     revert InvalidRosterStatus(RosterStatus.UNDERWAY, oldStatus);
+  //   }
+  //   if (roster.targetCoordinatesX == 0 && roster.targetCoordinatesY == 0) {
+  //     revert TargetCoordinatesNotSet(roster.targetCoordinatesX, roster.targetCoordinatesY);
+  //   }
+  //   if (roster.originCoordinatesX == 0 && roster.originCoordinatesY == 0) {
+  //     revert OriginCoordinatesNotSet(roster.originCoordinatesX, roster.originCoordinatesY);
+  //   }
+
+  //   uint8 newStatus = oldStatus;
+  //   (uint256 speedNumerator, uint256 speedDenominator) = SpeedUtil.speedPropertyToCoordinateUnitsPerSecond(
+  //     roster.speed
+  //   );
+  //   if (currentTimestamp < coordinatesUpdatedAt) {
+  //     revert InvalidRosterUpdateTime(currentTimestamp, coordinatesUpdatedAt);
+  //   }
+  //   uint256 elapsedTime = currentTimestamp - coordinatesUpdatedAt;
+
+  //   // Implement the rest of the function...
+  //   bool updatable = true;
+  //   // Use speedNumerator, speedDenominator, elapsedTime, and origin coordinates as needed
+  //   // Just to silence the warning
+  //   require(speedNumerator != 0 && speedDenominator != 0, "Invalid speed");
+  //   //require(elapsedTime != 0, "Elapsed time is zero"); // DONT check this!
+
+  //   if (roster.targetCoordinatesX == updatedCoordinatesX && roster.targetCoordinatesY == updatedCoordinatesY) {
+  //     newStatus = RosterStatus.AT_ANCHOR;
+  //   }
+  //   coordinatesUpdatedAt = currentTimestamp;
+  //   return (updatable, coordinatesUpdatedAt, newStatus);
+  // }
 }

@@ -2,7 +2,7 @@
 pragma solidity >=0.8.24;
 
 import { RosterShipInventoryTakenOut } from "./RosterEvents.sol";
-import { RosterData, PlayerData, Player, ShipData, Ship } from "../codegen/index.sol";
+import { RosterData, Roster, PlayerData, Player, ShipData, Ship } from "../codegen/index.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { RosterUtil } from "../utils/RosterUtil.sol";
 import { RosterStatus } from "./RosterStatus.sol";
@@ -12,6 +12,7 @@ import { PlayerUtil } from "../utils/PlayerUtil.sol";
 import { RosterId } from "./RosterId.sol";
 import { RosterDataInstance } from "../utils/RosterDataInstance.sol";
 import { ShipIdUtil } from "../utils/ShipIdUtil.sol";
+import { RosterDelegationLib } from "./RosterDelegationLib.sol";
 
 library RosterTakeOutShipInventoryLogic {
   using RosterDataInstance for RosterData;
@@ -31,7 +32,7 @@ library RosterTakeOutShipInventoryLogic {
     uint32 updatedCoordinatesY,
     uint16 updatedSailSegment,
     RosterData memory rosterData
-  ) internal view returns (RosterShipInventoryTakenOut memory) {
+  ) internal returns (RosterShipInventoryTakenOut memory) {
     PlayerUtil.assertSenderIsPlayerOwner(playerId);
     PlayerData memory player = Player.get(playerId);
     RosterId memory rosterId = RosterId(playerId, sequenceNumber);
@@ -42,22 +43,15 @@ library RosterTakeOutShipInventoryLogic {
       revert ShipNotInRoster(shipId);
     }
 
-    if (rosterData.status == uint8(RosterStatus.UNDERWAY)) {
-      uint64 currentTimestamp = uint64(block.timestamp);
-
-      (bool updatable, uint64 coordinatesUpdatedAt, uint8 newStatus) = rosterData.isCurrentLocationUpdatable(
-        currentTimestamp,
-        updatedCoordinatesX,
-        updatedCoordinatesY
-      );
-
-      if (updatable) {
-        rosterData.updatedCoordinatesX = updatedCoordinatesX;
-        rosterData.updatedCoordinatesY = updatedCoordinatesY;
-        rosterData.coordinatesUpdatedAt = coordinatesUpdatedAt;
-        rosterData.status = newStatus;
-      }
-    }
+    RosterDelegationLib.updateLocation(
+      playerId,
+      sequenceNumber,
+      updatedCoordinatesX,
+      updatedCoordinatesY,
+      updatedSailSegment
+    );
+    // Reload the roster state
+    rosterData = Roster.get(playerId, sequenceNumber);
 
     rosterData.assertRosterIslandCloseEnoughToTransfer(player.claimedIslandX, player.claimedIslandY);
 

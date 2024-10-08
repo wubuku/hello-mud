@@ -7,8 +7,20 @@ import "./DirectRouteUtil.sol";
 
 library RouteUtil {
   uint64 constant ALLOWED_TIME_DEVIATION = 5; // NOTE: 5 seconds, is this a good value?
-  uint256 constant MAX_DEVIATION_FROM_ROUTE = 100; // NOTE: 100 distance units, is this a good value?
-  uint256 constant MAX_DEVIATION_FROM_EXPECTED = 50; // NOTE: 50 distance units, is this a good value?
+  uint256 constant MAX_DEVIATION_FROM_ROUTE = 200; // NOTE: 100 distance units, is this a good value?
+  uint256 constant MAX_DEVIATION_FROM_EXPECTED = 100; // NOTE: 50 distance units, is this a good value?
+  uint256 constant MAX_DEVIATION_FROM_TARGET = MAX_DEVIATION_FROM_ROUTE + MAX_DEVIATION_FROM_EXPECTED / 2;
+
+  function isValidPositionUpdateAfterSailDuration(
+    Coordinates memory sailTarget,
+    Coordinates memory newPosition
+  ) internal pure returns (bool) {
+    uint256 deviationFromTarget = DirectRouteUtil.getDistance(newPosition, sailTarget);
+    if (deviationFromTarget > MAX_DEVIATION_FROM_TARGET) {
+      return false;
+    }
+    return true;
+  }
 
   function isValidPositionUpdate(
     Coordinates memory segmentStart,
@@ -35,11 +47,7 @@ library RouteUtil {
     );
 
     // Project new position onto segment
-    (, Coordinates memory projectedPosition) = projectPointOnSegment(
-      segmentStart,
-      segmentEnd,
-      newPosition
-    );
+    (, Coordinates memory projectedPosition) = projectPointOnSegment(segmentStart, segmentEnd, newPosition);
 
     //if (!isWithinSegment) { // We intentionally ignore this check
     //  return false;
@@ -81,9 +89,9 @@ library RouteUtil {
     int256 dotProductAB_AB = abX * abX + abY * abY;
 
     // Calculate the projection point regardless of whether it's on the segment
-    uint256 t = uint256((dotProductAP_AB * 1e18) / dotProductAB_AB);
-    intersection.x = a.x + uint32((uint256(abX) * t) / 1e18);
-    intersection.y = a.y + uint32((uint256(abY) * t) / 1e18);
+    uint256 t = uint256((dotProductAP_AB * 1e9) / dotProductAB_AB);
+    intersection.x = a.x + uint32((uint256(abX) * t) / 1e9);
+    intersection.y = a.y + uint32((uint256(abY) * t) / 1e9);
 
     // Determine if the projection is within the segment
     isWithinSegment = (dotProductAP_AB >= 0 && dotProductAP_AB <= dotProductAB_AB);
@@ -91,9 +99,9 @@ library RouteUtil {
     /*
     // Check if the projection falls within the segment AB
     if (dotProductAP_AB >= 0 && dotProductAP_AB <= dotProductAB_AB) {
-      uint256 t = uint256((dotProductAP_AB * 1e18) / dotProductAB_AB);
-      intersection.x = a.x + uint32((uint256(abX) * t) / 1e18);
-      intersection.y = a.y + uint32((uint256(abY) * t) / 1e18);
+      uint256 t = uint256((dotProductAP_AB * 1e9) / dotProductAB_AB);
+      intersection.x = a.x + uint32((uint256(abX) * t) / 1e9);
+      intersection.y = a.y + uint32((uint256(abY) * t) / 1e9);
       isWithinSegment = true;
     } else {
       // Set default values when the projection is not within the segment

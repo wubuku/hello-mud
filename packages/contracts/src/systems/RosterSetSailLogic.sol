@@ -31,7 +31,17 @@ library RosterSetSailLogic {
     Coordinates[] memory intermediatePoints,
     RosterData memory rosterData
   ) internal returns (RosterSetSail memory) {
-    PlayerData memory playerData = PlayerUtil.assertSenderIsPlayerOwner(playerId);
+    PlayerUtil.assertSenderIsPlayerOwner(playerId);
+    RosterUtil.assertRosterIsNotUnassignedShips(sequenceNumber);
+    //
+    // NOTE: Before this function is called,
+    // the external function needs to check arguments `updatedCoordinatesX`, `updatedCoordinatesY`
+    // and update the current position of the Roster if necessary,
+    // and reset rosterData.status to RosterStatus.AT_ANCHOR or RosterStatus.UNDERWAY.
+    //
+    if (rosterData.status != RosterStatus.AT_ANCHOR && rosterData.status != RosterStatus.UNDERWAY) {
+      revert RosterUnfitToSail(rosterData.status);
+    }
     (uint64 totalDuration, uint64[] memory segmentDurations) = SpeedUtil.calculateSailDurationAndSegments(
       rosterData.speed,
       Coordinates(updatedCoordinatesX, updatedCoordinatesY),

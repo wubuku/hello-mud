@@ -20,7 +20,7 @@ import { RosterUtil } from "../src/utils/RosterUtil.sol";
 
 contract CreatePlayerTest is Script {
   //
-  // forge script script/GatherIslandResourcesTest.s.sol:GatherIslandResourcesTest --sig "run(address)" <WORLD_ADDRESS> --broadcast --rpc-url http://localhost:8545
+  // forge script script/CreatePlayerTest.s.sol:CreatePlayerTest --sig "run(address)" <WORLD_ADDRESS> --broadcast --rpc-url http://localhost:8545
   //
   function run(address worldAddress) external {
     // Specify a store so that you can use tables directly in PostDeploy

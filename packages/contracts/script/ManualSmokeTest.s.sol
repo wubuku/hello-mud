@@ -112,36 +112,6 @@ contract ManualSmokeTest is Script {
     console.log("Roster speed:", rosterData.speed);
 
 
-    //return;
-    // //////////////////////////////////////////////////////////////
-
-    uint32 sailDistanceStep = 100;
-    uint32 targetCoordinatesX = originCoordinatesX + sailDistanceStep * 3;
-    uint32 targetCoordinatesY = originCoordinatesY + sailDistanceStep * 3;
-    Coordinates[] memory intermediatePoints = new Coordinates[](2);
-    intermediatePoints[0] = Coordinates(originCoordinatesX + sailDistanceStep, originCoordinatesY + sailDistanceStep);
-    intermediatePoints[1] = Coordinates(originCoordinatesX + sailDistanceStep * 2, originCoordinatesY + sailDistanceStep * 2);
-    (uint64 sailDuration, uint64[] memory segmentDurations) = SpeedUtil.calculateSailDurationAndSegments(
-        rosterData.speed,
-        Coordinates(originCoordinatesX, originCoordinatesY),
-        Coordinates(targetCoordinatesX, targetCoordinatesY),
-        intermediatePoints
-    );
-    console.log("Sail duration:", sailDuration);
-    world.app__rosterSetSail(
-      playerId,
-      currentRosterSequenceNumber,
-      targetCoordinatesX,
-      targetCoordinatesY,
-      sailDuration,
-      originCoordinatesX,
-      originCoordinatesY,
-      0,
-      intermediatePoints
-    );
-    console.log("Set sail a roster to target coordinates:", targetCoordinatesX, targetCoordinatesY);
-
-
     vm.stopBroadcast();
   }
   /*

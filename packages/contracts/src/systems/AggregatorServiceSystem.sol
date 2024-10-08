@@ -104,15 +104,16 @@ contract AggregatorServiceSystem is System {
     uint16 updatedSailSegment,
     Coordinates[] memory intermediatePoints
   ) public {
-    (uint256 requiredEnergy, uint32 newUpdatedCoordinatesX, uint32 newUpdatedCoordinatesY) = RosterSailUtil
+    //uint32 newUpdatedCoordinatesX, uint32 newUpdatedCoordinatesY
+    uint256 requiredEnergy = RosterSailUtil
       .calculateEnergyCost(
         playerId,
         rosterSequenceNumber,
-        targetCoordinatesX,
-        targetCoordinatesY,
-        sailDuration,
-        updatedCoordinatesX,
-        updatedCoordinatesY
+        //targetCoordinatesX,
+        //targetCoordinatesY,
+        sailDuration
+        //updatedCoordinatesX,
+        //updatedCoordinatesY
       );
     if (requiredEnergy > energyAmount) {
       revert InsufficientEnergy(requiredEnergy, energyAmount);
@@ -134,8 +135,8 @@ contract AggregatorServiceSystem is System {
       targetCoordinatesX,
       targetCoordinatesY,
       sailDuration,
-      newUpdatedCoordinatesX,
-      newUpdatedCoordinatesY,
+      updatedCoordinatesX, //newUpdatedCoordinatesX,
+      updatedCoordinatesY, //newUpdatedCoordinatesY,
       updatedSailSegment,
       intermediatePoints
     );

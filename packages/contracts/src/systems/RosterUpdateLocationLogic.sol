@@ -3,13 +3,25 @@ pragma solidity >=0.8.24;
 
 import { RosterLocationUpdated } from "./RosterEvents.sol";
 import { RosterData } from "../codegen/index.sol";
-//import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
-//import { SailIntPointData } from "../codegen/index.sol";
-//import { SailIntPointLib } from "./SailIntPointLib.sol";
-// You may need to use the SailIntPointLib library to access and modify the state (SailIntPointData) of the SailIntPoint entity within the Roster aggregate
-//import { SailIntPoint } from "../codegen/index.sol";
-// You may also need to use the SailIntPoint library to access the state of the SailIntPoint entity within the Roster aggregate
+import { SailIntPointData } from "../codegen/index.sol";
+import { SailIntPointLib } from "./SailIntPointLib.sol";
+import { SailIntPoint } from "../codegen/index.sol";
+import { RosterStatus } from "./RosterStatus.sol";
+import { RouteUtil } from "../utils/RouteUtil.sol";
+import { Coordinates } from "./Coordinates.sol";
 
+// Add these custom errors at the top of the file, after the imports
+error RosterNotUnderway(uint8 currentStatus);
+error InvalidSailSegment(uint16 currentSailSegment, uint16 oldSailSegment);
+error InvalidPositionUpdateAfterSailDuration(Coordinates segmentEnd, Coordinates updatedCoordinates);
+error InvalidPositionUpdate(
+  Coordinates segmentStart,
+  Coordinates segmentEnd,
+  uint64 segmentStartTime,
+  uint64 segmentEndTime,
+  uint64 currentTime,
+  Coordinates updatedCoordinates
+);
 
 /**
  * @title RosterUpdateLocationLogic Library
@@ -28,26 +40,94 @@ library RosterUpdateLocationLogic {
     uint32 updatedCoordinatesY,
     uint16 currentSailSegment,
     RosterData memory rosterData
-  ) internal pure returns (RosterLocationUpdated memory) {
-    // If necessary, change state mutability modifier of the function from `pure` to `view` or just delete `pure`.
-    //
-    // Note: Do not arbitrarily add parameters to functions or fields to structs.
-    //
-    // The message sender can be obtained like this: `WorldContextConsumerLib._msgSender()`
-    //
-    // TODO: Check arguments, throw if illegal.
-    /*
-    return RosterLocationUpdated({
-      playerId: // type: uint256. The PlayerId of the RosterId.
-      sequenceNumber: // type: uint32. The SequenceNumber of the RosterId.
-      currentSailSegment: // type: uint16
-      updatedCoordinatesX: // type: uint32. The X of the UpdatedCoordinates.
-      updatedCoordinatesY: // type: uint32. The Y of the UpdatedCoordinates.
-      coordinatesUpdatedAt: // type: uint64
-      newStatus: // type: uint8
-      oldStatus: // type: uint8
-    });
-    */
+  ) internal view returns (RosterLocationUpdated memory) {
+    if (rosterData.status != RosterStatus.UNDERWAY) {
+      revert RosterNotUnderway(rosterData.status);
+    }
+    uint64 currentTime = uint64(block.timestamp);
+    SailIntPointData[] memory sailIntermediatePoints = SailIntPointLib.getAllSailIntermediatePoints(
+      playerId,
+      sequenceNumber
+    );
+    uint16 oldSailSegment = rosterData.currentSailSegment;
+    if (oldSailSegment > sailIntermediatePoints.length) {
+      oldSailSegment = uint16(sailIntermediatePoints.length);
+    }
+    if (sailIntermediatePoints.length > 0) {
+      if (currentSailSegment < oldSailSegment) {
+        revert InvalidSailSegment(currentSailSegment, oldSailSegment);
+      }
+      if (currentSailSegment > sailIntermediatePoints.length) {
+        currentSailSegment = uint16(sailIntermediatePoints.length);
+      }
+    } else {
+      currentSailSegment = 0;
+    }
+    // Get current sail segment start and end coordinates
+    Coordinates memory segmentStart = currentSailSegment == 0
+      ? Coordinates({ x: rosterData.originCoordinatesX, y: rosterData.originCoordinatesY })
+      : Coordinates({
+        x: sailIntermediatePoints[currentSailSegment - 1].coordinatesX,
+        y: sailIntermediatePoints[currentSailSegment - 1].coordinatesY
+      });
+    Coordinates memory segmentEnd = currentSailSegment == sailIntermediatePoints.length
+      ? Coordinates({ x: rosterData.targetCoordinatesX, y: rosterData.targetCoordinatesY })
+      : Coordinates({
+        x: sailIntermediatePoints[currentSailSegment].coordinatesX,
+        y: sailIntermediatePoints[currentSailSegment].coordinatesY
+      });
+    uint64 segmentStartTime = currentSailSegment == 0
+      ? rosterData.setSailAt
+      : sailIntermediatePoints[currentSailSegment - 1].segmentShouldStartAt;
+    uint64 segmentEndTime = currentSailSegment == sailIntermediatePoints.length
+      ? rosterData.setSailAt + rosterData.sailDuration
+      : sailIntermediatePoints[currentSailSegment].segmentShouldStartAt;
+
+    if (currentTime >= segmentEndTime && currentSailSegment == sailIntermediatePoints.length) {
+      bool isValid = RouteUtil.isValidPositionUpdateAfterSailDuration(
+        segmentEnd,
+        Coordinates({ x: updatedCoordinatesX, y: updatedCoordinatesY })
+      );
+      if (!isValid) {
+        revert InvalidPositionUpdateAfterSailDuration(
+          segmentEnd,
+          Coordinates({ x: updatedCoordinatesX, y: updatedCoordinatesY })
+        );
+      }
+    } else {
+      bool isValid = RouteUtil.isValidPositionUpdate(
+        segmentStart,
+        segmentEnd,
+        segmentStartTime,
+        segmentEndTime,
+        currentTime,
+        Coordinates({ x: updatedCoordinatesX, y: updatedCoordinatesY })
+      );
+      if (!isValid) {
+        revert InvalidPositionUpdate(
+          segmentStart,
+          segmentEnd,
+          segmentStartTime,
+          segmentEndTime,
+          currentTime,
+          Coordinates({ x: updatedCoordinatesX, y: updatedCoordinatesY })
+        );
+      }
+    }
+    uint8 newStatus = rosterData.status;
+    if (updatedCoordinatesX == rosterData.targetCoordinatesX && updatedCoordinatesY == rosterData.targetCoordinatesY) {
+      newStatus = RosterStatus.AT_ANCHOR;
+    }
+    RosterLocationUpdated memory e;
+    e.playerId = playerId;
+    e.sequenceNumber = sequenceNumber;
+    e.currentSailSegment = currentSailSegment;
+    e.updatedCoordinatesX = updatedCoordinatesX;
+    e.updatedCoordinatesY = updatedCoordinatesY;
+    e.coordinatesUpdatedAt = currentTime;
+    e.newStatus = newStatus;
+    e.oldStatus = rosterData.status;
+    return e;
   }
 
   /**
@@ -61,41 +141,19 @@ library RosterUpdateLocationLogic {
     RosterLocationUpdated memory rosterLocationUpdated,
     RosterData memory rosterData
   ) internal pure returns (RosterData memory) {
-    // If necessary, change state mutability modifier of the function from `pure` to `view` or just delete `pure`.
+    // Update the roster's status
+    rosterData.status = uint8(rosterLocationUpdated.newStatus);
 
-    // NOTE: The SailIntPoint entity is managed separately.
-    // The actual storage of the SailIntPoint (SailIntPointData) would be handled by the SailIntPointLib library.
-    // Note: Functions cannot be declared as pure or view if you modify the state of the SailIntPoint entity.
+    // Update the coordinates
+    rosterData.updatedCoordinatesX = rosterLocationUpdated.updatedCoordinatesX;
+    rosterData.updatedCoordinatesY = rosterLocationUpdated.updatedCoordinatesY;
 
-    //
-    // The fields (types and names) of the struct SailIntPointData:
-    //   uint32 sailIntermediatePointCoordinatesX // The CoordinatesX of the SailIntermediatePoint.
-    //   uint32 sailIntermediatePointCoordinatesY // The CoordinatesY of the SailIntermediatePoint.
-    //   uint64 sailIntermediatePointSegmentShouldStartAt // The SegmentShouldStartAt of the SailIntermediatePoint.
-    //
+    // Update the timestamp of the last coordinate update
+    rosterData.coordinatesUpdatedAt = rosterLocationUpdated.coordinatesUpdatedAt;
 
-    //
-    // The fields (types and names) of the struct RosterData:
-    //   uint8 status
-    //   uint32 speed
-    //   uint32 baseExperience // The base experience value gained by the player when the roster is destroyed
-    //   bool environmentOwned // Whether the roster is owned by the environment
-    //   uint32 updatedCoordinatesX // The X of the UpdatedCoordinates. UpdatedCoordinates: The last updated coordinates
-    //   uint32 updatedCoordinatesY // The Y of the UpdatedCoordinates. UpdatedCoordinates: The last updated coordinates
-    //   uint64 coordinatesUpdatedAt
-    //   uint32 targetCoordinatesX // The X of the TargetCoordinates.
-    //   uint32 targetCoordinatesY // The Y of the TargetCoordinates.
-    //   uint32 originCoordinatesX // The X of the OriginCoordinates.
-    //   uint32 originCoordinatesY // The Y of the OriginCoordinates.
-    //   uint64 sailDuration
-    //   uint64 setSailAt
-    //   uint16 currentSailSegment // The current sail segment index, starting from 0
-    //   uint256 shipBattleId
-    //   uint256[] shipIds
-    //
+    // Update the current sail segment
+    rosterData.currentSailSegment = rosterLocationUpdated.currentSailSegment;
 
-    // TODO: update state properties...
-    //rosterData.{STATE_PROPERTY} = rosterLocationUpdated.{EVENT_PROPERTY};
     return rosterData;
   }
 }

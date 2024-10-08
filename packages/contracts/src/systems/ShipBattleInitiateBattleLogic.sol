@@ -11,6 +11,7 @@ import { ShipBattleUtil } from "../utils/ShipBattleUtil.sol";
 import { RosterDataInstance } from "../utils/RosterDataInstance.sol";
 import { RosterId } from "./RosterId.sol";
 import { ShipBattleLocationParams } from "./ShipBattleLocationParams.sol";
+import { RosterDelegationLib } from "./RosterDelegationLib.sol";
 
 library ShipBattleInitiateBattleLogic {
   using RosterDataInstance for RosterData;
@@ -30,7 +31,7 @@ library ShipBattleInitiateBattleLogic {
     uint256 responderRosterPlayerId,
     uint32 responderRosterSequenceNumber,
     ShipBattleLocationParams memory updateLocationParams
-  ) internal view returns (ShipBattleInitiated memory) {
+  ) internal returns (ShipBattleInitiated memory) {
     // uint32 initiatorCoordinatesX;
     // uint32 initiatorCoordinatesY;
     // uint16 updatedInitiatorSailSeg;
@@ -60,33 +61,49 @@ library ShipBattleInitiateBattleLogic {
     RosterUtil.assertRosterIsNotUnassignedShips(responderRosterSequenceNumber);
 
     uint64 currentTimestamp = uint64(block.timestamp);
+    // if (initiator.status == uint8(RosterStatus.UNDERWAY)) {
+    //   (bool updatable, uint64 t, ) = initiator.isCurrentLocationUpdatable(
+    //     currentTimestamp,
+    //     updateLocationParams.initiatorCoordinates.x,
+    //     updateLocationParams.initiatorCoordinates.y
+    //   );
+    //   if (updatable) {
+    //     initiator.updatedCoordinatesX = updateLocationParams.initiatorCoordinates.x;
+    //     initiator.updatedCoordinatesY = updateLocationParams.initiatorCoordinates.y;
+    //     initiator.coordinatesUpdatedAt = t;
+    //   }
+    // }
+    // if (responder.status == uint8(RosterStatus.UNDERWAY)) {
+    //   (bool updatable, uint64 t, ) = responder.isCurrentLocationUpdatable(
+    //     currentTimestamp,
+    //     updateLocationParams.responderCoordinates.x,
+    //     updateLocationParams.responderCoordinates.y
+    //   );
+    //   if (updatable) {
+    //     responder.updatedCoordinatesX = updateLocationParams.responderCoordinates.x;
+    //     responder.updatedCoordinatesY = updateLocationParams.responderCoordinates.y;
+    //     responder.coordinatesUpdatedAt = t;
+    //   }
+    // }
 
-    // Update the locations of the two rosters
-    if (initiator.status == uint8(RosterStatus.UNDERWAY)) {
-      (bool updatable, uint64 t, ) = initiator.isCurrentLocationUpdatable(
-        currentTimestamp,
-        updateLocationParams.initiatorCoordinates.x,
-        updateLocationParams.initiatorCoordinates.y
-      );
-      if (updatable) {
-        initiator.updatedCoordinatesX = updateLocationParams.initiatorCoordinates.x;
-        initiator.updatedCoordinatesY = updateLocationParams.initiatorCoordinates.y;
-        initiator.coordinatesUpdatedAt = t;
-      }
-    }
-
-    if (responder.status == uint8(RosterStatus.UNDERWAY)) {
-      (bool updatable, uint64 t, ) = responder.isCurrentLocationUpdatable(
-        currentTimestamp,
-        updateLocationParams.responderCoordinates.x,
-        updateLocationParams.responderCoordinates.y
-      );
-      if (updatable) {
-        responder.updatedCoordinatesX = updateLocationParams.responderCoordinates.x;
-        responder.updatedCoordinatesY = updateLocationParams.responderCoordinates.y;
-        responder.coordinatesUpdatedAt = t;
-      }
-    }
+    // Update the locations of the initiator and responder rosters
+    RosterDelegationLib.updateLocation(
+      initiatorRosterPlayerId,
+      initiatorRosterSequenceNumber,
+      updateLocationParams.initiatorCoordinates.x,
+      updateLocationParams.initiatorCoordinates.y,
+      updateLocationParams.updatedInitiatorSailSeg
+    );
+    RosterDelegationLib.updateLocation(
+      responderRosterPlayerId,
+      responderRosterSequenceNumber,
+      updateLocationParams.responderCoordinates.x,
+      updateLocationParams.responderCoordinates.y,
+      updateLocationParams.updatedResponderSailSeg
+    );
+    // Reload the state of the initiator and responder rosters
+    initiator = Roster.get(initiatorRosterPlayerId, initiatorRosterSequenceNumber);
+    responder = Roster.get(responderRosterPlayerId, responderRosterSequenceNumber);
 
     if (!ShipBattleUtil.areRostersCloseEnough(initiator, responder)) revert NotCloseEnoughToBattle();
 
