@@ -9,6 +9,7 @@ import { SkillProcessDelegationLib } from "./SkillProcessDelegationLib.sol";
 import { RosterDelegationLib } from "./RosterDelegationLib.sol";
 import { RosterSailUtil } from "../utils/RosterSailUtil.sol";
 import { Coordinates } from "../systems/Coordinates.sol";
+import { UpdateLocationParams } from "./UpdateLocationParams.sol";
 
 contract AggregatorServiceSystem is System {
   using SafeERC20 for IERC20;
@@ -99,22 +100,19 @@ contract AggregatorServiceSystem is System {
     uint32 targetCoordinatesY,
     uint64 energyAmount,
     uint64 sailDuration,
-    uint32 updatedCoordinatesX,
-    uint32 updatedCoordinatesY,
-    uint16 updatedSailSegment,
+    UpdateLocationParams memory updateLocationParams,
     Coordinates[] memory intermediatePoints
   ) public {
     //uint32 newUpdatedCoordinatesX, uint32 newUpdatedCoordinatesY
-    uint256 requiredEnergy = RosterSailUtil
-      .calculateEnergyCost(
-        playerId,
-        rosterSequenceNumber,
-        //targetCoordinatesX,
-        //targetCoordinatesY,
-        sailDuration
-        //updatedCoordinatesX,
-        //updatedCoordinatesY
-      );
+    uint256 requiredEnergy = RosterSailUtil.calculateEnergyCost(
+      playerId,
+      rosterSequenceNumber,
+      //targetCoordinatesX,
+      //targetCoordinatesY,
+      sailDuration
+      //updatedCoordinatesX,
+      //updatedCoordinatesY
+    );
     if (requiredEnergy > energyAmount) {
       revert InsufficientEnergy(requiredEnergy, energyAmount);
     }
@@ -129,16 +127,25 @@ contract AggregatorServiceSystem is System {
     IERC20 token = IERC20(tokenAddress);
     token.safeTransferFrom(_msgSender(), address(this), energyAmount);
 
+    //
+    // TODO: If roster is already underway, update its location
+    //
     RosterDelegationLib.setSail(
       playerId,
       rosterSequenceNumber,
       targetCoordinatesX,
       targetCoordinatesY,
       sailDuration,
-      updatedCoordinatesX, //newUpdatedCoordinatesX,
-      updatedCoordinatesY, //newUpdatedCoordinatesY,
-      updatedSailSegment,
+      updateLocationParams,
       intermediatePoints
     );
+  }
+
+  function uniApiRosterUpdateLocation(
+    uint256 playerId,
+    uint32 rosterSequenceNumber,
+    UpdateLocationParams memory updateLocationParams
+  ) public {
+    RosterDelegationLib.updateLocation(playerId, rosterSequenceNumber, updateLocationParams);
   }
 }

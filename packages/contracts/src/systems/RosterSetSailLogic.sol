@@ -10,6 +10,7 @@ import { SpeedUtil } from "../utils/SpeedUtil.sol";
 import { RosterStatus } from "./RosterStatus.sol";
 import { Coordinates } from "./Coordinates.sol";
 import { SailIntPointLib } from "./SailIntPointLib.sol";
+import { UpdateLocationParams } from "./UpdateLocationParams.sol";
 
 library RosterSetSailLogic {
   using RosterDataInstance for RosterData;
@@ -25,9 +26,7 @@ library RosterSetSailLogic {
     uint32 targetCoordinatesX,
     uint32 targetCoordinatesY,
     uint64 sailDuration,
-    uint32 updatedCoordinatesX,
-    uint32 updatedCoordinatesY,
-    uint16 updatedSailSegment,
+    UpdateLocationParams memory updateLocationParams,
     Coordinates[] memory intermediatePoints,
     RosterData memory rosterData
   ) internal returns (RosterSetSail memory) {
@@ -39,6 +38,16 @@ library RosterSetSailLogic {
     // and update the current position of the Roster if necessary,
     // and reset rosterData.status to RosterStatus.AT_ANCHOR or RosterStatus.UNDERWAY.
     //
+    uint32 updatedCoordinatesX = updateLocationParams.updatedCoordinates.x;
+    if (updatedCoordinatesX == 0) {
+      updatedCoordinatesX = rosterData.updatedCoordinatesX;
+    }
+    uint32 updatedCoordinatesY = updateLocationParams.updatedCoordinates.y;
+    if (updatedCoordinatesY == 0) {
+      updatedCoordinatesY = rosterData.updatedCoordinatesY;
+    }
+    uint16 updatedSailSegment = updateLocationParams.updatedSailSegment;
+
     if (rosterData.status != RosterStatus.AT_ANCHOR && rosterData.status != RosterStatus.UNDERWAY) {
       revert RosterUnfitToSail(rosterData.status);
     }
@@ -76,9 +85,11 @@ library RosterSetSailLogic {
     e.targetCoordinatesY = targetCoordinatesY;
     e.sailDuration = sailDuration;
     e.setSailAt = setSailAt;
-    e.updatedCoordinatesX = updatedCoordinatesX;
-    e.updatedCoordinatesY = updatedCoordinatesY;
-    e.updatedSailSegment = updatedSailSegment;
+    e.updateLocationParams = UpdateLocationParams({
+      updatedCoordinates: Coordinates(updatedCoordinatesX, updatedCoordinatesY),
+      updatedSailSegment: 0, //updatedSailSegment
+      updatedAt: setSailAt
+    });
     e.intermediatePoints = intermediatePoints;
     return e;
   }
@@ -87,17 +98,18 @@ library RosterSetSailLogic {
     RosterSetSail memory rosterSetSail,
     RosterData memory rosterData
   ) internal pure returns (RosterData memory) {
-    rosterData.updatedCoordinatesX = rosterSetSail.updatedCoordinatesX;
-    rosterData.updatedCoordinatesY = rosterSetSail.updatedCoordinatesY;
+    rosterData.updatedCoordinatesX = rosterSetSail.updateLocationParams.updatedCoordinates.x;
+    rosterData.updatedCoordinatesY = rosterSetSail.updateLocationParams.updatedCoordinates.y;
     rosterData.targetCoordinatesX = rosterSetSail.targetCoordinatesX;
     rosterData.targetCoordinatesY = rosterSetSail.targetCoordinatesY;
-    rosterData.originCoordinatesX = rosterSetSail.updatedCoordinatesX;
-    rosterData.originCoordinatesY = rosterSetSail.updatedCoordinatesY;
+    rosterData.originCoordinatesX = rosterSetSail.updateLocationParams.updatedCoordinates.x;
+    rosterData.originCoordinatesY = rosterSetSail.updateLocationParams.updatedCoordinates.y;
     rosterData.coordinatesUpdatedAt = rosterSetSail.setSailAt;
     rosterData.setSailAt = rosterSetSail.setSailAt;
+    rosterData.currentSailSegment = 0; // reset current sail segment
     if (
-      rosterSetSail.targetCoordinatesX != rosterSetSail.updatedCoordinatesX ||
-      rosterSetSail.targetCoordinatesY != rosterSetSail.updatedCoordinatesY
+      rosterSetSail.targetCoordinatesX != rosterSetSail.updateLocationParams.updatedCoordinates.x ||
+      rosterSetSail.targetCoordinatesY != rosterSetSail.updateLocationParams.updatedCoordinates.y
     ) {
       rosterData.status = uint8(RosterStatus.UNDERWAY);
     } else {

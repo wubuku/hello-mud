@@ -12,6 +12,7 @@ import { RosterDataInstance } from "../utils/RosterDataInstance.sol";
 import { RosterId } from "./RosterId.sol";
 import { ShipBattleLocationParams } from "./ShipBattleLocationParams.sol";
 import { RosterDelegationLib } from "./RosterDelegationLib.sol";
+import { UpdateLocationParams } from "./UpdateLocationParams.sol";
 
 library ShipBattleInitiateBattleLogic {
   using RosterDataInstance for RosterData;
@@ -87,20 +88,36 @@ library ShipBattleInitiateBattleLogic {
     // }
 
     // Update the locations of the initiator and responder rosters
-    RosterDelegationLib.updateLocation(
-      initiatorRosterPlayerId,
-      initiatorRosterSequenceNumber,
-      updateLocationParams.initiatorCoordinates.x,
-      updateLocationParams.initiatorCoordinates.y,
-      updateLocationParams.updatedInitiatorSailSeg
-    );
-    RosterDelegationLib.updateLocation(
-      responderRosterPlayerId,
-      responderRosterSequenceNumber,
-      updateLocationParams.responderCoordinates.x,
-      updateLocationParams.responderCoordinates.y,
-      updateLocationParams.updatedResponderSailSeg
-    );
+    if (
+      updateLocationParams.updatedAt != 0 &&
+      updateLocationParams.initiatorCoordinates.x != 0 &&
+      updateLocationParams.initiatorCoordinates.y != 0
+    ) {
+      RosterDelegationLib.updateLocation(
+        initiatorRosterPlayerId,
+        initiatorRosterSequenceNumber,
+        UpdateLocationParams({
+          updatedCoordinates: updateLocationParams.initiatorCoordinates,
+          updatedSailSegment: updateLocationParams.updatedInitiatorSailSeg,
+          updatedAt: updateLocationParams.updatedAt
+        })
+      );
+    }
+    if (
+      updateLocationParams.updatedAt != 0 &&
+      updateLocationParams.responderCoordinates.x != 0 &&
+      updateLocationParams.responderCoordinates.y != 0
+    ) {
+      RosterDelegationLib.updateLocation(
+        responderRosterPlayerId,
+        responderRosterSequenceNumber,
+        UpdateLocationParams({
+          updatedCoordinates: updateLocationParams.responderCoordinates,
+          updatedSailSegment: updateLocationParams.updatedResponderSailSeg,
+          updatedAt: updateLocationParams.updatedAt
+        })
+      );
+    }
     // Reload the state of the initiator and responder rosters
     initiator = Roster.get(initiatorRosterPlayerId, initiatorRosterSequenceNumber);
     responder = Roster.get(responderRosterPlayerId, responderRosterSequenceNumber);

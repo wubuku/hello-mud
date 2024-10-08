@@ -23,7 +23,7 @@ library ShipBattleDelegationLib {
       WorldContextConsumerLib._msgSender(),
       shipBattleInitiateSystemId,
       abi.encodeWithSignature(
-        "initiateShipBattle(uint256,uint256,uint32,uint256,uint32,((uint32,uint32),uint16,(uint32,uint32),uint16))",
+        "initiateShipBattle(uint256,uint256,uint32,uint256,uint32,((uint32,uint32),uint16,(uint32,uint32),uint16,uint64))",
         playerId, initiatorRosterPlayerId, initiatorRosterSequenceNumber, responderRosterPlayerId, responderRosterSequenceNumber, updateLocationParams
       )
     );

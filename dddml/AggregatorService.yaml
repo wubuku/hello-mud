@@ -73,6 +73,8 @@ services:
   # RosterService:
   #   methods:
       RosterSetSail: # SetSail
+        metadata:
+          DisableFlatteningForParameters: ["UpdateLocationParams"]
         parameters:
           PlayerId:
             type: u256 #referenceType: Player
@@ -91,10 +93,18 @@ services:
             type: u64
           SailDuration:
             type: u64
-          UpdatedCoordinates:
-            type: Coordinates
-          UpdatedSailSegment:
-            type: u16
-            description: "Last sail segment index to be updated"
+          UpdateLocationParams:
+            type: UpdateLocationParams
           IntermediatePoints:
             itemType: Coordinates
+
+      RosterUpdateLocation:
+        metadata:
+          DisableFlatteningForParameters: ["UpdateLocationParams"]
+        parameters:
+          PlayerId:
+            type: u256 #referenceType: Player
+          RosterSequenceNumber:
+            type: u32
+          UpdateLocationParams:
+            type: UpdateLocationParams

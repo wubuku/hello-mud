@@ -11,5 +11,6 @@ struct ShipBattleLocationParams {
   uint16 updatedInitiatorSailSeg;
   Coordinates responderCoordinates;
   uint16 updatedResponderSailSeg;
+  uint64 updatedAt;
 }
 

@@ -19,6 +19,7 @@ import { ItemIdQuantityPair } from "../src/systems/ItemIdQuantityPair.sol";
 import { RosterUtil } from "../src/utils/RosterUtil.sol";
 import { SpeedUtil } from "../src/utils/SpeedUtil.sol";
 import { Coordinates } from "../src/systems/Coordinates.sol";
+import { UpdateLocationParams } from "../src/systems/UpdateLocationParams.sol";
 
 contract RosterSetSailTest is Script {
   //
@@ -85,15 +86,16 @@ contract RosterSetSailTest is Script {
       intermediatePoints
     );
     console.log("Sail duration:", sailDuration);
-    world.app__rosterSetSail(
+    uint64 energyAmount = 100000000000;
+    UpdateLocationParams memory updateLocationParams; //empty
+    world.app__uniApiRosterSetSail(
       playerId,
       currentRosterSequenceNumber,
       targetCoordinatesX,
       targetCoordinatesY,
+      energyAmount,
       sailDuration,
-      originCoordinatesX,
-      originCoordinatesY,
-      0,
+      updateLocationParams,
       intermediatePoints
     );
     console.log("Set sail a roster to target coordinates:", targetCoordinatesX, targetCoordinatesY);

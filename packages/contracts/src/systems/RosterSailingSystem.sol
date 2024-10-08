@@ -9,6 +9,7 @@ import { RosterSetSail, RosterLocationUpdated } from "./RosterEvents.sol";
 import { RosterSetSailLogic } from "./RosterSetSailLogic.sol";
 import { RosterUpdateLocationLogic } from "./RosterUpdateLocationLogic.sol";
 import { Coordinates } from "./Coordinates.sol";
+import { UpdateLocationParams } from "./UpdateLocationParams.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
 import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
 import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
@@ -16,9 +17,9 @@ import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/World
 contract RosterSailingSystem is System {
   using WorldResourceIdInstance for ResourceId;
 
-  event RosterSetSailEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint32 targetCoordinatesX, uint32 targetCoordinatesY, uint64 sailDuration, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY, uint16 updatedSailSegment, uint64 setSailAt);
+  event RosterSetSailEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint32 targetCoordinatesX, uint32 targetCoordinatesY, uint64 sailDuration, UpdateLocationParams updateLocationParams, uint64 setSailAt);
 
-  event RosterLocationUpdatedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY, uint16 currentSailSegment, uint64 coordinatesUpdatedAt, uint8 newStatus, uint8 oldStatus);
+  event RosterLocationUpdatedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, UpdateLocationParams updateLocationParams, uint64 coordinatesUpdatedAt, uint8 newStatus, uint8 oldStatus);
 
   function _requireNamespaceOwner() internal view {
     ResourceId _thisSystemId = SystemRegistry.get(address(this));
@@ -26,30 +27,30 @@ contract RosterSailingSystem is System {
     require(_thisNamespaceOwner == _msgSender(), "Require namespace owner");
   }
 
-  function rosterSetSail(uint256 playerId, uint32 sequenceNumber, uint32 targetCoordinatesX, uint32 targetCoordinatesY, uint64 sailDuration, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY, uint16 updatedSailSegment, Coordinates[] memory intermediatePoints) public {
+  function rosterSetSail(uint256 playerId, uint32 sequenceNumber, uint32 targetCoordinatesX, uint32 targetCoordinatesY, uint64 sailDuration, UpdateLocationParams memory updateLocationParams, Coordinates[] memory intermediatePoints) public {
     RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
     require(
       !(rosterData.status == uint8(0) && rosterData.speed == uint32(0) && rosterData.baseExperience == uint32(0) && rosterData.environmentOwned == false && rosterData.updatedCoordinatesX == uint32(0) && rosterData.updatedCoordinatesY == uint32(0) && rosterData.coordinatesUpdatedAt == uint64(0) && rosterData.targetCoordinatesX == uint32(0) && rosterData.targetCoordinatesY == uint32(0) && rosterData.originCoordinatesX == uint32(0) && rosterData.originCoordinatesY == uint32(0) && rosterData.sailDuration == uint64(0) && rosterData.setSailAt == uint64(0) && rosterData.currentSailSegment == uint16(0) && rosterData.shipBattleId == uint256(0) && rosterData.shipIds.length == 0),
       "Roster does not exist"
     );
-    RosterSetSail memory rosterSetSail_e = RosterSetSailLogic.verify(playerId, sequenceNumber, targetCoordinatesX, targetCoordinatesY, sailDuration, updatedCoordinatesX, updatedCoordinatesY, updatedSailSegment, intermediatePoints, rosterData);
+    RosterSetSail memory rosterSetSail_e = RosterSetSailLogic.verify(playerId, sequenceNumber, targetCoordinatesX, targetCoordinatesY, sailDuration, updateLocationParams, intermediatePoints, rosterData);
     rosterSetSail_e.playerId = playerId;
     rosterSetSail_e.sequenceNumber = sequenceNumber;
-    emit RosterSetSailEvent(rosterSetSail_e.playerId, rosterSetSail_e.sequenceNumber, rosterSetSail_e.targetCoordinatesX, rosterSetSail_e.targetCoordinatesY, rosterSetSail_e.sailDuration, rosterSetSail_e.updatedCoordinatesX, rosterSetSail_e.updatedCoordinatesY, rosterSetSail_e.updatedSailSegment, rosterSetSail_e.setSailAt);
+    emit RosterSetSailEvent(rosterSetSail_e.playerId, rosterSetSail_e.sequenceNumber, rosterSetSail_e.targetCoordinatesX, rosterSetSail_e.targetCoordinatesY, rosterSetSail_e.sailDuration, rosterSetSail_e.updateLocationParams, rosterSetSail_e.setSailAt);
     RosterData memory updatedRosterData = RosterSetSailLogic.mutate(rosterSetSail_e, rosterData);
     Roster.set(playerId, sequenceNumber, updatedRosterData);
   }
 
-  function rosterUpdateLocation(uint256 playerId, uint32 sequenceNumber, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY, uint16 currentSailSegment) public {
+  function rosterUpdateLocation(uint256 playerId, uint32 sequenceNumber, UpdateLocationParams memory updateLocationParams) public {
     RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
     require(
       !(rosterData.status == uint8(0) && rosterData.speed == uint32(0) && rosterData.baseExperience == uint32(0) && rosterData.environmentOwned == false && rosterData.updatedCoordinatesX == uint32(0) && rosterData.updatedCoordinatesY == uint32(0) && rosterData.coordinatesUpdatedAt == uint64(0) && rosterData.targetCoordinatesX == uint32(0) && rosterData.targetCoordinatesY == uint32(0) && rosterData.originCoordinatesX == uint32(0) && rosterData.originCoordinatesY == uint32(0) && rosterData.sailDuration == uint64(0) && rosterData.setSailAt == uint64(0) && rosterData.currentSailSegment == uint16(0) && rosterData.shipBattleId == uint256(0) && rosterData.shipIds.length == 0),
       "Roster does not exist"
     );
-    RosterLocationUpdated memory rosterLocationUpdated = RosterUpdateLocationLogic.verify(playerId, sequenceNumber, updatedCoordinatesX, updatedCoordinatesY, currentSailSegment, rosterData);
+    RosterLocationUpdated memory rosterLocationUpdated = RosterUpdateLocationLogic.verify(playerId, sequenceNumber, updateLocationParams, rosterData);
     rosterLocationUpdated.playerId = playerId;
     rosterLocationUpdated.sequenceNumber = sequenceNumber;
-    emit RosterLocationUpdatedEvent(rosterLocationUpdated.playerId, rosterLocationUpdated.sequenceNumber, rosterLocationUpdated.updatedCoordinatesX, rosterLocationUpdated.updatedCoordinatesY, rosterLocationUpdated.currentSailSegment, rosterLocationUpdated.coordinatesUpdatedAt, rosterLocationUpdated.newStatus, rosterLocationUpdated.oldStatus);
+    emit RosterLocationUpdatedEvent(rosterLocationUpdated.playerId, rosterLocationUpdated.sequenceNumber, rosterLocationUpdated.updateLocationParams, rosterLocationUpdated.coordinatesUpdatedAt, rosterLocationUpdated.newStatus, rosterLocationUpdated.oldStatus);
     RosterData memory updatedRosterData = RosterUpdateLocationLogic.mutate(rosterLocationUpdated, rosterData);
     Roster.set(playerId, sequenceNumber, updatedRosterData);
   }

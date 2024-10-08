@@ -23,31 +23,31 @@ library RouteUtil {
   }
 
   function isValidPositionUpdate(
-    Coordinates memory segmentStart,
-    Coordinates memory segmentEnd,
+    Coordinates memory segmentStartPoint,
+    Coordinates memory segmentEndPoint,
     uint64 segmentStartTime,
     uint64 segmentEndTime,
-    uint64 currentTime,
+    uint64 updateTime,
     Coordinates memory newPosition
   ) internal pure returns (bool) {
     // Check if currentTime is within allowed range
     if (
-      currentTime < segmentStartTime - ALLOWED_TIME_DEVIATION || currentTime > segmentEndTime + ALLOWED_TIME_DEVIATION
+      updateTime < segmentStartTime - ALLOWED_TIME_DEVIATION || updateTime > segmentEndTime + ALLOWED_TIME_DEVIATION
     ) {
       return false;
     }
 
     // Calculate expected current position
     Coordinates memory expectedPosition = DirectRouteUtil.calculateCurrentPosition(
-      segmentStart,
-      segmentEnd,
+      segmentStartPoint,
+      segmentEndPoint,
       segmentStartTime,
       segmentEndTime,
-      currentTime
+      updateTime
     );
 
     // Project new position onto segment
-    (, Coordinates memory projectedPosition) = projectPointOnSegment(segmentStart, segmentEnd, newPosition);
+    (, Coordinates memory projectedPosition) = projectPointOnSegment(segmentStartPoint, segmentEndPoint, newPosition);
 
     //if (!isWithinSegment) { // We intentionally ignore this check
     //  return false;

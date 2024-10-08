@@ -13,6 +13,7 @@ import { RosterId } from "./RosterId.sol";
 import { RosterDataInstance } from "../utils/RosterDataInstance.sol";
 import { ShipIdUtil } from "../utils/ShipIdUtil.sol";
 import { RosterDelegationLib } from "./RosterDelegationLib.sol";
+import { UpdateLocationParams } from "./UpdateLocationParams.sol";
 
 library RosterPutInShipInventoryLogic {
   using RosterDataInstance for RosterData;
@@ -28,11 +29,13 @@ library RosterPutInShipInventoryLogic {
     uint32 sequenceNumber,
     uint256 shipId,
     ItemIdQuantityPair[] memory itemIdQuantityPairs,
-    uint32 updatedCoordinatesX,
-    uint32 updatedCoordinatesY,
-    uint16 updatedSailSegment,
+    UpdateLocationParams memory updateLocationParams,
     RosterData memory rosterData
   ) internal returns (RosterShipInventoryPutIn memory) {
+    uint32 updatedCoordinatesX = updateLocationParams.updatedCoordinates.x;
+    uint32 updatedCoordinatesY = updateLocationParams.updatedCoordinates.y;
+    uint16 updatedSailSegment = updateLocationParams.updatedSailSegment;
+
     PlayerUtil.assertSenderIsPlayerOwner(playerId);
     PlayerData memory player = Player.get(playerId);
     RosterId memory rosterId = RosterId(playerId, sequenceNumber);
@@ -57,14 +60,13 @@ library RosterPutInShipInventoryLogic {
     //     rosterData.status = newStatus;
     //   }
     // }
-
-    RosterDelegationLib.updateLocation(
-      playerId,
-      sequenceNumber,
-      updatedCoordinatesX,
-      updatedCoordinatesY,
-      updatedSailSegment
-    );
+    if (
+      updateLocationParams.updatedAt != 0 &&
+      updateLocationParams.updatedCoordinates.x != 0 &&
+      updateLocationParams.updatedCoordinates.y != 0
+    ) {
+      RosterDelegationLib.updateLocation(playerId, sequenceNumber, updateLocationParams);
+    }
     // Reload the roster state
     rosterData = Roster.get(playerId, sequenceNumber);
 
@@ -76,9 +78,7 @@ library RosterPutInShipInventoryLogic {
         sequenceNumber: sequenceNumber,
         shipId: shipId,
         itemIdQuantityPairs: itemIdQuantityPairs,
-        updatedCoordinatesX: updatedCoordinatesX,
-        updatedCoordinatesY: updatedCoordinatesY,
-        updatedSailSegment: updatedSailSegment
+        updateLocationParams: updateLocationParams
       });
   }
 

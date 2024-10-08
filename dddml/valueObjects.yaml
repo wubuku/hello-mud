@@ -12,6 +12,16 @@ valueObjects:
         type: uint32
         columnName: y
 
+  UpdateLocationParams:
+    properties:
+      UpdatedCoordinates:
+        type: Coordinates
+      UpdatedSailSegment:
+        type: u16
+        description: "Last sail segment index to be updated"
+      UpdatedAt:
+        type: u64
+
   ExperienceLevel:
     properties:
       Level:
@@ -30,14 +40,12 @@ valueObjects:
         type: u32
         columnName: sequenceNumber
 
-
   ItemIdQuantityPair:
     properties:
       ItemId:
         type: u32
       Quantity:
         type: u32
-
 
 enumObjects:
   SkillType:
@@ -63,7 +71,6 @@ enumObjects:
         value: 8
       #Thieving:
       #  value: xxx
-
 
   MapLocationType:
     baseType: u32

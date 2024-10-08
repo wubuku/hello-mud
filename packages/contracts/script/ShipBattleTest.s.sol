@@ -122,7 +122,8 @@ contract ShipBattleTest is Script {
         initiatorCoordinates: Coordinates({ x: environmentRosterCoordinatesX, y: environmentRosterCoordinatesY }),
         updatedInitiatorSailSeg: 0,
         responderCoordinates: Coordinates({ x: environmentRosterCoordinatesX, y: environmentRosterCoordinatesY }),
-        updatedResponderSailSeg: 0
+        updatedResponderSailSeg: 0,
+        updatedAt: 0
       })
     );
     console.log("Initiated a ship battle and auto played till end");

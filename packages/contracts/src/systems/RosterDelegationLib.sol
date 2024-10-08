@@ -8,6 +8,7 @@ import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 import { IBaseWorld } from "@latticexyz/world/src/codegen/interfaces/IBaseWorld.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 import { Coordinates } from "./Coordinates.sol";
+import { UpdateLocationParams } from "./UpdateLocationParams.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 library RosterDelegationLib {
@@ -70,7 +71,7 @@ library RosterDelegationLib {
 
   }
 
-  function setSail(uint256 playerId, uint32 sequenceNumber, uint32 targetCoordinatesX, uint32 targetCoordinatesY, uint64 sailDuration, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY, uint16 updatedSailSegment, Coordinates[] memory intermediatePoints) internal {
+  function setSail(uint256 playerId, uint32 sequenceNumber, uint32 targetCoordinatesX, uint32 targetCoordinatesY, uint64 sailDuration, UpdateLocationParams memory updateLocationParams, Coordinates[] memory intermediatePoints) internal {
     ResourceId rosterSailingSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -82,14 +83,14 @@ library RosterDelegationLib {
       WorldContextConsumerLib._msgSender(),
       rosterSailingSystemId,
       abi.encodeWithSignature(
-        "rosterSetSail(uint256,uint32,uint32,uint32,uint64,uint32,uint32,uint16,(uint32,uint32)[])",
-        playerId, sequenceNumber, targetCoordinatesX, targetCoordinatesY, sailDuration, updatedCoordinatesX, updatedCoordinatesY, updatedSailSegment, intermediatePoints
+        "rosterSetSail(uint256,uint32,uint32,uint32,uint64,((uint32,uint32),uint16,uint64),(uint32,uint32)[])",
+        playerId, sequenceNumber, targetCoordinatesX, targetCoordinatesY, sailDuration, updateLocationParams, intermediatePoints
       )
     );
 
   }
 
-  function updateLocation(uint256 playerId, uint32 sequenceNumber, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY, uint16 currentSailSegment) internal {
+  function updateLocation(uint256 playerId, uint32 sequenceNumber, UpdateLocationParams memory updateLocationParams) internal {
     ResourceId rosterSailingSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -101,8 +102,8 @@ library RosterDelegationLib {
       WorldContextConsumerLib._msgSender(),
       rosterSailingSystemId,
       abi.encodeWithSignature(
-        "rosterUpdateLocation(uint256,uint32,uint32,uint32,uint16)",
-        playerId, sequenceNumber, updatedCoordinatesX, updatedCoordinatesY, currentSailSegment
+        "rosterUpdateLocation(uint256,uint32,((uint32,uint32),uint16,uint64))",
+        playerId, sequenceNumber, updateLocationParams
       )
     );
 
@@ -165,7 +166,7 @@ library RosterDelegationLib {
 
   }
 
-  function takeOutShipInventory(uint256 playerId, uint32 sequenceNumber, uint256 shipId, ItemIdQuantityPair[] memory itemIdQuantityPairs, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY, uint16 updatedSailSegment) internal {
+  function takeOutShipInventory(uint256 playerId, uint32 sequenceNumber, uint256 shipId, ItemIdQuantityPair[] memory itemIdQuantityPairs, UpdateLocationParams memory updateLocationParams) internal {
     ResourceId rosterShipInventorySystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -177,14 +178,14 @@ library RosterDelegationLib {
       WorldContextConsumerLib._msgSender(),
       rosterShipInventorySystemId,
       abi.encodeWithSignature(
-        "rosterTakeOutShipInventory(uint256,uint32,uint256,(uint32,uint32)[],uint32,uint32,uint16)",
-        playerId, sequenceNumber, shipId, itemIdQuantityPairs, updatedCoordinatesX, updatedCoordinatesY, updatedSailSegment
+        "rosterTakeOutShipInventory(uint256,uint32,uint256,(uint32,uint32)[],((uint32,uint32),uint16,uint64))",
+        playerId, sequenceNumber, shipId, itemIdQuantityPairs, updateLocationParams
       )
     );
 
   }
 
-  function putInShipInventory(uint256 playerId, uint32 sequenceNumber, uint256 shipId, ItemIdQuantityPair[] memory itemIdQuantityPairs, uint32 updatedCoordinatesX, uint32 updatedCoordinatesY, uint16 updatedSailSegment) internal {
+  function putInShipInventory(uint256 playerId, uint32 sequenceNumber, uint256 shipId, ItemIdQuantityPair[] memory itemIdQuantityPairs, UpdateLocationParams memory updateLocationParams) internal {
     ResourceId rosterShipInventorySystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -196,8 +197,8 @@ library RosterDelegationLib {
       WorldContextConsumerLib._msgSender(),
       rosterShipInventorySystemId,
       abi.encodeWithSignature(
-        "rosterPutInShipInventory(uint256,uint32,uint256,(uint32,uint32)[],uint32,uint32,uint16)",
-        playerId, sequenceNumber, shipId, itemIdQuantityPairs, updatedCoordinatesX, updatedCoordinatesY, updatedSailSegment
+        "rosterPutInShipInventory(uint256,uint32,uint256,(uint32,uint32)[],((uint32,uint32),uint16,uint64))",
+        playerId, sequenceNumber, shipId, itemIdQuantityPairs, updateLocationParams
       )
     );
 

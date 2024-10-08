@@ -17,6 +17,7 @@ import { SkillType } from "../src/systems/SkillType.sol";
 import { PlayerIdGenerator, ShipIdGenerator, ShipBattleIdGenerator, RosterData, Roster } from "../src/codegen/index.sol";
 import { ItemIdQuantityPair } from "../src/systems/ItemIdQuantityPair.sol";
 import { RosterUtil } from "../src/utils/RosterUtil.sol";
+import { UpdateLocationParams } from "../src/systems/UpdateLocationParams.sol";
 
 contract ShipInventoryTransferTest is Script {
   //
@@ -84,14 +85,15 @@ contract ShipInventoryTransferTest is Script {
     itemIdQuantityPairs[0] = ItemIdQuantityPair(102, 10); // 10 Cottons
     itemIdQuantityPairs[1] = ItemIdQuantityPair(200, 20); // 20 NormalLogs
     console.log("Coordinates:", originCoordinatesX, originCoordinatesY);
+
+    UpdateLocationParams memory updateLocationParams; //empty
+
     world.app__rosterPutInShipInventory(
       toRosterPlayerId,
       toRosterSequenceNumber,
       playerShipId,
       itemIdQuantityPairs,
-      originCoordinatesX,
-      originCoordinatesY,
-      0
+      updateLocationParams
     );
     console.log("Put in ship inventory");
 
@@ -100,9 +102,7 @@ contract ShipInventoryTransferTest is Script {
       toRosterSequenceNumber,
       playerShipId,
       itemIdQuantityPairs,
-      originCoordinatesX,
-      originCoordinatesY,
-      0
+      updateLocationParams
     );
     console.log("Taken out ship inventory");
 
@@ -111,9 +111,7 @@ contract ShipInventoryTransferTest is Script {
       toRosterSequenceNumber,
       playerShipId,
       itemIdQuantityPairs,
-      originCoordinatesX,
-      originCoordinatesY,
-      0
+      updateLocationParams
     );
     console.log("Put in ship inventory again");
 

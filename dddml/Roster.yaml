@@ -22,6 +22,7 @@ aggregates:
       - ShipBattle.TakeLoot
       #- Player.NftHolderClaimIsland
       - SkillProcess.CompleteShipProduction
+      - AggregatorService
     id:
       name: RosterId
       type: RosterId
@@ -120,6 +121,7 @@ aggregates:
         metadata:
           IsOnlyOpenToFriends: true
           MudSystemName: RosterSailingSystem
+          DisableFlatteningForParameters: ["UpdateLocationParams"]
         #requiredPermission: Owner # TODO: implement "Owner" permission?
         # isInternal: true
         parameters:
@@ -136,11 +138,8 @@ aggregates:
           #   eventPropertyName: EnergyCost
           SailDuration:
             type: u64
-          UpdatedCoordinates:
-            type: Coordinates
-          UpdatedSailSegment:
-            type: u16
-            description: "Last sail segment index to be updated"
+          UpdateLocationParams:
+            type: UpdateLocationParams
           IntermediatePoints:
             itemType: Coordinates
         event:
@@ -155,11 +154,10 @@ aggregates:
         metadata:
           IsOnlyOpenToFriends: true
           MudSystemName: RosterSailingSystem
+          DisableFlatteningForParameters: ["UpdateLocationParams"]
         parameters:
-          UpdatedCoordinates:
-            type: Coordinates
-          CurrentSailSegment:
-            type: u16
+          UpdateLocationParams:
+            type: UpdateLocationParams
           #Clock:
           #  referenceType: Clock
           #  isIgnoredInEvent: true
@@ -235,6 +233,7 @@ aggregates:
       TakeOutShipInventory:
         metadata:
           MudSystemName: RosterShipInventorySystem
+          DisableFlatteningForParameters: ["UpdateLocationParams"]
         inheritsFrom: RosterTemplate.InOutShipInventory
         #parameters:
         event:
@@ -243,6 +242,7 @@ aggregates:
       PutInShipInventory:
         metadata:
           MudSystemName: RosterShipInventorySystem
+          DisableFlatteningForParameters: ["UpdateLocationParams"]
         inheritsFrom: RosterTemplate.InOutShipInventory
         #parameters:
         event:
@@ -253,6 +253,8 @@ superObjects:
     isTemplate: true
     methods:
       InOutShipInventory:
+        # metadata:
+        #   DisableFlatteningForParameters: ["UpdateLocationParams"]
         parameters:
           #Player:
           #  referenceType: Player
@@ -265,10 +267,7 @@ superObjects:
             type: u256 #ID
           ItemIdQuantityPairs:
             itemType: ItemIdQuantityPair
-          UpdatedCoordinates:
-            type: Coordinates
-          UpdatedSailSegment:
-            type: u16
-            description: "Last sail segment index to be updated"
+          UpdateLocationParams:
+            type: UpdateLocationParams
 
 

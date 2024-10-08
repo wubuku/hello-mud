@@ -16,7 +16,7 @@ library RosterSailUtil {
 
   error RosterUnfitToSail(uint8 status);
   error InvalidUpdatedCoordinates(uint32 updatedCoordinatesX, uint32 updatedCoordinatesY);
-  error IllegalSailDuration(uint64 totalTime, uint64 sailDuration);
+  //error IllegalSailDuration(uint64 totalTime, uint64 sailDuration);
 
   function calculateEnergyCost(
     uint256 playerId,

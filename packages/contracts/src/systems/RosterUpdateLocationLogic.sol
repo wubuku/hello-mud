@@ -9,25 +9,30 @@ import { SailIntPoint } from "../codegen/index.sol";
 import { RosterStatus } from "./RosterStatus.sol";
 import { RouteUtil } from "../utils/RouteUtil.sol";
 import { Coordinates } from "./Coordinates.sol";
+import { UpdateLocationParams } from "./UpdateLocationParams.sol";
 
 // Add these custom errors at the top of the file, after the imports
 error RosterNotUnderway(uint8 currentStatus);
 error InvalidSailSegment(uint16 currentSailSegment, uint16 oldSailSegment);
 error InvalidPositionUpdateAfterSailDuration(Coordinates segmentEnd, Coordinates updatedCoordinates);
 error InvalidPositionUpdate(
-  Coordinates segmentStart,
-  Coordinates segmentEnd,
+  Coordinates segmentStartPoint,
+  Coordinates segmentEndPoint,
   uint64 segmentStartTime,
   uint64 segmentEndTime,
-  uint64 currentTime,
+  uint64 updateTime,
   Coordinates updatedCoordinates
 );
+error EarlyUpdate(uint64 updateTime, uint64 currentTime);
+error InvalidUpdateTime(uint64 updateTime, uint64 lastUpdateTime);
 
 /**
  * @title RosterUpdateLocationLogic Library
  * @dev Implements the Roster.UpdateLocation method.
  */
 library RosterUpdateLocationLogic {
+  uint64 constant MAX_UPDATE_TIME_DELAY = 30; // Is this a good value?
+
   /**
    * @notice Verifies the Roster.UpdateLocation command.
    * @param rosterData The current state the Roster.
@@ -36,15 +41,22 @@ library RosterUpdateLocationLogic {
   function verify(
     uint256 playerId,
     uint32 sequenceNumber,
-    uint32 updatedCoordinatesX,
-    uint32 updatedCoordinatesY,
-    uint16 currentSailSegment,
+    UpdateLocationParams memory updateLocationParams,
     RosterData memory rosterData
   ) internal view returns (RosterLocationUpdated memory) {
+    uint32 updatedCoordinatesX = updateLocationParams.updatedCoordinates.x;
+    uint32 updatedCoordinatesY = updateLocationParams.updatedCoordinates.y;
+    uint16 currentSailSegment = updateLocationParams.updatedSailSegment;
+    if (updateLocationParams.updatedAt > block.timestamp) {
+      revert EarlyUpdate(updateLocationParams.updatedAt, uint64(block.timestamp));
+    }
+    if (updateLocationParams.updatedAt < rosterData.coordinatesUpdatedAt) {
+      revert InvalidUpdateTime(updateLocationParams.updatedAt, rosterData.coordinatesUpdatedAt);
+    }
+
     if (rosterData.status != RosterStatus.UNDERWAY) {
       revert RosterNotUnderway(rosterData.status);
     }
-    uint64 currentTime = uint64(block.timestamp);
     SailIntPointData[] memory sailIntermediatePoints = SailIntPointLib.getAllSailIntermediatePoints(
       playerId,
       sequenceNumber
@@ -64,13 +76,13 @@ library RosterUpdateLocationLogic {
       currentSailSegment = 0;
     }
     // Get current sail segment start and end coordinates
-    Coordinates memory segmentStart = currentSailSegment == 0
+    Coordinates memory segmentStartPoint = currentSailSegment == 0
       ? Coordinates({ x: rosterData.originCoordinatesX, y: rosterData.originCoordinatesY })
       : Coordinates({
         x: sailIntermediatePoints[currentSailSegment - 1].coordinatesX,
         y: sailIntermediatePoints[currentSailSegment - 1].coordinatesY
       });
-    Coordinates memory segmentEnd = currentSailSegment == sailIntermediatePoints.length
+    Coordinates memory segmentEndPoint = currentSailSegment == sailIntermediatePoints.length
       ? Coordinates({ x: rosterData.targetCoordinatesX, y: rosterData.targetCoordinatesY })
       : Coordinates({
         x: sailIntermediatePoints[currentSailSegment].coordinatesX,
@@ -83,33 +95,33 @@ library RosterUpdateLocationLogic {
       ? rosterData.setSailAt + rosterData.sailDuration
       : sailIntermediatePoints[currentSailSegment].segmentShouldStartAt;
 
-    if (currentTime >= segmentEndTime && currentSailSegment == sailIntermediatePoints.length) {
+    if (updateLocationParams.updatedAt >= segmentEndTime && currentSailSegment == sailIntermediatePoints.length) {
       bool isValid = RouteUtil.isValidPositionUpdateAfterSailDuration(
-        segmentEnd,
+        segmentEndPoint,
         Coordinates({ x: updatedCoordinatesX, y: updatedCoordinatesY })
       );
       if (!isValid) {
         revert InvalidPositionUpdateAfterSailDuration(
-          segmentEnd,
+          segmentEndPoint,
           Coordinates({ x: updatedCoordinatesX, y: updatedCoordinatesY })
         );
       }
     } else {
       bool isValid = RouteUtil.isValidPositionUpdate(
-        segmentStart,
-        segmentEnd,
+        segmentStartPoint,
+        segmentEndPoint,
         segmentStartTime,
         segmentEndTime,
-        currentTime,
+        updateLocationParams.updatedAt,
         Coordinates({ x: updatedCoordinatesX, y: updatedCoordinatesY })
       );
       if (!isValid) {
         revert InvalidPositionUpdate(
-          segmentStart,
-          segmentEnd,
+          segmentStartPoint,
+          segmentEndPoint,
           segmentStartTime,
           segmentEndTime,
-          currentTime,
+          updateLocationParams.updatedAt,
           Coordinates({ x: updatedCoordinatesX, y: updatedCoordinatesY })
         );
       }
@@ -121,10 +133,8 @@ library RosterUpdateLocationLogic {
     RosterLocationUpdated memory e;
     e.playerId = playerId;
     e.sequenceNumber = sequenceNumber;
-    e.currentSailSegment = currentSailSegment;
-    e.updatedCoordinatesX = updatedCoordinatesX;
-    e.updatedCoordinatesY = updatedCoordinatesY;
-    e.coordinatesUpdatedAt = currentTime;
+    e.updateLocationParams = updateLocationParams;
+    e.coordinatesUpdatedAt = updateLocationParams.updatedAt;
     e.newStatus = newStatus;
     e.oldStatus = rosterData.status;
     return e;
@@ -145,14 +155,14 @@ library RosterUpdateLocationLogic {
     rosterData.status = uint8(rosterLocationUpdated.newStatus);
 
     // Update the coordinates
-    rosterData.updatedCoordinatesX = rosterLocationUpdated.updatedCoordinatesX;
-    rosterData.updatedCoordinatesY = rosterLocationUpdated.updatedCoordinatesY;
+    rosterData.updatedCoordinatesX = rosterLocationUpdated.updateLocationParams.updatedCoordinates.x;
+    rosterData.updatedCoordinatesY = rosterLocationUpdated.updateLocationParams.updatedCoordinates.y;
 
     // Update the timestamp of the last coordinate update
     rosterData.coordinatesUpdatedAt = rosterLocationUpdated.coordinatesUpdatedAt;
 
     // Update the current sail segment
-    rosterData.currentSailSegment = rosterLocationUpdated.currentSailSegment;
+    rosterData.currentSailSegment = rosterLocationUpdated.updateLocationParams.updatedSailSegment;
 
     return rosterData;
   }

@@ -19,6 +19,7 @@ import { ItemIdQuantityPair } from "../src/systems/ItemIdQuantityPair.sol";
 import { RosterUtil } from "../src/utils/RosterUtil.sol";
 import { SpeedUtil } from "../src/utils/SpeedUtil.sol";
 import { Coordinates } from "../src/systems/Coordinates.sol";
+import { UpdateLocationParams } from "../src/systems/UpdateLocationParams.sol";
 
 contract RosterUpdateLocationTest is Script {
   //
@@ -60,7 +61,7 @@ contract RosterUpdateLocationTest is Script {
     console.log("Roster set sail at:", rosterData.setSailAt);
     console.log("Roster sail duration:", rosterData.sailDuration);
 
-    uint64 elapsedTime = uint64(currentTimestamp - rosterData.setSailAt) + 1; // Add 1 sencond?
+    uint64 elapsedTime = uint64(currentTimestamp - rosterData.setSailAt);
     console.log("Elapsed sail time:", elapsedTime);
     Coordinates memory currentPosition = SpeedUtil.calculateDirectRouteCurrentPosition(
       rosterData.speed,
@@ -80,12 +81,16 @@ contract RosterUpdateLocationTest is Script {
     if (elapsedTime > rosterData.sailDuration) {
       currentPosition = Coordinates(rosterData.targetCoordinatesX, rosterData.targetCoordinatesY);
     }
-    world.app__rosterUpdateLocation(
+
+    UpdateLocationParams memory updateLocationParams;
+    updateLocationParams.updatedCoordinates = currentPosition;
+    updateLocationParams.updatedSailSegment = currentSegment;
+    updateLocationParams.updatedAt = uint64(currentTimestamp);
+
+    world.app__uniApiRosterUpdateLocation(
       playerId,
       currentRosterSequenceNumber,
-      currentPosition.x,
-      currentPosition.y,
-      currentSegment
+      updateLocationParams
     );
     console.log("Roster updated location");
 

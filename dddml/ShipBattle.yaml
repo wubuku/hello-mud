@@ -11,6 +11,9 @@ valueObjects:
       UpdatedResponderSailSeg:
         type: u16
         description: "Last responder sail segment index to be updated"
+      UpdatedAt:
+        type: u64
+
 
 aggregates:
   ShipBattle:
