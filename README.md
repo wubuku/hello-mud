@@ -191,6 +191,8 @@ You can compare the AI-generated code with the "handwritten" versions in our cur
 pnpm dev
 ```
 
+### Smoke tests
+
 After deployment, you can manually run the following "smoke" tests 
 (you may need to adjust the parameters in the test scripts as needed):
 
@@ -203,6 +205,35 @@ forge script script/ShipBattleTest.s.sol:ShipBattleTest --sig "run(address)" __W
 
 forge script script/GatherIslandResourcesTest.s.sol:GatherIslandResourcesTest --sig "run(address)" __WORLD_ADDRESS__ --broadcast --rpc-url http://localhost:8545
 ```
+
+### Roster sailing tests
+
+After deployment, run this smoke test first:
+
+```shell
+forge script script/ManualSmokeTest.s.sol:ManualSmokeTest --sig "run(address)" __WORLD_ADDRESS__ --broadcast --rpc-url http://localhost:8545
+```
+
+Then run this SetSail test:
+
+```shell
+forge script script/RosterSetSailTest.s.sol:RosterSetSailTest --sig "run(address)" __WORLD_ADDRESS__ --broadcast --rpc-url http://localhost:8545
+```
+
+Repeat this test several times, watching the Logs output:
+
+```shell
+forge script script/RosterUpdateLocationTest.s.sol:RosterUpdateLocationTest --sig "run(address)" __WORLD_ADDRESS__ --broadcast --rpc-url http://localhost:8545
+```
+
+After repeating the execution a number of times, the error `RosterNotUnderway` will be reported, 
+which means that the sailing is complete.
+
+
+SetSail biz logic implementation is here: [RosterSetSailLogic.sol](./packages/contracts/src/systems/RosterSetSailLogic.sol).
+
+UpdateLocation biz logic implementation is here: [RosterUpdateLocationLogic.sol](./packages/contracts/src/systems/RosterUpdateLocationLogic.sol).
+
 
 ### Test "Counter" contract
 
