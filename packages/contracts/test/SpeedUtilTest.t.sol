@@ -7,12 +7,12 @@ import { SpeedUtil, Coordinates } from "../src/utils/SpeedUtil.sol";
 // import { RosterUtil } from "../src/utils/RosterUtil.sol";
 
 contract SpeedUtilTest is Test {
-  function testCalculateTotalTime() public {
+  function testcalculateDirectRouteDuration() public {
     Coordinates memory origin = Coordinates(2147481827, 2147482947);
     Coordinates memory destination = Coordinates(2147482142, 2147482601);
     uint32 speed = 5;
 
-    uint64 totalTime = SpeedUtil.calculateTotalTime(origin, destination, speed);
+    uint64 totalTime = SpeedUtil.calculateDirectRouteDuration(origin, destination, speed);
 
     uint64 expectedTime = 31;
     console.log("totalTime:", totalTime);
@@ -35,7 +35,7 @@ contract SpeedUtilTest is Test {
     uint32 targetCoordinatesX = 2147483807; //originCoordinatesX + 10;
     uint32 targetCoordinatesY = 2147485457; // originCoordinatesY + 10;
 
-    uint64 totalTime2 = SpeedUtil.calculateTotalTime(
+    uint64 totalTime2 = SpeedUtil.calculateDirectRouteDuration(
       Coordinates(originCoordinatesX, originCoordinatesY),
       Coordinates(targetCoordinatesX, targetCoordinatesY),
       5

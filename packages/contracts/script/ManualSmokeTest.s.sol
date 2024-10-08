@@ -18,6 +18,7 @@ import { PlayerIdGenerator, ShipIdGenerator, ShipBattleIdGenerator, RosterData, 
 import { ItemIdQuantityPair } from "../src/systems/ItemIdQuantityPair.sol";
 import { RosterUtil } from "../src/utils/RosterUtil.sol";
 import { Coordinates } from "../src/systems/Coordinates.sol";
+import { SpeedUtil } from "../src/utils/SpeedUtil.sol";
 
 contract ManualSmokeTest is Script {
   //
@@ -114,10 +115,19 @@ contract ManualSmokeTest is Script {
     //return;
     // //////////////////////////////////////////////////////////////
 
-    uint32 targetCoordinatesX = originCoordinatesX + 10;
-    uint32 targetCoordinatesY = originCoordinatesY + 10;
-    uint64 sailDuration = 155;
-    Coordinates[] memory intermediatePoints = new Coordinates[](0);//todo
+    uint32 sailDistanceStep = 100;
+    uint32 targetCoordinatesX = originCoordinatesX + sailDistanceStep * 3;
+    uint32 targetCoordinatesY = originCoordinatesY + sailDistanceStep * 3;
+    Coordinates[] memory intermediatePoints = new Coordinates[](2);
+    intermediatePoints[0] = Coordinates(originCoordinatesX + sailDistanceStep, originCoordinatesY + sailDistanceStep);
+    intermediatePoints[1] = Coordinates(originCoordinatesX + sailDistanceStep * 2, originCoordinatesY + sailDistanceStep * 2);
+    (uint64 sailDuration, uint64[] memory segmentDurations) = SpeedUtil.calculateSailDurationAndSegments(
+        rosterData.speed,
+        Coordinates(originCoordinatesX, originCoordinatesY),
+        Coordinates(targetCoordinatesX, targetCoordinatesY),
+        intermediatePoints
+    );
+    console.log("Sail duration:", sailDuration);
     world.app__rosterSetSail(
       playerId,
       currentRosterSequenceNumber,
@@ -129,7 +139,7 @@ contract ManualSmokeTest is Script {
       0,
       intermediatePoints
     );
-    console.log("Set sail a roster to target coordinates");
+    console.log("Set sail a roster to target coordinates:", targetCoordinatesX, targetCoordinatesY);
 
 
     vm.stopBroadcast();

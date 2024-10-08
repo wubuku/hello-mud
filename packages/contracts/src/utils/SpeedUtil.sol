@@ -20,7 +20,26 @@ library SpeedUtil {
     return (numerator, denominator);
   }
 
-  function calculateTotalTime(
+  function calculateSailDurationAndSegments(
+    uint32 speed,
+    Coordinates memory startCoordinates,
+    Coordinates memory targetCoordinates,
+    Coordinates[] memory intermediatePoints
+  ) internal pure returns (uint64 totalDuration, uint64[] memory segmentDurations) {
+    Coordinates memory lastCoordinates = startCoordinates;
+    segmentDurations = new uint64[](intermediatePoints.length);
+
+    for (uint256 i = 0; i < intermediatePoints.length; i++) {
+      uint64 segmentDuration = calculateDirectRouteDuration(lastCoordinates, intermediatePoints[i], speed);
+      segmentDurations[i] = segmentDuration;
+      totalDuration += segmentDuration;
+      lastCoordinates = intermediatePoints[i];
+    }
+
+    totalDuration += calculateDirectRouteDuration(lastCoordinates, targetCoordinates, speed);
+  }
+
+  function calculateDirectRouteDuration(
     Coordinates memory origin,
     Coordinates memory destination,
     uint32 speedProperty

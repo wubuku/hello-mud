@@ -19,7 +19,6 @@ library RosterSetSailLogic {
   error IllegalSailDuration(uint64 required, uint64 provided);
   error InvalidUpdatedCoordinates(uint32 x, uint32 y);
 
-
   function verify(
     uint256 playerId,
     uint32 sequenceNumber,
@@ -33,55 +32,45 @@ library RosterSetSailLogic {
     RosterData memory rosterData
   ) internal returns (RosterSetSail memory) {
     PlayerData memory playerData = PlayerUtil.assertSenderIsPlayerOwner(playerId);
-
-    uint64 totalDuration = 0;
-
-    uint64 setSailAt = uint64(block.timestamp);
-
-    SailIntPointData[] memory sailIntPoints = new SailIntPointData[](intermediatePoints.length);
-    uint32 lastX = updatedCoordinatesX;
-    uint32 lastY = updatedCoordinatesY;
-    for (uint256 i = 0; i < intermediatePoints.length; i++) {
-      totalDuration += SpeedUtil.calculateTotalTime(
-        Coordinates(lastX, lastY),
-        intermediatePoints[i],
-        rosterData.speed
-      );
-      sailIntPoints[i] = SailIntPointData(intermediatePoints[i].x, intermediatePoints[i].y, totalDuration);
-      lastX = intermediatePoints[i].x;
-      lastY = intermediatePoints[i].y;
-    }
-    totalDuration += SpeedUtil.calculateTotalTime(
-      Coordinates(lastX, lastY),
+    (uint64 totalDuration, uint64[] memory segmentDurations) = SpeedUtil.calculateSailDurationAndSegments(
+      rosterData.speed,
+      Coordinates(updatedCoordinatesX, updatedCoordinatesY),
       Coordinates(targetCoordinatesX, targetCoordinatesY),
-      rosterData.speed
+      intermediatePoints
     );
 
     if (sailDuration < totalDuration) {
       revert IllegalSailDuration(totalDuration, sailDuration);
     }
 
+    uint64 setSailAt = uint64(block.timestamp);
+    // Create sailIntPoints using the returned segmentDurations
+    SailIntPointData[] memory sailIntPoints = new SailIntPointData[](intermediatePoints.length);
+    uint64 cumulativeDuration = 0;
+    for (uint256 i = 0; i < intermediatePoints.length; i++) {
+      cumulativeDuration += segmentDurations[i];
+      sailIntPoints[i] = SailIntPointData(
+        intermediatePoints[i].x,
+        intermediatePoints[i].y,
+        setSailAt + cumulativeDuration // The segment after this point will start at this timestamp
+      );
+    }
+
     SailIntPointLib.updateAllSailIntermediatePoints(playerId, sequenceNumber, sailIntPoints);
 
-    // NOTE: Energy checks should be performed in the external function that calls this one.
-    // We do not perform the check here.
-    //uint256 shipCount = rosterData.shipIds.length;
-    //uint64 requiredEnergy = totalDuration * shipCount * ENERGY_AMOUNT_PER_SECOND_PER_SHIP;
-
-    return
-      RosterSetSail({
-        playerId: playerId,
-        sequenceNumber: sequenceNumber,
-        targetCoordinatesX: targetCoordinatesX,
-        targetCoordinatesY: targetCoordinatesY,
-        sailDuration: sailDuration,
-        setSailAt: setSailAt,
-        updatedCoordinatesX: updatedCoordinatesX,
-        updatedCoordinatesY: updatedCoordinatesY,
-        updatedSailSegment: updatedSailSegment,
-        intermediatePoints: intermediatePoints
-        // energyCost: requiredEnergy
-      });
+    // Construct the return value step by step
+    RosterSetSail memory e;
+    e.playerId = playerId;
+    e.sequenceNumber = sequenceNumber;
+    e.targetCoordinatesX = targetCoordinatesX;
+    e.targetCoordinatesY = targetCoordinatesY;
+    e.sailDuration = sailDuration;
+    e.setSailAt = setSailAt;
+    e.updatedCoordinatesX = updatedCoordinatesX;
+    e.updatedCoordinatesY = updatedCoordinatesY;
+    e.updatedSailSegment = updatedSailSegment;
+    e.intermediatePoints = intermediatePoints;
+    return e;
   }
 
   function mutate(

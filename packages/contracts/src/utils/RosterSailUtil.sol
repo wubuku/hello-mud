@@ -54,7 +54,7 @@ library RosterSailUtil {
       revert RosterUnfitToSail(status);
     }
 
-    uint64 totalTime = SpeedUtil.calculateTotalTime(
+    uint64 totalTime = SpeedUtil.calculateDirectRouteDuration(
       Coordinates(newUpdatedCoordinatesX, newUpdatedCoordinatesY),
       Coordinates(targetCoordinatesX, targetCoordinatesY),
       rosterData.speed
