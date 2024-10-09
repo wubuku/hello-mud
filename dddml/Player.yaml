@@ -15,7 +15,8 @@ aggregates:
       - Roster.PutInShipInventory
       - Roster.TakeOutShipInventory
       - Roster.TransferShipInventory
-    #metadata:
+    # metadata:
+    #   TrustFriendsAsAccountDelegatees: true
     id:
       name: Id
       type: u256
@@ -87,6 +88,7 @@ aggregates:
       DeductItems:
         metadata:
           IsOnlyOpenToFriends: true
+          # IsCallFromEnabled: true
         # isInternal: true
         parameters:
           Items:
@@ -97,6 +99,7 @@ aggregates:
       IncreaseExperienceAndItems:
         metadata:
           IsOnlyOpenToFriends: true
+          # IsCallFromEnabled: true
         # isInternal: true
         parameters:
           ExperienceGained:

@@ -7,7 +7,7 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { RosterUtil } from "../utils/RosterUtil.sol";
 import { PlayerUtil } from "../utils/PlayerUtil.sol";
 import { ShipIdUtil } from "../utils/ShipIdUtil.sol";
-import { ShipDelegationLib } from "./ShipDelegationLib.sol";
+import { ShipDelegatecallLib } from "./ShipDelegatecallLib.sol";
 import { RosterId } from "./RosterId.sol";
 import { RosterDataInstance } from "../utils/RosterDataInstance.sol";
 
@@ -58,10 +58,10 @@ library RosterTransferShipInventoryLogic {
     ItemIdQuantityPair[] memory itemIdQuantityPairs = rosterShipInventoryTransferred.itemIdQuantityPairs;
 
     // Deduct items from the source ship's inventory
-    ShipDelegationLib.deductShipInventory(fromShipId, itemIdQuantityPairs);
+    ShipDelegatecallLib.deductShipInventory(fromShipId, itemIdQuantityPairs);
 
     // Add items to the destination ship's inventory
-    ShipDelegationLib.increaseShipInventory(toShipId, itemIdQuantityPairs);
+    ShipDelegatecallLib.increaseShipInventory(toShipId, itemIdQuantityPairs);
 
     // TODO: Update rosterData if necessary
     // For example, you might want to update some statistics or timestamps

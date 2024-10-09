@@ -11,7 +11,7 @@ import { ShipBattleUtil } from "../utils/ShipBattleUtil.sol";
 import { RosterDataInstance } from "../utils/RosterDataInstance.sol";
 import { RosterId } from "./RosterId.sol";
 import { ShipBattleLocationParams } from "./ShipBattleLocationParams.sol";
-import { RosterDelegationLib } from "./RosterDelegationLib.sol";
+import { RosterDelegatecallLib } from "./RosterDelegatecallLib.sol";
 import { UpdateLocationParams } from "./UpdateLocationParams.sol";
 
 library ShipBattleInitiateBattleLogic {
@@ -93,7 +93,7 @@ library ShipBattleInitiateBattleLogic {
       updateLocationParams.initiatorCoordinates.x != 0 &&
       updateLocationParams.initiatorCoordinates.y != 0
     ) {
-      RosterDelegationLib.updateLocation(
+      RosterDelegatecallLib.updateLocation(
         initiatorRosterPlayerId,
         initiatorRosterSequenceNumber,
         UpdateLocationParams({
@@ -108,7 +108,7 @@ library ShipBattleInitiateBattleLogic {
       updateLocationParams.responderCoordinates.x != 0 &&
       updateLocationParams.responderCoordinates.y != 0
     ) {
-      RosterDelegationLib.updateLocation(
+      RosterDelegatecallLib.updateLocation(
         responderRosterPlayerId,
         responderRosterSequenceNumber,
         UpdateLocationParams({

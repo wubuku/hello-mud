@@ -5,8 +5,8 @@ import { System } from "@latticexyz/world/src/System.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { EnergyToken, ItemCreationData, ItemCreation, ItemProductionData, ItemProduction } from "../codegen/index.sol";
 import { SafeERC20, IERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import { SkillProcessDelegationLib } from "./SkillProcessDelegationLib.sol";
-import { RosterDelegationLib } from "./RosterDelegationLib.sol";
+import { SkillProcessDelegatecallLib } from "./SkillProcessDelegatecallLib.sol";
+import { RosterDelegatecallLib } from "./RosterDelegatecallLib.sol";
 import { RosterSailUtil } from "../utils/RosterSailUtil.sol";
 import { Coordinates } from "../systems/Coordinates.sol";
 import { UpdateLocationParams } from "./UpdateLocationParams.sol";
@@ -38,7 +38,7 @@ contract AggregatorServiceSystem is System {
     IERC20 token = IERC20(tokenAddress);
     token.safeTransferFrom(_msgSender(), address(this), energyCost);
 
-    SkillProcessDelegationLib.startCreation(skillType, playerId, skillProcessSequenceNumber, itemId, batchSize);
+    SkillProcessDelegatecallLib.startCreation(skillType, playerId, skillProcessSequenceNumber, itemId, batchSize);
   }
 
   function uniApiStartProduction(
@@ -61,7 +61,7 @@ contract AggregatorServiceSystem is System {
     IERC20 token = IERC20(tokenAddress);
     token.safeTransferFrom(_msgSender(), address(this), energyCost);
 
-    SkillProcessDelegationLib.startProduction(skillType, playerId, skillProcessSequenceNumber, itemId, batchSize);
+    SkillProcessDelegatecallLib.startProduction(skillType, playerId, skillProcessSequenceNumber, itemId, batchSize);
   }
 
   function uniApiStartShipProduction(
@@ -84,7 +84,7 @@ contract AggregatorServiceSystem is System {
     IERC20 token = IERC20(tokenAddress);
     token.safeTransferFrom(_msgSender(), address(this), energyCost);
 
-    SkillProcessDelegationLib.startShipProduction(
+    SkillProcessDelegatecallLib.startShipProduction(
       skillType,
       playerId,
       skillProcessSequenceNumber,
@@ -130,7 +130,7 @@ contract AggregatorServiceSystem is System {
     //
     // TODO: If roster is already underway, update its location
     //
-    RosterDelegationLib.setSail(
+    RosterDelegatecallLib.setSail(
       playerId,
       rosterSequenceNumber,
       targetCoordinatesX,
@@ -146,6 +146,6 @@ contract AggregatorServiceSystem is System {
     uint32 rosterSequenceNumber,
     UpdateLocationParams memory updateLocationParams
   ) public {
-    RosterDelegationLib.updateLocation(playerId, rosterSequenceNumber, updateLocationParams);
+    RosterDelegatecallLib.updateLocation(playerId, rosterSequenceNumber, updateLocationParams);
   }
 }

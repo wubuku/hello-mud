@@ -7,7 +7,7 @@ import { RosterStatus } from "./RosterStatus.sol";
 import { ItemIdQuantityPair } from "../systems/ItemIdQuantityPair.sol";
 import { ShipUtil } from "../utils/ShipUtil.sol";
 import { TsRandomUtil } from "../utils/TsRandomUtil.sol";
-import { ShipDelegationLib } from "./ShipDelegationLib.sol";
+import { ShipDelegatecallLib } from "./ShipDelegatecallLib.sol";
 import { SortedVectorUtil } from "../utils/SortedVectorUtil.sol";
 import { COPPER_ORE, NORMAL_LOGS, COTTONS } from "../utils/ItemIds.sol";
 
@@ -97,7 +97,7 @@ library RosterCreateEnvironmentRosterLogic {
         buildingExpenses
       );
 
-      uint256 shipId = ShipDelegationLib.create(
+      uint256 shipId = ShipDelegatecallLib.create(
         playerId,
         rosterSeqNumber,
         healthPoints,

@@ -19,6 +19,7 @@ aggregates:
   ShipBattle:
     metadata:
       MudStoreValueCheckMaxFieldCount: 6
+      GenerateDelegatecallLib: true
     friends:
       - ShipBattleService
     id:

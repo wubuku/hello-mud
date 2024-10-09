@@ -8,14 +8,14 @@ import { ItemIds } from "../utils/ItemIds.sol";
 import { Player, ItemProduction } from "../codegen/index.sol";
 import { ExperienceTableUtil } from "../utils/ExperienceTableUtil.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
-import { PlayerDelegationLib } from "../systems/PlayerDelegationLib.sol";
+import { PlayerDelegatecallLib } from "../systems/PlayerDelegatecallLib.sol";
 import { SkillTypeItemIdPair } from "./SkillTypeItemIdPair.sol";
 import { SkillProcessId } from "./SkillProcessId.sol";
 import { RosterSequenceNumber } from "./RosterSequenceNumber.sol";
 import { ShipUtil } from "../utils/ShipUtil.sol";
-import { ShipDelegationLib } from "./ShipDelegationLib.sol";
+import { ShipDelegatecallLib } from "./ShipDelegatecallLib.sol";
 import { SkillPrcMtrlLib } from "./SkillPrcMtrlLib.sol";
-import { RosterDelegationLib } from "./RosterDelegationLib.sol";
+import { RosterDelegatecallLib } from "./RosterDelegatecallLib.sol";
 
 error ProcessNotStarted(uint32 itemId, bool completed);
 error ItemIdIsNotShip(uint32 itemId);
@@ -117,7 +117,7 @@ library SkillProcessCompleteShipProductionLogic {
     (uint32 healthPoints, uint32 attack, uint32 protection, uint32 speed) = ShipUtil.calculateShipAttributes(
       buildingExpenses
     );
-    uint256 shipId = ShipDelegationLib.create(
+    uint256 shipId = ShipDelegatecallLib.create(
       playerId,
       RosterSequenceNumber.UNASSIGNED_SHIPS,
       healthPoints,
@@ -128,10 +128,10 @@ library SkillProcessCompleteShipProductionLogic {
       buildingExpensesQuantities
     );
 
-    RosterDelegationLib.addShip(playerId, RosterSequenceNumber.UNASSIGNED_SHIPS, shipId, type(uint64).max);
+    RosterDelegatecallLib.addShip(playerId, RosterSequenceNumber.UNASSIGNED_SHIPS, shipId, type(uint64).max);
 
     ItemIdQuantityPair[] memory emptyItems = new ItemIdQuantityPair[](0);
-    PlayerDelegationLib.increaseExperienceAndItems(
+    PlayerDelegatecallLib.increaseExperienceAndItems(
       shipProductionProcessCompleted.playerId,
       shipProductionProcessCompleted.experienceGained,
       emptyItems,

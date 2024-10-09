@@ -4,7 +4,8 @@ aggregates:
       Preprocessors: [ "CRUD_IT" ]
       CRUD_IT_NO_UPDATE: true
       CRUD_IT_NO_DELETE: true
-      #ShouldIssuePublisherObject: true
+      # TrustFriendsAsAccountDelegatees: true
+      # ShouldIssuePublisherObject: true
     friends:
       - SkillProcess.CompleteShipProduction
       - Roster.CreateEnvironmentRoster
@@ -49,6 +50,7 @@ aggregates:
       Create:
         metadata:
           IsOnlyOpenToFriends: true
+          # IsCallFromEnabled: true
         # isInternal: true
         result:
           isObjectReturned: true
@@ -56,6 +58,7 @@ aggregates:
       IncreaseShipInventory:
         metadata:
           IsOnlyOpenToFriends: true
+          # IsCallFromEnabled: true
         # isInternal: true
         parameters:
           Items:
@@ -66,6 +69,7 @@ aggregates:
       DeductShipInventory:
         metadata:
           IsOnlyOpenToFriends: true
+          # IsCallFromEnabled: true
         # isInternal: true
         parameters:
           Items:

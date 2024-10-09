@@ -7,9 +7,12 @@ import { ResourceId, WorldResourceIdLib } from "@latticexyz/world/src/WorldResou
 import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 import { IBaseWorld } from "@latticexyz/world/src/codegen/interfaces/IBaseWorld.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
+import { WorldContextProviderLib } from "@latticexyz/world/src/WorldContext.sol";
+import { revertWithBytes } from "@latticexyz/world/src/revertWithBytes.sol";
+import { Systems } from "@latticexyz/world/src/codegen/tables/Systems.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
-library ShipDelegationLib {
+library ShipDelegatecallLib {
 
   function create(uint256 rosterIdPlayerId, uint32 rosterIdSequenceNumber, uint32 healthPoints, uint32 attack, uint32 protection, uint32 speed, uint32[] memory buildingExpensesItemIds, uint32[] memory buildingExpensesQuantities) internal returns (uint256) {
     ResourceId shipFriendSystemId = WorldResourceIdLib.encode({
@@ -18,15 +21,17 @@ library ShipDelegationLib {
       name: "ShipFriendSystem"
     });
 
-    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
-    bytes memory returnData = world.callFrom(
+    (address shipFriendSystemAddress, ) = Systems.get(shipFriendSystemId);
+    (bool success, bytes memory returnData) = WorldContextProviderLib.delegatecallWithContext(
       WorldContextConsumerLib._msgSender(),
-      shipFriendSystemId,
+      0,
+      shipFriendSystemAddress,
       abi.encodeWithSignature(
         "shipCreate(uint256,uint32,uint32,uint32,uint32,uint32,uint32[],uint32[])",
         rosterIdPlayerId, rosterIdSequenceNumber, healthPoints, attack, protection, speed, buildingExpensesItemIds, buildingExpensesQuantities
       )
     );
+    if (!success) revertWithBytes(returnData);
 
     return abi.decode(returnData, (uint256));
   }
@@ -38,15 +43,17 @@ library ShipDelegationLib {
       name: "ShipFriendSystem"
     });
 
-    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
-    world.callFrom(
+    (address shipFriendSystemAddress, ) = Systems.get(shipFriendSystemId);
+    (bool success, bytes memory returnData) = WorldContextProviderLib.delegatecallWithContext(
       WorldContextConsumerLib._msgSender(),
-      shipFriendSystemId,
+      0,
+      shipFriendSystemAddress,
       abi.encodeWithSignature(
         "shipIncreaseShipInventory(uint256,(uint32,uint32)[])",
         id, items
       )
     );
+    if (!success) revertWithBytes(returnData);
 
   }
 
@@ -57,15 +64,17 @@ library ShipDelegationLib {
       name: "ShipFriendSystem"
     });
 
-    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
-    world.callFrom(
+    (address shipFriendSystemAddress, ) = Systems.get(shipFriendSystemId);
+    (bool success, bytes memory returnData) = WorldContextProviderLib.delegatecallWithContext(
       WorldContextConsumerLib._msgSender(),
-      shipFriendSystemId,
+      0,
+      shipFriendSystemAddress,
       abi.encodeWithSignature(
         "shipDeductShipInventory(uint256,(uint32,uint32)[])",
         id, items
       )
     );
+    if (!success) revertWithBytes(returnData);
 
   }
 

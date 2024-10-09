@@ -1,9 +1,10 @@
 aggregates:
   SkillProcess:
-    metadata:
-      #Preprocessors: [ "CRUD_IT" ]
-      #CRUD_IT_NO_UPDATE: true
-      #CRUD_IT_NO_DELETE: true
+    #metadata:
+    #  Preprocessors: [ "CRUD_IT" ]
+    #  CRUD_IT_NO_UPDATE: true
+    #  CRUD_IT_NO_DELETE: true
+    #  TrustFriendsAsAccountDelegatees: true
     friends:
       - Player.ClaimIsland
       - AggregatorService
@@ -51,6 +52,7 @@ aggregates:
       Create:
         metadata:
           IsOnlyOpenToFriends: true
+          # IsCallFromEnabled: true
         isCreationCommand: true
         parameters:
         event:
@@ -74,6 +76,7 @@ aggregates:
       StartProduction:
         metadata:
           IsOnlyOpenToFriends: true
+          # IsCallFromEnabled: true
         inheritsFrom: SkillProcessTemplate.StartProduction
         # isInternal: true
         parameters:
@@ -91,6 +94,7 @@ aggregates:
       StartShipProduction:
         metadata:
           IsOnlyOpenToFriends: true
+          # IsCallFromEnabled: true
         inheritsFrom: SkillProcessTemplate.StartProduction
         # isInternal: true
         parameters:
@@ -115,6 +119,7 @@ aggregates:
       StartCreation:
         metadata:
           IsOnlyOpenToFriends: true
+          # IsCallFromEnabled: true
         inheritsFrom: SkillProcessTemplate.StartCreation
         # isInternal: true
         parameters:

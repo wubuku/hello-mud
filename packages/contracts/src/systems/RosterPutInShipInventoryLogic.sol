@@ -6,13 +6,13 @@ import { RosterData, Roster, PlayerData, Player, ShipData, Ship } from "../codeg
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { RosterUtil } from "../utils/RosterUtil.sol";
 import { RosterStatus } from "./RosterStatus.sol";
-import { PlayerDelegationLib } from "./PlayerDelegationLib.sol";
-import { ShipDelegationLib } from "./ShipDelegationLib.sol";
+import { PlayerDelegatecallLib } from "./PlayerDelegatecallLib.sol";
+import { ShipDelegatecallLib } from "./ShipDelegatecallLib.sol";
 import { PlayerUtil } from "../utils/PlayerUtil.sol";
 import { RosterId } from "./RosterId.sol";
 import { RosterDataInstance } from "../utils/RosterDataInstance.sol";
 import { ShipIdUtil } from "../utils/ShipIdUtil.sol";
-import { RosterDelegationLib } from "./RosterDelegationLib.sol";
+import { RosterDelegatecallLib } from "./RosterDelegatecallLib.sol";
 import { UpdateLocationParams } from "./UpdateLocationParams.sol";
 
 library RosterPutInShipInventoryLogic {
@@ -65,7 +65,7 @@ library RosterPutInShipInventoryLogic {
       updateLocationParams.updatedCoordinates.x != 0 &&
       updateLocationParams.updatedCoordinates.y != 0
     ) {
-      RosterDelegationLib.updateLocation(playerId, sequenceNumber, updateLocationParams);
+      RosterDelegatecallLib.updateLocation(playerId, sequenceNumber, updateLocationParams);
     }
     // Reload the roster state
     rosterData = Roster.get(playerId, sequenceNumber);
@@ -90,10 +90,10 @@ library RosterPutInShipInventoryLogic {
     ItemIdQuantityPair[] memory itemIdQuantityPairs = rosterShipInventoryPutIn.itemIdQuantityPairs;
 
     // Deduct items from player inventory
-    PlayerDelegationLib.deductItems(rosterShipInventoryPutIn.playerId, itemIdQuantityPairs);
+    PlayerDelegatecallLib.deductItems(rosterShipInventoryPutIn.playerId, itemIdQuantityPairs);
 
     // Add items to ship inventory
-    ShipDelegationLib.increaseShipInventory(shipId, itemIdQuantityPairs);
+    ShipDelegatecallLib.increaseShipInventory(shipId, itemIdQuantityPairs);
 
     return rosterData;
   }

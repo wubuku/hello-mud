@@ -8,7 +8,7 @@ import { ItemIds } from "../utils/ItemIds.sol";
 import { Player, ItemProduction } from "../codegen/index.sol";
 import { ExperienceTableUtil } from "../utils/ExperienceTableUtil.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
-import { PlayerDelegationLib } from "../systems/PlayerDelegationLib.sol";
+import { PlayerDelegatecallLib } from "../systems/PlayerDelegatecallLib.sol";
 import { SkillTypeItemIdPair } from "./SkillTypeItemIdPair.sol";
 import { SkillProcessId } from "./SkillProcessId.sol";
 
@@ -84,7 +84,7 @@ library SkillProcessCompleteProductionLogic {
       ItemIdQuantityPair[] memory items = new ItemIdQuantityPair[](1);
       items[0] = ItemIdQuantityPair(productionProcessCompleted.itemId, productionProcessCompleted.quantity);
 
-      PlayerDelegationLib.increaseExperienceAndItems(
+      PlayerDelegatecallLib.increaseExperienceAndItems(
         productionProcessCompleted.playerId,
         productionProcessCompleted.experienceGained,
         items,

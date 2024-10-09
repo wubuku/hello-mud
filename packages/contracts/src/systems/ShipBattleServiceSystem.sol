@@ -8,7 +8,7 @@ import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 
 import { ShipBattleCommand } from "./ShipBattleCommand.sol";
 import { ShipBattle } from "../codegen/index.sol";
-import { ShipBattleDelegationLib } from "./ShipBattleDelegationLib.sol";
+import { ShipBattleDelegatecallLib } from "./ShipBattleDelegatecallLib.sol";
 import { ShipBattleLocationParams } from "./ShipBattleLocationParams.sol";
 import { BattleStatus } from "./BattleStatus.sol";
 
@@ -35,7 +35,7 @@ contract ShipBattleServiceSystem is System {
     // uint32 responderCoordinatesY,
     // uint16 updatedResponderSailSeg
   ) public {
-    uint256 shipBattleId = ShipBattleDelegationLib.initiateBattle(
+    uint256 shipBattleId = ShipBattleDelegatecallLib.initiateBattle(
       playerId,
       initiatorRosterPlayerId,
       initiatorRosterSequenceNumber,
@@ -111,7 +111,7 @@ contract ShipBattleServiceSystem is System {
       if (status == BattleStatus.ENDED) {
         break;
       }
-      ShipBattleDelegationLib.makeMove(shipBattleId, ShipBattleCommand.ATTACK);
+      ShipBattleDelegatecallLib.makeMove(shipBattleId, ShipBattleCommand.ATTACK);
       // world.callFrom(
       //   _msgSender(),
       //   shipBattleSystemId,

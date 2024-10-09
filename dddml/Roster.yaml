@@ -23,10 +23,11 @@ valueObjects:
 
 aggregates:
   Roster:
-    metadata:
-      #Preprocessors: [ "CRUD_IT" ]
-      #CRUD_IT_NO_UPDATE: true
-      #CRUD_IT_NO_DELETE: true
+    #metadata:
+    #  Preprocessors: [ "CRUD_IT" ]
+    #  CRUD_IT_NO_UPDATE: true
+    #  CRUD_IT_NO_DELETE: true
+    #  TrustFriendsAsAccountDelegatees: true
     friends:
       - Player.ClaimIsland
       - ShipBattle.InitiateBattle
@@ -83,6 +84,7 @@ aggregates:
       Create:
         metadata:
           IsOnlyOpenToFriends: true
+          # IsCallFromEnabled: true
         # isInternal: true
         isCreationCommand: true
         parameters:
@@ -118,6 +120,7 @@ aggregates:
       AddShip:
         metadata:
           IsOnlyOpenToFriends: true
+          # IsCallFromEnabled: true
         # isInternal: true
         parameters:
           ShipId:
@@ -132,6 +135,7 @@ aggregates:
       SetSail:
         metadata:
           IsOnlyOpenToFriends: true
+          # IsCallFromEnabled: true
           MudSystemName: RosterSailingSystem
           DisableFlatteningForParameters: ["UpdateLocationParams"]
         #requiredPermission: Owner # TODO: implement "Owner" permission?
@@ -165,6 +169,7 @@ aggregates:
       UpdateLocation:
         metadata:
           IsOnlyOpenToFriends: true
+          # IsCallFromEnabled: true
           MudSystemName: RosterSailingSystem
           DisableFlatteningForParameters: ["UpdateLocationParams"]
         parameters:
@@ -187,6 +192,7 @@ aggregates:
       CleanUpBattleDestroyedShips:
         metadata:
           IsOnlyOpenToFriends: true
+          # IsCallFromEnabled: true
           MudSystemName: RosterCleaningSystem
         parameters:
           # Current roster is the winner

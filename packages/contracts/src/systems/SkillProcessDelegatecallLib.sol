@@ -7,9 +7,12 @@ import { ResourceId, WorldResourceIdLib } from "@latticexyz/world/src/WorldResou
 import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 import { IBaseWorld } from "@latticexyz/world/src/codegen/interfaces/IBaseWorld.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
+import { WorldContextProviderLib } from "@latticexyz/world/src/WorldContext.sol";
+import { revertWithBytes } from "@latticexyz/world/src/revertWithBytes.sol";
+import { Systems } from "@latticexyz/world/src/codegen/tables/Systems.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
-library SkillProcessDelegationLib {
+library SkillProcessDelegatecallLib {
 
   function create(uint8 skillType, uint256 playerId, uint8 sequenceNumber) internal {
     ResourceId skillProcessFriendSystemId = WorldResourceIdLib.encode({
@@ -18,15 +21,17 @@ library SkillProcessDelegationLib {
       name: "SkillProcessFrie" // NOTE: Only the first 16 characters are used. Original: "SkillProcessFriendSystem"
     });
 
-    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
-    world.callFrom(
+    (address skillProcessFriendSystemAddress, ) = Systems.get(skillProcessFriendSystemId);
+    (bool success, bytes memory returnData) = WorldContextProviderLib.delegatecallWithContext(
       WorldContextConsumerLib._msgSender(),
-      skillProcessFriendSystemId,
+      0,
+      skillProcessFriendSystemAddress,
       abi.encodeWithSignature(
         "skillProcessCreate(uint8,uint256,uint8)",
         skillType, playerId, sequenceNumber
       )
     );
+    if (!success) revertWithBytes(returnData);
 
   }
 
@@ -37,34 +42,17 @@ library SkillProcessDelegationLib {
       name: "SkillProcessFrie" // NOTE: Only the first 16 characters are used. Original: "SkillProcessFriendSystem"
     });
 
-    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
-    world.callFrom(
+    (address skillProcessFriendSystemAddress, ) = Systems.get(skillProcessFriendSystemId);
+    (bool success, bytes memory returnData) = WorldContextProviderLib.delegatecallWithContext(
       WorldContextConsumerLib._msgSender(),
-      skillProcessFriendSystemId,
+      0,
+      skillProcessFriendSystemAddress,
       abi.encodeWithSignature(
         "skillProcessStartProduction(uint8,uint256,uint8,uint32,uint32)",
         skillType, playerId, sequenceNumber, itemId, batchSize
       )
     );
-
-  }
-
-  function completeProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber) internal {
-    ResourceId skillProcessSystemId = WorldResourceIdLib.encode({
-      typeId: RESOURCE_SYSTEM,
-      namespace: "app",
-      name: "SkillProcessSyst" // NOTE: Only the first 16 characters are used. Original: "SkillProcessSystem"
-    });
-
-    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
-    world.callFrom(
-      WorldContextConsumerLib._msgSender(),
-      skillProcessSystemId,
-      abi.encodeWithSignature(
-        "skillProcessCompleteProduction(uint8,uint256,uint8)",
-        skillType, playerId, sequenceNumber
-      )
-    );
+    if (!success) revertWithBytes(returnData);
 
   }
 
@@ -75,34 +63,17 @@ library SkillProcessDelegationLib {
       name: "SkillProcessFrie" // NOTE: Only the first 16 characters are used. Original: "SkillProcessFriendSystem"
     });
 
-    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
-    world.callFrom(
+    (address skillProcessFriendSystemAddress, ) = Systems.get(skillProcessFriendSystemId);
+    (bool success, bytes memory returnData) = WorldContextProviderLib.delegatecallWithContext(
       WorldContextConsumerLib._msgSender(),
-      skillProcessFriendSystemId,
+      0,
+      skillProcessFriendSystemAddress,
       abi.encodeWithSignature(
         "skillProcessStartShipProduction(uint8,uint256,uint8,uint32,(uint32,uint32)[])",
         skillType, playerId, sequenceNumber, itemId, productionMaterials
       )
     );
-
-  }
-
-  function completeShipProduction(uint8 skillType, uint256 playerId, uint8 sequenceNumber) internal {
-    ResourceId skillProcessSystemId = WorldResourceIdLib.encode({
-      typeId: RESOURCE_SYSTEM,
-      namespace: "app",
-      name: "SkillProcessSyst" // NOTE: Only the first 16 characters are used. Original: "SkillProcessSystem"
-    });
-
-    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
-    world.callFrom(
-      WorldContextConsumerLib._msgSender(),
-      skillProcessSystemId,
-      abi.encodeWithSignature(
-        "skillProcessCompleteShipProduction(uint8,uint256,uint8)",
-        skillType, playerId, sequenceNumber
-      )
-    );
+    if (!success) revertWithBytes(returnData);
 
   }
 
@@ -113,34 +84,17 @@ library SkillProcessDelegationLib {
       name: "SkillProcessFrie" // NOTE: Only the first 16 characters are used. Original: "SkillProcessFriendSystem"
     });
 
-    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
-    world.callFrom(
+    (address skillProcessFriendSystemAddress, ) = Systems.get(skillProcessFriendSystemId);
+    (bool success, bytes memory returnData) = WorldContextProviderLib.delegatecallWithContext(
       WorldContextConsumerLib._msgSender(),
-      skillProcessFriendSystemId,
+      0,
+      skillProcessFriendSystemAddress,
       abi.encodeWithSignature(
         "skillProcessStartCreation(uint8,uint256,uint8,uint32,uint32)",
         skillType, playerId, sequenceNumber, itemId, batchSize
       )
     );
-
-  }
-
-  function completeCreation(uint8 skillType, uint256 playerId, uint8 sequenceNumber) internal {
-    ResourceId skillProcessSystemId = WorldResourceIdLib.encode({
-      typeId: RESOURCE_SYSTEM,
-      namespace: "app",
-      name: "SkillProcessSyst" // NOTE: Only the first 16 characters are used. Original: "SkillProcessSystem"
-    });
-
-    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
-    world.callFrom(
-      WorldContextConsumerLib._msgSender(),
-      skillProcessSystemId,
-      abi.encodeWithSignature(
-        "skillProcessCompleteCreation(uint8,uint256,uint8)",
-        skillType, playerId, sequenceNumber
-      )
-    );
+    if (!success) revertWithBytes(returnData);
 
   }
 

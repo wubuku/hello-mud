@@ -3,7 +3,7 @@ pragma solidity >=0.8.24;
 
 import { PlayerIslandResourcesGathered } from "./PlayerEvents.sol";
 import { PlayerData, MapLocation } from "../codegen/index.sol";
-import { MapDelegationLib } from "./MapDelegationLib.sol";
+import { MapDelegatecallLib } from "./MapDelegatecallLib.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 import { PlayerInventoryLib, PlayerInventoryData } from "./PlayerInventoryLib.sol";
@@ -37,7 +37,7 @@ library PlayerGatherIslandResourcesLogic {
     PlayerIslandResourcesGathered memory playerIslandResourcesGathered,
     PlayerData memory playerData
   ) internal returns (PlayerData memory) {
-    ItemIdQuantityPair[] memory resources = MapDelegationLib.gatherIslandResources(
+    ItemIdQuantityPair[] memory resources = MapDelegatecallLib.gatherIslandResources(
       playerIslandResourcesGathered.id,
       playerData.claimedIslandX,
       playerData.claimedIslandY

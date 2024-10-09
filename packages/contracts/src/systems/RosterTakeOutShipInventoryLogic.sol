@@ -6,13 +6,13 @@ import { RosterData, Roster, PlayerData, Player, ShipData, Ship } from "../codeg
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { RosterUtil } from "../utils/RosterUtil.sol";
 import { RosterStatus } from "./RosterStatus.sol";
-import { PlayerDelegationLib } from "./PlayerDelegationLib.sol";
-import { ShipDelegationLib } from "./ShipDelegationLib.sol";
+import { PlayerDelegatecallLib } from "./PlayerDelegatecallLib.sol";
+import { ShipDelegatecallLib } from "./ShipDelegatecallLib.sol";
 import { PlayerUtil } from "../utils/PlayerUtil.sol";
 import { RosterId } from "./RosterId.sol";
 import { RosterDataInstance } from "../utils/RosterDataInstance.sol";
 import { ShipIdUtil } from "../utils/ShipIdUtil.sol";
-import { RosterDelegationLib } from "./RosterDelegationLib.sol";
+import { RosterDelegatecallLib } from "./RosterDelegatecallLib.sol";
 import { UpdateLocationParams } from "./UpdateLocationParams.sol";
 
 library RosterTakeOutShipInventoryLogic {
@@ -51,7 +51,7 @@ library RosterTakeOutShipInventoryLogic {
       updateLocationParams.updatedCoordinates.x != 0 &&
       updateLocationParams.updatedCoordinates.y != 0
     ) {
-      RosterDelegationLib.updateLocation(playerId, sequenceNumber, updateLocationParams);
+      RosterDelegatecallLib.updateLocation(playerId, sequenceNumber, updateLocationParams);
     }
     // Reload the roster state
     rosterData = Roster.get(playerId, sequenceNumber);
@@ -76,10 +76,10 @@ library RosterTakeOutShipInventoryLogic {
     ItemIdQuantityPair[] memory itemIdQuantityPairs = rosterShipInventoryTakenOut.itemIdQuantityPairs;
 
     // Deduct items from ship inventory
-    ShipDelegationLib.deductShipInventory(shipId, itemIdQuantityPairs);
+    ShipDelegatecallLib.deductShipInventory(shipId, itemIdQuantityPairs);
 
     // Add items to player inventory
-    PlayerDelegationLib.increaseExperienceAndItems(
+    PlayerDelegatecallLib.increaseExperienceAndItems(
       rosterShipInventoryTakenOut.playerId,
       0, // ignore experience gained
       itemIdQuantityPairs,

@@ -7,9 +7,12 @@ import { ResourceId, WorldResourceIdLib } from "@latticexyz/world/src/WorldResou
 import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 import { IBaseWorld } from "@latticexyz/world/src/codegen/interfaces/IBaseWorld.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
+import { WorldContextProviderLib } from "@latticexyz/world/src/WorldContext.sol";
+import { revertWithBytes } from "@latticexyz/world/src/revertWithBytes.sol";
+import { Systems } from "@latticexyz/world/src/codegen/tables/Systems.sol";
 import { ShipBattleLocationParams } from "./ShipBattleLocationParams.sol";
 
-library ShipBattleDelegationLib {
+library ShipBattleDelegatecallLib {
 
   function initiateBattle(uint256 playerId, uint256 initiatorRosterPlayerId, uint32 initiatorRosterSequenceNumber, uint256 responderRosterPlayerId, uint32 responderRosterSequenceNumber, ShipBattleLocationParams memory updateLocationParams) internal returns (uint256) {
     ResourceId shipBattleInitiateSystemId = WorldResourceIdLib.encode({
@@ -18,15 +21,17 @@ library ShipBattleDelegationLib {
       name: "ShipBattleInitia" // NOTE: Only the first 16 characters are used. Original: "ShipBattleInitiateSystem"
     });
 
-    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
-    bytes memory returnData = world.callFrom(
+    (address shipBattleInitiateSystemAddress, ) = Systems.get(shipBattleInitiateSystemId);
+    (bool success, bytes memory returnData) = WorldContextProviderLib.delegatecallWithContext(
       WorldContextConsumerLib._msgSender(),
-      shipBattleInitiateSystemId,
+      0,
+      shipBattleInitiateSystemAddress,
       abi.encodeWithSignature(
         "initiateShipBattle(uint256,uint256,uint32,uint256,uint32,((uint32,uint32),uint16,(uint32,uint32),uint16,uint64))",
         playerId, initiatorRosterPlayerId, initiatorRosterSequenceNumber, responderRosterPlayerId, responderRosterSequenceNumber, updateLocationParams
       )
     );
+    if (!success) revertWithBytes(returnData);
 
     return abi.decode(returnData, (uint256));
   }
@@ -38,15 +43,17 @@ library ShipBattleDelegationLib {
       name: "ShipBattleSystem"
     });
 
-    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
-    world.callFrom(
+    (address shipBattleSystemAddress, ) = Systems.get(shipBattleSystemId);
+    (bool success, bytes memory returnData) = WorldContextProviderLib.delegatecallWithContext(
       WorldContextConsumerLib._msgSender(),
-      shipBattleSystemId,
+      0,
+      shipBattleSystemAddress,
       abi.encodeWithSignature(
         "shipBattleMakeMove(uint256,uint8)",
         id, attackerCommand
       )
     );
+    if (!success) revertWithBytes(returnData);
 
   }
 
@@ -57,15 +64,17 @@ library ShipBattleDelegationLib {
       name: "ShipBattleTakeLo" // NOTE: Only the first 16 characters are used. Original: "ShipBattleTakeLootSystem"
     });
 
-    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
-    world.callFrom(
+    (address shipBattleTakeLootSystemAddress, ) = Systems.get(shipBattleTakeLootSystemId);
+    (bool success, bytes memory returnData) = WorldContextProviderLib.delegatecallWithContext(
       WorldContextConsumerLib._msgSender(),
-      shipBattleTakeLootSystemId,
+      0,
+      shipBattleTakeLootSystemAddress,
       abi.encodeWithSignature(
         "shipBattleTakeLoot(uint256,uint8)",
         id, choice
       )
     );
+    if (!success) revertWithBytes(returnData);
 
   }
 

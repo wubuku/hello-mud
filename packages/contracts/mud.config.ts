@@ -343,32 +343,27 @@ export default defineWorld({
   },
   systems: {
     PlayerFriendSystem: {
-      openAccess: true,
+      openAccess: false,
     },
     ShipFriendSystem: {
-      openAccess: true,
+      openAccess: false,
     },
     RosterFriendSystem: {
-      openAccess: true,
+      openAccess: false,
     },
     RosterSailingSystem: {
-      openAccess: true,
+      openAccess: false,
     },
     RosterCleaningSystem: {
-      openAccess: true,
+      openAccess: false,
     },
     SkillProcessFriendSystem: {
-      openAccess: true,
+      openAccess: false,
     },
     MapFriendSystem: {
       openAccess: false,
     },
   },
   modules: [
-    {
-      artifactPath: "./out/AppNamespaceDelegationModule.sol/AppNamespaceDelegationModule.json",
-      root: true,
-      args: [],
-    },
   ],
 });

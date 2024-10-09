@@ -3,9 +3,9 @@ pragma solidity >=0.8.24;
 
 import { IslandClaimed } from "./PlayerEvents.sol";
 import { PlayerData, MapLocation } from "../codegen/index.sol";
-import { MapDelegationLib } from "./MapDelegationLib.sol";
-import { RosterDelegationLib } from "./RosterDelegationLib.sol";
-import { SkillProcessDelegationLib } from "./SkillProcessDelegationLib.sol";
+import { MapDelegatecallLib } from "./MapDelegatecallLib.sol";
+import { RosterDelegatecallLib } from "./RosterDelegatecallLib.sol";
+import { SkillProcessDelegatecallLib } from "./SkillProcessDelegatecallLib.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 import { SkillType } from "./SkillType.sol";
 import { PlayerInventoryLib, PlayerInventoryData } from "./PlayerInventoryLib.sol";
@@ -83,14 +83,14 @@ library PlayerClaimIslandLogic {
     addInventoryByIslandResources(playerId, coordinatesX, coordinatesY);
 
     // Claim island in map
-    MapDelegationLib.claimIsland(coordinatesX, coordinatesY, playerId, claimedAt);
+    MapDelegatecallLib.claimIsland(coordinatesX, coordinatesY, playerId, claimedAt);
 
     createSkillProcesses(playerId);
 
     // Create rosters
     for (uint32 rosterSequenceNumber = 0; rosterSequenceNumber < 5; rosterSequenceNumber++) {
       RosterUtil.getRosterOriginCoordinates(coordinatesX, coordinatesY, rosterSequenceNumber);
-      RosterDelegationLib.create(playerId, rosterSequenceNumber, coordinatesX, coordinatesY);
+      RosterDelegatecallLib.create(playerId, rosterSequenceNumber, coordinatesX, coordinatesY);
     }
 
     return playerData;
@@ -127,7 +127,7 @@ library PlayerClaimIslandLogic {
     for (uint i = 0; i < skillTypes.length; i++) {
       uint8 maxSeqNumber = SkillProcessUtil.skillTypeMaxSequenceNumber(skillTypes[i]);
       for (uint8 seqNumber = 0; seqNumber <= maxSeqNumber; seqNumber++) {
-        SkillProcessDelegationLib.create(skillTypes[i], playerId, seqNumber); //, 0, 0, 0, false, 0, 0);
+        SkillProcessDelegatecallLib.create(skillTypes[i], playerId, seqNumber); //, 0, 0, 0, false, 0, 0);
       }
     }
   }

@@ -4,6 +4,7 @@ singletonObjects:
       Preprocessors: [ "CRUD_IT" ]
       #CRUD_IT_NO_UPDATE: true
       CRUD_IT_NO_DELETE: true
+      # TrustFriendsAsAccountDelegatees: true
     friends:
       - Player.ClaimIsland
       - Player.GatherIslandResources
@@ -54,6 +55,7 @@ singletonObjects:
       ClaimIsland:
         metadata:
           IsOnlyOpenToFriends: true
+          # IsCallFromEnabled: true
         # isInternal: true
         parameters:
           Coordinates:
@@ -71,6 +73,7 @@ singletonObjects:
         metadata:
         #   ParametersIncludedInMutationFunction: [ "Clock" ]
           IsOnlyOpenToFriends: true
+          # IsCallFromEnabled: true
         # isInternal: true
         parameters:
           #Player:

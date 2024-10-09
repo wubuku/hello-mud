@@ -11,12 +11,12 @@ import { ShipBattleUtil } from "../utils/ShipBattleUtil.sol";
 import { RosterUtil } from "../utils/RosterUtil.sol";
 import { RosterId } from "../systems/RosterId.sol";
 import { RosterDataInstance } from "../utils/RosterDataInstance.sol";
-import { ShipDelegationLib } from "./ShipDelegationLib.sol";
+import { ShipDelegatecallLib } from "./ShipDelegatecallLib.sol";
 import { SailIntPointLib } from "./SailIntPointLib.sol";
 import { Coordinates } from "./Coordinates.sol";
 import { UpdateLocationParams } from "./UpdateLocationParams.sol";
 import { SailIntPointData } from "../codegen/index.sol";
-import { RosterDelegationLib } from "./RosterDelegationLib.sol";
+import { RosterDelegatecallLib } from "./RosterDelegatecallLib.sol";
 import { RosterCleanUpBattleResult } from "./RosterCleanUpBattleResult.sol";
 
 library ShipBattleTakeLootLogic {
@@ -64,9 +64,9 @@ library ShipBattleTakeLootLogic {
     // );
     // loserRoster.shipIds = shipIds;
     // (winnerRoster.shipIds, winnerRoster.speed) = removeDestroyedWinnerShips(winnerRoster);
-    //RosterDelegationLib:
+    //RosterDelegatecallLib:
     //  function cleanUpBattleDestroyedShips(uint256 playerId, uint32 sequenceNumber, uint256 loserRosterIdPlayerId, uint32 loserRosterIdSequenceNumber, uint8 choice) internal returns (RosterCleanUpBattleResult memory) {
-    RosterCleanUpBattleResult memory cleanUpResult = RosterDelegationLib.cleanUpBattleDestroyedShips(
+    RosterCleanUpBattleResult memory cleanUpResult = RosterDelegatecallLib.cleanUpBattleDestroyedShips(
       winnerRosterId.playerId,
       winnerRosterId.sequenceNumber,
       loserRosterId.playerId,
@@ -263,7 +263,7 @@ library ShipBattleTakeLootLogic {
 
     //updateWinnerInventory(winnerRoster, shipBattleLootTaken.loot);
     uint256 lastShipId = winnerRoster.getLastShipId();
-    ShipDelegationLib.increaseShipInventory(lastShipId, shipBattleLootTaken.loot);
+    ShipDelegatecallLib.increaseShipInventory(lastShipId, shipBattleLootTaken.loot);
 
     //NOTE: There is no remote call to Player.IncreaseExperienceAndItems here;
     // As well as increased the E-Roster Owner's experience.
@@ -337,7 +337,7 @@ library ShipBattleTakeLootLogic {
         updatedSailSegment: 0,
         updatedAt: lootedAt
       });
-      RosterDelegationLib.setSail(
+      RosterDelegatecallLib.setSail(
         winnerRosterId.playerId,
         winnerRosterId.sequenceNumber,
         winnerRoster.targetCoordinatesX,
