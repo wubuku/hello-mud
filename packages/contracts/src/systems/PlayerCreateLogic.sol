@@ -9,7 +9,7 @@ library PlayerCreateLogic {
   error InvalidMsgSender(address sender);
   error PlayerAlreadyCreated(address owner, uint256 existingPlayerId);
 
-  function verify(uint256 id, string memory name) internal view returns (PlayerCreated memory) {
+  function verify(uint256 id, string memory name) internal returns (PlayerCreated memory) {
     address playerOwner = WorldContextConsumerLib._msgSender();
     if (playerOwner == address(0)) {
       revert InvalidMsgSender(playerOwner);
@@ -19,6 +19,7 @@ library PlayerCreateLogic {
     if (accountPlayerId != 0) {
       revert PlayerAlreadyCreated(playerOwner, accountPlayerId);
     }
+    AccountPlayer.set(playerOwner, id);
 
     return PlayerCreated(id, name, playerOwner);
   }

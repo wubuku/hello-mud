@@ -7,10 +7,12 @@ import { ResourceId, WorldResourceIdLib } from "@latticexyz/world/src/WorldResou
 import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 import { IBaseWorld } from "@latticexyz/world/src/codegen/interfaces/IBaseWorld.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
+import { WorldContextProviderLib } from "@latticexyz/world/src/WorldContext.sol";
+import { revertWithBytes } from "@latticexyz/world/src/revertWithBytes.sol";
+import { Systems } from "@latticexyz/world/src/codegen/tables/Systems.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 library MapDelegationLib {
-
   function addIsland(uint32 coordinatesX, uint32 coordinatesY, ItemIdQuantityPair[] memory resources) internal {
     ResourceId mapSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
@@ -22,12 +24,8 @@ library MapDelegationLib {
     world.callFrom(
       WorldContextConsumerLib._msgSender(),
       mapSystemId,
-      abi.encodeWithSignature(
-        "mapAddIsland(uint32,uint32,(uint32,uint32)[])",
-        coordinatesX, coordinatesY, resources
-      )
+      abi.encodeWithSignature("mapAddIsland(uint32,uint32,(uint32,uint32)[])", coordinatesX, coordinatesY, resources)
     );
-
   }
 
   function claimIsland(uint32 coordinatesX, uint32 coordinatesY, uint256 claimedBy, uint64 claimedAt) internal {
@@ -36,36 +34,40 @@ library MapDelegationLib {
       namespace: "app",
       name: "MapFriendSystem"
     });
-
-    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
-    world.callFrom(
+    (address mapFriendSystemAddress, ) = Systems.get(mapFriendSystemId);
+    (bool success, bytes memory returnData) = WorldContextProviderLib.delegatecallWithContext(
       WorldContextConsumerLib._msgSender(),
-      mapFriendSystemId,
+      0, // msgValue
+      mapFriendSystemAddress,
       abi.encodeWithSignature(
         "mapClaimIsland(uint32,uint32,uint256,uint64)",
-        coordinatesX, coordinatesY, claimedBy, claimedAt
+        coordinatesX,
+        coordinatesY,
+        claimedBy,
+        claimedAt
       )
     );
-
+    if (!success) revertWithBytes(returnData);
   }
 
-  function gatherIslandResources(uint256 playerId, uint32 coordinatesX, uint32 coordinatesY) internal returns (ItemIdQuantityPair[] memory) {
+  function gatherIslandResources(
+    uint256 playerId,
+    uint32 coordinatesX,
+    uint32 coordinatesY
+  ) internal returns (ItemIdQuantityPair[] memory) {
     ResourceId mapFriendSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
       name: "MapFriendSystem"
     });
-
-    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
-    bytes memory returnData = world.callFrom(
+    (address mapFriendSystemAddress, ) = Systems.get(mapFriendSystemId);
+    (bool success, bytes memory returnData) = WorldContextProviderLib.delegatecallWithContext(
       WorldContextConsumerLib._msgSender(),
-      mapFriendSystemId,
-      abi.encodeWithSignature(
-        "mapGatherIslandResources(uint256,uint32,uint32)",
-        playerId, coordinatesX, coordinatesY
-      )
+      0, // msgValue
+      mapFriendSystemAddress,
+      abi.encodeWithSignature("mapGatherIslandResources(uint256,uint32,uint32)", playerId, coordinatesX, coordinatesY)
     );
-
+    if (!success) revertWithBytes(returnData);
     return abi.decode(returnData, (ItemIdQuantityPair[]));
   }
 
@@ -80,12 +82,8 @@ library MapDelegationLib {
     world.callFrom(
       WorldContextConsumerLib._msgSender(),
       mapSystemId,
-      abi.encodeWithSignature(
-        "mapCreate(bool,uint32,uint32)",
-        existing, width, height
-      )
+      abi.encodeWithSignature("mapCreate(bool,uint32,uint32)", existing, width, height)
     );
-
   }
 
   function update(bool existing, uint32 width, uint32 height) internal {
@@ -99,12 +97,7 @@ library MapDelegationLib {
     world.callFrom(
       WorldContextConsumerLib._msgSender(),
       mapSystemId,
-      abi.encodeWithSignature(
-        "mapUpdate(bool,uint32,uint32)",
-        existing, width, height
-      )
+      abi.encodeWithSignature("mapUpdate(bool,uint32,uint32)", existing, width, height)
     );
-
   }
-
 }

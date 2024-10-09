@@ -361,7 +361,7 @@ export default defineWorld({
       openAccess: true,
     },
     MapFriendSystem: {
-      openAccess: true,
+      openAccess: false,
     },
   },
   modules: [
