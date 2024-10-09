@@ -66,12 +66,12 @@ library RouteUtil {
   }
 
   /**
-   * @notice Determines if the orthogonal projection of point P onto line AB falls within the segment AB
+   * @notice Projects a point onto a line segment and checks if the projection is within the segment.
    * @param a Coordinates of point A (start of segment)
    * @param b Coordinates of point B (end of segment)
    * @param p Coordinates of point P
    * @return isWithinSegment True if the projection falls on the segment AB, false otherwise
-   * @return intersection Coordinates of the intersection point (only valid if isWithinSegment is true)
+   * @return intersection Coordinates of the intersection point
    */
   function projectPointOnSegment(
     Coordinates memory a,
