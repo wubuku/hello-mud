@@ -1,4 +1,12 @@
 aggregates:
+  AccountPlayer:
+    id:
+      name: AccountAddress
+      type: address
+    properties:
+      PlayerId:
+        type: u256
+
   Player:
     friends:
       - SkillProcess.SkillProcessCompleteCreation
@@ -7,7 +15,7 @@ aggregates:
       - Roster.PutInShipInventory
       - Roster.TakeOutShipInventory
       - Roster.TransferShipInventory
-    metadata:
+    #metadata:
     id:
       name: Id
       type: u256

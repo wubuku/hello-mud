@@ -2,19 +2,22 @@
 pragma solidity >=0.8.24;
 
 import { ShipBattleLootTaken } from "./ShipBattleEvents.sol";
-import { ShipBattleData, PlayerData, RosterData, ShipData, Ship, Roster, Player } from "../codegen/index.sol";
+import { ShipBattleData, PlayerData, RosterData, Ship, Roster, Player } from "../codegen/index.sol";
 import { BattleStatus } from "./BattleStatus.sol";
 import { RosterStatus } from "./RosterStatus.sol";
 import { ItemIdQuantityPair } from "../systems/ItemIdQuantityPair.sol";
 import { ExperienceTableUtil } from "../utils/ExperienceTableUtil.sol";
 import { ShipBattleUtil } from "../utils/ShipBattleUtil.sol";
 import { RosterUtil } from "../utils/RosterUtil.sol";
-import { LootUtil } from "../utils/LootUtil.sol";
-import { SortedVectorUtil } from "../utils/SortedVectorUtil.sol";
-import { ShipIdUtil } from "../utils/ShipIdUtil.sol";
 import { RosterId } from "../systems/RosterId.sol";
 import { RosterDataInstance } from "../utils/RosterDataInstance.sol";
 import { ShipDelegationLib } from "./ShipDelegationLib.sol";
+import { SailIntPointLib } from "./SailIntPointLib.sol";
+import { Coordinates } from "./Coordinates.sol";
+import { UpdateLocationParams } from "./UpdateLocationParams.sol";
+import { SailIntPointData } from "../codegen/index.sol";
+import { RosterDelegationLib } from "./RosterDelegationLib.sol";
+import { RosterCleanUpBattleResult } from "./RosterCleanUpBattleResult.sol";
 
 library ShipBattleTakeLootLogic {
   using RosterDataInstance for RosterData;
@@ -55,16 +58,28 @@ library ShipBattleTakeLootLogic {
 
     if (loserRoster.status != uint8(RosterStatus.DESTROYED)) revert InvalidLoserStatus(loserRoster.status);
 
-    (uint256[] memory shipIds, ItemIdQuantityPair[] memory loot) = removeLooserShipsAndCalculateLoot(
-      loserRoster,
+    // (uint256[] memory shipIds, ItemIdQuantityPair[] memory loot) = removeLooserShipsAndCalculateLoot(
+    //   loserRoster,
+    //   choice
+    // );
+    // loserRoster.shipIds = shipIds;
+    // (winnerRoster.shipIds, winnerRoster.speed) = removeDestroyedWinnerShips(winnerRoster);
+    //RosterDelegationLib:
+    //  function cleanUpBattleDestroyedShips(uint256 playerId, uint32 sequenceNumber, uint256 loserRosterIdPlayerId, uint32 loserRosterIdSequenceNumber, uint8 choice) internal returns (RosterCleanUpBattleResult memory) {
+    RosterCleanUpBattleResult memory cleanUpResult = RosterDelegationLib.cleanUpBattleDestroyedShips(
+      winnerRosterId.playerId,
+      winnerRosterId.sequenceNumber,
+      loserRosterId.playerId,
+      loserRosterId.sequenceNumber,
       choice
     );
-    loserRoster.shipIds = shipIds;
-
-    (winnerRoster.shipIds, winnerRoster.speed) = removeDestroyedWinnerShips(winnerRoster);
+    winnerRoster.shipIds = cleanUpResult.winnerRemainingShipIds;
+    winnerRoster.speed = cleanUpResult.winnerNewSpeed;
+    //loserRoster.shipIds = cleanUpResult.loserDestroyedShipIds;
+    ItemIdQuantityPair[] memory loot = cleanUpResult.loot;
 
     uint64 lootedAt = uint64(block.timestamp);
-    winnerRoster = updateWinnerRosterStatus(winnerRoster, lootedAt);
+    winnerRoster = updateWinnerRosterStatus(winnerRosterId, winnerRoster, lootedAt);
     loserRoster = updateLoserRosterStatus(
       loserRosterId.sequenceNumber,
       loserRoster,
@@ -285,49 +300,11 @@ library ShipBattleTakeLootLogic {
     return (vc >= 2) ? sum : 0;
   }
 
-  function removeLooserShipsAndCalculateLoot(
-    RosterData memory loserRoster,
-    uint8 choice
-  ) internal returns (uint256[] memory, ItemIdQuantityPair[] memory) {
-    uint256[] memory remainingShipIds = new uint256[](0);
-    ItemIdQuantityPair[] memory loot = new ItemIdQuantityPair[](0);
-
-    for (uint i = 0; i < loserRoster.shipIds.length; i++) {
-      ShipData memory ship = Ship.get(loserRoster.shipIds[i]);
-      if (choice != CHOICE_LEAVE_IT) {
-        (uint32[] memory itemIds, uint32[] memory itemQuantities) = LootUtil.calculateLoot(
-          loserRoster.shipIds[i],
-          ship
-        );
-        ItemIdQuantityPair[] memory shipLoot = SortedVectorUtil.newItemIdQuantityPairs(itemIds, itemQuantities);
-        loot = SortedVectorUtil.mergeItemIdQuantityPairs(loot, shipLoot);
-      }
-      Ship.deleteRecord(loserRoster.shipIds[i]);
-    }
-
-    return (remainingShipIds, loot);
-  }
-
-  function removeDestroyedWinnerShips(RosterData memory winnerRoster) internal returns (uint256[] memory, uint32) {
-    uint256[] memory remainingShipIds = new uint256[](0);
-
-    for (uint i = 0; i < winnerRoster.shipIds.length; i++) {
-      ShipData memory ship = Ship.get(winnerRoster.shipIds[i]);
-      if (ship.healthPoints > 0) {
-        remainingShipIds = ShipIdUtil.addShipIdToEnd(remainingShipIds, winnerRoster.shipIds[i]);
-      } else {
-        Ship.deleteRecord(winnerRoster.shipIds[i]);
-      }
-    }
-
-    uint32 newSpeed = winnerRoster.calculateRosterSpeed();
-    return (remainingShipIds, newSpeed);
-  }
-
   function updateWinnerRosterStatus(
+    RosterId memory winnerRosterId,
     RosterData memory winnerRoster,
     uint64 lootedAt
-  ) private pure returns (RosterData memory) {
+  ) private returns (RosterData memory) {
     winnerRoster.shipBattleId = 0;
     if (
       winnerRoster.targetCoordinatesX != 0 &&
@@ -336,6 +313,40 @@ library ShipBattleTakeLootLogic {
         winnerRoster.targetCoordinatesY != winnerRoster.updatedCoordinatesY)
     ) {
       winnerRoster.status = uint8(RosterStatus.UNDERWAY);
+
+      // Get all intermediate points
+      SailIntPointData[] memory allIntPoints = SailIntPointLib.getAllSailIntermediatePoints(
+        winnerRosterId.playerId,
+        winnerRosterId.sequenceNumber
+      );
+
+      // Filter remaining points based on currentSailSegment
+      uint16 currentSailSegment = winnerRoster.currentSailSegment;
+      if (currentSailSegment > allIntPoints.length) {
+        currentSailSegment = uint16(allIntPoints.length);
+      }
+      Coordinates[] memory remainingIntPoints = new Coordinates[](allIntPoints.length - currentSailSegment);
+      for (uint64 i = currentSailSegment; i < allIntPoints.length; i++) {
+        remainingIntPoints[i - currentSailSegment] = Coordinates(
+          allIntPoints[i].coordinatesX,
+          allIntPoints[i].coordinatesY
+        );
+      }
+
+      UpdateLocationParams memory updateLocationParams = UpdateLocationParams({
+        updatedCoordinates: Coordinates(winnerRoster.updatedCoordinatesX, winnerRoster.updatedCoordinatesY),
+        updatedSailSegment: 0,
+        updatedAt: lootedAt
+      });
+      RosterDelegationLib.setSail(
+        winnerRosterId.playerId,
+        winnerRosterId.sequenceNumber,
+        winnerRoster.targetCoordinatesX,
+        winnerRoster.targetCoordinatesY,
+        0, //sailDuration,
+        updateLocationParams,
+        remainingIntPoints
+      );
     } else {
       winnerRoster.status = uint8(RosterStatus.AT_ANCHOR);
     }

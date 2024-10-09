@@ -11,6 +11,7 @@ import { ArticleTagCount } from "./tables/ArticleTagCount.sol";
 import { CommentSeqIdGenerator } from "./tables/CommentSeqIdGenerator.sol";
 import { Comment, CommentData } from "./tables/Comment.sol";
 import { ArticleTag } from "./tables/ArticleTag.sol";
+import { AccountPlayer } from "./tables/AccountPlayer.sol";
 import { PlayerIdGenerator } from "./tables/PlayerIdGenerator.sol";
 import { Player, PlayerData } from "./tables/Player.sol";
 import { PlayerInventoryCount } from "./tables/PlayerInventoryCount.sol";

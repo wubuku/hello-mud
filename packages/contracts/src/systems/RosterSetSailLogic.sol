@@ -46,7 +46,7 @@ library RosterSetSailLogic {
     if (updatedCoordinatesY == 0) {
       updatedCoordinatesY = rosterData.updatedCoordinatesY;
     }
-    uint16 updatedSailSegment = updateLocationParams.updatedSailSegment;
+    //uint16 updatedSailSegment = updateLocationParams.updatedSailSegment;
 
     if (rosterData.status != RosterStatus.AT_ANCHOR && rosterData.status != RosterStatus.UNDERWAY) {
       revert RosterUnfitToSail(rosterData.status);
@@ -58,6 +58,9 @@ library RosterSetSailLogic {
       intermediatePoints
     );
 
+    if (sailDuration == 0) {
+      sailDuration = totalDuration; // Is this ok?
+    }
     if (sailDuration < totalDuration) {
       revert IllegalSailDuration(totalDuration, sailDuration);
     }

@@ -101,6 +101,26 @@ struct RosterLocationUpdated {
   uint8 oldStatus;
 }
 
+struct RosterBattleDestroyedShipsCleanedUp {
+  /**
+   * @dev The PlayerId of the RosterId.
+   */
+  uint256 playerId;
+  /**
+   * @dev The SequenceNumber of the RosterId.
+   */
+  uint32 sequenceNumber;
+  /**
+   * @dev The PlayerId of the LoserRosterId.
+   */
+  uint256 loserRosterIdPlayerId;
+  /**
+   * @dev The SequenceNumber of the LoserRosterId.
+   */
+  uint32 loserRosterIdSequenceNumber;
+  uint8 choice;
+}
+
 struct RosterShipsPositionAdjusted {
   /**
    * @dev The PlayerId of the RosterId.

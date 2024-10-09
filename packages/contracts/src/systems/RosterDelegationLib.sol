@@ -9,6 +9,7 @@ import { IBaseWorld } from "@latticexyz/world/src/codegen/interfaces/IBaseWorld.
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 import { Coordinates } from "./Coordinates.sol";
 import { UpdateLocationParams } from "./UpdateLocationParams.sol";
+import { RosterCleanUpBattleResult } from "./RosterCleanUpBattleResult.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 library RosterDelegationLib {
@@ -107,6 +108,26 @@ library RosterDelegationLib {
       )
     );
 
+  }
+
+  function cleanUpBattleDestroyedShips(uint256 playerId, uint32 sequenceNumber, uint256 loserRosterIdPlayerId, uint32 loserRosterIdSequenceNumber, uint8 choice) internal returns (RosterCleanUpBattleResult memory) {
+    ResourceId rosterCleaningSystemId = WorldResourceIdLib.encode({
+      typeId: RESOURCE_SYSTEM,
+      namespace: "app",
+      name: "RosterCleaningSy" // NOTE: Only the first 16 characters are used. Original: "RosterCleaningSystem"
+    });
+
+    IBaseWorld world = IBaseWorld(WorldContextConsumerLib._world());
+    bytes memory returnData = world.callFrom(
+      WorldContextConsumerLib._msgSender(),
+      rosterCleaningSystemId,
+      abi.encodeWithSignature(
+        "rosterCleanUpBattleDestroyedShips(uint256,uint32,uint256,uint32,uint8)",
+        playerId, sequenceNumber, loserRosterIdPlayerId, loserRosterIdSequenceNumber, choice
+      )
+    );
+
+    return abi.decode(returnData, (RosterCleanUpBattleResult));
   }
 
   function adjustShipsPosition(uint256 playerId, uint32 sequenceNumber, uint64[] memory positions, uint256[] memory shipIds) internal {

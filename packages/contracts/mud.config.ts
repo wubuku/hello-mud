@@ -68,6 +68,13 @@ export default defineWorld({
       },
       key: ["articleId", "tagIndex"],
     },
+    AccountPlayer: {
+      schema: {
+        accountAddress: "address",
+        playerId: "uint256",
+      },
+      key: ["accountAddress"],
+    },
     PlayerIdGenerator: {
       schema: {
         id: "uint256",
@@ -345,6 +352,9 @@ export default defineWorld({
       openAccess: true,
     },
     RosterSailingSystem: {
+      openAccess: true,
+    },
+    RosterCleaningSystem: {
       openAccess: true,
     },
     SkillProcessFriendSystem: {

@@ -7,6 +7,18 @@ valueObjects:
       SegmentShouldStartAt:
         type: u64
         description: "The segment after this point should start at this time"
+
+  RosterCleanUpBattleResult:
+    properties:
+      WinnerRemainingShipIds:
+        type: uint256[]
+      WinnerNewSpeed:
+        type: u32
+      LoserDestroyedShipIds:
+        type: uint256[]
+      Loot:
+        itemType: ItemIdQuantityPair
+        isList: true
   
 
 aggregates:
@@ -170,7 +182,22 @@ aggregates:
               type: u8
             OldStatus:
              type: u8
+      
 
+      CleanUpBattleDestroyedShips:
+        metadata:
+          IsOnlyOpenToFriends: true
+          MudSystemName: RosterCleaningSystem
+        parameters:
+          # Current roster is the winner
+          LoserRosterId:
+            type: RosterId
+          Choice:
+            type: u8
+        result:
+          type: RosterCleanUpBattleResult
+        event:
+          name: RosterBattleDestroyedShipsCleanedUp
 
       AdjustShipsPosition:
         parameters:
