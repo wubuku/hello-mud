@@ -203,17 +203,16 @@ library ShipBattleTakeLootLogic {
       loserIncreasedExperience
     );
 
-    return
-      ShipBattleLootTaken({
-        id: id,
-        choice: choice,
-        loot: loot,
-        lootedAt: lootedAt,
-        increasedExperience: winnerIncreasedExperience,
-        newLevel: newLevel,
-        loserIncreasedExperience: loserIncreasedExperience,
-        loserNewLevel: loserNewLevel
-      });
+    ShipBattleLootTaken memory e;
+    e.id = id;
+    e.choice = choice;
+    e.loot = loot;
+    e.lootedAt = lootedAt;
+    e.increasedExperience = winnerIncreasedExperience;
+    e.newLevel = newLevel;
+    e.loserIncreasedExperience = loserIncreasedExperience;
+    e.loserNewLevel = loserNewLevel;
+    return e;
   }
 
   function mutate(
