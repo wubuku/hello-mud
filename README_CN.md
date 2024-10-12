@@ -235,7 +235,7 @@ ArticleAddTagLogic.sol | Read the comments of the current file, and the files I 
 
 
 
-## 测试合约
+## 测试示例合约
 
 ```shell
 pnpm dev
@@ -254,7 +254,7 @@ forge script script/GatherIslandResourcesTest.s.sol:GatherIslandResourcesTest --
 ```
 
 
-### 测试 "Counter" 合约
+### 测试 Counter 合约
 
 注意将占位符 `__PRIVATE_KEY__` 替换为你实际的私钥（假设 world 合约的地址是 `0x8D8b6b8414E1e3DcfD4168561b9be6bD3bF6eC4B`）：
 
@@ -284,7 +284,29 @@ cast call \
 > 
 > 关于 Resource IDs，可以参考此链接的说明：[MUD Resource IDs](https://mud.dev/world/resource-ids).
 
-### 测试 "Position" 合约
+
+### 测试“博客”合约
+
+创建一篇文章：
+
+```shell
+cast send --private-key __PRIVATE_KEY__ \
+0x8D8b6b8414E1e3DcfD4168561b9be6bD3bF6eC4B \
+'app__articleCreate(address,string,string)' \
+'0x8D8b6b8414E1e3DcfD4168561b9be6bD3bF6eC4B' 'hello' 'world'
+```
+
+添加一篇文章的评论：
+
+```shell
+cast send --private-key __PRIVATE_KEY__ \
+0x8D8b6b8414E1e3DcfD4168561b9be6bD3bF6eC4B \
+'app__articleAddComment(uint64,string,string)' \
+'1' 'Jeff' 'A test comment'
+```
+
+
+### 测试 Position 合约
 
 创建一个 position 记录：
 
@@ -318,7 +340,7 @@ cast send --private-key __PRIVATE_KEY__ \
 cast logs 'PositionUpdatedEvent(address,int32,int32,string)'
 ```
 
-### 测试 "Terrain" 合约
+### 测试 Terrain 合约
 
 创建一个 terrain 记录：
 
