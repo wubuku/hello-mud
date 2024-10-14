@@ -16,6 +16,10 @@ import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/World
 contract PlayerFriendSystem is System {
   using WorldResourceIdInstance for ResourceId;
 
+  error RequireNamespaceOwner(address caller, address requiredOwner);
+  error PlayerAlreadyExists(uint256 id);
+  error PlayerDoesNotExist(uint256 id);
+
   event PlayerItemsDeductedEvent(uint256 indexed id);
 
   event PlayerXpAndItemsIncreasedEvent(uint256 indexed id, uint32 experienceGained, uint16 newLevel);
@@ -23,15 +27,16 @@ contract PlayerFriendSystem is System {
   function _requireNamespaceOwner() internal view {
     ResourceId _thisSystemId = SystemRegistry.get(address(this));
     address _thisNamespaceOwner = NamespaceOwner.get(_thisSystemId.getNamespaceId());
-    require(_thisNamespaceOwner == _msgSender(), "Require namespace owner");
+    if (_thisNamespaceOwner != _msgSender()) {
+      revert RequireNamespaceOwner(_msgSender(), _thisNamespaceOwner);
+    }
   }
 
   function playerDeductItems(uint256 id, ItemIdQuantityPair[] memory items) public {
     PlayerData memory playerData = Player.get(id);
-    require(
-      !(playerData.owner == address(0) && playerData.level == uint16(0) && playerData.experience == uint32(0) && playerData.claimedIslandX == uint32(0) && playerData.claimedIslandY == uint32(0) && bytes(playerData.name).length == 0),
-      "Player does not exist"
-    );
+    if (playerData.owner == address(0) && playerData.level == uint16(0) && playerData.experience == uint32(0) && playerData.claimedIslandX == uint32(0) && playerData.claimedIslandY == uint32(0) && bytes(playerData.name).length == 0) {
+      revert PlayerDoesNotExist(id);
+    }
     PlayerItemsDeducted memory playerItemsDeducted = PlayerDeductItemsLogic.verify(id, items, playerData);
     playerItemsDeducted.id = id;
     emit PlayerItemsDeductedEvent(playerItemsDeducted.id);
@@ -41,10 +46,9 @@ contract PlayerFriendSystem is System {
 
   function playerIncreaseExperienceAndItems(uint256 id, uint32 experienceGained, ItemIdQuantityPair[] memory items, uint16 newLevel) public {
     PlayerData memory playerData = Player.get(id);
-    require(
-      !(playerData.owner == address(0) && playerData.level == uint16(0) && playerData.experience == uint32(0) && playerData.claimedIslandX == uint32(0) && playerData.claimedIslandY == uint32(0) && bytes(playerData.name).length == 0),
-      "Player does not exist"
-    );
+    if (playerData.owner == address(0) && playerData.level == uint16(0) && playerData.experience == uint32(0) && playerData.claimedIslandX == uint32(0) && playerData.claimedIslandY == uint32(0) && bytes(playerData.name).length == 0) {
+      revert PlayerDoesNotExist(id);
+    }
     PlayerXpAndItemsIncreased memory playerXpAndItemsIncreased = PlayerIncreaseExperienceAndItemsLogic.verify(id, experienceGained, items, newLevel, playerData);
     playerXpAndItemsIncreased.id = id;
     emit PlayerXpAndItemsIncreasedEvent(playerXpAndItemsIncreased.id, playerXpAndItemsIncreased.experienceGained, playerXpAndItemsIncreased.newLevel);

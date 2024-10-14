@@ -9,6 +9,9 @@ import { CounterIncreased } from "./CounterEvents.sol";
 import { CounterIncreaseLogic } from "./CounterIncreaseLogic.sol";
 
 contract CounterSystem is System {
+  error CounterAlreadyExists();
+  error CounterDoesNotExist();
+
   event CounterIncreasedEvent(uint32 oldValue);
 
   function counterIncrease() public returns (uint32) {

@@ -17,6 +17,10 @@ import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/World
 contract ExperienceTableSystem is System {
   using WorldResourceIdInstance for ResourceId;
 
+  error RequireNamespaceOwner(address caller, address requiredOwner);
+  error ExperienceTableAlreadyExists();
+  error ExperienceTableDoesNotExist();
+
   event ExperienceLevelAddedEvent(uint16 level, uint32 experience, uint32 difference);
 
   event ExperienceLevelUpdatedEvent(uint16 level, uint32 experience, uint32 difference);
@@ -28,16 +32,17 @@ contract ExperienceTableSystem is System {
   function _requireNamespaceOwner() internal view {
     ResourceId _thisSystemId = SystemRegistry.get(address(this));
     address _thisNamespaceOwner = NamespaceOwner.get(_thisSystemId.getNamespaceId());
-    require(_thisNamespaceOwner == _msgSender(), "Require namespace owner");
+    if (_thisNamespaceOwner != _msgSender()) {
+      revert RequireNamespaceOwner(_msgSender(), _thisNamespaceOwner);
+    }
   }
 
   function experienceTableAddLevel(uint16 level, uint32 experience, uint32 difference) public {
     _requireNamespaceOwner();
     bool existing = ExperienceTable.get();
-    require(
-      !(existing == false),
-      "ExperienceTable does not exist"
-    );
+    if (existing == false) {
+      revert ExperienceTableDoesNotExist();
+    }
     ExperienceLevelAdded memory experienceLevelAdded = ExperienceTableAddLevelLogic.verify(level, experience, difference, existing);
     emit ExperienceLevelAddedEvent(experienceLevelAdded.level, experienceLevelAdded.experience, experienceLevelAdded.difference);
     bool updatedExisting = ExperienceTableAddLevelLogic.mutate(experienceLevelAdded, existing);
@@ -47,10 +52,9 @@ contract ExperienceTableSystem is System {
   function experienceTableUpdateLevel(uint16 level, uint32 experience, uint32 difference) public {
     _requireNamespaceOwner();
     bool existing = ExperienceTable.get();
-    require(
-      !(existing == false),
-      "ExperienceTable does not exist"
-    );
+    if (existing == false) {
+      revert ExperienceTableDoesNotExist();
+    }
     ExperienceLevelUpdated memory experienceLevelUpdated = ExperienceTableUpdateLevelLogic.verify(level, experience, difference, existing);
     emit ExperienceLevelUpdatedEvent(experienceLevelUpdated.level, experienceLevelUpdated.experience, experienceLevelUpdated.difference);
     bool updatedExisting = ExperienceTableUpdateLevelLogic.mutate(experienceLevelUpdated, existing);
@@ -59,10 +63,9 @@ contract ExperienceTableSystem is System {
 
   function experienceTableCreate(bool existing) public {
     bool __existing = ExperienceTable.get();
-    require(
-      __existing == false,
-      "ExperienceTable already exists"
-    );
+    if (!(__existing == false)) {
+      revert ExperienceTableAlreadyExists();
+    }
     ExperienceTableCreated memory experienceTableCreated = ExperienceTableCreateLogic.verify(existing);
     emit ExperienceTableCreatedEvent(experienceTableCreated.existing);
     bool new__Existing = ExperienceTableCreateLogic.mutate(experienceTableCreated);
@@ -71,10 +74,9 @@ contract ExperienceTableSystem is System {
 
   function experienceTableUpdate(bool existing) public {
     bool __existing = ExperienceTable.get();
-    require(
-      !(__existing == false),
-      "ExperienceTable does not exist"
-    );
+    if (__existing == false) {
+      revert ExperienceTableDoesNotExist();
+    }
     ExperienceTableUpdated memory experienceTableUpdated = ExperienceTableUpdateLogic.verify(existing, __existing);
     emit ExperienceTableUpdatedEvent(experienceTableUpdated.existing);
     bool updated__Existing = ExperienceTableUpdateLogic.mutate(experienceTableUpdated, __existing);

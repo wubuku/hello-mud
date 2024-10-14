@@ -15,6 +15,10 @@ import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/World
 contract EnergyTokenSystem is System {
   using WorldResourceIdInstance for ResourceId;
 
+  error RequireNamespaceOwner(address caller, address requiredOwner);
+  error EnergyTokenAlreadyExists();
+  error EnergyTokenDoesNotExist();
+
   event EnergyTokenCreatedEvent(address tokenAddress);
 
   event EnergyTokenUpdatedEvent(address tokenAddress);
@@ -22,16 +26,17 @@ contract EnergyTokenSystem is System {
   function _requireNamespaceOwner() internal view {
     ResourceId _thisSystemId = SystemRegistry.get(address(this));
     address _thisNamespaceOwner = NamespaceOwner.get(_thisSystemId.getNamespaceId());
-    require(_thisNamespaceOwner == _msgSender(), "Require namespace owner");
+    if (_thisNamespaceOwner != _msgSender()) {
+      revert RequireNamespaceOwner(_msgSender(), _thisNamespaceOwner);
+    }
   }
 
   function energyTokenCreate(address tokenAddress) public {
     _requireNamespaceOwner();
     address __tokenAddress = EnergyToken.get();
-    require(
-      __tokenAddress == address(0),
-      "EnergyToken already exists"
-    );
+    if (!(__tokenAddress == address(0))) {
+      revert EnergyTokenAlreadyExists();
+    }
     EnergyTokenCreated memory energyTokenCreated = EnergyTokenCreateLogic.verify(tokenAddress);
     emit EnergyTokenCreatedEvent(energyTokenCreated.tokenAddress);
     address new__TokenAddress = EnergyTokenCreateLogic.mutate(energyTokenCreated);
@@ -41,10 +46,9 @@ contract EnergyTokenSystem is System {
   function energyTokenUpdate(address tokenAddress) public {
     _requireNamespaceOwner();
     address __tokenAddress = EnergyToken.get();
-    require(
-      !(__tokenAddress == address(0)),
-      "EnergyToken does not exist"
-    );
+    if (__tokenAddress == address(0)) {
+      revert EnergyTokenDoesNotExist();
+    }
     EnergyTokenUpdated memory energyTokenUpdated = EnergyTokenUpdateLogic.verify(tokenAddress, __tokenAddress);
     emit EnergyTokenUpdatedEvent(energyTokenUpdated.tokenAddress);
     address updated__TokenAddress = EnergyTokenUpdateLogic.mutate(energyTokenUpdated, __tokenAddress);

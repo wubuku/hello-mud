@@ -10,16 +10,18 @@ import { TerrainCreateLogic } from "./TerrainCreateLogic.sol";
 import { TerrainUpdateLogic } from "./TerrainUpdateLogic.sol";
 
 contract TerrainSystem is System {
+  error TerrainAlreadyExists(uint32 x, uint32 y);
+  error TerrainDoesNotExist(uint32 x, uint32 y);
+
   event TerrainCreatedEvent(uint32 indexed x, uint32 indexed y, string terrainType, uint8[] foo, bytes bar);
 
   event TerrainUpdatedEvent(uint32 indexed x, uint32 indexed y, string terrainType, uint8[] foo, bytes bar);
 
   function terrainCreate(uint32 x, uint32 y, string memory terrainType, uint8[] memory foo, bytes memory bar) public {
     TerrainData memory terrainData = Terrain.get(x, y);
-    require(
-      bytes(terrainData.terrainType).length == 0 && terrainData.foo.length == 0 && terrainData.bar.length == 0,
-      "Terrain already exists"
-    );
+    if (!(bytes(terrainData.terrainType).length == 0 && terrainData.foo.length == 0 && terrainData.bar.length == 0)) {
+      revert TerrainAlreadyExists(x, y);
+    }
     TerrainCreated memory terrainCreated = TerrainCreateLogic.verify(x, y, terrainType, foo, bar);
     terrainCreated.x = x;
     terrainCreated.y = y;
@@ -30,10 +32,9 @@ contract TerrainSystem is System {
 
   function terrainUpdate(uint32 x, uint32 y, string memory terrainType, uint8[] memory foo, bytes memory bar) public {
     TerrainData memory terrainData = Terrain.get(x, y);
-    require(
-      !(bytes(terrainData.terrainType).length == 0 && terrainData.foo.length == 0 && terrainData.bar.length == 0),
-      "Terrain does not exist"
-    );
+    if (bytes(terrainData.terrainType).length == 0 && terrainData.foo.length == 0 && terrainData.bar.length == 0) {
+      revert TerrainDoesNotExist(x, y);
+    }
     TerrainUpdated memory terrainUpdated = TerrainUpdateLogic.verify(x, y, terrainType, foo, bar, terrainData);
     terrainUpdated.x = x;
     terrainUpdated.y = y;
