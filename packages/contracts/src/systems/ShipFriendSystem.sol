@@ -10,11 +10,9 @@ import { ShipCreateLogic } from "./ShipCreateLogic.sol";
 import { ShipIncreaseShipInventoryLogic } from "./ShipIncreaseShipInventoryLogic.sol";
 import { ShipDeductShipInventoryLogic } from "./ShipDeductShipInventoryLogic.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract ShipFriendSystem is System {
-  error ShipAlreadyExists(uint256 id);
-  error ShipDoesNotExist(uint256 id);
-
+contract ShipFriendSystem is System, IAppSystemErrors {
   event ShipCreatedEvent(uint256 indexed id, uint256 rosterIdPlayerId, uint32 rosterIdSequenceNumber, uint32 healthPoints, uint32 attack, uint32 protection, uint32 speed, uint32[] buildingExpensesItemIds, uint32[] buildingExpensesQuantities);
 
   event ShipInventoryIncreasedEvent(uint256 indexed id);

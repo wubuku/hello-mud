@@ -8,11 +8,9 @@ import { Terrain, TerrainData } from "../codegen/index.sol";
 import { TerrainCreated, TerrainUpdated } from "./TerrainEvents.sol";
 import { TerrainCreateLogic } from "./TerrainCreateLogic.sol";
 import { TerrainUpdateLogic } from "./TerrainUpdateLogic.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract TerrainSystem is System {
-  error TerrainAlreadyExists(uint32 x, uint32 y);
-  error TerrainDoesNotExist(uint32 x, uint32 y);
-
+contract TerrainSystem is System, IAppSystemErrors {
   event TerrainCreatedEvent(uint32 indexed x, uint32 indexed y, string terrainType, uint8[] foo, bytes bar);
 
   event TerrainUpdatedEvent(uint32 indexed x, uint32 indexed y, string terrainType, uint8[] foo, bytes bar);

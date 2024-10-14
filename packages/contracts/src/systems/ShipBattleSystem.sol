@@ -7,11 +7,9 @@ import { System } from "@latticexyz/world/src/System.sol";
 import { ShipBattle, ShipBattleData, ShipBattleIdGenerator } from "../codegen/index.sol";
 import { ShipBattleMoveMade } from "./ShipBattleEvents.sol";
 import { ShipBattleMakeMoveLogic } from "./ShipBattleMakeMoveLogic.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract ShipBattleSystem is System {
-  error ShipBattleAlreadyExists(uint256 id);
-  error ShipBattleDoesNotExist(uint256 id);
-
+contract ShipBattleSystem is System, IAppSystemErrors {
   event ShipBattleMoveMadeEvent(uint256 indexed id, uint8 attackerCommand, uint8 defenderCommand, uint32 roundNumber, uint32 defenderDamageTaken, uint32 attackerDamageTaken, bool isBattleEnded, uint8 winner, uint64 nextRoundStartedAt, uint8 nextRoundMover, uint256 nextRoundAttackerShip, uint256 nextRoundDefenderShip);
 
   function shipBattleMakeMove(uint256 id, uint8 attackerCommand) public {

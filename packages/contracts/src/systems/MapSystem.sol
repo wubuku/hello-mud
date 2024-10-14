@@ -13,13 +13,10 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
 import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
 import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract MapSystem is System {
+contract MapSystem is System, IAppSystemErrors {
   using WorldResourceIdInstance for ResourceId;
-
-  error RequireNamespaceOwner(address caller, address requiredOwner);
-  error MapAlreadyExists();
-  error MapDoesNotExist();
 
   event IslandAddedEvent(uint32 coordinatesX, uint32 coordinatesY);
 

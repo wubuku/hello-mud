@@ -13,13 +13,10 @@ import { PlayerGatherIslandResourcesLogic } from "./PlayerGatherIslandResourcesL
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
 import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
 import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract PlayerSystem is System {
+contract PlayerSystem is System, IAppSystemErrors {
   using WorldResourceIdInstance for ResourceId;
-
-  error RequireNamespaceOwner(address caller, address requiredOwner);
-  error PlayerAlreadyExists(uint256 id);
-  error PlayerDoesNotExist(uint256 id);
 
   event PlayerCreatedEvent(uint256 indexed id, string name, address owner);
 

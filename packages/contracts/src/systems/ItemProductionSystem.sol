@@ -11,13 +11,10 @@ import { ItemProductionUpdateLogic } from "./ItemProductionUpdateLogic.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
 import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
 import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract ItemProductionSystem is System {
+contract ItemProductionSystem is System, IAppSystemErrors {
   using WorldResourceIdInstance for ResourceId;
-
-  error RequireNamespaceOwner(address caller, address requiredOwner);
-  error ItemProductionAlreadyExists(uint8 itemProductionIdSkillType, uint32 itemProductionIdItemId);
-  error ItemProductionDoesNotExist(uint8 itemProductionIdSkillType, uint32 itemProductionIdItemId);
 
   event ItemProductionCreatedEvent(uint8 indexed skillType, uint32 indexed itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32[] materialItemIds, uint32[] materialItemQuantities);
 

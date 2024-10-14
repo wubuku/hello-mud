@@ -9,11 +9,9 @@ import { ProductionProcessCompleted, ShipProductionProcessCompleted, CreationPro
 import { SkillProcessCompleteProductionLogic } from "./SkillProcessCompleteProductionLogic.sol";
 import { SkillProcessCompleteShipProductionLogic } from "./SkillProcessCompleteShipProductionLogic.sol";
 import { SkillProcessCompleteCreationLogic } from "./SkillProcessCompleteCreationLogic.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract SkillProcessSystem is System {
-  error SkillProcessAlreadyExists(uint8 skillProcessIdSkillType, uint256 skillProcessIdPlayerId, uint8 skillProcessIdSequenceNumber);
-  error SkillProcessDoesNotExist(uint8 skillProcessIdSkillType, uint256 skillProcessIdPlayerId, uint8 skillProcessIdSequenceNumber);
-
+contract SkillProcessSystem is System, IAppSystemErrors {
   event ProductionProcessCompletedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime, uint64 endedAt, bool successful, uint32 quantity, uint32 experienceGained, uint16 newLevel);
 
   event ShipProductionProcessCompletedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 itemId, uint64 startedAt, uint64 creationTime, uint64 endedAt, bool successful, uint32 quantity, uint32 experienceGained, uint16 newLevel);

@@ -11,13 +11,10 @@ import { RosterAddShipLogic } from "./RosterAddShipLogic.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
 import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
 import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract RosterFriendSystem is System {
+contract RosterFriendSystem is System, IAppSystemErrors {
   using WorldResourceIdInstance for ResourceId;
-
-  error RequireNamespaceOwner(address caller, address requiredOwner);
-  error RosterAlreadyExists(uint256 playerId, uint32 sequenceNumber);
-  error RosterDoesNotExist(uint256 playerId, uint32 sequenceNumber);
 
   event RosterCreatedEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint32 coordinatesX, uint32 coordinatesY);
 

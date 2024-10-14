@@ -11,11 +11,9 @@ import { SkillProcessStartProductionLogic } from "./SkillProcessStartProductionL
 import { SkillProcessStartShipProductionLogic } from "./SkillProcessStartShipProductionLogic.sol";
 import { SkillProcessStartCreationLogic } from "./SkillProcessStartCreationLogic.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract SkillProcessFriendSystem is System {
-  error SkillProcessAlreadyExists(uint8 skillProcessIdSkillType, uint256 skillProcessIdPlayerId, uint8 skillProcessIdSequenceNumber);
-  error SkillProcessDoesNotExist(uint8 skillProcessIdSkillType, uint256 skillProcessIdPlayerId, uint8 skillProcessIdSequenceNumber);
-
+contract SkillProcessFriendSystem is System, IAppSystemErrors {
   event SkillProcessCreatedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber);
 
   event ProductionProcessStartedEvent(uint8 indexed skillType, uint256 indexed playerId, uint8 indexed sequenceNumber, uint32 batchSize, uint32 itemId, uint64 startedAt, uint64 creationTime);

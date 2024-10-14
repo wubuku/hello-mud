@@ -8,11 +8,9 @@ import { Position, PositionData } from "../codegen/index.sol";
 import { PositionCreated, PositionUpdated } from "./PositionEvents.sol";
 import { PositionCreateLogic } from "./PositionCreateLogic.sol";
 import { PositionUpdateLogic } from "./PositionUpdateLogic.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract PositionSystem is System {
-  error PositionAlreadyExists(address player);
-  error PositionDoesNotExist(address player);
-
+contract PositionSystem is System, IAppSystemErrors {
   event PositionCreatedEvent(address indexed player, int32 x, int32 y, string description);
 
   event PositionUpdatedEvent(address indexed player, int32 x, int32 y, string description);

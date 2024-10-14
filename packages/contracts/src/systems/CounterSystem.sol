@@ -7,11 +7,9 @@ import { System } from "@latticexyz/world/src/System.sol";
 import { Counter } from "../codegen/index.sol";
 import { CounterIncreased } from "./CounterEvents.sol";
 import { CounterIncreaseLogic } from "./CounterIncreaseLogic.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract CounterSystem is System {
-  error CounterAlreadyExists();
-  error CounterDoesNotExist();
-
+contract CounterSystem is System, IAppSystemErrors {
   event CounterIncreasedEvent(uint32 oldValue);
 
   function counterIncrease() public returns (uint32) {

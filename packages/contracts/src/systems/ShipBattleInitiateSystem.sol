@@ -8,11 +8,9 @@ import { ShipBattle, ShipBattleData, ShipBattleIdGenerator } from "../codegen/in
 import { ShipBattleInitiated } from "./ShipBattleEvents.sol";
 import { ShipBattleInitiateBattleLogic } from "./ShipBattleInitiateBattleLogic.sol";
 import { ShipBattleLocationParams } from "./ShipBattleLocationParams.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract ShipBattleInitiateSystem is System {
-  error ShipBattleAlreadyExists(uint256 id);
-  error ShipBattleDoesNotExist(uint256 id);
-
+contract ShipBattleInitiateSystem is System, IAppSystemErrors {
   event ShipBattleInitiatedEvent(uint256 indexed id, uint256 playerId, uint256 initiatorRosterPlayerId, uint32 initiatorRosterSequenceNumber, uint256 responderRosterPlayerId, uint32 responderRosterSequenceNumber, ShipBattleLocationParams updateLocationParams, uint64 startedAt, uint8 firstRoundMover, uint256 firstRoundAttackerShip, uint256 firstRoundDefenderShip);
 
   function initiateShipBattle(uint256 playerId, uint256 initiatorRosterPlayerId, uint32 initiatorRosterSequenceNumber, uint256 responderRosterPlayerId, uint32 responderRosterSequenceNumber, ShipBattleLocationParams memory updateLocationParams) public returns (uint256) {

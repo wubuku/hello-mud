@@ -11,13 +11,10 @@ import { EnergyTokenUpdateLogic } from "./EnergyTokenUpdateLogic.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
 import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
 import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract EnergyTokenSystem is System {
+contract EnergyTokenSystem is System, IAppSystemErrors {
   using WorldResourceIdInstance for ResourceId;
-
-  error RequireNamespaceOwner(address caller, address requiredOwner);
-  error EnergyTokenAlreadyExists();
-  error EnergyTokenDoesNotExist();
 
   event EnergyTokenCreatedEvent(address tokenAddress);
 

@@ -13,11 +13,9 @@ import { ArticleDeleteLogic } from "./ArticleDeleteLogic.sol";
 import { ArticleAddCommentLogic } from "./ArticleAddCommentLogic.sol";
 import { ArticleUpdateCommentLogic } from "./ArticleUpdateCommentLogic.sol";
 import { ArticleRemoveCommentLogic } from "./ArticleRemoveCommentLogic.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-abstract contract ArticleAggregate is System {
-  error ArticleAlreadyExists(uint64 id);
-  error ArticleDoesNotExist(uint64 id);
-
+abstract contract ArticleAggregate is System, IAppSystemErrors {
   event TagAddedEvent(uint64 indexed id, string tag);
 
   event ArticleCreatedEvent(uint64 indexed id, address author, string title, string body);

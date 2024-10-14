@@ -12,13 +12,10 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
 import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
 import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract PlayerFriendSystem is System {
+contract PlayerFriendSystem is System, IAppSystemErrors {
   using WorldResourceIdInstance for ResourceId;
-
-  error RequireNamespaceOwner(address caller, address requiredOwner);
-  error PlayerAlreadyExists(uint256 id);
-  error PlayerDoesNotExist(uint256 id);
 
   event PlayerItemsDeductedEvent(uint256 indexed id);
 

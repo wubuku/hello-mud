@@ -11,13 +11,10 @@ import { ItemUpdateLogic } from "./ItemUpdateLogic.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
 import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
 import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract ItemSystem is System {
+contract ItemSystem is System, IAppSystemErrors {
   using WorldResourceIdInstance for ResourceId;
-
-  error RequireNamespaceOwner(address caller, address requiredOwner);
-  error ItemAlreadyExists(uint32 itemId);
-  error ItemDoesNotExist(uint32 itemId);
 
   event ItemCreatedEvent(uint32 indexed itemId, bool requiredForCompletion, uint32 sellsFor, string name);
 

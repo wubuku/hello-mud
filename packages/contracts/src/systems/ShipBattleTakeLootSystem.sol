@@ -7,11 +7,9 @@ import { System } from "@latticexyz/world/src/System.sol";
 import { ShipBattle, ShipBattleData, ShipBattleIdGenerator } from "../codegen/index.sol";
 import { ShipBattleLootTaken } from "./ShipBattleEvents.sol";
 import { ShipBattleTakeLootLogic } from "./ShipBattleTakeLootLogic.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract ShipBattleTakeLootSystem is System {
-  error ShipBattleAlreadyExists(uint256 id);
-  error ShipBattleDoesNotExist(uint256 id);
-
+contract ShipBattleTakeLootSystem is System, IAppSystemErrors {
   event ShipBattleLootTakenEvent(uint256 indexed id, uint8 choice, uint64 lootedAt, uint32 increasedExperience, uint16 newLevel, uint32 loserIncreasedExperience, uint16 loserNewLevel);
 
   function shipBattleTakeLoot(uint256 id, uint8 choice) public {

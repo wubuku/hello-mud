@@ -13,13 +13,10 @@ import { ExperienceTableUpdateLogic } from "./ExperienceTableUpdateLogic.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
 import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
 import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract ExperienceTableSystem is System {
+contract ExperienceTableSystem is System, IAppSystemErrors {
   using WorldResourceIdInstance for ResourceId;
-
-  error RequireNamespaceOwner(address caller, address requiredOwner);
-  error ExperienceTableAlreadyExists();
-  error ExperienceTableDoesNotExist();
 
   event ExperienceLevelAddedEvent(uint16 level, uint32 experience, uint32 difference);
 
