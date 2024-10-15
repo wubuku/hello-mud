@@ -13,8 +13,9 @@ import { ArticleDeleteLogic } from "./ArticleDeleteLogic.sol";
 import { ArticleAddCommentLogic } from "./ArticleAddCommentLogic.sol";
 import { ArticleUpdateCommentLogic } from "./ArticleUpdateCommentLogic.sol";
 import { ArticleRemoveCommentLogic } from "./ArticleRemoveCommentLogic.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-abstract contract ArticleAggregate is System {
+abstract contract ArticleAggregate is System, IAppSystemErrors {
   event TagAddedEvent(uint64 indexed id, string tag);
 
   event ArticleCreatedEvent(uint64 indexed id, address author, string title, string body);
@@ -31,10 +32,9 @@ abstract contract ArticleAggregate is System {
 
   function articleAddTag(uint64 id, string memory tag) public virtual {
     ArticleData memory articleData = Article.get(id);
-    require(
-      !(articleData.author == address(0) && bytes(articleData.title).length == 0 && bytes(articleData.body).length == 0),
-      "Article does not exist"
-    );
+    if (articleData.author == address(0) && bytes(articleData.title).length == 0 && bytes(articleData.body).length == 0) {
+      revert ArticleDoesNotExist(id);
+    }
     TagAdded memory tagAdded = ArticleAddTagLogic.verify(id, tag, articleData);
     tagAdded.id = id;
     emit TagAddedEvent(tagAdded.id, tagAdded.tag);
@@ -46,10 +46,9 @@ abstract contract ArticleAggregate is System {
     uint64 id = ArticleIdGenerator.get() + 1;
     ArticleIdGenerator.set(id);
     ArticleData memory articleData = Article.get(id);
-    require(
-      articleData.author == address(0) && bytes(articleData.title).length == 0 && bytes(articleData.body).length == 0,
-      "Article already exists"
-    );
+    if (!(articleData.author == address(0) && bytes(articleData.title).length == 0 && bytes(articleData.body).length == 0)) {
+      revert ArticleAlreadyExists(id);
+    }
     ArticleCreated memory articleCreated = ArticleCreateLogic.verify(id, author, title, body);
     articleCreated.id = id;
     emit ArticleCreatedEvent(articleCreated.id, articleCreated.author, articleCreated.title, articleCreated.body);
@@ -59,10 +58,9 @@ abstract contract ArticleAggregate is System {
 
   function articleUpdate(uint64 id, address author, string memory title, string memory body) public virtual {
     ArticleData memory articleData = Article.get(id);
-    require(
-      !(articleData.author == address(0) && bytes(articleData.title).length == 0 && bytes(articleData.body).length == 0),
-      "Article does not exist"
-    );
+    if (articleData.author == address(0) && bytes(articleData.title).length == 0 && bytes(articleData.body).length == 0) {
+      revert ArticleDoesNotExist(id);
+    }
     ArticleUpdated memory articleUpdated = ArticleUpdateLogic.verify(id, author, title, body, articleData);
     articleUpdated.id = id;
     emit ArticleUpdatedEvent(articleUpdated.id, articleUpdated.author, articleUpdated.title, articleUpdated.body);
@@ -72,10 +70,9 @@ abstract contract ArticleAggregate is System {
 
   function articleDelete(uint64 id) public virtual {
     ArticleData memory articleData = Article.get(id);
-    require(
-      !(articleData.author == address(0) && bytes(articleData.title).length == 0 && bytes(articleData.body).length == 0),
-      "Article does not exist"
-    );
+    if (articleData.author == address(0) && bytes(articleData.title).length == 0 && bytes(articleData.body).length == 0) {
+      revert ArticleDoesNotExist(id);
+    }
     ArticleDeleted memory articleDeleted = ArticleDeleteLogic.verify(id, articleData);
     articleDeleted.id = id;
     emit ArticleDeletedEvent(articleDeleted.id);
@@ -85,10 +82,9 @@ abstract contract ArticleAggregate is System {
 
   function articleAddComment(uint64 id, string memory commenter, string memory body) public virtual {
     ArticleData memory articleData = Article.get(id);
-    require(
-      !(articleData.author == address(0) && bytes(articleData.title).length == 0 && bytes(articleData.body).length == 0),
-      "Article does not exist"
-    );
+    if (articleData.author == address(0) && bytes(articleData.title).length == 0 && bytes(articleData.body).length == 0) {
+      revert ArticleDoesNotExist(id);
+    }
     CommentAdded memory commentAdded = ArticleAddCommentLogic.verify(id, commenter, body, articleData);
     commentAdded.id = id;
     emit CommentAddedEvent(commentAdded.id, commentAdded.commentSeqId, commentAdded.commenter, commentAdded.body);
@@ -98,10 +94,9 @@ abstract contract ArticleAggregate is System {
 
   function articleUpdateComment(uint64 id, uint64 commentSeqId, string memory commenter, string memory body) public virtual {
     ArticleData memory articleData = Article.get(id);
-    require(
-      !(articleData.author == address(0) && bytes(articleData.title).length == 0 && bytes(articleData.body).length == 0),
-      "Article does not exist"
-    );
+    if (articleData.author == address(0) && bytes(articleData.title).length == 0 && bytes(articleData.body).length == 0) {
+      revert ArticleDoesNotExist(id);
+    }
     CommentUpdated memory commentUpdated = ArticleUpdateCommentLogic.verify(id, commentSeqId, commenter, body, articleData);
     commentUpdated.id = id;
     emit CommentUpdatedEvent(commentUpdated.id, commentUpdated.commentSeqId, commentUpdated.commenter, commentUpdated.body);
@@ -111,10 +106,9 @@ abstract contract ArticleAggregate is System {
 
   function articleRemoveComment(uint64 id, uint64 commentSeqId) public virtual {
     ArticleData memory articleData = Article.get(id);
-    require(
-      !(articleData.author == address(0) && bytes(articleData.title).length == 0 && bytes(articleData.body).length == 0),
-      "Article does not exist"
-    );
+    if (articleData.author == address(0) && bytes(articleData.title).length == 0 && bytes(articleData.body).length == 0) {
+      revert ArticleDoesNotExist(id);
+    }
     CommentRemoved memory commentRemoved = ArticleRemoveCommentLogic.verify(id, commentSeqId, articleData);
     commentRemoved.id = id;
     emit CommentRemovedEvent(commentRemoved.id, commentRemoved.commentSeqId);

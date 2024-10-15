@@ -8,18 +8,18 @@ import { ShipBattle, ShipBattleData, ShipBattleIdGenerator } from "../codegen/in
 import { ShipBattleInitiated } from "./ShipBattleEvents.sol";
 import { ShipBattleInitiateBattleLogic } from "./ShipBattleInitiateBattleLogic.sol";
 import { ShipBattleLocationParams } from "./ShipBattleLocationParams.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract ShipBattleInitiateSystem is System {
+contract ShipBattleInitiateSystem is System, IAppSystemErrors {
   event ShipBattleInitiatedEvent(uint256 indexed id, uint256 playerId, uint256 initiatorRosterPlayerId, uint32 initiatorRosterSequenceNumber, uint256 responderRosterPlayerId, uint32 responderRosterSequenceNumber, ShipBattleLocationParams updateLocationParams, uint64 startedAt, uint8 firstRoundMover, uint256 firstRoundAttackerShip, uint256 firstRoundDefenderShip);
 
   function initiateShipBattle(uint256 playerId, uint256 initiatorRosterPlayerId, uint32 initiatorRosterSequenceNumber, uint256 responderRosterPlayerId, uint32 responderRosterSequenceNumber, ShipBattleLocationParams memory updateLocationParams) public returns (uint256) {
     uint256 id = ShipBattleIdGenerator.get() + 1;
     ShipBattleIdGenerator.set(id);
     ShipBattleData memory shipBattleData = ShipBattle.get(id);
-    require(
-      shipBattleData.initiatorRosterPlayerId == uint256(0) && shipBattleData.initiatorRosterSequenceNumber == uint32(0) && shipBattleData.responderRosterPlayerId == uint256(0) && shipBattleData.responderRosterSequenceNumber == uint32(0) && shipBattleData.status == uint8(0) && shipBattleData.endedAt == uint64(0),
-      "ShipBattle already exists"
-    );
+    if (!(shipBattleData.initiatorRosterPlayerId == uint256(0) && shipBattleData.initiatorRosterSequenceNumber == uint32(0) && shipBattleData.responderRosterPlayerId == uint256(0) && shipBattleData.responderRosterSequenceNumber == uint32(0) && shipBattleData.status == uint8(0) && shipBattleData.endedAt == uint64(0))) {
+      revert ShipBattleAlreadyExists(id);
+    }
     ShipBattleInitiated memory shipBattleInitiated = ShipBattleInitiateBattleLogic.verify(id, playerId, initiatorRosterPlayerId, initiatorRosterSequenceNumber, responderRosterPlayerId, responderRosterSequenceNumber, updateLocationParams);
     shipBattleInitiated.id = id;
     emit ShipBattleInitiatedEvent(shipBattleInitiated.id, shipBattleInitiated.playerId, shipBattleInitiated.initiatorRosterPlayerId, shipBattleInitiated.initiatorRosterSequenceNumber, shipBattleInitiated.responderRosterPlayerId, shipBattleInitiated.responderRosterSequenceNumber, shipBattleInitiated.updateLocationParams, shipBattleInitiated.startedAt, shipBattleInitiated.firstRoundMover, shipBattleInitiated.firstRoundAttackerShip, shipBattleInitiated.firstRoundDefenderShip);

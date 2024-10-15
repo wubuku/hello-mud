@@ -13,8 +13,9 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
 import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
 import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract MapSystem is System {
+contract MapSystem is System, IAppSystemErrors {
   using WorldResourceIdInstance for ResourceId;
 
   event IslandAddedEvent(uint32 coordinatesX, uint32 coordinatesY);
@@ -26,16 +27,17 @@ contract MapSystem is System {
   function _requireNamespaceOwner() internal view {
     ResourceId _thisSystemId = SystemRegistry.get(address(this));
     address _thisNamespaceOwner = NamespaceOwner.get(_thisSystemId.getNamespaceId());
-    require(_thisNamespaceOwner == _msgSender(), "Require namespace owner");
+    if (_thisNamespaceOwner != _msgSender()) {
+      revert RequireNamespaceOwner(_msgSender(), _thisNamespaceOwner);
+    }
   }
 
   function mapAddIsland(uint32 coordinatesX, uint32 coordinatesY, ItemIdQuantityPair[] memory resources) public {
     _requireNamespaceOwner();
     MapData memory mapData = Map.get();
-    require(
-      !(mapData.existing == false && mapData.width == uint32(0) && mapData.height == uint32(0)),
-      "Map does not exist"
-    );
+    if (mapData.existing == false && mapData.width == uint32(0) && mapData.height == uint32(0)) {
+      revert MapDoesNotExist();
+    }
     IslandAdded memory islandAdded = MapAddIslandLogic.verify(coordinatesX, coordinatesY, resources, mapData);
     emit IslandAddedEvent(islandAdded.coordinatesX, islandAdded.coordinatesY);
     MapData memory updatedMapData = MapAddIslandLogic.mutate(islandAdded, mapData);
@@ -44,10 +46,9 @@ contract MapSystem is System {
 
   function mapCreate(bool existing, uint32 width, uint32 height) public {
     MapData memory mapData = Map.get();
-    require(
-      mapData.existing == false && mapData.width == uint32(0) && mapData.height == uint32(0),
-      "Map already exists"
-    );
+    if (!(mapData.existing == false && mapData.width == uint32(0) && mapData.height == uint32(0))) {
+      revert MapAlreadyExists();
+    }
     MapCreated memory mapCreated = MapCreateLogic.verify(existing, width, height);
     emit MapCreatedEvent(mapCreated.existing, mapCreated.width, mapCreated.height);
     MapData memory newMapData = MapCreateLogic.mutate(mapCreated);
@@ -56,10 +57,9 @@ contract MapSystem is System {
 
   function mapUpdate(bool existing, uint32 width, uint32 height) public {
     MapData memory mapData = Map.get();
-    require(
-      !(mapData.existing == false && mapData.width == uint32(0) && mapData.height == uint32(0)),
-      "Map does not exist"
-    );
+    if (mapData.existing == false && mapData.width == uint32(0) && mapData.height == uint32(0)) {
+      revert MapDoesNotExist();
+    }
     MapUpdated memory mapUpdated = MapUpdateLogic.verify(existing, width, height, mapData);
     emit MapUpdatedEvent(mapUpdated.existing, mapUpdated.width, mapUpdated.height);
     MapData memory updatedMapData = MapUpdateLogic.mutate(mapUpdated, mapData);

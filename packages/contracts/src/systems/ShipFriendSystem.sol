@@ -10,8 +10,9 @@ import { ShipCreateLogic } from "./ShipCreateLogic.sol";
 import { ShipIncreaseShipInventoryLogic } from "./ShipIncreaseShipInventoryLogic.sol";
 import { ShipDeductShipInventoryLogic } from "./ShipDeductShipInventoryLogic.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract ShipFriendSystem is System {
+contract ShipFriendSystem is System, IAppSystemErrors {
   event ShipCreatedEvent(uint256 indexed id, uint256 rosterIdPlayerId, uint32 rosterIdSequenceNumber, uint32 healthPoints, uint32 attack, uint32 protection, uint32 speed, uint32[] buildingExpensesItemIds, uint32[] buildingExpensesQuantities);
 
   event ShipInventoryIncreasedEvent(uint256 indexed id);
@@ -22,10 +23,9 @@ contract ShipFriendSystem is System {
     uint256 id = ShipIdGenerator.get() + 1;
     ShipIdGenerator.set(id);
     ShipData memory shipData = Ship.get(id);
-    require(
-      shipData.playerId == uint256(0) && shipData.rosterSequenceNumber == uint32(0) && shipData.healthPoints == uint32(0) && shipData.attack == uint32(0) && shipData.protection == uint32(0) && shipData.speed == uint32(0) && shipData.buildingExpensesItemIds.length == 0 && shipData.buildingExpensesQuantities.length == 0,
-      "Ship already exists"
-    );
+    if (!(shipData.playerId == uint256(0) && shipData.rosterSequenceNumber == uint32(0) && shipData.healthPoints == uint32(0) && shipData.attack == uint32(0) && shipData.protection == uint32(0) && shipData.speed == uint32(0) && shipData.buildingExpensesItemIds.length == 0 && shipData.buildingExpensesQuantities.length == 0)) {
+      revert ShipAlreadyExists(id);
+    }
     ShipCreated memory shipCreated = ShipCreateLogic.verify(id, rosterIdPlayerId, rosterIdSequenceNumber, healthPoints, attack, protection, speed, buildingExpensesItemIds, buildingExpensesQuantities);
     shipCreated.id = id;
     emit ShipCreatedEvent(shipCreated.id, shipCreated.rosterIdPlayerId, shipCreated.rosterIdSequenceNumber, shipCreated.healthPoints, shipCreated.attack, shipCreated.protection, shipCreated.speed, shipCreated.buildingExpensesItemIds, shipCreated.buildingExpensesQuantities);
@@ -36,10 +36,9 @@ contract ShipFriendSystem is System {
 
   function shipIncreaseShipInventory(uint256 id, ItemIdQuantityPair[] memory items) public {
     ShipData memory shipData = Ship.get(id);
-    require(
-      !(shipData.playerId == uint256(0) && shipData.rosterSequenceNumber == uint32(0) && shipData.healthPoints == uint32(0) && shipData.attack == uint32(0) && shipData.protection == uint32(0) && shipData.speed == uint32(0) && shipData.buildingExpensesItemIds.length == 0 && shipData.buildingExpensesQuantities.length == 0),
-      "Ship does not exist"
-    );
+    if (shipData.playerId == uint256(0) && shipData.rosterSequenceNumber == uint32(0) && shipData.healthPoints == uint32(0) && shipData.attack == uint32(0) && shipData.protection == uint32(0) && shipData.speed == uint32(0) && shipData.buildingExpensesItemIds.length == 0 && shipData.buildingExpensesQuantities.length == 0) {
+      revert ShipDoesNotExist(id);
+    }
     ShipInventoryIncreased memory shipInventoryIncreased = ShipIncreaseShipInventoryLogic.verify(id, items, shipData);
     shipInventoryIncreased.id = id;
     emit ShipInventoryIncreasedEvent(shipInventoryIncreased.id);
@@ -49,10 +48,9 @@ contract ShipFriendSystem is System {
 
   function shipDeductShipInventory(uint256 id, ItemIdQuantityPair[] memory items) public {
     ShipData memory shipData = Ship.get(id);
-    require(
-      !(shipData.playerId == uint256(0) && shipData.rosterSequenceNumber == uint32(0) && shipData.healthPoints == uint32(0) && shipData.attack == uint32(0) && shipData.protection == uint32(0) && shipData.speed == uint32(0) && shipData.buildingExpensesItemIds.length == 0 && shipData.buildingExpensesQuantities.length == 0),
-      "Ship does not exist"
-    );
+    if (shipData.playerId == uint256(0) && shipData.rosterSequenceNumber == uint32(0) && shipData.healthPoints == uint32(0) && shipData.attack == uint32(0) && shipData.protection == uint32(0) && shipData.speed == uint32(0) && shipData.buildingExpensesItemIds.length == 0 && shipData.buildingExpensesQuantities.length == 0) {
+      revert ShipDoesNotExist(id);
+    }
     ShipInventoryDeducted memory shipInventoryDeducted = ShipDeductShipInventoryLogic.verify(id, items, shipData);
     shipInventoryDeducted.id = id;
     emit ShipInventoryDeductedEvent(shipInventoryDeducted.id);

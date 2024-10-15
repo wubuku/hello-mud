@@ -11,8 +11,9 @@ import { ItemProductionUpdateLogic } from "./ItemProductionUpdateLogic.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
 import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
 import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract ItemProductionSystem is System {
+contract ItemProductionSystem is System, IAppSystemErrors {
   using WorldResourceIdInstance for ResourceId;
 
   event ItemProductionCreatedEvent(uint8 indexed skillType, uint32 indexed itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32[] materialItemIds, uint32[] materialItemQuantities);
@@ -22,16 +23,17 @@ contract ItemProductionSystem is System {
   function _requireNamespaceOwner() internal view {
     ResourceId _thisSystemId = SystemRegistry.get(address(this));
     address _thisNamespaceOwner = NamespaceOwner.get(_thisSystemId.getNamespaceId());
-    require(_thisNamespaceOwner == _msgSender(), "Require namespace owner");
+    if (_thisNamespaceOwner != _msgSender()) {
+      revert RequireNamespaceOwner(_msgSender(), _thisNamespaceOwner);
+    }
   }
 
   function itemProductionCreate(uint8 skillType, uint32 itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32[] memory materialItemIds, uint32[] memory materialItemQuantities) public {
     _requireNamespaceOwner();
     ItemProductionData memory itemProductionData = ItemProduction.get(skillType, itemId);
-    require(
-      itemProductionData.requirementsLevel == uint16(0) && itemProductionData.baseQuantity == uint32(0) && itemProductionData.baseExperience == uint32(0) && itemProductionData.baseCreationTime == uint64(0) && itemProductionData.energyCost == uint64(0) && itemProductionData.successRate == uint16(0) && itemProductionData.materialItemIds.length == 0 && itemProductionData.materialItemQuantities.length == 0,
-      "ItemProduction already exists"
-    );
+    if (!(itemProductionData.requirementsLevel == uint16(0) && itemProductionData.baseQuantity == uint32(0) && itemProductionData.baseExperience == uint32(0) && itemProductionData.baseCreationTime == uint64(0) && itemProductionData.energyCost == uint64(0) && itemProductionData.successRate == uint16(0) && itemProductionData.materialItemIds.length == 0 && itemProductionData.materialItemQuantities.length == 0)) {
+      revert ItemProductionAlreadyExists(skillType, itemId);
+    }
     ItemProductionCreated memory itemProductionCreated = ItemProductionCreateLogic.verify(skillType, itemId, requirementsLevel, baseQuantity, baseExperience, baseCreationTime, energyCost, successRate, materialItemIds, materialItemQuantities);
     itemProductionCreated.skillType = skillType;
     itemProductionCreated.itemId = itemId;
@@ -43,10 +45,9 @@ contract ItemProductionSystem is System {
   function itemProductionUpdate(uint8 skillType, uint32 itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32[] memory materialItemIds, uint32[] memory materialItemQuantities) public {
     _requireNamespaceOwner();
     ItemProductionData memory itemProductionData = ItemProduction.get(skillType, itemId);
-    require(
-      !(itemProductionData.requirementsLevel == uint16(0) && itemProductionData.baseQuantity == uint32(0) && itemProductionData.baseExperience == uint32(0) && itemProductionData.baseCreationTime == uint64(0) && itemProductionData.energyCost == uint64(0) && itemProductionData.successRate == uint16(0) && itemProductionData.materialItemIds.length == 0 && itemProductionData.materialItemQuantities.length == 0),
-      "ItemProduction does not exist"
-    );
+    if (itemProductionData.requirementsLevel == uint16(0) && itemProductionData.baseQuantity == uint32(0) && itemProductionData.baseExperience == uint32(0) && itemProductionData.baseCreationTime == uint64(0) && itemProductionData.energyCost == uint64(0) && itemProductionData.successRate == uint16(0) && itemProductionData.materialItemIds.length == 0 && itemProductionData.materialItemQuantities.length == 0) {
+      revert ItemProductionDoesNotExist(skillType, itemId);
+    }
     ItemProductionUpdated memory itemProductionUpdated = ItemProductionUpdateLogic.verify(skillType, itemId, requirementsLevel, baseQuantity, baseExperience, baseCreationTime, energyCost, successRate, materialItemIds, materialItemQuantities, itemProductionData);
     itemProductionUpdated.skillType = skillType;
     itemProductionUpdated.itemId = itemId;

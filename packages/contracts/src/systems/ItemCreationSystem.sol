@@ -11,8 +11,9 @@ import { ItemCreationUpdateLogic } from "./ItemCreationUpdateLogic.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
 import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
 import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract ItemCreationSystem is System {
+contract ItemCreationSystem is System, IAppSystemErrors {
   using WorldResourceIdInstance for ResourceId;
 
   event ItemCreationCreatedEvent(uint8 indexed skillType, uint32 indexed itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32 resourceCost);
@@ -22,16 +23,17 @@ contract ItemCreationSystem is System {
   function _requireNamespaceOwner() internal view {
     ResourceId _thisSystemId = SystemRegistry.get(address(this));
     address _thisNamespaceOwner = NamespaceOwner.get(_thisSystemId.getNamespaceId());
-    require(_thisNamespaceOwner == _msgSender(), "Require namespace owner");
+    if (_thisNamespaceOwner != _msgSender()) {
+      revert RequireNamespaceOwner(_msgSender(), _thisNamespaceOwner);
+    }
   }
 
   function itemCreationCreate(uint8 skillType, uint32 itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32 resourceCost) public {
     _requireNamespaceOwner();
     ItemCreationData memory itemCreationData = ItemCreation.get(skillType, itemId);
-    require(
-      itemCreationData.requirementsLevel == uint16(0) && itemCreationData.baseQuantity == uint32(0) && itemCreationData.baseExperience == uint32(0) && itemCreationData.baseCreationTime == uint64(0) && itemCreationData.energyCost == uint64(0) && itemCreationData.successRate == uint16(0) && itemCreationData.resourceCost == uint32(0),
-      "ItemCreation already exists"
-    );
+    if (!(itemCreationData.requirementsLevel == uint16(0) && itemCreationData.baseQuantity == uint32(0) && itemCreationData.baseExperience == uint32(0) && itemCreationData.baseCreationTime == uint64(0) && itemCreationData.energyCost == uint64(0) && itemCreationData.successRate == uint16(0) && itemCreationData.resourceCost == uint32(0))) {
+      revert ItemCreationAlreadyExists(skillType, itemId);
+    }
     ItemCreationCreated memory itemCreationCreated = ItemCreationCreateLogic.verify(skillType, itemId, requirementsLevel, baseQuantity, baseExperience, baseCreationTime, energyCost, successRate, resourceCost);
     itemCreationCreated.skillType = skillType;
     itemCreationCreated.itemId = itemId;
@@ -43,10 +45,9 @@ contract ItemCreationSystem is System {
   function itemCreationUpdate(uint8 skillType, uint32 itemId, uint16 requirementsLevel, uint32 baseQuantity, uint32 baseExperience, uint64 baseCreationTime, uint64 energyCost, uint16 successRate, uint32 resourceCost) public {
     _requireNamespaceOwner();
     ItemCreationData memory itemCreationData = ItemCreation.get(skillType, itemId);
-    require(
-      !(itemCreationData.requirementsLevel == uint16(0) && itemCreationData.baseQuantity == uint32(0) && itemCreationData.baseExperience == uint32(0) && itemCreationData.baseCreationTime == uint64(0) && itemCreationData.energyCost == uint64(0) && itemCreationData.successRate == uint16(0) && itemCreationData.resourceCost == uint32(0)),
-      "ItemCreation does not exist"
-    );
+    if (itemCreationData.requirementsLevel == uint16(0) && itemCreationData.baseQuantity == uint32(0) && itemCreationData.baseExperience == uint32(0) && itemCreationData.baseCreationTime == uint64(0) && itemCreationData.energyCost == uint64(0) && itemCreationData.successRate == uint16(0) && itemCreationData.resourceCost == uint32(0)) {
+      revert ItemCreationDoesNotExist(skillType, itemId);
+    }
     ItemCreationUpdated memory itemCreationUpdated = ItemCreationUpdateLogic.verify(skillType, itemId, requirementsLevel, baseQuantity, baseExperience, baseCreationTime, energyCost, successRate, resourceCost, itemCreationData);
     itemCreationUpdated.skillType = skillType;
     itemCreationUpdated.itemId = itemId;

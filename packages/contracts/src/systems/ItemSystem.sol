@@ -11,8 +11,9 @@ import { ItemUpdateLogic } from "./ItemUpdateLogic.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
 import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
 import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract ItemSystem is System {
+contract ItemSystem is System, IAppSystemErrors {
   using WorldResourceIdInstance for ResourceId;
 
   event ItemCreatedEvent(uint32 indexed itemId, bool requiredForCompletion, uint32 sellsFor, string name);
@@ -22,16 +23,17 @@ contract ItemSystem is System {
   function _requireNamespaceOwner() internal view {
     ResourceId _thisSystemId = SystemRegistry.get(address(this));
     address _thisNamespaceOwner = NamespaceOwner.get(_thisSystemId.getNamespaceId());
-    require(_thisNamespaceOwner == _msgSender(), "Require namespace owner");
+    if (_thisNamespaceOwner != _msgSender()) {
+      revert RequireNamespaceOwner(_msgSender(), _thisNamespaceOwner);
+    }
   }
 
   function itemCreate(uint32 itemId, bool requiredForCompletion, uint32 sellsFor, string memory name) public {
     _requireNamespaceOwner();
     ItemData memory itemData = Item.get(itemId);
-    require(
-      itemData.requiredForCompletion == false && itemData.sellsFor == uint32(0) && bytes(itemData.name).length == 0,
-      "Item already exists"
-    );
+    if (!(itemData.requiredForCompletion == false && itemData.sellsFor == uint32(0) && bytes(itemData.name).length == 0)) {
+      revert ItemAlreadyExists(itemId);
+    }
     ItemCreated memory itemCreated = ItemCreateLogic.verify(itemId, requiredForCompletion, sellsFor, name);
     itemCreated.itemId = itemId;
     emit ItemCreatedEvent(itemCreated.itemId, itemCreated.requiredForCompletion, itemCreated.sellsFor, itemCreated.name);
@@ -42,10 +44,9 @@ contract ItemSystem is System {
   function itemUpdate(uint32 itemId, bool requiredForCompletion, uint32 sellsFor, string memory name) public {
     _requireNamespaceOwner();
     ItemData memory itemData = Item.get(itemId);
-    require(
-      !(itemData.requiredForCompletion == false && itemData.sellsFor == uint32(0) && bytes(itemData.name).length == 0),
-      "Item does not exist"
-    );
+    if (itemData.requiredForCompletion == false && itemData.sellsFor == uint32(0) && bytes(itemData.name).length == 0) {
+      revert ItemDoesNotExist(itemId);
+    }
     ItemUpdated memory itemUpdated = ItemUpdateLogic.verify(itemId, requiredForCompletion, sellsFor, name, itemData);
     itemUpdated.itemId = itemId;
     emit ItemUpdatedEvent(itemUpdated.itemId, itemUpdated.requiredForCompletion, itemUpdated.sellsFor, itemUpdated.name);

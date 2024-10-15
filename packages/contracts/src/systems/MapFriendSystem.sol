@@ -12,8 +12,9 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
 import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
 import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
+import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
-contract MapFriendSystem is System {
+contract MapFriendSystem is System, IAppSystemErrors {
   using WorldResourceIdInstance for ResourceId;
 
   event MapIslandClaimedEvent(uint32 coordinatesX, uint32 coordinatesY, uint256 claimedBy, uint64 claimedAt);
@@ -23,15 +24,16 @@ contract MapFriendSystem is System {
   function _requireNamespaceOwner() internal view {
     ResourceId _thisSystemId = SystemRegistry.get(address(this));
     address _thisNamespaceOwner = NamespaceOwner.get(_thisSystemId.getNamespaceId());
-    require(_thisNamespaceOwner == _msgSender(), "Require namespace owner");
+    if (_thisNamespaceOwner != _msgSender()) {
+      revert RequireNamespaceOwner(_msgSender(), _thisNamespaceOwner);
+    }
   }
 
   function mapClaimIsland(uint32 coordinatesX, uint32 coordinatesY, uint256 claimedBy, uint64 claimedAt) public {
     MapData memory mapData = Map.get();
-    require(
-      !(mapData.existing == false && mapData.width == uint32(0) && mapData.height == uint32(0)),
-      "Map does not exist"
-    );
+    if (mapData.existing == false && mapData.width == uint32(0) && mapData.height == uint32(0)) {
+      revert MapDoesNotExist();
+    }
     MapIslandClaimed memory mapIslandClaimed = MapClaimIslandLogic.verify(coordinatesX, coordinatesY, claimedBy, claimedAt, mapData);
     emit MapIslandClaimedEvent(mapIslandClaimed.coordinatesX, mapIslandClaimed.coordinatesY, mapIslandClaimed.claimedBy, mapIslandClaimed.claimedAt);
     MapData memory updatedMapData = MapClaimIslandLogic.mutate(mapIslandClaimed, mapData);
@@ -40,10 +42,9 @@ contract MapFriendSystem is System {
 
   function mapGatherIslandResources(uint256 playerId, uint32 coordinatesX, uint32 coordinatesY) public returns (ItemIdQuantityPair[] memory) {
     MapData memory mapData = Map.get();
-    require(
-      !(mapData.existing == false && mapData.width == uint32(0) && mapData.height == uint32(0)),
-      "Map does not exist"
-    );
+    if (mapData.existing == false && mapData.width == uint32(0) && mapData.height == uint32(0)) {
+      revert MapDoesNotExist();
+    }
     IslandResourcesGathered memory islandResourcesGathered = MapGatherIslandResourcesLogic.verify(playerId, coordinatesX, coordinatesY, mapData);
     emit IslandResourcesGatheredEvent(islandResourcesGathered.playerId, islandResourcesGathered.gatheredAt, islandResourcesGathered.coordinatesX, islandResourcesGathered.coordinatesY);
     (ItemIdQuantityPair[] memory gatheredResources, MapData memory updatedMapData) = MapGatherIslandResourcesLogic.mutate(islandResourcesGathered, mapData);
