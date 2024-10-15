@@ -42,6 +42,9 @@ interface IAppSystemErrors {
   error SkillProcessAlreadyExists(uint8 skillProcessIdSkillType, uint256 skillProcessIdPlayerId, uint8 skillProcessIdSequenceNumber);
   error SkillProcessDoesNotExist(uint8 skillProcessIdSkillType, uint256 skillProcessIdPlayerId, uint8 skillProcessIdSequenceNumber);
 
+  error EnergyDropAlreadyExists(address accountAddress);
+  error EnergyDropDoesNotExist(address accountAddress);
+
   error CounterAlreadyExists();
   error CounterDoesNotExist();
 

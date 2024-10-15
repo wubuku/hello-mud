@@ -1,0 +1,16 @@
+aggregates:
+  EnergyDrop:
+    id:
+      name: AccountAddress
+      type: address
+    properties:
+      LastDroppedAt:
+        type: uint64
+    methods:
+      Request:
+        shouldCreateOnDemand: true
+        event:
+          name: EnergyDropRequested
+          properties:
+            Amount:
+              type: uint256

@@ -31,6 +31,7 @@ import { ItemProduction, ItemProductionData } from "./tables/ItemProduction.sol"
 import { SkillProcess, SkillProcessData } from "./tables/SkillProcess.sol";
 import { SkillPrcMtrlCount } from "./tables/SkillPrcMtrlCount.sol";
 import { SkillPrcMtrl, SkillPrcMtrlData } from "./tables/SkillPrcMtrl.sol";
+import { EnergyDrop } from "./tables/EnergyDrop.sol";
 import { Counter } from "./tables/Counter.sol";
 import { Map, MapData } from "./tables/Map.sol";
 import { MapLocation, MapLocationData } from "./tables/MapLocation.sol";

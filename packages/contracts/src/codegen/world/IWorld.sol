@@ -7,6 +7,7 @@ import { IBaseWorld } from "@latticexyz/world/src/codegen/interfaces/IBaseWorld.
 import { IAggregatorServiceSystem } from "./IAggregatorServiceSystem.sol";
 import { IArticleSystem } from "./IArticleSystem.sol";
 import { ICounterSystem } from "./ICounterSystem.sol";
+import { IEnergyDropSystem } from "./IEnergyDropSystem.sol";
 import { IEnergyTokenSystem } from "./IEnergyTokenSystem.sol";
 import { IExperienceTableSystem } from "./IExperienceTableSystem.sol";
 import { IIncrementSystem } from "./IIncrementSystem.sol";
@@ -44,6 +45,7 @@ interface IWorld is
   IAggregatorServiceSystem,
   IArticleSystem,
   ICounterSystem,
+  IEnergyDropSystem,
   IEnergyTokenSystem,
   IExperienceTableSystem,
   IIncrementSystem,

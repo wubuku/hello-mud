@@ -286,6 +286,13 @@ export default defineWorld({
       },
       key: ["skillProcessIdSkillType", "skillProcessIdPlayerId", "skillProcessIdSequenceNumber", "productionMaterialIndex"],
     },
+    EnergyDrop: {
+      schema: {
+        accountAddress: "address",
+        lastDroppedAt: "uint64",
+      },
+      key: ["accountAddress"],
+    },
     Counter: {
       schema: {
         value: "uint32",
