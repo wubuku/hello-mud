@@ -13,12 +13,13 @@ import { SafeERC20, IERC20 } from "@openzeppelin/contracts/token/ERC20/utils/Saf
 library EnergyDropRequestLogic {
   using SafeERC20 for IERC20;
 
-  uint256 constant A_DROP_AMOUNT = 100_000_000_000;
+  uint256 constant A_DROP_AMOUNT = 200 * 10 ** 18; // 200 ENERGY tokens?
   uint256 constant TIME_INTERVAL = 24 * 60 * 60; // 24 hours in seconds
 
   error InvalidTokenAddress(address tokenAddress);
   error InsufficientBalance(uint256 balance, uint256 requiredAmount);
   error InsufficientTimeInterval(uint256 lastDropTime, uint256 currentTime);
+  error SenderHasNoPermission(address sender, address owner);
 
   struct GrantRecord {
     uint256 grantedAt;
@@ -34,6 +35,10 @@ library EnergyDropRequestLogic {
     address tokenAddress = EnergyToken.get();
     if (tokenAddress == address(0)) {
       revert InvalidTokenAddress(tokenAddress);
+    }
+
+    if (accountAddress != WorldContextConsumerLib._msgSender()) {
+      revert SenderHasNoPermission(WorldContextConsumerLib._msgSender(), accountAddress);
     }
 
     IERC20 token = IERC20(tokenAddress);

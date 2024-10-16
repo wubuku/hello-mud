@@ -62,17 +62,34 @@ contract PostDeploy is Script {
       namespace: "app",
       name: "AggregatorServic" // NOTE: Only the first 16 characters are used. Original: "AggregatorServiceSystem"
     });
-    (address systemAddress, bool publicAccess) = Systems.get(skillProcessServiceSystemId);
-    console.log("AggregatorServiceSystem address:", systemAddress);
-    console.log("AggregatorServiceSystem publicAccess:", publicAccess);
+    (address spSystemAddress, bool spSysPublicAccess) = Systems.get(skillProcessServiceSystemId);
+    console.log("AggregatorServiceSystem address:", spSystemAddress);
+    console.log("AggregatorServiceSystem publicAccess:", spSysPublicAccess);
 
     IERC20 energyIErc20 = IERC20(energyTokenAddress);
-    energyIErc20.approve(systemAddress, 10000 * 10 ** 18);
+    energyIErc20.approve(spSystemAddress, 10000 * 10 ** 18);
     console.log("Approved AggregatorServiceSystem to spend ENERGY tokens");
 
     IWorld world = IWorld(worldAddress);
     world.app__energyTokenCreate(energyTokenAddress);
     console.log("Set ENERGY token address for the world");
+
+    // ------------------ ENERGY faucet test ------------------
+    ResourceId energyDropSystemId = WorldResourceIdLib.encode({
+      typeId: RESOURCE_SYSTEM,
+      namespace: "app",
+      name: "EnergyDropSystem"
+    });
+    (address energyDropSystemAddress, bool energyDropSysPublicAccess) = Systems.get(energyDropSystemId);
+    console.log("EnergyDropSystem address:", energyDropSystemAddress);
+    console.log("EnergyDropSystem publicAccess:", energyDropSysPublicAccess);
+    // Replenish the faucet with some ENERGY tokens
+    energyIErc20.transfer(energyDropSystemAddress, 10000 * 10 ** 18);
+    console.log("Sent 10000 ENERGY tokens to the EnergyDropSystem");
+
+    world.app__energyDropRequest(deployerAddress);
+    console.log("Requested energy drop");
+    // -------------------------------------------------------
 
     world.app__mapCreate(true, 0, 0); // Width and height not used
     console.log("Created map");
