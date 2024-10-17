@@ -21,7 +21,7 @@ library SkillProcessCreateLogic {
     //skillProcessData.itemId = skillProcessCreated.itemId;
     //abiskillProcessData.startedAt = skillProcessCreated.startedAt;
     //skillProcessData.creationTime = skillProcessCreated.creationTime;
-    //skillProcessData.completed = skillProcessCreated.completed;
+    skillProcessData.completed = true;
     //skillProcessData.endedAt = skillProcessCreated.endedAt;
     //skillProcessData.batchSize = skillProcessCreated.batchSize;
     skillProcessData.existing = true;
