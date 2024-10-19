@@ -6,11 +6,11 @@ import { PlayerData } from "../codegen/index.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { PlayerInventoryUpdateUtil } from "../utils/PlayerInventoryUpdateUtil.sol";
 
-error PlayerIdZero();
-//error ExperienceGainedZeroOrNegative(uint32 experienceGained);
-error NewLevelLowerThanCurrent(uint16 newLevel, uint16 currentLevel);
-
 library PlayerIncreaseExperienceAndItemsLogic {
+  error PlayerIdZero();
+  //error ExperienceGainedZeroOrNegative(uint32 experienceGained);
+  error NewLevelLowerThanCurrent(uint16 newLevel, uint16 currentLevel);
+
   function verify(
     uint256 id,
     uint32 experienceGained,

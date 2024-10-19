@@ -13,12 +13,13 @@ import { Player, ItemProduction } from "../codegen/index.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 import { PlayerUtil } from "../utils/PlayerUtil.sol";
 
-error ProcessAlreadyStarted(uint32 currentItemId, bool completed);
-error NotEnoughEnergy(uint256 required, uint256 available);
-error LowerThanRequiredLevel(uint16 required, uint16 current);
-error ItemProducesIndividuals(uint32 itemId);
 
 library SkillProcessStartProductionLogic {
+  error ProcessAlreadyStarted(uint32 currentItemId, bool completed);
+  error NotEnoughEnergy(uint256 required, uint256 available);
+  error LowerThanRequiredLevel(uint16 required, uint16 current);
+  error ItemProducesIndividuals(uint32 itemId);
+
   function verify(
     uint8 skillType,
     uint256 playerId,
