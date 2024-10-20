@@ -140,7 +140,7 @@ contract PostDeploy is Script {
     world.app__uniApiStartCreation(uint8(SkillType.MINING), playerId, 0, 301, 1);
     console.log("Started mining of 1 CopperOre");
 
-    world.app__skillProcessStartProduction(uint8(SkillType.FARMING), playerId, 0, 102, 1); // Cotton
+    world.app__uniApiStartProduction(uint8(SkillType.FARMING), playerId, 0, 102, 1); // Cotton
     console.log("Started farming of 1 Cotton");
 
     ItemIdQuantityPair[] memory shipProductionMaterials = new ItemIdQuantityPair[](3);
