@@ -293,6 +293,14 @@ export default defineWorld({
       },
       key: ["accountAddress"],
     },
+    IslandClaimWhitelist: {
+      schema: {
+        accountAddress: "address",
+        existing: "bool",
+        allowed: "bool",
+      },
+      key: ["accountAddress"],
+    },
     Counter: {
       schema: {
         value: "uint32",

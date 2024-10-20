@@ -1,0 +1,35 @@
+aggregates:
+  IslandClaimWhitelist:
+    metadata:
+      Preprocessors: [ "CRUD_IT" ]
+      CRUD_IT_NO_CREATE: true
+      CRUD_IT_NO_UPDATE: true
+      #CRUD_IT_UPDATE_METHOD_NAME: Update
+      #CRUD_IT_NO_DELETE: false
+      CRUD_IT_DELETE_METHOD_NAME: Remove
+    id:
+      name: AccountAddress
+      type: address
+    properties:
+      Existing:
+        type: bool
+      Allowed:
+        type: bool
+    methods:
+      Add:
+        shouldCreateOnDemand: true
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
+        event:
+          name: IslandClaimWhitelistAdded
+      Update:
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
+        parameters:
+          Allowed:
+            type: bool
+        event:
+          name: IslandClaimWhitelistUpdated
+      Remove:
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
+        event:
+          name: IslandClaimWhitelistRemoved
+

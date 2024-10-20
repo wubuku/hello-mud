@@ -11,6 +11,7 @@ import { IEnergyDropSystem } from "./IEnergyDropSystem.sol";
 import { IEnergyTokenSystem } from "./IEnergyTokenSystem.sol";
 import { IExperienceTableSystem } from "./IExperienceTableSystem.sol";
 import { IIncrementSystem } from "./IIncrementSystem.sol";
+import { IIslandClaimWhitelistSystem } from "./IIslandClaimWhitelistSystem.sol";
 import { IItemCreationSystem } from "./IItemCreationSystem.sol";
 import { IItemProductionSystem } from "./IItemProductionSystem.sol";
 import { IItemSystem } from "./IItemSystem.sol";
@@ -49,6 +50,7 @@ interface IWorld is
   IEnergyTokenSystem,
   IExperienceTableSystem,
   IIncrementSystem,
+  IIslandClaimWhitelistSystem,
   IItemCreationSystem,
   IItemProductionSystem,
   IItemSystem,

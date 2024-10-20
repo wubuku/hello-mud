@@ -45,6 +45,9 @@ interface IAppSystemErrors {
   error EnergyDropAlreadyExists(address accountAddress);
   error EnergyDropDoesNotExist(address accountAddress);
 
+  error IslandClaimWhitelistAlreadyExists(address accountAddress);
+  error IslandClaimWhitelistDoesNotExist(address accountAddress);
+
   error CounterAlreadyExists();
   error CounterDoesNotExist();
 
