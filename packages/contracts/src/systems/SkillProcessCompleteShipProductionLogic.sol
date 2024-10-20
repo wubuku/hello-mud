@@ -87,6 +87,8 @@ library SkillProcessCompleteShipProductionLogic {
   ) internal returns (SkillProcessData memory) {
     skillProcessData.completed = true;
     skillProcessData.endedAt = shipProductionProcessCompleted.endedAt;
+    skillProcessData.itemId = ItemIds.unusedItem(); // reset item id
+    skillProcessData.batchSize = 0; // reset batch size
 
     if (!shipProductionProcessCompleted.successful) {
       // TODO: Not implemented yet

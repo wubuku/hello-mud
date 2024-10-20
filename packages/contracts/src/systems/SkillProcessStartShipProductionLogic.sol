@@ -88,6 +88,7 @@ library SkillProcessStartShipProductionLogic {
     skillProcessData.creationTime = shipProductionProcessStarted.creationTime;
     skillProcessData.completed = false;
     skillProcessData.endedAt = 0;
+    skillProcessData.batchSize = 1;
 
     // let energy_vault = skill_process::borrow_mut_energy_vault(skill_process);
     // balance::join(energy_vault, energy);
