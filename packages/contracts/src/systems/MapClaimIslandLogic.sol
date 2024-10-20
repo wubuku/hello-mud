@@ -5,11 +5,14 @@ import { MapIslandClaimed } from "./MapEvents.sol";
 import { MapData, MapLocation } from "../codegen/index.sol";
 import { SortedVectorUtil } from "../utils/SortedVectorUtil.sol";
 import { MapLocationType } from "./MapLocationType.sol";
+import { IslandClaimWhitelistData, IslandClaimWhitelist } from "../codegen/index.sol";
+import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 
 library MapClaimIslandLogic {
   error ELocationNotFound();
   error ELocationTypeMismatch();
   error EIslandAlreadyClaimed();
+  error ENotWhitelisted(address account);
 
   function verify(
     uint32 coordinatesX,
@@ -18,10 +21,15 @@ library MapClaimIslandLogic {
     uint64 claimedAt,
     MapData memory mapData
   ) internal view returns (MapIslandClaimed memory) {
+    address msgSender = WorldContextConsumerLib._msgSender();
+    if (mapData.islandClaimWhitelistEnabled) {
+      if (!IslandClaimWhitelist.getAllowed(msgSender)) {
+        revert ENotWhitelisted(msgSender);
+      }
+    }
+
     if (!MapLocation.getExisting(coordinatesX, coordinatesY)) {
       revert ELocationNotFound();
-      // cast sig 'ELocationNotFound()'
-      // 0x48cc66e4
     }
 
     uint32 locationType = MapLocation.getType_(coordinatesX, coordinatesY);

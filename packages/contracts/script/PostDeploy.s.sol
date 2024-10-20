@@ -95,8 +95,13 @@ contract PostDeploy is Script {
     console.log("Requested energy drop");
     // -------------------------------------------------------
 
-    world.app__mapCreate(true, true); // IslandClaimWhitelistEnabled  = false
-    console.log("Created map");
+    bool islandClaimWhitelistEnabled = false; // NOTE: Set to true to enable the island claim whitelist!
+    world.app__mapCreate(true, islandClaimWhitelistEnabled);
+    console.log("Created map, islandClaimWhitelistEnabled:", islandClaimWhitelistEnabled);
+
+    world.app__islandClaimWhitelistAdd(deployerAddress);
+    console.log("Added deployer address to the island claim whitelist");
+
 
     uint32 firstIslandX = 2147483647;
     uint32 firstIslandY = 2147483647;

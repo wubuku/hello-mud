@@ -13,6 +13,7 @@ import { SkillProcess, SkillProcessData } from "../codegen/index.sol";
 import { SkillProcessUtil } from "../utils/SkillProcessUtil.sol";
 import { RosterUtil } from "../utils/RosterUtil.sol";
 import { PlayerInventoryUpdateUtil } from "../utils/PlayerInventoryUpdateUtil.sol";
+import { IslandClaimWhitelistData, IslandClaimWhitelist } from "../codegen/index.sol";
 
 // import { IBaseWorld } from "@latticexyz/world/src/codegen/interfaces/IBaseWorld.sol";
 // import { ResourceId, WorldResourceIdLib } from "@latticexyz/world/src/WorldResourceId.sol";
@@ -38,6 +39,8 @@ library PlayerClaimIslandLogic {
     uint32 coordinatesY,
     PlayerData memory playerData
   ) internal view returns (IslandClaimed memory) {
+    address msgSender = WorldContextConsumerLib._msgSender();
+
     if (!MapLocation.getExisting(coordinatesX, coordinatesY)) {
       revert ELocationNotFound(coordinatesX, coordinatesY);
     }
@@ -48,16 +51,16 @@ library PlayerClaimIslandLogic {
     // }
     // if (claimIslandSetting != FOR_EVERYONE) {
     //   if (claimIslandSetting == FOR_WHITELISTED_ACCOUNTS_ONLY) {
-    //     if (!Xx.isWhitelisted(WorldContextConsumerLib._msgSender())) {
-    //       revert ENotForEveryone(WorldContextConsumerLib._msgSender());
+    //     if (!Xx.isWhitelisted(msgSender)) {
+    //       revert ENotForEveryone(msgSender);
     //     }
     //   } else {
     //     revert EInvalidClaimIslandSetting(claimIslandSetting);
     //   }
     // }
 
-    if (playerData.owner != WorldContextConsumerLib._msgSender()) {
-      revert ESenderHasNoPermission(WorldContextConsumerLib._msgSender(), playerData.owner);
+    if (playerData.owner != msgSender) {
+      revert ESenderHasNoPermission(msgSender, playerData.owner);
     }
     if (playerData.claimedIslandX != 0 || playerData.claimedIslandY != 0) {
       revert EPlayerAlreadyClaimedIsland(playerData.claimedIslandX, playerData.claimedIslandY);
