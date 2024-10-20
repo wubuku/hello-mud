@@ -11,10 +11,8 @@ singletonObjects:
     properties:
       Existing:
         type: bool
-      Width:
-        type: u32
-      Height:
-        type: u32
+      IslandClaimWhitelistEnabled:
+        type: bool
       Locations:
         itemType: MapLocation
 
@@ -42,6 +40,11 @@ singletonObjects:
             type: uint32[]
 
     methods:
+      Create:
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
+      Update:
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
+
       AddIsland:
         requiredPermission: __NamespaceOwner__ #requiredPermission: "AdminCap"
         parameters:

@@ -18,8 +18,7 @@ import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 
 struct MapData {
   bool existing;
-  uint32 width;
-  uint32 height;
+  bool islandClaimWhitelistEnabled;
 }
 
 library Map {
@@ -27,12 +26,12 @@ library Map {
   ResourceId constant _tableId = ResourceId.wrap(0x746261707000000000000000000000004d617000000000000000000000000000);
 
   FieldLayout constant _fieldLayout =
-    FieldLayout.wrap(0x0009030001040400000000000000000000000000000000000000000000000000);
+    FieldLayout.wrap(0x0002020001010000000000000000000000000000000000000000000000000000);
 
   // Hex-encoded key schema of ()
   Schema constant _keySchema = Schema.wrap(0x0000000000000000000000000000000000000000000000000000000000000000);
-  // Hex-encoded value schema of (bool, uint32, uint32)
-  Schema constant _valueSchema = Schema.wrap(0x0009030060030300000000000000000000000000000000000000000000000000);
+  // Hex-encoded value schema of (bool, bool)
+  Schema constant _valueSchema = Schema.wrap(0x0002020060600000000000000000000000000000000000000000000000000000);
 
   /**
    * @notice Get the table's key field names.
@@ -47,10 +46,9 @@ library Map {
    * @return fieldNames An array of strings with the names of value fields.
    */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
-    fieldNames = new string[](3);
+    fieldNames = new string[](2);
     fieldNames[0] = "existing";
-    fieldNames[1] = "width";
-    fieldNames[2] = "height";
+    fieldNames[1] = "islandClaimWhitelistEnabled";
   }
 
   /**
@@ -106,79 +104,41 @@ library Map {
   }
 
   /**
-   * @notice Get width.
+   * @notice Get islandClaimWhitelistEnabled.
    */
-  function getWidth() internal view returns (uint32 width) {
+  function getIslandClaimWhitelistEnabled() internal view returns (bool islandClaimWhitelistEnabled) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
-    return (uint32(bytes4(_blob)));
+    return (_toBool(uint8(bytes1(_blob))));
   }
 
   /**
-   * @notice Get width.
+   * @notice Get islandClaimWhitelistEnabled.
    */
-  function _getWidth() internal view returns (uint32 width) {
+  function _getIslandClaimWhitelistEnabled() internal view returns (bool islandClaimWhitelistEnabled) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
-    return (uint32(bytes4(_blob)));
+    return (_toBool(uint8(bytes1(_blob))));
   }
 
   /**
-   * @notice Set width.
+   * @notice Set islandClaimWhitelistEnabled.
    */
-  function setWidth(uint32 width) internal {
+  function setIslandClaimWhitelistEnabled(bool islandClaimWhitelistEnabled) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((width)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((islandClaimWhitelistEnabled)), _fieldLayout);
   }
 
   /**
-   * @notice Set width.
+   * @notice Set islandClaimWhitelistEnabled.
    */
-  function _setWidth(uint32 width) internal {
+  function _setIslandClaimWhitelistEnabled(bool islandClaimWhitelistEnabled) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((width)), _fieldLayout);
-  }
-
-  /**
-   * @notice Get height.
-   */
-  function getHeight() internal view returns (uint32 height) {
-    bytes32[] memory _keyTuple = new bytes32[](0);
-
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
-    return (uint32(bytes4(_blob)));
-  }
-
-  /**
-   * @notice Get height.
-   */
-  function _getHeight() internal view returns (uint32 height) {
-    bytes32[] memory _keyTuple = new bytes32[](0);
-
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
-    return (uint32(bytes4(_blob)));
-  }
-
-  /**
-   * @notice Set height.
-   */
-  function setHeight(uint32 height) internal {
-    bytes32[] memory _keyTuple = new bytes32[](0);
-
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((height)), _fieldLayout);
-  }
-
-  /**
-   * @notice Set height.
-   */
-  function _setHeight(uint32 height) internal {
-    bytes32[] memory _keyTuple = new bytes32[](0);
-
-    StoreCore.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((height)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((islandClaimWhitelistEnabled)), _fieldLayout);
   }
 
   /**
@@ -212,8 +172,8 @@ library Map {
   /**
    * @notice Set the full data using individual values.
    */
-  function set(bool existing, uint32 width, uint32 height) internal {
-    bytes memory _staticData = encodeStatic(existing, width, height);
+  function set(bool existing, bool islandClaimWhitelistEnabled) internal {
+    bytes memory _staticData = encodeStatic(existing, islandClaimWhitelistEnabled);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
@@ -226,8 +186,8 @@ library Map {
   /**
    * @notice Set the full data using individual values.
    */
-  function _set(bool existing, uint32 width, uint32 height) internal {
-    bytes memory _staticData = encodeStatic(existing, width, height);
+  function _set(bool existing, bool islandClaimWhitelistEnabled) internal {
+    bytes memory _staticData = encodeStatic(existing, islandClaimWhitelistEnabled);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
@@ -241,7 +201,7 @@ library Map {
    * @notice Set the full data using the data struct.
    */
   function set(MapData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.existing, _table.width, _table.height);
+    bytes memory _staticData = encodeStatic(_table.existing, _table.islandClaimWhitelistEnabled);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
@@ -255,7 +215,7 @@ library Map {
    * @notice Set the full data using the data struct.
    */
   function _set(MapData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.existing, _table.width, _table.height);
+    bytes memory _staticData = encodeStatic(_table.existing, _table.islandClaimWhitelistEnabled);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
@@ -268,12 +228,10 @@ library Map {
   /**
    * @notice Decode the tightly packed blob of static data using this table's field layout.
    */
-  function decodeStatic(bytes memory _blob) internal pure returns (bool existing, uint32 width, uint32 height) {
+  function decodeStatic(bytes memory _blob) internal pure returns (bool existing, bool islandClaimWhitelistEnabled) {
     existing = (_toBool(uint8(Bytes.getBytes1(_blob, 0))));
 
-    width = (uint32(Bytes.getBytes4(_blob, 1)));
-
-    height = (uint32(Bytes.getBytes4(_blob, 5)));
+    islandClaimWhitelistEnabled = (_toBool(uint8(Bytes.getBytes1(_blob, 1))));
   }
 
   /**
@@ -287,7 +245,7 @@ library Map {
     EncodedLengths,
     bytes memory
   ) internal pure returns (MapData memory _table) {
-    (_table.existing, _table.width, _table.height) = decodeStatic(_staticData);
+    (_table.existing, _table.islandClaimWhitelistEnabled) = decodeStatic(_staticData);
   }
 
   /**
@@ -312,8 +270,8 @@ library Map {
    * @notice Tightly pack static (fixed length) data using this table's schema.
    * @return The static data, encoded into a sequence of bytes.
    */
-  function encodeStatic(bool existing, uint32 width, uint32 height) internal pure returns (bytes memory) {
-    return abi.encodePacked(existing, width, height);
+  function encodeStatic(bool existing, bool islandClaimWhitelistEnabled) internal pure returns (bytes memory) {
+    return abi.encodePacked(existing, islandClaimWhitelistEnabled);
   }
 
   /**
@@ -324,10 +282,9 @@ library Map {
    */
   function encode(
     bool existing,
-    uint32 width,
-    uint32 height
+    bool islandClaimWhitelistEnabled
   ) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
-    bytes memory _staticData = encodeStatic(existing, width, height);
+    bytes memory _staticData = encodeStatic(existing, islandClaimWhitelistEnabled);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;

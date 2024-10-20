@@ -42,7 +42,11 @@ contract PostDeploy is Script {
 
     //function app__articleCreate(address author, string memory title, string memory body) external;
     //function app__articleAddComment(uint64 id, string memory commenter, string memory body) external;
-    IWorld(worldAddress).app__articleCreate(deployerAddress, "My first article", "This is the body of my first article");
+    IWorld(worldAddress).app__articleCreate(
+      deployerAddress,
+      "My first article",
+      "This is the body of my first article"
+    );
     console.log("Article created");
     IWorld(worldAddress).app__articleAddComment(1, "TestUser", "This is a test comment");
     console.log("Comment added");
@@ -50,7 +54,7 @@ contract PostDeploy is Script {
     console.log("Comment updated");
     //IWorld(worldAddress).app__articleRemoveComment(1, 1);
     //console.log("Comment removed");
-    
+
     // ************************************************************************************************
 
     Energy energyToken = new Energy(deployerAddress);
@@ -91,7 +95,7 @@ contract PostDeploy is Script {
     console.log("Requested energy drop");
     // -------------------------------------------------------
 
-    world.app__mapCreate(true, 0, 0); // Width and height not used
+    world.app__mapCreate(true, true); // IslandClaimWhitelistEnabled  = false
     console.log("Created map");
 
     uint32 firstIslandX = 2147483647;

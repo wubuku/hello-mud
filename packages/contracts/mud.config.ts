@@ -310,8 +310,7 @@ export default defineWorld({
     Map: {
       schema: {
         existing: "bool",
-        width: "uint32",
-        height: "uint32",
+        islandClaimWhitelistEnabled: "bool",
       },
       key: [],
     },

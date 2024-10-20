@@ -31,7 +31,7 @@ contract MapFriendSystem is System, IAppSystemErrors {
 
   function mapClaimIsland(uint32 coordinatesX, uint32 coordinatesY, uint256 claimedBy, uint64 claimedAt) public {
     MapData memory mapData = Map.get();
-    if (mapData.existing == false && mapData.width == uint32(0) && mapData.height == uint32(0)) {
+    if (mapData.existing == false && mapData.islandClaimWhitelistEnabled == false) {
       revert MapDoesNotExist();
     }
     MapIslandClaimed memory mapIslandClaimed = MapClaimIslandLogic.verify(coordinatesX, coordinatesY, claimedBy, claimedAt, mapData);
@@ -42,7 +42,7 @@ contract MapFriendSystem is System, IAppSystemErrors {
 
   function mapGatherIslandResources(uint256 playerId, uint32 coordinatesX, uint32 coordinatesY) public returns (ItemIdQuantityPair[] memory) {
     MapData memory mapData = Map.get();
-    if (mapData.existing == false && mapData.width == uint32(0) && mapData.height == uint32(0)) {
+    if (mapData.existing == false && mapData.islandClaimWhitelistEnabled == false) {
       revert MapDoesNotExist();
     }
     IslandResourcesGathered memory islandResourcesGathered = MapGatherIslandResourcesLogic.verify(playerId, coordinatesX, coordinatesY, mapData);

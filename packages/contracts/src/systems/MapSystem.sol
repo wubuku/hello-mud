@@ -5,10 +5,10 @@ pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
 import { Map, MapData } from "../codegen/index.sol";
-import { IslandAdded, MapCreated, MapUpdated } from "./MapEvents.sol";
-import { MapAddIslandLogic } from "./MapAddIslandLogic.sol";
+import { MapCreated, MapUpdated, IslandAdded } from "./MapEvents.sol";
 import { MapCreateLogic } from "./MapCreateLogic.sol";
 import { MapUpdateLogic } from "./MapUpdateLogic.sol";
+import { MapAddIslandLogic } from "./MapAddIslandLogic.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
 import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
@@ -18,11 +18,11 @@ import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 contract MapSystem is System, IAppSystemErrors {
   using WorldResourceIdInstance for ResourceId;
 
+  event MapCreatedEvent(bool existing, bool islandClaimWhitelistEnabled);
+
+  event MapUpdatedEvent(bool existing, bool islandClaimWhitelistEnabled);
+
   event IslandAddedEvent(uint32 coordinatesX, uint32 coordinatesY);
-
-  event MapCreatedEvent(bool existing, uint32 width, uint32 height);
-
-  event MapUpdatedEvent(bool existing, uint32 width, uint32 height);
 
   function _requireNamespaceOwner() internal view {
     ResourceId _thisSystemId = SystemRegistry.get(address(this));
@@ -32,37 +32,39 @@ contract MapSystem is System, IAppSystemErrors {
     }
   }
 
+  function mapCreate(bool existing, bool islandClaimWhitelistEnabled) public {
+    _requireNamespaceOwner();
+    MapData memory mapData = Map.get();
+    if (!(mapData.existing == false && mapData.islandClaimWhitelistEnabled == false)) {
+      revert MapAlreadyExists();
+    }
+    MapCreated memory mapCreated = MapCreateLogic.verify(existing, islandClaimWhitelistEnabled);
+    emit MapCreatedEvent(mapCreated.existing, mapCreated.islandClaimWhitelistEnabled);
+    MapData memory newMapData = MapCreateLogic.mutate(mapCreated);
+    Map.set(newMapData);
+  }
+
+  function mapUpdate(bool existing, bool islandClaimWhitelistEnabled) public {
+    _requireNamespaceOwner();
+    MapData memory mapData = Map.get();
+    if (mapData.existing == false && mapData.islandClaimWhitelistEnabled == false) {
+      revert MapDoesNotExist();
+    }
+    MapUpdated memory mapUpdated = MapUpdateLogic.verify(existing, islandClaimWhitelistEnabled, mapData);
+    emit MapUpdatedEvent(mapUpdated.existing, mapUpdated.islandClaimWhitelistEnabled);
+    MapData memory updatedMapData = MapUpdateLogic.mutate(mapUpdated, mapData);
+    Map.set(updatedMapData);
+  }
+
   function mapAddIsland(uint32 coordinatesX, uint32 coordinatesY, ItemIdQuantityPair[] memory resources) public {
     _requireNamespaceOwner();
     MapData memory mapData = Map.get();
-    if (mapData.existing == false && mapData.width == uint32(0) && mapData.height == uint32(0)) {
+    if (mapData.existing == false && mapData.islandClaimWhitelistEnabled == false) {
       revert MapDoesNotExist();
     }
     IslandAdded memory islandAdded = MapAddIslandLogic.verify(coordinatesX, coordinatesY, resources, mapData);
     emit IslandAddedEvent(islandAdded.coordinatesX, islandAdded.coordinatesY);
     MapData memory updatedMapData = MapAddIslandLogic.mutate(islandAdded, mapData);
-    Map.set(updatedMapData);
-  }
-
-  function mapCreate(bool existing, uint32 width, uint32 height) public {
-    MapData memory mapData = Map.get();
-    if (!(mapData.existing == false && mapData.width == uint32(0) && mapData.height == uint32(0))) {
-      revert MapAlreadyExists();
-    }
-    MapCreated memory mapCreated = MapCreateLogic.verify(existing, width, height);
-    emit MapCreatedEvent(mapCreated.existing, mapCreated.width, mapCreated.height);
-    MapData memory newMapData = MapCreateLogic.mutate(mapCreated);
-    Map.set(newMapData);
-  }
-
-  function mapUpdate(bool existing, uint32 width, uint32 height) public {
-    MapData memory mapData = Map.get();
-    if (mapData.existing == false && mapData.width == uint32(0) && mapData.height == uint32(0)) {
-      revert MapDoesNotExist();
-    }
-    MapUpdated memory mapUpdated = MapUpdateLogic.verify(existing, width, height, mapData);
-    emit MapUpdatedEvent(mapUpdated.existing, mapUpdated.width, mapUpdated.height);
-    MapData memory updatedMapData = MapUpdateLogic.mutate(mapUpdated, mapData);
     Map.set(updatedMapData);
   }
 
