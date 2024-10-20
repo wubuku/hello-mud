@@ -5,11 +5,13 @@ pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
 import { Map, MapData } from "../codegen/index.sol";
-import { MapCreated, MapUpdated, IslandAdded } from "./MapEvents.sol";
+import { MapCreated, MapUpdated, IslandAdded, MultiIslandsAdded } from "./MapEvents.sol";
 import { MapCreateLogic } from "./MapCreateLogic.sol";
 import { MapUpdateLogic } from "./MapUpdateLogic.sol";
 import { MapAddIslandLogic } from "./MapAddIslandLogic.sol";
+import { MapAddMultiIslandsLogic } from "./MapAddMultiIslandsLogic.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
+import { Coordinates } from "./Coordinates.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
 import { NamespaceOwner } from "@latticexyz/world/src/codegen/tables/NamespaceOwner.sol";
 import { ResourceId, WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
@@ -23,6 +25,8 @@ contract MapSystem is System, IAppSystemErrors {
   event MapUpdatedEvent(bool existing, bool islandClaimWhitelistEnabled);
 
   event IslandAddedEvent(uint32 coordinatesX, uint32 coordinatesY);
+
+  event MultiIslandsAddedEvent(uint32[] resourceItemIds, uint32 resourceSubtotal);
 
   function _requireNamespaceOwner() internal view {
     ResourceId _thisSystemId = SystemRegistry.get(address(this));
@@ -65,6 +69,18 @@ contract MapSystem is System, IAppSystemErrors {
     IslandAdded memory islandAdded = MapAddIslandLogic.verify(coordinatesX, coordinatesY, resources, mapData);
     emit IslandAddedEvent(islandAdded.coordinatesX, islandAdded.coordinatesY);
     MapData memory updatedMapData = MapAddIslandLogic.mutate(islandAdded, mapData);
+    Map.set(updatedMapData);
+  }
+
+  function mapAddMultiIslands(Coordinates[] memory coordinates, uint32[] memory resourceItemIds, uint32 resourceSubtotal) public {
+    _requireNamespaceOwner();
+    MapData memory mapData = Map.get();
+    if (mapData.existing == false && mapData.islandClaimWhitelistEnabled == false) {
+      revert MapDoesNotExist();
+    }
+    MultiIslandsAdded memory multiIslandsAdded = MapAddMultiIslandsLogic.verify(coordinates, resourceItemIds, resourceSubtotal, mapData);
+    emit MultiIslandsAddedEvent(multiIslandsAdded.resourceItemIds, multiIslandsAdded.resourceSubtotal);
+    MapData memory updatedMapData = MapAddMultiIslandsLogic.mutate(multiIslandsAdded, mapData);
     Map.set(updatedMapData);
   }
 

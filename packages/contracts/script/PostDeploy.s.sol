@@ -16,6 +16,7 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { SkillType } from "../src/systems/SkillType.sol";
 import { PlayerIdGenerator } from "../src/codegen/index.sol";
 import { ItemIdQuantityPair } from "../src/systems/ItemIdQuantityPair.sol";
+import { Coordinates } from "../src/systems/Coordinates.sol";
 
 contract PostDeploy is Script {
   function run(address worldAddress) external {
@@ -95,6 +96,9 @@ contract PostDeploy is Script {
     console.log("Requested energy drop");
     // -------------------------------------------------------
 
+    createItems(world);
+    console.log("Created items");
+
     bool islandClaimWhitelistEnabled = false; // NOTE: Set to true to enable the island claim whitelist!
     world.app__mapCreate(true, islandClaimWhitelistEnabled);
     console.log("Created map, islandClaimWhitelistEnabled:", islandClaimWhitelistEnabled);
@@ -102,17 +106,24 @@ contract PostDeploy is Script {
     world.app__islandClaimWhitelistAdd(deployerAddress);
     console.log("Added deployer address to the island claim whitelist");
 
-
     uint32 firstIslandX = 2147483647;
     uint32 firstIslandY = 2147483647;
-    addInitialIsland(world, firstIslandX, firstIslandY);
+    addIsland(world, firstIslandX, firstIslandY);
 
     uint32 secondIslandX = 2147483647 + 10000;
     uint32 secondIslandY = 2147483647 + 10000;
-    addInitialIsland(world, secondIslandX, secondIslandY);
+    addIsland(world, secondIslandX, secondIslandY);
 
-    createItems(world);
-    console.log("Created items");
+    // Test add multi islands
+    uint32 resourceSubtotal = 600;
+    uint islandCount = 5;
+    uint32[] memory multiCoordinatesX = new uint32[](islandCount);
+    uint32[] memory multiCoordinatesY = new uint32[](islandCount);
+    for (uint i = 0; i < islandCount; i++) {
+      multiCoordinatesX[i] = secondIslandX + 10000 * uint32(i + 1);
+      multiCoordinatesY[i] = secondIslandY + 10000 * uint32(i + 1);
+    }
+    addMultiIslands(world, multiCoordinatesX, multiCoordinatesY, resourceSubtotal);
 
     createItemCreations(world);
     console.log("Created item creations");
@@ -184,7 +195,7 @@ contract PostDeploy is Script {
     vm.stopBroadcast();
   }
 
-  function addInitialIsland(IWorld world, uint32 coordinatesX, uint32 coordinatesY) internal {
+  function addIsland(IWorld world, uint32 coordinatesX, uint32 coordinatesY) internal {
     ItemIdQuantityPair[] memory islandResources = createIslandResources();
 
     console.log("Adding an island to the map at coordinates (%d, %d)", coordinatesX, coordinatesY);
@@ -194,12 +205,35 @@ contract PostDeploy is Script {
     console.log("Island added successfully.");
   }
 
+  function addMultiIslands(
+    IWorld world,
+    uint32[] memory coordinatesX,
+    uint32[] memory coordinatesY,
+    uint32 resourceSubtotal
+  ) internal {
+    Coordinates[] memory multiCoordinates = new Coordinates[](coordinatesX.length);
+    for (uint i = 0; i < coordinatesX.length; i++) {
+      multiCoordinates[i] = Coordinates(coordinatesX[i], coordinatesY[i]);
+    }
+    uint32[] memory resourceItemIds = createMultiIslandsResourceIds();
+    world.app__mapAddMultiIslands(multiCoordinates, resourceItemIds, resourceSubtotal);
+    console.log("Multi-islands added successfully.");
+  }
+
   function createIslandResources() internal pure returns (ItemIdQuantityPair[] memory) {
     ItemIdQuantityPair[] memory resources = new ItemIdQuantityPair[](3);
     resources[0] = ItemIdQuantityPair(2, 200); // CottonSeeds
     resources[1] = ItemIdQuantityPair(2000000001, 100); // ResourceTypeWoodcutting
     resources[2] = ItemIdQuantityPair(2000000003, 200); // ResourceTypeMining
     return resources;
+  }
+
+  function createMultiIslandsResourceIds() internal pure returns (uint32[] memory) {
+    uint32[] memory resourceItemIds = new uint32[](3);
+    resourceItemIds[0] = 2; // CottonSeeds
+    resourceItemIds[1] = 2000000001; // ResourceTypeWoodcutting
+    resourceItemIds[2] = 2000000003; // ResourceTypeMining
+    return resourceItemIds;
   }
 
   function logIslandResources(ItemIdQuantityPair[] memory resources) internal view {

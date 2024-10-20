@@ -5,6 +5,8 @@ pragma solidity >=0.8.24;
 
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
+import { Coordinates } from "./Coordinates.sol";
+
 struct MapCreated {
   bool existing;
   bool islandClaimWhitelistEnabled;
@@ -25,6 +27,18 @@ struct IslandAdded {
    */
   uint32 coordinatesY;
   ItemIdQuantityPair[] resources;
+}
+
+struct MultiIslandsAdded {
+  Coordinates[] coordinates;
+  /**
+   * @dev Resource item IDs of each island
+   */
+  uint32[] resourceItemIds;
+  /**
+   * @dev Resource subtotal quantity of each island
+   */
+  uint32 resourceSubtotal;
 }
 
 struct MapIslandClaimed {

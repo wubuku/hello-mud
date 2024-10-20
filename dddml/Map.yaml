@@ -55,6 +55,20 @@ singletonObjects:
         event:
           name: IslandAdded
 
+      AddMultiIslands:
+        requiredPermission: __NamespaceOwner__ #requiredPermission: "AdminCap"
+        parameters:
+          Coordinates:
+            itemType: Coordinates
+          ResourceItemIds:
+            description: "Resource item IDs of each island"
+            type: uint32[]
+          ResourceSubtotal:
+            description: "Resource subtotal quantity of each island"
+            type: uint32
+        event:
+          name: MultiIslandsAdded
+
       ClaimIsland:
         metadata:
           IsOnlyOpenToFriends: true
