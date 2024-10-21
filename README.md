@@ -235,6 +235,28 @@ SetSail biz logic implementation is here: [RosterSetSailLogic.sol](./packages/co
 UpdateLocation biz logic implementation is here: [RosterUpdateLocationLogic.sol](./packages/contracts/src/systems/RosterUpdateLocationLogic.sol).
 
 
+### Print system information
+
+Run the following script to print information of each MUD system:
+
+```shell
+forge script script/PrintSystemInfo.s.sol:PrintSystemInfo --sig "run(address)" __WORLD_ADDRESS__ --broadcast --rpc-url http://localhost:8545
+```
+
+Output example:
+
+```text
+  // -------- MapSystem --------
+  resourceId (hex): 0x737961707000000000000000000000004d617053797374656d00000000000000
+  address: 0x301FCa45B4708Ef40eA7dE3Bc1b979DcD4b43795
+  publicAccess: true
+  event MapCreatedEvent(bool,bool) signature topic: 0x0ba1907ae84fda527d5a2504a24a3e761a28f400c97177d215e544de6aca4f2d
+  event MapUpdatedEvent(bool,bool) signature topic: 0xd5cefde321b443b8b7a8294d4afae95b46846eaf9ccef199b66c599fdf44b58e
+  event IslandAddedEvent(uint32,uint32) signature topic: 0x52a665a4c2cb3ca791b78eeddd6b6f3ee3d2356f13a508d53415f04b49bf4b73
+  event MultiIslandsAddedEvent(uint32[],uint32) signature topic: 0x3663bfb53b20460dc9967e5909672c9497ebf2e2cf07f3dfad911cdd31eca50c
+```
+
+
 ## Test other demo contracts
 
 
