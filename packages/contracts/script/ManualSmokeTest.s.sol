@@ -88,7 +88,7 @@ contract ManualSmokeTest is Script {
     uint256 toRosterPlayerId = playerId;
     uint32 toRosterSequenceNumber = 1;
     //playerShipId = 11111; // 11111 is a ship id that doesn't exist, just for test fail case
-    
+
     world.app__rosterTransferShip(
       playerId,
       unassignedShipsRosterSequenceNumber,
@@ -98,6 +98,29 @@ contract ManualSmokeTest is Script {
       type(uint64).max
     );
     console.log("Transferred ship from unassigned ships to first roster");
+
+    // Test transfer multiple ships
+    uint256[] memory shipIds = new uint256[](1);
+    shipIds[0] = playerShipId;
+    world.app__rosterTransferMultiShips(
+      toRosterPlayerId,
+      toRosterSequenceNumber,
+      shipIds,
+      playerId,
+      unassignedShipsRosterSequenceNumber,
+      type(uint64).max
+    );
+    console.log("Transferred ship from first roster to unassigned ships");
+
+    world.app__rosterTransferMultiShips(
+      playerId,
+      unassignedShipsRosterSequenceNumber,
+      shipIds,
+      toRosterPlayerId,
+      toRosterSequenceNumber,
+      type(uint64).max
+    );
+    console.log("Transferred ship from unassigned ships to first roster again");
 
     uint32 firstIslandX = 2147483647;
     uint32 firstIslandY = 2147483647;
@@ -110,7 +133,6 @@ contract ManualSmokeTest is Script {
 
     RosterData memory rosterData = Roster.get(playerId, currentRosterSequenceNumber);
     console.log("Roster speed:", rosterData.speed);
-
 
     vm.stopBroadcast();
   }

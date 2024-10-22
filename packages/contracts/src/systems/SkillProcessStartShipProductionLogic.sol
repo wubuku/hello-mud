@@ -14,15 +14,15 @@ import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol"
 import { SkillPrcMtrlLib } from "./SkillPrcMtrlLib.sol";
 import { PlayerUtil } from "../utils/PlayerUtil.sol";
 
-error ProcessAlreadyStarted(uint32 currentItemId, bool completed);
-error NotEnoughEnergy(uint256 required, uint256 available);
-error LowerThanRequiredLevel(uint16 required, uint16 current);
-error ItemIdIsNotShip(uint32 itemId, uint32 expectedItemId);
-error MaterialsMismatch(uint32 requiredItemId);
-error NotEnoughMaterials(uint32 itemId, uint32 required, uint32 provided);
-error ArrayLengthMismatch(uint256 requiredLength, uint256 actualLength);
-
 library SkillProcessStartShipProductionLogic {
+  error ProcessAlreadyStarted(uint32 currentItemId, bool completed);
+  error NotEnoughEnergy(uint256 required, uint256 available);
+  error LowerThanRequiredLevel(uint16 required, uint16 current);
+  error ItemIdIsNotShip(uint32 itemId, uint32 expectedItemId);
+  error MaterialsMismatch(uint32 requiredItemId);
+  error NotEnoughMaterials(uint32 itemId, uint32 required, uint32 provided);
+  error ArrayLengthMismatch(uint256 requiredLength, uint256 actualLength);
+
   uint32 constant SHIP_ITEM_ID = SHIP;
 
   function verify(
@@ -35,7 +35,6 @@ library SkillProcessStartShipProductionLogic {
   ) internal view returns (ShipProductionProcessStarted memory) {
     PlayerData memory playerData = PlayerUtil.assertSenderIsPlayerOwner(playerId);
     ItemProductionData memory itemProductionData = ItemProduction.get(skillType, itemId);
-
 
     if (skillProcessData.itemId != ItemIds.unusedItem() && !skillProcessData.completed) {
       revert ProcessAlreadyStarted(skillProcessData.itemId, skillProcessData.completed);

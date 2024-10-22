@@ -34,4 +34,13 @@ interface IRosterSystem {
     uint32 toRosterSequenceNumber,
     uint64 toPosition
   ) external;
+
+  function app__rosterTransferMultiShips(
+    uint256 playerId,
+    uint32 sequenceNumber,
+    uint256[] memory shipIds,
+    uint256 toRosterPlayerId,
+    uint32 toRosterSequenceNumber,
+    uint64 toPosition
+  ) external;
 }

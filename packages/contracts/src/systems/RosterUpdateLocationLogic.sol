@@ -11,26 +11,25 @@ import { RouteUtil } from "../utils/RouteUtil.sol";
 import { Coordinates } from "./Coordinates.sol";
 import { UpdateLocationParams } from "./UpdateLocationParams.sol";
 
-// Add these custom errors at the top of the file, after the imports
-error RosterNotUnderway(uint8 currentStatus);
-error InvalidSailSegment(uint16 currentSailSegment, uint16 oldSailSegment);
-error InvalidPositionUpdateAfterSailDuration(Coordinates segmentEnd, Coordinates updatedCoordinates);
-error InvalidPositionUpdate(
-  Coordinates segmentStartPoint,
-  Coordinates segmentEndPoint,
-  uint64 segmentStartTime,
-  uint64 segmentEndTime,
-  uint64 updateTime,
-  Coordinates updatedCoordinates
-);
-error EarlyUpdate(uint64 updateTime, uint64 currentTime);
-error InvalidUpdateTime(uint64 updateTime, uint64 lastUpdateTime);
-
 /**
  * @title RosterUpdateLocationLogic Library
  * @dev Implements the Roster.UpdateLocation method.
  */
 library RosterUpdateLocationLogic {
+  error RosterNotUnderway(uint8 currentStatus);
+  error InvalidSailSegment(uint16 currentSailSegment, uint16 oldSailSegment);
+  error InvalidPositionUpdateAfterSailDuration(Coordinates segmentEnd, Coordinates updatedCoordinates);
+  error InvalidPositionUpdate(
+    Coordinates segmentStartPoint,
+    Coordinates segmentEndPoint,
+    uint64 segmentStartTime,
+    uint64 segmentEndTime,
+    uint64 updateTime,
+    Coordinates updatedCoordinates
+  );
+  error EarlyUpdate(uint64 updateTime, uint64 currentTime);
+  error InvalidUpdateTime(uint64 updateTime, uint64 lastUpdateTime);
+
   uint64 constant MAX_UPDATE_TIME_DELAY = 30; // Is this a good value?
 
   /**

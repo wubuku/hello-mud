@@ -8,6 +8,7 @@ import { RosterStatus } from "../systems/RosterStatus.sol";
 
 library RosterDataInstance {
   uint256 private constant MIN_DISTANCE_TO_TRANSFER = 3000;
+  uint256 public constant MAX_SHIPS_PER_ROSTER = 4;
 
   error EmptyRosterShipIds();
   error InvalidRosterStatus(uint8 expectedStatus, uint8 actualStatus);
@@ -49,7 +50,7 @@ library RosterDataInstance {
   }
 
   function assertRosterShipsNotFull(RosterData memory roster) internal pure {
-    if (roster.shipIds.length >= 4) {
+    if (roster.shipIds.length >= MAX_SHIPS_PER_ROSTER) {
       revert RosterIsFull(roster.shipIds.length);
     }
   }

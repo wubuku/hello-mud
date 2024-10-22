@@ -12,11 +12,11 @@ import { PlayerDelegatecallLib } from "../systems/PlayerDelegatecallLib.sol";
 import { SkillTypeItemIdPair } from "./SkillTypeItemIdPair.sol";
 import { SkillProcessId } from "./SkillProcessId.sol";
 
-error ProcessNotStarted(uint32 itemId, bool completed);
-error ItemProducesIndividuals(uint32 itemId);
-error StillInProgress(uint64 currentTime, uint64 expectedCompletionTime);
-
 library SkillProcessCompleteProductionLogic {
+  error ProcessNotStarted(uint32 itemId, bool completed);
+  error ItemProducesIndividuals(uint32 itemId);
+  error StillInProgress(uint64 currentTime, uint64 expectedCompletionTime);
+
   function verify(
     uint8 skillType,
     uint256 playerId,
@@ -26,12 +26,13 @@ library SkillProcessCompleteProductionLogic {
     PlayerData memory playerData = Player.get(playerId);
     ItemProductionData memory itemProductionData = ItemProduction.get(skillType, skillProcessData.itemId);
 
-    (uint256 _playerId, uint8 _skillType, uint32 itemId) = SkillProcessUtil.assertIdsAreConsistentForCompletingProduction(
-      playerId,
-      SkillTypeItemIdPair(skillType, skillProcessData.itemId),
-      SkillProcessId(skillType, playerId, sequenceNumber),
-      skillProcessData
-    );
+    (uint256 _playerId, uint8 _skillType, uint32 itemId) = SkillProcessUtil
+      .assertIdsAreConsistentForCompletingProduction(
+        playerId,
+        SkillTypeItemIdPair(skillType, skillProcessData.itemId),
+        SkillProcessId(skillType, playerId, sequenceNumber),
+        skillProcessData
+      );
 
     if (itemId == ItemIds.unusedItem() || skillProcessData.completed) {
       revert ProcessNotStarted(itemId, skillProcessData.completed);

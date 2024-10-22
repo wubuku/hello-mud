@@ -1,18 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.24;
 
-import { RosterShipTransferred } from "./RosterEvents.sol";
+import { RosterMultiShipsTransferred } from "./RosterEvents.sol";
 import { RosterData, ShipData, Roster, Ship } from "../codegen/index.sol";
 import { RosterDataInstance } from "../utils/RosterDataInstance.sol";
 import { ShipIdUtil } from "../utils/ShipIdUtil.sol";
 import { RosterSequenceNumber } from "./RosterSequenceNumber.sol";
 import { RosterUtil } from "../utils/RosterUtil.sol";
-import { RosterId } from "./RosterId.sol";
 import { PlayerUtil } from "../utils/PlayerUtil.sol";
 import { ShipUtil } from "../utils/ShipUtil.sol";
 
-library RosterTransferShipLogic {
-  error EmptyShipIdsInSourceRoster(uint256 shipId, uint256 rosterPlayerId, uint32 rosterSequenceNumber);
+library RosterTransferMultiShipsLogic {
+  error EmptyShipIdsInSourceRoster(uint256 rosterPlayerId, uint32 rosterSequenceNumber);
   error RostersTooFarAway(
     uint256 rosterPlayerId,
     uint32 rosterSequenceNumber,
@@ -23,23 +22,25 @@ library RosterTransferShipLogic {
   error ToRosterInBattle(uint256 toRosterPlayerId, uint32 toRosterSequenceNumber, uint256 battleId);
   error RosterNotExists(uint256 rosterPlayerId, uint32 rosterSequenceNumber);
   error ShipNotInRoster(uint256 shipId);
+  error NotEnoughSpaceInToRoster(uint256 toRosterPlayerId, uint32 toRosterSequenceNumber);
 
   using RosterDataInstance for RosterData;
 
   function verify(
     uint256 playerId,
     uint32 sequenceNumber,
-    uint256 shipId,
+    uint256[] memory shipIds,
     uint256 toRosterPlayerId,
     uint32 toRosterSequenceNumber,
     uint64 toPosition,
     RosterData memory rosterData
-  ) internal view returns (RosterShipTransferred memory) {
+  ) internal view returns (RosterMultiShipsTransferred memory) {
     PlayerUtil.assertSenderIsPlayerOwner(playerId);
-    //RosterUtil.assertPlayerIsRosterOwner(playerId, RosterId(playerId, sequenceNumber));
-    //RosterUtil.assertPlayerIsRosterOwner(playerId, RosterId(toRosterPlayerId, toRosterSequenceNumber));
-    if (!ShipIdUtil.containsShipId(rosterData.shipIds, shipId)) {
-      revert ShipNotInRoster(shipId);
+
+    for (uint256 i = 0; i < shipIds.length; i++) {
+      if (!ShipIdUtil.containsShipId(rosterData.shipIds, shipIds[i])) {
+        revert ShipNotInRoster(shipIds[i]);
+      }
     }
 
     RosterData memory toRoster = Roster.get(toRosterPlayerId, toRosterSequenceNumber);
@@ -49,7 +50,9 @@ library RosterTransferShipLogic {
     }
 
     if (toRosterSequenceNumber != RosterSequenceNumber.UNASSIGNED_SHIPS) {
-      toRoster.assertRosterShipsNotFull();
+      if (toRoster.shipIds.length + shipIds.length > RosterDataInstance.MAX_SHIPS_PER_ROSTER) {
+        revert NotEnoughSpaceInToRoster(toRosterPlayerId, toRosterSequenceNumber);
+      }
     }
 
     if (rosterData.shipBattleId != 0) {
@@ -60,10 +63,10 @@ library RosterTransferShipLogic {
     }
 
     return
-      RosterShipTransferred({
+      RosterMultiShipsTransferred({
         playerId: playerId,
         sequenceNumber: sequenceNumber,
-        shipId: shipId,
+        shipIds: shipIds,
         toRosterPlayerId: toRosterPlayerId,
         toRosterSequenceNumber: toRosterSequenceNumber,
         toPosition: toPosition,
@@ -72,45 +75,56 @@ library RosterTransferShipLogic {
   }
 
   function mutate(
-    RosterShipTransferred memory rosterShipTransferred,
+    RosterMultiShipsTransferred memory rosterMultiShipsTransferred,
     RosterData memory rosterData
   ) internal returns (RosterData memory) {
     RosterData memory toRoster = Roster.get(
-      rosterShipTransferred.toRosterPlayerId,
-      rosterShipTransferred.toRosterSequenceNumber
+      rosterMultiShipsTransferred.toRosterPlayerId,
+      rosterMultiShipsTransferred.toRosterSequenceNumber
     );
     if (toRoster.status == uint8(0)) {
-      revert RosterNotExists(rosterShipTransferred.toRosterPlayerId, rosterShipTransferred.toRosterSequenceNumber);
+      revert RosterNotExists(
+        rosterMultiShipsTransferred.toRosterPlayerId,
+        rosterMultiShipsTransferred.toRosterSequenceNumber
+      );
     }
-    uint256 shipId = rosterShipTransferred.shipId;
-    uint256 playerId = rosterShipTransferred.playerId;
-    uint32 sequenceNumber = rosterShipTransferred.sequenceNumber;
-    ShipData memory shipData = Ship.get(shipId);
 
-    ShipUtil.assertShipOwnership(shipData, shipId, playerId, sequenceNumber);
-
-    uint64 toPosition = rosterShipTransferred.toPosition;
-    uint64 transferredAt = rosterShipTransferred.transferredAt;
+    uint256[] memory shipIds = rosterMultiShipsTransferred.shipIds;
+    uint256 playerId = rosterMultiShipsTransferred.playerId;
+    uint32 sequenceNumber = rosterMultiShipsTransferred.sequenceNumber;
 
     if (rosterData.shipIds.length == 0) {
-      revert EmptyShipIdsInSourceRoster(shipId, playerId, sequenceNumber);
+      revert EmptyShipIdsInSourceRoster(playerId, sequenceNumber);
     }
-    rosterData.shipIds = ShipIdUtil.removeShipId(rosterData.shipIds, shipId);
+
+    for (uint256 i = 0; i < shipIds.length; i++) {
+      uint256 shipId = shipIds[i];
+      ShipData memory shipData = Ship.get(shipId);
+
+      ShipUtil.assertShipOwnership(shipData, shipId, playerId, sequenceNumber);
+
+      rosterData.shipIds = ShipIdUtil.removeShipId(rosterData.shipIds, shipId);
+      toRoster.shipIds = ShipIdUtil.addShipId(
+        toRoster.shipIds,
+        shipId,
+        rosterMultiShipsTransferred.toPosition + uint64(i)
+      );
+
+      shipData.playerId = rosterMultiShipsTransferred.toRosterPlayerId;
+      shipData.rosterSequenceNumber = rosterMultiShipsTransferred.toRosterSequenceNumber;
+      Ship.set(shipId, shipData);
+    }
+
     rosterData.speed = rosterData.calculateRosterSpeed();
-    rosterData.coordinatesUpdatedAt = transferredAt; // Update the coordinatesUpdatedAt timestamp here?
-
-    //
-    // Note: The consistency of the two-way relationship between Roster and Ship is maintained here.
-    //
-    toRoster.shipIds = ShipIdUtil.addShipId(toRoster.shipIds, shipId, toPosition);
-
-    shipData.playerId = rosterShipTransferred.toRosterPlayerId;
-    shipData.rosterSequenceNumber = rosterShipTransferred.toRosterSequenceNumber;
-    Ship.set(shipId, shipData);
+    rosterData.coordinatesUpdatedAt = rosterMultiShipsTransferred.transferredAt;
 
     toRoster.speed = toRoster.calculateRosterSpeed();
-    toRoster.coordinatesUpdatedAt = transferredAt; // Update the coordinatesUpdatedAt timestamp here?
-    Roster.set(rosterShipTransferred.toRosterPlayerId, rosterShipTransferred.toRosterSequenceNumber, toRoster);
+    toRoster.coordinatesUpdatedAt = rosterMultiShipsTransferred.transferredAt;
+    Roster.set(
+      rosterMultiShipsTransferred.toRosterPlayerId,
+      rosterMultiShipsTransferred.toRosterSequenceNumber,
+      toRoster
+    );
 
     return rosterData;
   }

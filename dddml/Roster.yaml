@@ -222,25 +222,31 @@ aggregates:
 
       TransferShip:
         parameters:
-          # Player:
-          #   referenceType: Player
-          #   isIgnoredInEvent: true
           ShipId:
             type: u256 #ID
           #FromRoster: # from current roster
           ToRoster:
             type: RosterId
-            # referenceType: Roster
-            # isMutableReference: true
-            # eventPropertyName: ToRosterId
           ToPosition:
             type: u64
-            #optional: true          
-          #Clock:
-          #  referenceType: Clock
-          #  isIgnoredInEvent: true
         event:
           name: RosterShipTransferred
+          properties:
+            TransferredAt:
+              type: u64
+
+      TransferMultiShips:
+        description: "Transfer multiple ships from current roster to another roster"
+        parameters:
+          ShipIds:
+            type: uint256[]
+          ToRoster:
+            type: RosterId
+          ToPosition:
+            type: u64
+            description: "All ships are transferred in or after this position"
+        event:
+          name: RosterMultiShipsTransferred
           properties:
             TransferredAt:
               type: u64

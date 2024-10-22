@@ -17,14 +17,14 @@ import { ShipDelegatecallLib } from "./ShipDelegatecallLib.sol";
 import { SkillPrcMtrlLib } from "./SkillPrcMtrlLib.sol";
 import { RosterDelegatecallLib } from "./RosterDelegatecallLib.sol";
 
-error ProcessNotStarted(uint32 itemId, bool completed);
-error ItemIdIsNotShip(uint32 itemId);
-error RosterUnassignedShipsNotFound(uint256 playerId);
-error InvalidRosterPlayerId(uint256 playerId, uint256 rosterId);
-error BuildingExpensesNotSet();
-error StillInProgress(uint64 currentTime, uint64 expectedCompletionTime);
-
 library SkillProcessCompleteShipProductionLogic {
+  error ProcessNotStarted(uint32 itemId, bool completed);
+  error ItemIdIsNotShip(uint32 itemId);
+  error RosterUnassignedShipsNotFound(uint256 playerId);
+  error InvalidRosterPlayerId(uint256 playerId, uint256 rosterId);
+  error BuildingExpensesNotSet();
+  error StillInProgress(uint64 currentTime, uint64 expectedCompletionTime);
+
   function verify(
     uint8 skillType,
     uint256 playerId,

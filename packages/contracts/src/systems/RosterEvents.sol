@@ -156,6 +156,31 @@ struct RosterShipTransferred {
   uint64 transferredAt;
 }
 
+struct RosterMultiShipsTransferred {
+  /**
+   * @dev The PlayerId of the RosterId.
+   */
+  uint256 playerId;
+  /**
+   * @dev The SequenceNumber of the RosterId.
+   */
+  uint32 sequenceNumber;
+  uint256[] shipIds;
+  /**
+   * @dev The PlayerId of the ToRoster.
+   */
+  uint256 toRosterPlayerId;
+  /**
+   * @dev The SequenceNumber of the ToRoster.
+   */
+  uint32 toRosterSequenceNumber;
+  /**
+   * @dev All ships are transferred in or after this position
+   */
+  uint64 toPosition;
+  uint64 transferredAt;
+}
+
 struct RosterShipInventoryTransferred {
   /**
    * @dev The PlayerId of the RosterId.

@@ -12,10 +12,10 @@ import { PlayerDelegatecallLib } from "../systems/PlayerDelegatecallLib.sol";
 import { SkillTypeItemIdPair } from "./SkillTypeItemIdPair.sol";
 import { SkillProcessId } from "./SkillProcessId.sol";
 
-error ProcessNotStarted();
-error StillInProgress(uint64 currentTime, uint64 expectedCompletionTime);
-
 library SkillProcessCompleteCreationLogic {
+  error ProcessNotStarted();
+  error StillInProgress(uint64 currentTime, uint64 expectedCompletionTime);
+
   function verify(
     uint8 skillType,
     uint256 playerId,
