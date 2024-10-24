@@ -1,6 +1,6 @@
 $startLocation = $PSScriptRoot; 
 
-$privateKey = "6abc76993e43c37ad81b0fb23f26205e6fb188c8a50011dccad5814195e48c75"
+$privateKey = "0x0dcf6503b3fa4c2b9f529da422e0d56ed19a08dd6246f22500a756d9fe6d3201"
 $worldAddress = "0x385298664c9386101eb0aed153269717008fdeee"
 
 #释放的块序号
@@ -303,104 +303,89 @@ for ($i = 0; $i -lt $column; $i++) {
 }
 
 
-#岛屿默认分配的资源，棉花种子必须放在第三位
-$islandResources = @(2000000001, 2000000003,2)
 
 "`n开始添加岛屿" | Tee-Object -FilePath $logFile -Append | Write-Host -ForegroundColor Blue
-$count = 0
-#一个一个的添加
+$islandResourceItemIds="[2, 2000000001, 2000000003]"
+#批量添加
+$islandCoordinatesParameter="["
+$index=0
 foreach ($coordinate in $coordinates) {
-    $islandResourceIds = @()
-    $islandResourceQuantities = @()
-    do {
-        $num1 = $random.Next(1, 150)
-        $num2 = $random.Next(1, 150)
-        $num3 = $random.Next(1, 150)
-    } while ((($num1 + $num2 + $num3) -ne 150) -or $num3 % 5 -ne 0)
-    $randomNums = @($num1, $num2, $num3)  
-    "初始坐标($($coordinate.InitX),$($coordinate.InitY))，实际坐标($($coordinate.RandomX),$($coordinate.RandomY))，附加以下资源：" | Tee-Object -FilePath $logFile -Append  |  Write-Host -ForegroundColor Yellow
-    $islandResourceParameter="["
-    for ($k = 0; $k -lt $islandResources.Count; $k++) {
-        "       $($islandResources[$k]) => 数量 $(150+$randomNums[$k])"  | Tee-Object -FilePath $logFile -Append  | Write-Host -ForegroundColor Green
-        $islandResourceIds += $islandResources[$k].ItemId
-        $islandResourceQuantities += (150 + $randomNums[$k])
-        $islandResourceParameter+="("
-        $islandResourceParameter+=$($islandResources[$k])
-        $islandResourceParameter+=","
-        $islandResourceParameter+=(150 + $randomNums[$k])
-        $islandResourceParameter+=")"
-        if($k -ne $islandResources.Count-1){
-        $islandResourceParameter+=","
+    "初始坐标($($coordinate.InitX),$($coordinate.InitY))，实际坐标($($coordinate.RandomX),$($coordinate.RandomY))" | Tee-Object -FilePath $logFile -Append  |  Write-Host -ForegroundColor Yellow
+    $islandCoordinatesParameter+="("+$($coordinate.RandomX)+","+$($coordinate.RandomY)+")"
+        if($index -ne $coordinates.Count-1){
+        $islandCoordinatesParameter+=","
         }
-    }
-    $islandResourceParameter+="]"
-    "岛屿初始资源参数:$islandResourceParameter" | Tee-Object -FilePath $logFile -Append  |  Write-Host -ForegroundColor Green
-        try {
-        $command = "cast send $worldAddress ""app__mapAddIsland(uint32,uint32,(uint32,uint32)[])"" $($coordinate.RandomX) $($coordinate.RandomY)  ""$islandResourceParameter"" --rpc-url ""https://testnet.storyrpc.io"" --private-key $privateKey --json"
-        $command | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Blue
-        $result = Invoke-Expression -Command $command
-        # if (-not ('System.Object[]' -eq $result.GetType())) {
-        #     "调用接口返回信息: $result" | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Red
-        #     continue
-        # }
-        $count++
-        $resultObj = $result | ConvertFrom-Json  
-        if($resultObj.status -eq "0x1"){
-        "成功添加第 $count 个小岛，共需要添加 $($coordinates.Count) 个。`n" | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Green 
-        }else{
-            "共需要添加 $($coordinates.Count) 个岛屿，添加第 $count 个时发生错误`n" | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Green 
-        } 
-    }
-    catch {
-        "添加小岛失败: $($_.Exception.Message) `n" | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Red
-        "返回的结果为:$result" | Tee-Object -FilePath $logFile -Append  |  Write-Host
-        continue
-    }
-#一个一个的添加
-foreach ($coordinate in $coordinates) {
-    $islandResourceIds = @()
-    $islandResourceQuantities = @()
-    do {
-        $num1 = $random.Next(1, 150)
-        $num2 = $random.Next(1, 150)
-        $num3 = $random.Next(1, 150)
-    } while ((($num1 + $num2 + $num3) -ne 150) -or $num3 % 5 -ne 0)
-    $randomNums = @($num1, $num2, $num3)  
-    "初始坐标($($coordinate.InitX),$($coordinate.InitY))，实际坐标($($coordinate.RandomX),$($coordinate.RandomY))，附加以下资源：" | Tee-Object -FilePath $logFile -Append  |  Write-Host -ForegroundColor Yellow
-    $islandResourceParameter="["
-    for ($k = 0; $k -lt $islandResources.Count; $k++) {
-        "       $($islandResources[$k]) => 数量 $(150+$randomNums[$k])"  | Tee-Object -FilePath $logFile -Append  | Write-Host -ForegroundColor Green
-        $islandResourceIds += $islandResources[$k].ItemId
-        $islandResourceQuantities += (150 + $randomNums[$k])
-        $islandResourceParameter+="("
-        $islandResourceParameter+=$($islandResources[$k])
-        $islandResourceParameter+=","
-        $islandResourceParameter+=(150 + $randomNums[$k])
-        $islandResourceParameter+=")"
-        if($k -ne $islandResources.Count-1){
-        $islandResourceParameter+=","
-        }
-    }
-    $islandResourceParameter+="]"
-    "岛屿初始资源参数:$islandResourceParameter" | Tee-Object -FilePath $logFile -Append  |  Write-Host -ForegroundColor Green
-        try {
-        $command = "cast send $worldAddress ""app__mapAddIsland(uint32,uint32,(uint32,uint32)[])"" $($coordinate.RandomX) $($coordinate.RandomY)  ""$islandResourceParameter"" --rpc-url ""https://testnet.storyrpc.io"" --private-key $privateKey --json"
-        $command | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Blue
-        $result = Invoke-Expression -Command $command
-        $count++
-        $resultObj = $result | ConvertFrom-Json  
-        if($resultObj.status -eq "0x1"){
-        "成功添加第 $count 个小岛，共需要添加 $($coordinates.Count) 个。`n" | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Green 
-        }else{
-            "共需要添加 $($coordinates.Count) 个岛屿，添加第 $count 个时发生错误`n" | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Green 
-        } 
-    }
-    catch {
-        "添加小岛失败: $($_.Exception.Message) `n" | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Red
-        "返回的结果为:$result" | Tee-Object -FilePath $logFile -Append  |  Write-Host
-        continue
-    }    
+        $index++
 }
+$islandCoordinatesParameter+="]"
+"岛屿坐标列表:$islandCoordinatesParameter" | Tee-Object -FilePath $logFile -Append  |  Write-Host -ForegroundColor Green
+    try {
+    $command = "cast send $worldAddress ""app__mapAddMultiIslands((uint32,uint32)[],uint32[],uint32)"" ""$islandCoordinatesParameter"" ""$islandResourceItemIds"" 600 --rpc-url ""https://testnet.storyrpc.io"" --private-key $privateKey --json"
+    $command | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Blue
+    $result = Invoke-Expression -Command $command
+    $resultObj = $result | ConvertFrom-Json  
+    if($resultObj.status -eq "0x1"){
+    "成功添加岛屿 $($coordinates.Count) 个。`n" | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Green 
+    
+    "`n$result`n" | Tee-Object -FilePath $logFile -Append 
+
+    }else{
+        "添加岛屿时发生错误`n" | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Green 
+    }
+}
+catch {
+    "添加岛屿失败: $($_.Exception.Message) `n" | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Red
+    "返回的结果为:$result" | Tee-Object -FilePath $logFile -Append  |  Write-Host
+}
+
+#一个一个的添加
+#岛屿默认分配的资源，棉花种子必须放在第三位
+# $islandResources = @(2000000001, 2000000003,2)
+# $count = 0
+# foreach ($coordinate in $coordinates) {
+#     $islandResourceIds = @()
+#     $islandResourceQuantities = @()
+#     do {
+#         $num1 = $random.Next(1, 150)
+#         $num2 = $random.Next(1, 150)
+#         $num3 = $random.Next(1, 150)
+#     } while ((($num1 + $num2 + $num3) -ne 150) -or $num3 % 5 -ne 0)
+#     $randomNums = @($num1, $num2, $num3)  
+#     "初始坐标($($coordinate.InitX),$($coordinate.InitY))，实际坐标($($coordinate.RandomX),$($coordinate.RandomY))，附加以下资源：" | Tee-Object -FilePath $logFile -Append  |  Write-Host -ForegroundColor Yellow
+#     $islandResourceParameter="["
+#     for ($k = 0; $k -lt $islandResources.Count; $k++) {
+#         "       $($islandResources[$k]) => 数量 $(150+$randomNums[$k])"  | Tee-Object -FilePath $logFile -Append  | Write-Host -ForegroundColor Green
+#         $islandResourceIds += $islandResources[$k].ItemId
+#         $islandResourceQuantities += (150 + $randomNums[$k])
+#         $islandResourceParameter+="("
+#         $islandResourceParameter+=$($islandResources[$k])
+#         $islandResourceParameter+=","
+#         $islandResourceParameter+=(150 + $randomNums[$k])
+#         $islandResourceParameter+=")"
+#         if($k -ne $islandResources.Count-1){
+#         $islandResourceParameter+=","
+#         }
+#     }
+#     $islandResourceParameter+="]"
+#     "岛屿初始资源参数:$islandResourceParameter" | Tee-Object -FilePath $logFile -Append  |  Write-Host -ForegroundColor Green
+#         try {
+#         $command = "cast send $worldAddress ""app__mapAddIsland(uint32,uint32,(uint32,uint32)[])"" $($coordinate.RandomX) $($coordinate.RandomY)  ""$islandResourceParameter"" --rpc-url ""https://testnet.storyrpc.io"" --private-key $privateKey --json"
+#         $command | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Blue
+#         $result = Invoke-Expression -Command $command
+#         $count++
+#         $resultObj = $result | ConvertFrom-Json  
+#         if($resultObj.status -eq "0x1"){
+#         "成功添加第 $count 个小岛，共需要添加 $($coordinates.Count) 个。`n" | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Green 
+#         }else{
+#             "共需要添加 $($coordinates.Count) 个岛屿，添加第 $count 个时发生错误`n" | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Green 
+#         } 
+#     }
+#     catch {
+#         "添加小岛失败: $($_.Exception.Message) `n" | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Red
+#         "返回的结果为:$result" | Tee-Object -FilePath $logFile -Append  |  Write-Host
+#         continue
+#     }    
+# }
 
 
 
