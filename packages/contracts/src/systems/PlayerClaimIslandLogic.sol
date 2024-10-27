@@ -92,8 +92,12 @@ library PlayerClaimIslandLogic {
 
     // Create rosters
     for (uint32 rosterSequenceNumber = 0; rosterSequenceNumber < 5; rosterSequenceNumber++) {
-      RosterUtil.getRosterOriginCoordinates(coordinatesX, coordinatesY, rosterSequenceNumber);
-      RosterDelegatecallLib.create(playerId, rosterSequenceNumber, coordinatesX, coordinatesY);
+      (uint32 rosterCoordinatesX, uint32 rosterCoordinatesY) = RosterUtil.getRosterOriginCoordinates(
+        coordinatesX,
+        coordinatesY,
+        rosterSequenceNumber
+      );
+      RosterDelegatecallLib.create(playerId, rosterSequenceNumber, rosterCoordinatesX, rosterCoordinatesY);
     }
 
     return playerData;
@@ -118,7 +122,6 @@ library PlayerClaimIslandLogic {
     // MapLocation.setResourcesItemIds(coordinatesX, coordinatesY, emptyArray);
     // MapLocation.setResourcesQuantities(coordinatesX, coordinatesY, emptyArray);
   }
-
 
   function createSkillProcesses(uint256 playerId) internal {
     uint8[4] memory skillTypes = [
