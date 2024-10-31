@@ -43,16 +43,16 @@ contract PostDeploy is Script {
 
     //function app__articleCreate(address author, string memory title, string memory body) external;
     //function app__articleAddComment(uint64 id, string memory commenter, string memory body) external;
-    IWorld(worldAddress).app__articleCreate(
-      deployerAddress,
-      "My first article",
-      "This is the body of my first article"
-    );
-    console.log("Article created");
-    IWorld(worldAddress).app__articleAddComment(1, "TestUser", "This is a test comment");
-    console.log("Comment added");
-    IWorld(worldAddress).app__articleUpdateComment(1, 1, "TestUser", "This is an updated comment");
-    console.log("Comment updated");
+    // IWorld(worldAddress).app__articleCreate(
+    //   deployerAddress,
+    //   "My first article",
+    //   "This is the body of my first article"
+    // );
+    // console.log("Article created");
+    // IWorld(worldAddress).app__articleAddComment(1, "TestUser", "This is a test comment");
+    // console.log("Comment added");
+    // IWorld(worldAddress).app__articleUpdateComment(1, 1, "TestUser", "This is an updated comment");
+    // console.log("Comment updated");
     //IWorld(worldAddress).app__articleRemoveComment(1, 1);
     //console.log("Comment removed");
 
@@ -95,7 +95,8 @@ contract PostDeploy is Script {
     world.app__energyDropRequest(deployerAddress);
     console.log("Requested energy drop");
     // -------------------------------------------------------
-
+        
+    // Create items 
     createItems(world);
     console.log("Created items");
 
@@ -125,12 +126,14 @@ contract PostDeploy is Script {
     }
     addMultiIslands(world, multiCoordinatesX, multiCoordinatesY, resourceSubtotal);
 
+    //Create Item Creations(Mining & Cutting)
     createItemCreations(world);
     console.log("Created item creations");
-
+    //Create Item Productions(Planting Cottons & Crafting Ship)
     createItemProductions(world);
     console.log("Created item productions");
 
+    // Create experience table
     world.app__experienceTableCreate(true);
     console.log("Created experience table");
 
@@ -227,6 +230,7 @@ contract PostDeploy is Script {
     resources[2] = ItemIdQuantityPair(2000000003, 200); // ResourceTypeMining
     return resources;
   }
+  
 
   function createMultiIslandsResourceIds() internal pure returns (uint32[] memory) {
     uint32[] memory resourceItemIds = new uint32[](3);
@@ -267,8 +271,8 @@ contract PostDeploy is Script {
       1, // requirementsLevel
       1, // baseQuantity
       0, // baseExperience
-      1, // baseCreationTime // Let's speed up the game for testing purposes
-      1000000000, // energyCost
+      3, // baseCreationTime 
+      1*10**18, // energyCost
       100, // successRate
       1 // resourceCost
     );
@@ -280,8 +284,8 @@ contract PostDeploy is Script {
       1, // requirementsLevel
       1, // baseQuantity
       0, // baseExperience
-      1, // baseCreationTime
-      1000000000, // energyCost
+      3, // baseCreationTime
+      1*10**18, // energyCost
       100, // successRate
       1 // resourceCost
     );
@@ -300,9 +304,9 @@ contract PostDeploy is Script {
       102, // itemId (Cottons)
       1, // requirementsLevel
       1, // baseQuantity
-      5, // baseExperience
-      1, // baseCreationTime
-      5000000000, // energyCost
+      0, // baseExperience
+      15, // baseCreationTime
+      5*10**18, // energyCost
       100, // successRate
       cottonMaterialItemIds,
       cottonMaterialItemQuantities
@@ -325,8 +329,8 @@ contract PostDeploy is Script {
       1, // requirementsLevel
       1, // baseQuantity
       0, // baseExperience (adjusted to 0 as per the script)
-      1, // baseCreationTime
-      5000000000, // energyCost (adjusted to match the script)
+      15, // baseCreationTime
+      5*10**18, // energyCost (adjusted to match the script)
       100, // successRate
       shipMaterialItemIds,
       shipMaterialItemQuantities
