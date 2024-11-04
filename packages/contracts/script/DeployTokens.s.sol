@@ -19,7 +19,7 @@ import { PlayerIdGenerator } from "../src/codegen/index.sol";
 import { ItemIdQuantityPair } from "../src/systems/ItemIdQuantityPair.sol";
 import { Coordinates } from "../src/systems/Coordinates.sol";
 
-contract PostDeploy is Script {
+contract DeployTokens is Script {
   function run() external {
     // Specify a store so that you can use tables directly in PostDeploy
     // StoreSwitch.setStoreAddress(worldAddress);
