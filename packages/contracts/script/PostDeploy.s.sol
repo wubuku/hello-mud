@@ -10,6 +10,7 @@ import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 
 import { IWorld } from "../src/codegen/world/IWorld.sol";
 import { Energy } from "../src/tokens/Energy.sol";
+import { HelloX } from "../src/tokens/HelloX.sol";
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
@@ -57,6 +58,10 @@ contract PostDeploy is Script {
     //console.log("Comment removed");
 
     // ************************************************************************************************
+
+    HelloX helloToken = new HelloX(deployerAddress);
+    address helloTokenAddress = address(helloToken);
+    console.log("Hello Token address:", helloTokenAddress);
 
     Energy energyToken = new Energy(deployerAddress);
     address energyTokenAddress = address(energyToken);
