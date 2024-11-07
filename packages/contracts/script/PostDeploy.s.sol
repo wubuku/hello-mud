@@ -93,7 +93,7 @@ contract PostDeploy is Script {
     uint32 firstIslandY = 2147483647;
     addIsland(world, firstIslandX, firstIslandY);
 
-    /*uint32 secondIslandX = 2147483647 + 10000;
+    uint32 secondIslandX = 2147483647 + 10000;
     uint32 secondIslandY = 2147483647 + 10000;
     addIsland(world, secondIslandX, secondIslandY);
 
@@ -106,7 +106,7 @@ contract PostDeploy is Script {
       multiCoordinatesX[i] = secondIslandX + 10000 * uint32(i + 1);
       multiCoordinatesY[i] = secondIslandY + 10000 * uint32(i + 1);
     }
-    addMultiIslands(world, multiCoordinatesX, multiCoordinatesY, resourceSubtotal);*/
+    addMultiIslands(world, multiCoordinatesX, multiCoordinatesY, resourceSubtotal);
 
     //Create Item Creations(Mining & Cutting)
     createItemCreations(world);
@@ -143,8 +143,8 @@ contract PostDeploy is Script {
     console.log("Airdropped items to test player");
 
 
-    // world.app__uniApiStartCreation(uint8(SkillType.MINING), playerId, 0, 301, 1);
-    // console.log("Started mining of 1 CopperOre");
+    world.app__uniApiStartCreation(uint8(SkillType.MINING), playerId, 0, 301, 1);
+    console.log("Started mining of 1 CopperOre");
 
 
 
@@ -175,7 +175,7 @@ contract PostDeploy is Script {
 
 
 
-  /*
+  
     ItemIdQuantityPair[] memory shipProductionMaterials = new ItemIdQuantityPair[](3);
     shipProductionMaterials[0] = ItemIdQuantityPair(102, 5); // Cotton
     shipProductionMaterials[1] = ItemIdQuantityPair(200, 5); // NormalLogs
@@ -200,7 +200,7 @@ contract PostDeploy is Script {
       environmentRosterShipBaseResourceQuantity,
       environmentRosterBaseExperience
     );
-    console.log("Created an environment roster");*/
+    console.log("Created an environment roster");
 
     // You need to wait for the creation time to complete...
     // Then execute the ManualSmokeTest script
