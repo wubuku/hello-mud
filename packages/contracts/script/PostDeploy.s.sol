@@ -130,8 +130,8 @@ contract PostDeploy is Script {
     uint256 playerId = PlayerIdGenerator.getId();
     console.log("Created test player, playerId:", playerId);
 
-    // world.app__playerClaimIsland(playerId, firstIslandX, firstIslandY);
-    // console.log("An island claimed by test player");
+    world.app__playerClaimIsland(playerId, firstIslandX, firstIslandY);
+    console.log("An island claimed by test player");
 
     // Airdrop items to the test player
     world.app__playerAirdrop(playerId, 1, 200); // 200 PotatoSeeds
@@ -157,16 +157,16 @@ contract PostDeploy is Script {
 
 
 
-    uint32 batchSize=1;
+    uint32 batchSize=100;
 
     ItemProductionData memory itemProductionData = ItemProduction.get(SkillType.FARMING, cottonItemId);
     console.log("itemProductionData.energyCost:",itemProductionData.energyCost);
-    uint256 energyCost = itemProductionData.energyCost * batchSize;
+    uint256 energyCost = uint256(itemProductionData.energyCost) * batchSize;
     console.log("itemProductionData.energyCost * batchSize=",energyCost);
 
 
     world.app__uniApiStartProduction(SkillType.FARMING, playerId, skillProcessSequenceNumber, cottonItemId, batchSize); // Cotton
-    console.log("Started farming of 1 Cotton");    
+    console.log("Started farming of %d Cotton",batchSize);    
     uint32 afterFarmingCottonSeedsQuantity= PlayerInventoryUpdateUtil.getItemQuantity(playerId, cottonSeedsItemId);
     console.log("After farming,cotton seeds quantity:",afterFarmingCottonSeedsQuantity);
     if(beforeFarmingCottonSeedsQuantity-afterFarmingCottonSeedsQuantity!=batchSize){
