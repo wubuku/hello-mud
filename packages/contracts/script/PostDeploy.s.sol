@@ -10,7 +10,7 @@ import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 
 import { IWorld } from "../src/codegen/world/IWorld.sol";
 import { Energy } from "../src/tokens/Energy.sol";
-import { HelloX } from "../src/tokens/HelloX.sol";
+import { EnergyToken, ItemCreationData, ItemCreation, ItemProductionData, ItemProduction } from "../src/codegen/index.sol";
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
@@ -18,6 +18,7 @@ import { SkillType } from "../src/systems/SkillType.sol";
 import { PlayerIdGenerator } from "../src/codegen/index.sol";
 import { ItemIdQuantityPair } from "../src/systems/ItemIdQuantityPair.sol";
 import { Coordinates } from "../src/systems/Coordinates.sol";
+import { PlayerInventoryUpdateUtil } from "../src/utils/PlayerInventoryUpdateUtil.sol";
 
 contract PostDeploy is Script {
   function run(address worldAddress) external {
@@ -36,32 +37,8 @@ contract PostDeploy is Script {
     uint256 balance = deployerAddress.balance;
     console.log("Account balance:", balance);
 
-    // ************************************************************************************************
-    // Tests...
-    // Call increment on the world via the registered function selector
-    //uint32 newValue = IWorld(worldAddress).app__increment();
-    //console.log("Increment via IWorld:", newValue);
-
-    //function app__articleCreate(address author, string memory title, string memory body) external;
-    //function app__articleAddComment(uint64 id, string memory commenter, string memory body) external;
-    // IWorld(worldAddress).app__articleCreate(
-    //   deployerAddress,
-    //   "My first article",
-    //   "This is the body of my first article"
-    // );
-    // console.log("Article created");
-    // IWorld(worldAddress).app__articleAddComment(1, "TestUser", "This is a test comment");
-    // console.log("Comment added");
-    // IWorld(worldAddress).app__articleUpdateComment(1, 1, "TestUser", "This is an updated comment");
-    // console.log("Comment updated");
-    //IWorld(worldAddress).app__articleRemoveComment(1, 1);
-    //console.log("Comment removed");
 
     // ************************************************************************************************
-
-    HelloX helloToken = new HelloX(deployerAddress);
-    address helloTokenAddress = address(helloToken);
-    console.log("Hello Token address:", helloTokenAddress);
 
     Energy energyToken = new Energy(deployerAddress);
     address energyTokenAddress = address(energyToken);
@@ -116,7 +93,7 @@ contract PostDeploy is Script {
     uint32 firstIslandY = 2147483647;
     addIsland(world, firstIslandX, firstIslandY);
 
-    uint32 secondIslandX = 2147483647 + 10000;
+    /*uint32 secondIslandX = 2147483647 + 10000;
     uint32 secondIslandY = 2147483647 + 10000;
     addIsland(world, secondIslandX, secondIslandY);
 
@@ -129,7 +106,7 @@ contract PostDeploy is Script {
       multiCoordinatesX[i] = secondIslandX + 10000 * uint32(i + 1);
       multiCoordinatesY[i] = secondIslandY + 10000 * uint32(i + 1);
     }
-    addMultiIslands(world, multiCoordinatesX, multiCoordinatesY, resourceSubtotal);
+    addMultiIslands(world, multiCoordinatesX, multiCoordinatesY, resourceSubtotal);*/
 
     //Create Item Creations(Mining & Cutting)
     createItemCreations(world);
@@ -153,24 +130,52 @@ contract PostDeploy is Script {
     uint256 playerId = PlayerIdGenerator.getId();
     console.log("Created test player, playerId:", playerId);
 
+    // world.app__playerClaimIsland(playerId, firstIslandX, firstIslandY);
+    // console.log("An island claimed by test player");
+
     // Airdrop items to the test player
-    world.app__playerAirdrop(playerId, 1, 100); // 100 PotatoSeeds
-    world.app__playerAirdrop(playerId, 2, 50); // 50 CottonSeeds
+    world.app__playerAirdrop(playerId, 1, 200); // 200 PotatoSeeds
+    world.app__playerAirdrop(playerId, 2, 200); // 200 CottonSeeds
     world.app__playerAirdrop(playerId, 200, 200); // 200 NormalLogs
-    world.app__playerAirdrop(playerId, 301, 150); // 150 CopperOre
-    world.app__playerAirdrop(playerId, 302, 150); // 150 TinOre
-    world.app__playerAirdrop(playerId, 102, 100); // 100 Cottons
+    world.app__playerAirdrop(playerId, 301, 200); // 200 CopperOre
+    world.app__playerAirdrop(playerId, 302, 200); // 200 TinOre
+    world.app__playerAirdrop(playerId, 102, 200); // 200 Cottons
     console.log("Airdropped items to test player");
 
-    world.app__playerClaimIsland(playerId, firstIslandX, firstIslandY);
-    console.log("An island claimed by test player");
 
-    world.app__uniApiStartCreation(uint8(SkillType.MINING), playerId, 0, 301, 1);
-    console.log("Started mining of 1 CopperOre");
+    // world.app__uniApiStartCreation(uint8(SkillType.MINING), playerId, 0, 301, 1);
+    // console.log("Started mining of 1 CopperOre");
 
-    world.app__uniApiStartProduction(uint8(SkillType.FARMING), playerId, 0, 102, 1); // Cotton
-    console.log("Started farming of 1 Cotton");
 
+
+
+    uint32 cottonSeedsItemId=2;
+    uint32 cottonItemId=102;
+    uint32 beforeFarmingCottonSeedsQuantity= PlayerInventoryUpdateUtil.getItemQuantity(playerId, cottonSeedsItemId);
+    console.log("Before farming,cotton seeds quantity:",beforeFarmingCottonSeedsQuantity);
+    uint8 skillProcessSequenceNumber = 1;
+
+
+
+    uint32 batchSize=1;
+
+    ItemProductionData memory itemProductionData = ItemProduction.get(SkillType.FARMING, cottonItemId);
+    console.log("itemProductionData.energyCost:",itemProductionData.energyCost);
+    uint256 energyCost = itemProductionData.energyCost * batchSize;
+    console.log("itemProductionData.energyCost * batchSize=",energyCost);
+
+
+    world.app__uniApiStartProduction(SkillType.FARMING, playerId, skillProcessSequenceNumber, cottonItemId, batchSize); // Cotton
+    console.log("Started farming of 1 Cotton");    
+    uint32 afterFarmingCottonSeedsQuantity= PlayerInventoryUpdateUtil.getItemQuantity(playerId, cottonSeedsItemId);
+    console.log("After farming,cotton seeds quantity:",afterFarmingCottonSeedsQuantity);
+    if(beforeFarmingCottonSeedsQuantity-afterFarmingCottonSeedsQuantity!=batchSize){
+      console.log("After farming,cotton seeds quantity error");
+    }
+
+
+
+  /*
     ItemIdQuantityPair[] memory shipProductionMaterials = new ItemIdQuantityPair[](3);
     shipProductionMaterials[0] = ItemIdQuantityPair(102, 5); // Cotton
     shipProductionMaterials[1] = ItemIdQuantityPair(200, 5); // NormalLogs
@@ -195,7 +200,7 @@ contract PostDeploy is Script {
       environmentRosterShipBaseResourceQuantity,
       environmentRosterBaseExperience
     );
-    console.log("Created an environment roster");
+    console.log("Created an environment roster");*/
 
     // You need to wait for the creation time to complete...
     // Then execute the ManualSmokeTest script
