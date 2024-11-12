@@ -37,7 +37,6 @@ contract PostDeploy is Script {
     uint256 balance = deployerAddress.balance;
     console.log("Account balance:", balance);
 
-
     // ************************************************************************************************
 
     Energy energyToken = new Energy(deployerAddress);
@@ -77,8 +76,8 @@ contract PostDeploy is Script {
     world.app__energyDropRequest(deployerAddress);
     console.log("Requested energy drop");
     // -------------------------------------------------------
-        
-    // Create items 
+
+    // Create items
     createItems(world);
     console.log("Created items");
 
@@ -142,40 +141,30 @@ contract PostDeploy is Script {
     world.app__playerAirdrop(playerId, 102, 200); // 200 Cottons
     console.log("Airdropped items to test player");
 
-
     world.app__uniApiStartCreation(uint8(SkillType.MINING), playerId, 0, 301, 1);
     console.log("Started mining of 1 CopperOre");
 
-
-
-
-    uint32 cottonSeedsItemId=2;
-    uint32 cottonItemId=102;
-    uint32 beforeFarmingCottonSeedsQuantity= PlayerInventoryUpdateUtil.getItemQuantity(playerId, cottonSeedsItemId);
-    console.log("Before farming,cotton seeds quantity:",beforeFarmingCottonSeedsQuantity);
+    uint32 cottonSeedsItemId = 2;
+    uint32 cottonItemId = 102;
+    uint32 beforeFarmingCottonSeedsQuantity = PlayerInventoryUpdateUtil.getItemQuantity(playerId, cottonSeedsItemId);
+    console.log("Before farming,cotton seeds quantity:", beforeFarmingCottonSeedsQuantity);
     uint8 skillProcessSequenceNumber = 1;
 
-
-
-    uint32 batchSize=100;
+    uint32 batchSize = 100;
 
     ItemProductionData memory itemProductionData = ItemProduction.get(SkillType.FARMING, cottonItemId);
-    console.log("itemProductionData.energyCost:",itemProductionData.energyCost);
+    console.log("itemProductionData.energyCost:", itemProductionData.energyCost);
     uint256 energyCost = uint256(itemProductionData.energyCost) * batchSize;
-    console.log("itemProductionData.energyCost * batchSize=",energyCost);
-
+    console.log("itemProductionData.energyCost * batchSize=", energyCost);
 
     world.app__uniApiStartProduction(SkillType.FARMING, playerId, skillProcessSequenceNumber, cottonItemId, batchSize); // Cotton
-    console.log("Started farming of %d Cotton",batchSize);    
-    uint32 afterFarmingCottonSeedsQuantity= PlayerInventoryUpdateUtil.getItemQuantity(playerId, cottonSeedsItemId);
-    console.log("After farming,cotton seeds quantity:",afterFarmingCottonSeedsQuantity);
-    if(beforeFarmingCottonSeedsQuantity-afterFarmingCottonSeedsQuantity!=batchSize){
+    console.log("Started farming of %d Cotton", batchSize);
+    uint32 afterFarmingCottonSeedsQuantity = PlayerInventoryUpdateUtil.getItemQuantity(playerId, cottonSeedsItemId);
+    console.log("After farming,cotton seeds quantity:", afterFarmingCottonSeedsQuantity);
+    if (beforeFarmingCottonSeedsQuantity - afterFarmingCottonSeedsQuantity != batchSize) {
       console.log("After farming,cotton seeds quantity error");
     }
 
-
-
-  
     ItemIdQuantityPair[] memory shipProductionMaterials = new ItemIdQuantityPair[](3);
     shipProductionMaterials[0] = ItemIdQuantityPair(102, 5); // Cotton
     shipProductionMaterials[1] = ItemIdQuantityPair(200, 5); // NormalLogs
@@ -240,7 +229,6 @@ contract PostDeploy is Script {
     resources[2] = ItemIdQuantityPair(2000000003, 200); // ResourceTypeMining
     return resources;
   }
-  
 
   function createMultiIslandsResourceIds() internal pure returns (uint32[] memory) {
     uint32[] memory resourceItemIds = new uint32[](3);
@@ -281,8 +269,8 @@ contract PostDeploy is Script {
       1, // requirementsLevel
       1, // baseQuantity
       0, // baseExperience
-      3, // baseCreationTime 
-      1*10**18, // energyCost
+      3, // baseCreationTime
+      1 * 10 ** 18, // energyCost
       100, // successRate
       1 // resourceCost
     );
@@ -295,7 +283,7 @@ contract PostDeploy is Script {
       1, // baseQuantity
       0, // baseExperience
       3, // baseCreationTime
-      1*10**18, // energyCost
+      1 * 10 ** 18, // energyCost
       100, // successRate
       1 // resourceCost
     );
@@ -316,7 +304,7 @@ contract PostDeploy is Script {
       1, // baseQuantity
       0, // baseExperience
       15, // baseCreationTime
-      5*10**18, // energyCost
+      5 * 10 ** 18, // energyCost
       100, // successRate
       cottonMaterialItemIds,
       cottonMaterialItemQuantities
@@ -340,7 +328,7 @@ contract PostDeploy is Script {
       1, // baseQuantity
       0, // baseExperience (adjusted to 0 as per the script)
       15, // baseCreationTime
-      5*10**18, // energyCost (adjusted to match the script)
+      5 * 10 ** 18, // energyCost (adjusted to match the script)
       100, // successRate
       shipMaterialItemIds,
       shipMaterialItemQuantities
