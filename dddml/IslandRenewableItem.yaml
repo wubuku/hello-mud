@@ -1,5 +1,8 @@
 aggregates:
   IslandRenewableItem:
+    metadata:
+      Preprocessors: [ "CRUD_IT" ]
+      CRUD_IT_NO_DELETE: true
     id:
       name: ItemId
       type: uint32
@@ -7,3 +10,8 @@ aggregates:
       QuantityWeight:
         description: "The weight of the quantity of the item when renewable"
         type: uint32
+    methods:
+      Create:
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
+      Update:
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"

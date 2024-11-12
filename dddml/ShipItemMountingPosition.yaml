@@ -1,6 +1,9 @@
 aggregates:
   ShipItemMountingPosition:
     description: "Configuration for the mounting positions of a ship"
+    metadata:
+      Preprocessors: [ "CRUD_IT" ]
+      CRUD_IT_NO_DELETE: true
     id:
       name: ShipItemMountingPositionId
       type: ShipItemMountingPositionId
@@ -8,6 +11,11 @@ aggregates:
       EquipmentCapacity:
         description: "The capacity of the equipment that can be mounted on this position"
         type: uint8
+    methods:
+      Create:
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
+      Update:
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
 
 valueObjects:
   ShipItemMountingPositionId:

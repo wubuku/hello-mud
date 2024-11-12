@@ -1,6 +1,9 @@
 aggregates:
   ItemToShipAttributes:
     description: "Configuration for converting items to ship attributes"
+    metadata:
+      Preprocessors: [ "CRUD_IT" ]
+      CRUD_IT_NO_DELETE: true
     id:
       name: ItemId
       type: uint32
@@ -17,3 +20,8 @@ aggregates:
         type: uint32
       HealthNumerator:
         type: uint32
+    methods:
+      Create:
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
+      Update:
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"

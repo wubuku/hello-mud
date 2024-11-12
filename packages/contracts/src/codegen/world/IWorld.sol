@@ -12,9 +12,11 @@ import { IEnergyTokenSystem } from "./IEnergyTokenSystem.sol";
 import { IExperienceTableSystem } from "./IExperienceTableSystem.sol";
 import { IIncrementSystem } from "./IIncrementSystem.sol";
 import { IIslandClaimWhitelistSystem } from "./IIslandClaimWhitelistSystem.sol";
+import { IIslandRenewableItemSystem } from "./IIslandRenewableItemSystem.sol";
 import { IItemCreationSystem } from "./IItemCreationSystem.sol";
 import { IItemProductionSystem } from "./IItemProductionSystem.sol";
 import { IItemSystem } from "./IItemSystem.sol";
+import { IItemToShipAttributesSystem } from "./IItemToShipAttributesSystem.sol";
 import { IMapFriendSystem } from "./IMapFriendSystem.sol";
 import { IMapSystem } from "./IMapSystem.sol";
 import { IPlayerFriendSystem } from "./IPlayerFriendSystem.sol";
@@ -31,6 +33,8 @@ import { IShipBattleServiceSystem } from "./IShipBattleServiceSystem.sol";
 import { IShipBattleSystem } from "./IShipBattleSystem.sol";
 import { IShipBattleTakeLootSystem } from "./IShipBattleTakeLootSystem.sol";
 import { IShipFriendSystem } from "./IShipFriendSystem.sol";
+import { IShipItemMountingPositionSystem } from "./IShipItemMountingPositionSystem.sol";
+import { IShipItemSystem } from "./IShipItemSystem.sol";
 import { ISkillProcessFriendSystem } from "./ISkillProcessFriendSystem.sol";
 import { ISkillProcessSystem } from "./ISkillProcessSystem.sol";
 import { ITerrainSystem } from "./ITerrainSystem.sol";
@@ -52,9 +56,11 @@ interface IWorld is
   IExperienceTableSystem,
   IIncrementSystem,
   IIslandClaimWhitelistSystem,
+  IIslandRenewableItemSystem,
   IItemCreationSystem,
   IItemProductionSystem,
   IItemSystem,
+  IItemToShipAttributesSystem,
   IMapFriendSystem,
   IMapSystem,
   IPlayerFriendSystem,
@@ -71,6 +77,8 @@ interface IWorld is
   IShipBattleSystem,
   IShipBattleTakeLootSystem,
   IShipFriendSystem,
+  IShipItemMountingPositionSystem,
+  IShipItemSystem,
   ISkillProcessFriendSystem,
   ISkillProcessSystem,
   ITerrainSystem

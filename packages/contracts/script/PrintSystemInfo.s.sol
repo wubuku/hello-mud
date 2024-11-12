@@ -412,6 +412,77 @@ contract PrintSystemInfo is Script {
     console.log("// # forge inspect IslandClaimWhitelistSystem errors");
 
 
+    console.log("// -------- ShipItemSystem --------");
+    systemId = WorldResourceIdLib.encode({
+      typeId: RESOURCE_SYSTEM,
+      namespace: "app",
+      name: "ShipItemSystem"
+    });
+    console.log("resourceId (hex):", vm.toString(ResourceId.unwrap(systemId)));
+    (systemAddress, systemPublicAccess) = Systems.get(systemId);
+    console.log("address:", systemAddress);
+    console.log("publicAccess:", systemPublicAccess);
+    eventHash = keccak256("ShipItemCreatedEvent(uint32,uint8,uint32,uint8,uint8,uint8,uint8,uint8,uint8)");
+    console.log("event ShipItemCreatedEvent(uint32,uint8,uint32,uint8,uint8,uint8,uint8,uint8,uint8) signature topic:", vm.toString(abi.encodePacked(eventHash)));
+    eventHash = keccak256("ShipItemUpdatedEvent(uint32,uint8,uint32,uint8,uint8,uint8,uint8,uint8,uint8)");
+    console.log("event ShipItemUpdatedEvent(uint32,uint8,uint32,uint8,uint8,uint8,uint8,uint8,uint8) signature topic:", vm.toString(abi.encodePacked(eventHash)));
+    console.log("// # forge inspect ShipItemSystem errors");
+
+
+    console.log("// -------- IslandRenewableItemSystem --------");
+    console.log("// Truncated system name: IslandRenewableI");
+    systemId = WorldResourceIdLib.encode({
+      typeId: RESOURCE_SYSTEM,
+      namespace: "app",
+      name: "IslandRenewableI"
+    });
+    console.log("resourceId (hex):", vm.toString(ResourceId.unwrap(systemId)));
+    (systemAddress, systemPublicAccess) = Systems.get(systemId);
+    console.log("address:", systemAddress);
+    console.log("publicAccess:", systemPublicAccess);
+    eventHash = keccak256("IslandRenewableItemCreatedEvent(uint32,uint32)");
+    console.log("event IslandRenewableItemCreatedEvent(uint32,uint32) signature topic:", vm.toString(abi.encodePacked(eventHash)));
+    eventHash = keccak256("IslandRenewableItemUpdatedEvent(uint32,uint32)");
+    console.log("event IslandRenewableItemUpdatedEvent(uint32,uint32) signature topic:", vm.toString(abi.encodePacked(eventHash)));
+    console.log("// # forge inspect IslandRenewableItemSystem errors");
+
+
+    console.log("// -------- ItemToShipAttributesSystem --------");
+    console.log("// Truncated system name: ItemToShipAttrib");
+    systemId = WorldResourceIdLib.encode({
+      typeId: RESOURCE_SYSTEM,
+      namespace: "app",
+      name: "ItemToShipAttrib"
+    });
+    console.log("resourceId (hex):", vm.toString(ResourceId.unwrap(systemId)));
+    (systemAddress, systemPublicAccess) = Systems.get(systemId);
+    console.log("address:", systemAddress);
+    console.log("publicAccess:", systemPublicAccess);
+    eventHash = keccak256("ItemToShipAttributesCreatedEvent(uint32,uint32,uint32,uint32,uint32,uint32)");
+    console.log("event ItemToShipAttributesCreatedEvent(uint32,uint32,uint32,uint32,uint32,uint32) signature topic:", vm.toString(abi.encodePacked(eventHash)));
+    eventHash = keccak256("ItemToShipAttributesUpdatedEvent(uint32,uint32,uint32,uint32,uint32,uint32)");
+    console.log("event ItemToShipAttributesUpdatedEvent(uint32,uint32,uint32,uint32,uint32,uint32) signature topic:", vm.toString(abi.encodePacked(eventHash)));
+    console.log("// # forge inspect ItemToShipAttributesSystem errors");
+
+
+    console.log("// -------- ShipItemMountingPositionSystem --------");
+    console.log("// Truncated system name: ShipItemMounting");
+    systemId = WorldResourceIdLib.encode({
+      typeId: RESOURCE_SYSTEM,
+      namespace: "app",
+      name: "ShipItemMounting"
+    });
+    console.log("resourceId (hex):", vm.toString(ResourceId.unwrap(systemId)));
+    (systemAddress, systemPublicAccess) = Systems.get(systemId);
+    console.log("address:", systemAddress);
+    console.log("publicAccess:", systemPublicAccess);
+    eventHash = keccak256("ShipItemMountingPositionCreatedEvent(uint32,uint8,uint8)");
+    console.log("event ShipItemMountingPositionCreatedEvent(uint32,uint8,uint8) signature topic:", vm.toString(abi.encodePacked(eventHash)));
+    eventHash = keccak256("ShipItemMountingPositionUpdatedEvent(uint32,uint8,uint8)");
+    console.log("event ShipItemMountingPositionUpdatedEvent(uint32,uint8,uint8) signature topic:", vm.toString(abi.encodePacked(eventHash)));
+    console.log("// # forge inspect ShipItemMountingPositionSystem errors");
+
+
     console.log("// -------- CounterSystem --------");
     systemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
