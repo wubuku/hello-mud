@@ -14,5 +14,14 @@ library RosterStatus {
     return v == UNUSED || v == AT_ANCHOR || v == UNDERWAY || v == IN_BATTLE || v == DESTROYED;
   }
 
+  function allValidValues() internal pure returns (uint8[] memory) {
+    uint8[] memory values = new uint8[](5);
+    values[0] = UNUSED;
+    values[1] = AT_ANCHOR;
+    values[2] = UNDERWAY;
+    values[3] = IN_BATTLE;
+    values[4] = DESTROYED;
+    return values;
+  }
 }
 

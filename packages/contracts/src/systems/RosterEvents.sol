@@ -223,3 +223,31 @@ struct RosterShipInventoryPutIn {
   UpdateLocationParams updateLocationParams;
 }
 
+struct RosterShipEquipmentsMounted {
+  /**
+   * @dev The PlayerId of the RosterId.
+   */
+  uint256 playerId;
+  /**
+   * @dev The SequenceNumber of the RosterId.
+   */
+  uint32 sequenceNumber;
+  uint256 shipId;
+  uint8 mountingPosition;
+  ItemIdQuantityPair[] equipments;
+}
+
+struct RosterShipEquipmentsUnmounted {
+  /**
+   * @dev The PlayerId of the RosterId.
+   */
+  uint256 playerId;
+  /**
+   * @dev The SequenceNumber of the RosterId.
+   */
+  uint32 sequenceNumber;
+  uint256 shipId;
+  uint8 mountingPosition;
+  ItemIdQuantityPair[] equipments;
+}
+

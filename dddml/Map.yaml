@@ -13,6 +13,16 @@ singletonObjects:
         type: bool
       IslandClaimWhitelistEnabled:
         type: bool
+      IslandResourceRenewalQuantity:
+        # previous hardcoded value as ISLAND_RESOURCE_REGENERATION_QUANTITY
+        type: uint32
+      IslandResourceRenewalTime:
+        # previous hardcoded value as ISLAND_RESOURCE_REGENERATION_TIME
+        type: uint64
+      IslandRenewableItemIds:
+        # MUD Store does not provide native traversal of all records in a table.
+        # We need a place to record what keys the "IslandRenewableItem" table has.
+        type: uint32[]
       Locations:
         itemType: MapLocation
 
@@ -32,11 +42,11 @@ singletonObjects:
           Existing:
             type: bool
             # Set to true when the location is created
-          #Resources:
-          #  itemType: ItemIdQuantityPair
           ResourcesItemIds:
+            description: "Island initial resource item IDs"
             type: uint32[]
           ResourcesQuantities:
+            description: "Island initial resource quantities"
             type: uint32[]
 
     methods:

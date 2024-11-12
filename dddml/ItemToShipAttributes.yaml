@@ -1,0 +1,19 @@
+aggregates:
+  ItemToShipAttributes:
+    description: "Configuration for converting items to ship attributes"
+    id:
+      name: ItemId
+      type: uint32
+    properties:
+      Denominator:
+        type: uint32
+        # Common denominator for all attribute conversions
+        # Formula: Attribute = (ItemQuantity * Numerator) / Denominator
+      AttackNumerator:
+        type: uint32
+      ProtectionNumerator:
+        type: uint32
+      SpeedNumerator:
+        type: uint32
+      HealthNumerator:
+        type: uint32

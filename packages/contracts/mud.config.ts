@@ -118,6 +118,7 @@ export default defineWorld({
     Ship: {
       schema: {
         id: "uint256",
+        shipItemId: "uint32",
         playerId: "uint256",
         rosterSequenceNumber: "uint32",
         healthPoints: "uint32",
@@ -301,6 +302,56 @@ export default defineWorld({
       },
       key: ["accountAddress"],
     },
+    ShipItem: {
+      schema: {
+        itemId: "uint32",
+        type_: "uint8",
+        shipHealthPoints: "uint32",
+        mountingPosition: "uint8",
+        capacityUsage: "uint8",
+        attackBoost: "uint8",
+        protectionBoost: "uint8",
+        speedBoost: "uint8",
+        healthBoost: "uint8",
+      },
+      key: ["itemId"],
+    },
+    IslandRenewableItem: {
+      schema: {
+        itemId: "uint32",
+        quantityWeight: "uint32",
+      },
+      key: ["itemId"],
+    },
+    ItemToShipAttributes: {
+      schema: {
+        itemId: "uint32",
+        denominator: "uint32",
+        attackNumerator: "uint32",
+        protectionNumerator: "uint32",
+        speedNumerator: "uint32",
+        healthNumerator: "uint32",
+      },
+      key: ["itemId"],
+    },
+    ShipItemMountingPosition: {
+      schema: {
+        shipItemMountingPositionIdItemId: "uint32",
+        shipItemMountingPositionIdMountingPosition: "uint8",
+        equipmentCapacity: "uint8",
+      },
+      key: ["shipItemMountingPositionIdItemId", "shipItemMountingPositionIdMountingPosition"],
+    },
+    ShipMounting: {
+      schema: {
+        shipIdMountingPositionPairShipId: "uint256",
+        shipIdMountingPositionPairMountingPosition: "uint8",
+        existing: "bool",
+        equipmentIds: "uint32[]",
+        equipmentQuantities: "uint32[]",
+      },
+      key: ["shipIdMountingPositionPairShipId", "shipIdMountingPositionPairMountingPosition"],
+    },
     Counter: {
       schema: {
         value: "uint32",
@@ -311,6 +362,9 @@ export default defineWorld({
       schema: {
         existing: "bool",
         islandClaimWhitelistEnabled: "bool",
+        islandResourceRenewalQuantity: "uint32",
+        islandResourceRenewalTime: "uint64",
+        islandRenewableItemIds: "uint32[]",
       },
       key: [],
     },

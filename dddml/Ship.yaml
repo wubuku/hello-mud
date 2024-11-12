@@ -20,6 +20,9 @@ aggregates:
         class: sequence
         tableName: ShipIdGenerator
     properties:
+      ShipItemId:
+        description: "The item Id indicating the type of ship"
+        type: uint32
       #Owner:
       #  type: u256 # PlayerId
       RosterId:

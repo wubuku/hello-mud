@@ -17,6 +17,7 @@ import { EncodedLengths, EncodedLengthsLib } from "@latticexyz/store/src/Encoded
 import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 
 struct ShipData {
+  uint32 shipItemId;
   uint256 playerId;
   uint32 rosterSequenceNumber;
   uint32 healthPoints;
@@ -32,12 +33,12 @@ library Ship {
   ResourceId constant _tableId = ResourceId.wrap(0x7462617070000000000000000000000053686970000000000000000000000000);
 
   FieldLayout constant _fieldLayout =
-    FieldLayout.wrap(0x0034060220040404040400000000000000000000000000000000000000000000);
+    FieldLayout.wrap(0x0038070204200404040404000000000000000000000000000000000000000000);
 
   // Hex-encoded key schema of (uint256)
   Schema constant _keySchema = Schema.wrap(0x002001001f000000000000000000000000000000000000000000000000000000);
-  // Hex-encoded value schema of (uint256, uint32, uint32, uint32, uint32, uint32, uint32[], uint32[])
-  Schema constant _valueSchema = Schema.wrap(0x003406021f030303030365650000000000000000000000000000000000000000);
+  // Hex-encoded value schema of (uint32, uint256, uint32, uint32, uint32, uint32, uint32, uint32[], uint32[])
+  Schema constant _valueSchema = Schema.wrap(0x00380702031f0303030303656500000000000000000000000000000000000000);
 
   /**
    * @notice Get the table's key field names.
@@ -53,15 +54,16 @@ library Ship {
    * @return fieldNames An array of strings with the names of value fields.
    */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
-    fieldNames = new string[](8);
-    fieldNames[0] = "playerId";
-    fieldNames[1] = "rosterSequenceNumber";
-    fieldNames[2] = "healthPoints";
-    fieldNames[3] = "attack";
-    fieldNames[4] = "protection";
-    fieldNames[5] = "speed";
-    fieldNames[6] = "buildingExpensesItemIds";
-    fieldNames[7] = "buildingExpensesQuantities";
+    fieldNames = new string[](9);
+    fieldNames[0] = "shipItemId";
+    fieldNames[1] = "playerId";
+    fieldNames[2] = "rosterSequenceNumber";
+    fieldNames[3] = "healthPoints";
+    fieldNames[4] = "attack";
+    fieldNames[5] = "protection";
+    fieldNames[6] = "speed";
+    fieldNames[7] = "buildingExpensesItemIds";
+    fieldNames[8] = "buildingExpensesQuantities";
   }
 
   /**
@@ -79,13 +81,55 @@ library Ship {
   }
 
   /**
+   * @notice Get shipItemId.
+   */
+  function getShipItemId(uint256 id) internal view returns (uint32 shipItemId) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(id));
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
+    return (uint32(bytes4(_blob)));
+  }
+
+  /**
+   * @notice Get shipItemId.
+   */
+  function _getShipItemId(uint256 id) internal view returns (uint32 shipItemId) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(id));
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
+    return (uint32(bytes4(_blob)));
+  }
+
+  /**
+   * @notice Set shipItemId.
+   */
+  function setShipItemId(uint256 id, uint32 shipItemId) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(id));
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((shipItemId)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set shipItemId.
+   */
+  function _setShipItemId(uint256 id, uint32 shipItemId) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(id));
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((shipItemId)), _fieldLayout);
+  }
+
+  /**
    * @notice Get playerId.
    */
   function getPlayerId(uint256 id) internal view returns (uint256 playerId) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
     return (uint256(bytes32(_blob)));
   }
 
@@ -96,7 +140,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
     return (uint256(bytes32(_blob)));
   }
 
@@ -107,7 +151,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((playerId)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((playerId)), _fieldLayout);
   }
 
   /**
@@ -117,7 +161,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((playerId)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((playerId)), _fieldLayout);
   }
 
   /**
@@ -127,7 +171,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
     return (uint32(bytes4(_blob)));
   }
 
@@ -138,7 +182,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
     return (uint32(bytes4(_blob)));
   }
 
@@ -149,7 +193,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((rosterSequenceNumber)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((rosterSequenceNumber)), _fieldLayout);
   }
 
   /**
@@ -159,7 +203,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((rosterSequenceNumber)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((rosterSequenceNumber)), _fieldLayout);
   }
 
   /**
@@ -169,7 +213,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
     return (uint32(bytes4(_blob)));
   }
 
@@ -180,7 +224,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
     return (uint32(bytes4(_blob)));
   }
 
@@ -191,7 +235,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((healthPoints)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((healthPoints)), _fieldLayout);
   }
 
   /**
@@ -201,7 +245,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((healthPoints)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((healthPoints)), _fieldLayout);
   }
 
   /**
@@ -211,7 +255,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 4, _fieldLayout);
     return (uint32(bytes4(_blob)));
   }
 
@@ -222,7 +266,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 4, _fieldLayout);
     return (uint32(bytes4(_blob)));
   }
 
@@ -233,7 +277,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((attack)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 4, abi.encodePacked((attack)), _fieldLayout);
   }
 
   /**
@@ -243,7 +287,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((attack)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 4, abi.encodePacked((attack)), _fieldLayout);
   }
 
   /**
@@ -253,7 +297,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 4, _fieldLayout);
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 5, _fieldLayout);
     return (uint32(bytes4(_blob)));
   }
 
@@ -264,7 +308,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 4, _fieldLayout);
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 5, _fieldLayout);
     return (uint32(bytes4(_blob)));
   }
 
@@ -275,7 +319,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 4, abi.encodePacked((protection)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 5, abi.encodePacked((protection)), _fieldLayout);
   }
 
   /**
@@ -285,7 +329,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 4, abi.encodePacked((protection)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 5, abi.encodePacked((protection)), _fieldLayout);
   }
 
   /**
@@ -295,7 +339,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 5, _fieldLayout);
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 6, _fieldLayout);
     return (uint32(bytes4(_blob)));
   }
 
@@ -306,7 +350,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 5, _fieldLayout);
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 6, _fieldLayout);
     return (uint32(bytes4(_blob)));
   }
 
@@ -317,7 +361,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 5, abi.encodePacked((speed)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 6, abi.encodePacked((speed)), _fieldLayout);
   }
 
   /**
@@ -327,7 +371,7 @@ library Ship {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(id));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 5, abi.encodePacked((speed)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 6, abi.encodePacked((speed)), _fieldLayout);
   }
 
   /**
@@ -693,6 +737,7 @@ library Ship {
    */
   function set(
     uint256 id,
+    uint32 shipItemId,
     uint256 playerId,
     uint32 rosterSequenceNumber,
     uint32 healthPoints,
@@ -702,7 +747,15 @@ library Ship {
     uint32[] memory buildingExpensesItemIds,
     uint32[] memory buildingExpensesQuantities
   ) internal {
-    bytes memory _staticData = encodeStatic(playerId, rosterSequenceNumber, healthPoints, attack, protection, speed);
+    bytes memory _staticData = encodeStatic(
+      shipItemId,
+      playerId,
+      rosterSequenceNumber,
+      healthPoints,
+      attack,
+      protection,
+      speed
+    );
 
     EncodedLengths _encodedLengths = encodeLengths(buildingExpensesItemIds, buildingExpensesQuantities);
     bytes memory _dynamicData = encodeDynamic(buildingExpensesItemIds, buildingExpensesQuantities);
@@ -718,6 +771,7 @@ library Ship {
    */
   function _set(
     uint256 id,
+    uint32 shipItemId,
     uint256 playerId,
     uint32 rosterSequenceNumber,
     uint32 healthPoints,
@@ -727,7 +781,15 @@ library Ship {
     uint32[] memory buildingExpensesItemIds,
     uint32[] memory buildingExpensesQuantities
   ) internal {
-    bytes memory _staticData = encodeStatic(playerId, rosterSequenceNumber, healthPoints, attack, protection, speed);
+    bytes memory _staticData = encodeStatic(
+      shipItemId,
+      playerId,
+      rosterSequenceNumber,
+      healthPoints,
+      attack,
+      protection,
+      speed
+    );
 
     EncodedLengths _encodedLengths = encodeLengths(buildingExpensesItemIds, buildingExpensesQuantities);
     bytes memory _dynamicData = encodeDynamic(buildingExpensesItemIds, buildingExpensesQuantities);
@@ -743,6 +805,7 @@ library Ship {
    */
   function set(uint256 id, ShipData memory _table) internal {
     bytes memory _staticData = encodeStatic(
+      _table.shipItemId,
       _table.playerId,
       _table.rosterSequenceNumber,
       _table.healthPoints,
@@ -765,6 +828,7 @@ library Ship {
    */
   function _set(uint256 id, ShipData memory _table) internal {
     bytes memory _staticData = encodeStatic(
+      _table.shipItemId,
       _table.playerId,
       _table.rosterSequenceNumber,
       _table.healthPoints,
@@ -791,6 +855,7 @@ library Ship {
     internal
     pure
     returns (
+      uint32 shipItemId,
       uint256 playerId,
       uint32 rosterSequenceNumber,
       uint32 healthPoints,
@@ -799,17 +864,19 @@ library Ship {
       uint32 speed
     )
   {
-    playerId = (uint256(Bytes.getBytes32(_blob, 0)));
+    shipItemId = (uint32(Bytes.getBytes4(_blob, 0)));
 
-    rosterSequenceNumber = (uint32(Bytes.getBytes4(_blob, 32)));
+    playerId = (uint256(Bytes.getBytes32(_blob, 4)));
 
-    healthPoints = (uint32(Bytes.getBytes4(_blob, 36)));
+    rosterSequenceNumber = (uint32(Bytes.getBytes4(_blob, 36)));
 
-    attack = (uint32(Bytes.getBytes4(_blob, 40)));
+    healthPoints = (uint32(Bytes.getBytes4(_blob, 40)));
 
-    protection = (uint32(Bytes.getBytes4(_blob, 44)));
+    attack = (uint32(Bytes.getBytes4(_blob, 44)));
 
-    speed = (uint32(Bytes.getBytes4(_blob, 48)));
+    protection = (uint32(Bytes.getBytes4(_blob, 48)));
+
+    speed = (uint32(Bytes.getBytes4(_blob, 52)));
   }
 
   /**
@@ -845,6 +912,7 @@ library Ship {
     bytes memory _dynamicData
   ) internal pure returns (ShipData memory _table) {
     (
+      _table.shipItemId,
       _table.playerId,
       _table.rosterSequenceNumber,
       _table.healthPoints,
@@ -881,6 +949,7 @@ library Ship {
    * @return The static data, encoded into a sequence of bytes.
    */
   function encodeStatic(
+    uint32 shipItemId,
     uint256 playerId,
     uint32 rosterSequenceNumber,
     uint32 healthPoints,
@@ -888,7 +957,7 @@ library Ship {
     uint32 protection,
     uint32 speed
   ) internal pure returns (bytes memory) {
-    return abi.encodePacked(playerId, rosterSequenceNumber, healthPoints, attack, protection, speed);
+    return abi.encodePacked(shipItemId, playerId, rosterSequenceNumber, healthPoints, attack, protection, speed);
   }
 
   /**
@@ -927,6 +996,7 @@ library Ship {
    * @return The dynamic (variable length) data, encoded into a sequence of bytes.
    */
   function encode(
+    uint32 shipItemId,
     uint256 playerId,
     uint32 rosterSequenceNumber,
     uint32 healthPoints,
@@ -936,7 +1006,15 @@ library Ship {
     uint32[] memory buildingExpensesItemIds,
     uint32[] memory buildingExpensesQuantities
   ) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
-    bytes memory _staticData = encodeStatic(playerId, rosterSequenceNumber, healthPoints, attack, protection, speed);
+    bytes memory _staticData = encodeStatic(
+      shipItemId,
+      playerId,
+      rosterSequenceNumber,
+      healthPoints,
+      attack,
+      protection,
+      speed
+    );
 
     EncodedLengths _encodedLengths = encodeLengths(buildingExpensesItemIds, buildingExpensesQuantities);
     bytes memory _dynamicData = encodeDynamic(buildingExpensesItemIds, buildingExpensesQuantities);

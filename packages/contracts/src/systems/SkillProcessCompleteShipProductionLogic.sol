@@ -85,6 +85,7 @@ library SkillProcessCompleteShipProductionLogic {
     ShipProductionProcessCompleted memory shipProductionProcessCompleted,
     SkillProcessData memory skillProcessData
   ) internal returns (SkillProcessData memory) {
+    uint32 shipItemId = skillProcessData.itemId;
     skillProcessData.completed = true;
     skillProcessData.endedAt = shipProductionProcessCompleted.endedAt;
     skillProcessData.itemId = ItemIds.unusedItem(); // reset item id
@@ -120,6 +121,7 @@ library SkillProcessCompleteShipProductionLogic {
       buildingExpenses
     );
     uint256 shipId = ShipDelegatecallLib.create(
+      shipItemId,
       playerId,
       RosterSequenceNumber.UNASSIGNED_SHIPS,
       healthPoints,

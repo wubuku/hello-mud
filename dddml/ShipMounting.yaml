@@ -1,0 +1,23 @@
+aggregates:
+  ShipMounting:
+    description: "Mounting equipments on a ship"
+    id:
+      name: ShipIdMountingPositionPair
+      type: ShipIdMountingPositionPair
+    properties:
+      Existing:
+        type: bool
+        # When all other properties of a legally existing object may have default values,
+        # we need a specialized property to identify whether it exists or not
+      EquipmentIds:
+        type: uint32[]
+      EquipmentQuantities:
+        type: uint32[]
+
+valueObjects:
+  ShipIdMountingPositionPair:
+    properties:
+      ShipId:
+        type: u256
+      MountingPosition:
+        type: ShipMountingPositions # uint8

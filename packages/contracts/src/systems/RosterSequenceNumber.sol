@@ -14,5 +14,14 @@ library RosterSequenceNumber {
     return v == UNASSIGNED_SHIPS || v == FIRST || v == SECOND || v == THIRD || v == FOURTH;
   }
 
+  function allValidValues() internal pure returns (uint32[] memory) {
+    uint32[] memory values = new uint32[](5);
+    values[0] = UNASSIGNED_SHIPS;
+    values[1] = FIRST;
+    values[2] = SECOND;
+    values[3] = THIRD;
+    values[4] = FOURTH;
+    return values;
+  }
 }
 

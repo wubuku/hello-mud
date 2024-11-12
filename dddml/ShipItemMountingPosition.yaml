@@ -1,0 +1,18 @@
+aggregates:
+  ShipItemMountingPosition:
+    description: "Configuration for the mounting positions of a ship"
+    id:
+      name: ShipItemMountingPositionId
+      type: ShipItemMountingPositionId
+    properties:
+      EquipmentCapacity:
+        description: "The capacity of the equipment that can be mounted on this position"
+        type: uint8
+
+valueObjects:
+  ShipItemMountingPositionId:
+    properties:
+      ItemId:
+        type: uint32
+      MountingPosition:
+        type: ShipMountingPositions # uint8

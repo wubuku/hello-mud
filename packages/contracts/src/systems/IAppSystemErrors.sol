@@ -48,6 +48,21 @@ interface IAppSystemErrors {
   error IslandClaimWhitelistAlreadyExists(address accountAddress);
   error IslandClaimWhitelistDoesNotExist(address accountAddress);
 
+  error ShipItemAlreadyExists(uint32 itemId);
+  error ShipItemDoesNotExist(uint32 itemId);
+
+  error IslandRenewableItemAlreadyExists(uint32 itemId);
+  error IslandRenewableItemDoesNotExist(uint32 itemId);
+
+  error ItemToShipAttributesAlreadyExists(uint32 itemId);
+  error ItemToShipAttributesDoesNotExist(uint32 itemId);
+
+  error ShipItemMountingPositionAlreadyExists(uint32 shipItemMountingPositionIdItemId, uint8 shipItemMountingPositionIdMountingPosition);
+  error ShipItemMountingPositionDoesNotExist(uint32 shipItemMountingPositionIdItemId, uint8 shipItemMountingPositionIdMountingPosition);
+
+  error ShipMountingAlreadyExists(uint256 shipIdMountingPositionPairShipId, uint8 shipIdMountingPositionPairMountingPosition);
+  error ShipMountingDoesNotExist(uint256 shipIdMountingPositionPairShipId, uint8 shipIdMountingPositionPairMountingPosition);
+
   error CounterAlreadyExists();
   error CounterDoesNotExist();
 

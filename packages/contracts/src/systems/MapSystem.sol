@@ -20,9 +20,9 @@ import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 contract MapSystem is System, IAppSystemErrors {
   using WorldResourceIdInstance for ResourceId;
 
-  event MapCreatedEvent(bool existing, bool islandClaimWhitelistEnabled);
+  event MapCreatedEvent(bool existing, bool islandClaimWhitelistEnabled, uint32 islandResourceRenewalQuantity, uint64 islandResourceRenewalTime, uint32[] islandRenewableItemIds);
 
-  event MapUpdatedEvent(bool existing, bool islandClaimWhitelistEnabled);
+  event MapUpdatedEvent(bool existing, bool islandClaimWhitelistEnabled, uint32 islandResourceRenewalQuantity, uint64 islandResourceRenewalTime, uint32[] islandRenewableItemIds);
 
   event IslandAddedEvent(uint32 coordinatesX, uint32 coordinatesY);
 
@@ -36,26 +36,26 @@ contract MapSystem is System, IAppSystemErrors {
     }
   }
 
-  function mapCreate(bool existing, bool islandClaimWhitelistEnabled) public {
+  function mapCreate(bool existing, bool islandClaimWhitelistEnabled, uint32 islandResourceRenewalQuantity, uint64 islandResourceRenewalTime, uint32[] memory islandRenewableItemIds) public {
     _requireNamespaceOwner();
     MapData memory mapData = Map.get();
-    if (!(mapData.existing == false && mapData.islandClaimWhitelistEnabled == false)) {
+    if (!(mapData.existing == false && mapData.islandClaimWhitelistEnabled == false && mapData.islandResourceRenewalQuantity == uint32(0) && mapData.islandResourceRenewalTime == uint64(0) && mapData.islandRenewableItemIds.length == 0)) {
       revert MapAlreadyExists();
     }
-    MapCreated memory mapCreated = MapCreateLogic.verify(existing, islandClaimWhitelistEnabled);
-    emit MapCreatedEvent(mapCreated.existing, mapCreated.islandClaimWhitelistEnabled);
+    MapCreated memory mapCreated = MapCreateLogic.verify(existing, islandClaimWhitelistEnabled, islandResourceRenewalQuantity, islandResourceRenewalTime, islandRenewableItemIds);
+    emit MapCreatedEvent(mapCreated.existing, mapCreated.islandClaimWhitelistEnabled, mapCreated.islandResourceRenewalQuantity, mapCreated.islandResourceRenewalTime, mapCreated.islandRenewableItemIds);
     MapData memory newMapData = MapCreateLogic.mutate(mapCreated);
     Map.set(newMapData);
   }
 
-  function mapUpdate(bool existing, bool islandClaimWhitelistEnabled) public {
+  function mapUpdate(bool existing, bool islandClaimWhitelistEnabled, uint32 islandResourceRenewalQuantity, uint64 islandResourceRenewalTime, uint32[] memory islandRenewableItemIds) public {
     _requireNamespaceOwner();
     MapData memory mapData = Map.get();
-    if (mapData.existing == false && mapData.islandClaimWhitelistEnabled == false) {
+    if (mapData.existing == false && mapData.islandClaimWhitelistEnabled == false && mapData.islandResourceRenewalQuantity == uint32(0) && mapData.islandResourceRenewalTime == uint64(0) && mapData.islandRenewableItemIds.length == 0) {
       revert MapDoesNotExist();
     }
-    MapUpdated memory mapUpdated = MapUpdateLogic.verify(existing, islandClaimWhitelistEnabled, mapData);
-    emit MapUpdatedEvent(mapUpdated.existing, mapUpdated.islandClaimWhitelistEnabled);
+    MapUpdated memory mapUpdated = MapUpdateLogic.verify(existing, islandClaimWhitelistEnabled, islandResourceRenewalQuantity, islandResourceRenewalTime, islandRenewableItemIds, mapData);
+    emit MapUpdatedEvent(mapUpdated.existing, mapUpdated.islandClaimWhitelistEnabled, mapUpdated.islandResourceRenewalQuantity, mapUpdated.islandResourceRenewalTime, mapUpdated.islandRenewableItemIds);
     MapData memory updatedMapData = MapUpdateLogic.mutate(mapUpdated, mapData);
     Map.set(updatedMapData);
   }
@@ -63,7 +63,7 @@ contract MapSystem is System, IAppSystemErrors {
   function mapAddIsland(uint32 coordinatesX, uint32 coordinatesY, ItemIdQuantityPair[] memory resources) public {
     _requireNamespaceOwner();
     MapData memory mapData = Map.get();
-    if (mapData.existing == false && mapData.islandClaimWhitelistEnabled == false) {
+    if (mapData.existing == false && mapData.islandClaimWhitelistEnabled == false && mapData.islandResourceRenewalQuantity == uint32(0) && mapData.islandResourceRenewalTime == uint64(0) && mapData.islandRenewableItemIds.length == 0) {
       revert MapDoesNotExist();
     }
     IslandAdded memory islandAdded = MapAddIslandLogic.verify(coordinatesX, coordinatesY, resources, mapData);
@@ -75,7 +75,7 @@ contract MapSystem is System, IAppSystemErrors {
   function mapAddMultiIslands(Coordinates[] memory coordinates, uint32[] memory resourceItemIds, uint32 resourceSubtotal) public {
     _requireNamespaceOwner();
     MapData memory mapData = Map.get();
-    if (mapData.existing == false && mapData.islandClaimWhitelistEnabled == false) {
+    if (mapData.existing == false && mapData.islandClaimWhitelistEnabled == false && mapData.islandResourceRenewalQuantity == uint32(0) && mapData.islandResourceRenewalTime == uint64(0) && mapData.islandRenewableItemIds.length == 0) {
       revert MapDoesNotExist();
     }
     MultiIslandsAdded memory multiIslandsAdded = MapAddMultiIslandsLogic.verify(coordinates, resourceItemIds, resourceSubtotal, mapData);

@@ -1,0 +1,31 @@
+aggregates:
+  ShipItem:
+    description: "Registry of item IDs that are classified as ships"
+    id:
+      name: ItemId
+      type: uint32
+    properties:
+      Type:
+        type: ShipItemType # uint8
+      ShipHealthPoints:
+        description: "Default health points of the ship, if the type is Ship"
+        type: uint32
+      MountingPosition:
+        description: "The position on the ship where the equipment is mounted, if the type is ShipEquipment"
+        type: ShipMountingPositions # uint8
+      CapacityUsage:
+        description: "The capacity usage of the equipment, if the type is ShipEquipment"
+        type: uint8
+      # 装备对船的属性的“加成”，也需要被记录。（AttackBoost、SpeedBoost、HealthBoost 等）
+      AttackBoost:
+        description: "The attack boost of the equipment, if the type is ShipEquipment"
+        type: uint8
+      ProtectionBoost:
+        description: "The protection boost of the equipment, if the type is ShipEquipment"
+        type: uint8
+      SpeedBoost:
+        description: "The speed boost of the equipment, if the type is ShipEquipment"
+        type: uint8
+      HealthBoost:
+        description: "The health boost of the equipment, if the type is ShipEquipment"
+        type: uint8

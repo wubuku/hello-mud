@@ -12,6 +12,7 @@ import { ItemIdQuantityPair } from "../../systems/ItemIdQuantityPair.sol";
  */
 interface IShipFriendSystem {
   function app__shipCreate(
+    uint32 shipItemId,
     uint256 rosterIdPlayerId,
     uint32 rosterIdSequenceNumber,
     uint32 healthPoints,

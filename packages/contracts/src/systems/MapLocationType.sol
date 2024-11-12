@@ -10,5 +10,10 @@ library MapLocationType {
     return v == ISLAND;
   }
 
+  function allValidValues() internal pure returns (uint32[] memory) {
+    uint32[] memory values = new uint32[](1);
+    values[0] = ISLAND;
+    return values;
+  }
 }
 

@@ -1,0 +1,9 @@
+aggregates:
+  IslandRenewableItem:
+    id:
+      name: ItemId
+      type: uint32
+    properties:
+      QuantityWeight:
+        description: "The weight of the quantity of the item when renewable"
+        type: uint32

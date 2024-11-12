@@ -129,3 +129,19 @@ enumObjects:
       Looted:
         value: 2
         # The loot has been taken.
+
+  ShipItemType:
+    baseType: u8
+    values:
+      Ship:
+        value: 1
+      ShipEquipment:
+        value: 2
+
+  ShipMountingPositions:
+    baseType: u8
+    values:
+      Bow:
+        value: 1
+      Mast:
+        value: 2

@@ -10,7 +10,7 @@ uint32 constant RESOURCE_TYPE_MINING = 2000000003;
 // uint32 constant RESOURCE_TYPE_COOKING = 2000000005;
 // uint32 constant RESOURCE_TYPE_CRAFTING = 2000000006;
 // uint32 constant RESOURCE_TYPE_TOWNSHIP = 2000000007;
-uint32 constant SHIP = 1000000001;
+uint32 constant SMALL_SHIP = 1000000001;
 uint32 constant NORMAL_LOGS = 200;
 uint32 constant POTATO_SEEDS = 1;
 uint32 constant POTATOES = 101;
@@ -28,11 +28,13 @@ library ItemIds {
   }
 
   function ship() internal pure returns (uint32) {
-    return SHIP;
+    return SMALL_SHIP;
   }
 
   function shouldProduceIndividuals(uint32 itemId) internal pure returns (bool) {
-    return itemId == SHIP;
+    return itemId == SMALL_SHIP; // todo remove this function. 
+    // Can be removed after "ShipItem" config is implemented.
+    // Only ship item shouldProduceIndividuals
   }
 
   function resourceTypeWoodcutting() internal pure returns (uint32) {

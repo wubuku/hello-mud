@@ -38,7 +38,7 @@ library SkillProcessCompleteProductionLogic {
       revert ProcessNotStarted(itemId, skillProcessData.completed);
     }
 
-    if (ItemIds.shouldProduceIndividuals(itemId)) {
+    if (ItemIds.shouldProduceIndividuals(itemId)) { // todo check by "ShipItem" config
       revert ItemProducesIndividuals(itemId);
     }
 

@@ -19,6 +19,9 @@ import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 struct MapData {
   bool existing;
   bool islandClaimWhitelistEnabled;
+  uint32 islandResourceRenewalQuantity;
+  uint64 islandResourceRenewalTime;
+  uint32[] islandRenewableItemIds;
 }
 
 library Map {
@@ -26,12 +29,12 @@ library Map {
   ResourceId constant _tableId = ResourceId.wrap(0x746261707000000000000000000000004d617000000000000000000000000000);
 
   FieldLayout constant _fieldLayout =
-    FieldLayout.wrap(0x0002020001010000000000000000000000000000000000000000000000000000);
+    FieldLayout.wrap(0x000e040101010408000000000000000000000000000000000000000000000000);
 
   // Hex-encoded key schema of ()
   Schema constant _keySchema = Schema.wrap(0x0000000000000000000000000000000000000000000000000000000000000000);
-  // Hex-encoded value schema of (bool, bool)
-  Schema constant _valueSchema = Schema.wrap(0x0002020060600000000000000000000000000000000000000000000000000000);
+  // Hex-encoded value schema of (bool, bool, uint32, uint64, uint32[])
+  Schema constant _valueSchema = Schema.wrap(0x000e040160600307650000000000000000000000000000000000000000000000);
 
   /**
    * @notice Get the table's key field names.
@@ -46,9 +49,12 @@ library Map {
    * @return fieldNames An array of strings with the names of value fields.
    */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
-    fieldNames = new string[](2);
+    fieldNames = new string[](5);
     fieldNames[0] = "existing";
     fieldNames[1] = "islandClaimWhitelistEnabled";
+    fieldNames[2] = "islandResourceRenewalQuantity";
+    fieldNames[3] = "islandResourceRenewalTime";
+    fieldNames[4] = "islandRenewableItemIds";
   }
 
   /**
@@ -142,6 +148,230 @@ library Map {
   }
 
   /**
+   * @notice Get islandResourceRenewalQuantity.
+   */
+  function getIslandResourceRenewalQuantity() internal view returns (uint32 islandResourceRenewalQuantity) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
+    return (uint32(bytes4(_blob)));
+  }
+
+  /**
+   * @notice Get islandResourceRenewalQuantity.
+   */
+  function _getIslandResourceRenewalQuantity() internal view returns (uint32 islandResourceRenewalQuantity) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
+    return (uint32(bytes4(_blob)));
+  }
+
+  /**
+   * @notice Set islandResourceRenewalQuantity.
+   */
+  function setIslandResourceRenewalQuantity(uint32 islandResourceRenewalQuantity) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((islandResourceRenewalQuantity)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set islandResourceRenewalQuantity.
+   */
+  function _setIslandResourceRenewalQuantity(uint32 islandResourceRenewalQuantity) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((islandResourceRenewalQuantity)), _fieldLayout);
+  }
+
+  /**
+   * @notice Get islandResourceRenewalTime.
+   */
+  function getIslandResourceRenewalTime() internal view returns (uint64 islandResourceRenewalTime) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
+    return (uint64(bytes8(_blob)));
+  }
+
+  /**
+   * @notice Get islandResourceRenewalTime.
+   */
+  function _getIslandResourceRenewalTime() internal view returns (uint64 islandResourceRenewalTime) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
+    return (uint64(bytes8(_blob)));
+  }
+
+  /**
+   * @notice Set islandResourceRenewalTime.
+   */
+  function setIslandResourceRenewalTime(uint64 islandResourceRenewalTime) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((islandResourceRenewalTime)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set islandResourceRenewalTime.
+   */
+  function _setIslandResourceRenewalTime(uint64 islandResourceRenewalTime) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((islandResourceRenewalTime)), _fieldLayout);
+  }
+
+  /**
+   * @notice Get islandRenewableItemIds.
+   */
+  function getIslandRenewableItemIds() internal view returns (uint32[] memory islandRenewableItemIds) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes memory _blob = StoreSwitch.getDynamicField(_tableId, _keyTuple, 0);
+    return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_uint32());
+  }
+
+  /**
+   * @notice Get islandRenewableItemIds.
+   */
+  function _getIslandRenewableItemIds() internal view returns (uint32[] memory islandRenewableItemIds) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes memory _blob = StoreCore.getDynamicField(_tableId, _keyTuple, 0);
+    return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_uint32());
+  }
+
+  /**
+   * @notice Set islandRenewableItemIds.
+   */
+  function setIslandRenewableItemIds(uint32[] memory islandRenewableItemIds) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreSwitch.setDynamicField(_tableId, _keyTuple, 0, EncodeArray.encode((islandRenewableItemIds)));
+  }
+
+  /**
+   * @notice Set islandRenewableItemIds.
+   */
+  function _setIslandRenewableItemIds(uint32[] memory islandRenewableItemIds) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreCore.setDynamicField(_tableId, _keyTuple, 0, EncodeArray.encode((islandRenewableItemIds)));
+  }
+
+  /**
+   * @notice Get the length of islandRenewableItemIds.
+   */
+  function lengthIslandRenewableItemIds() internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    uint256 _byteLength = StoreSwitch.getDynamicFieldLength(_tableId, _keyTuple, 0);
+    unchecked {
+      return _byteLength / 4;
+    }
+  }
+
+  /**
+   * @notice Get the length of islandRenewableItemIds.
+   */
+  function _lengthIslandRenewableItemIds() internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    uint256 _byteLength = StoreCore.getDynamicFieldLength(_tableId, _keyTuple, 0);
+    unchecked {
+      return _byteLength / 4;
+    }
+  }
+
+  /**
+   * @notice Get an item of islandRenewableItemIds.
+   * @dev Reverts with Store_IndexOutOfBounds if `_index` is out of bounds for the array.
+   */
+  function getItemIslandRenewableItemIds(uint256 _index) internal view returns (uint32) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    unchecked {
+      bytes memory _blob = StoreSwitch.getDynamicFieldSlice(_tableId, _keyTuple, 0, _index * 4, (_index + 1) * 4);
+      return (uint32(bytes4(_blob)));
+    }
+  }
+
+  /**
+   * @notice Get an item of islandRenewableItemIds.
+   * @dev Reverts with Store_IndexOutOfBounds if `_index` is out of bounds for the array.
+   */
+  function _getItemIslandRenewableItemIds(uint256 _index) internal view returns (uint32) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    unchecked {
+      bytes memory _blob = StoreCore.getDynamicFieldSlice(_tableId, _keyTuple, 0, _index * 4, (_index + 1) * 4);
+      return (uint32(bytes4(_blob)));
+    }
+  }
+
+  /**
+   * @notice Push an element to islandRenewableItemIds.
+   */
+  function pushIslandRenewableItemIds(uint32 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreSwitch.pushToDynamicField(_tableId, _keyTuple, 0, abi.encodePacked((_element)));
+  }
+
+  /**
+   * @notice Push an element to islandRenewableItemIds.
+   */
+  function _pushIslandRenewableItemIds(uint32 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreCore.pushToDynamicField(_tableId, _keyTuple, 0, abi.encodePacked((_element)));
+  }
+
+  /**
+   * @notice Pop an element from islandRenewableItemIds.
+   */
+  function popIslandRenewableItemIds() internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreSwitch.popFromDynamicField(_tableId, _keyTuple, 0, 4);
+  }
+
+  /**
+   * @notice Pop an element from islandRenewableItemIds.
+   */
+  function _popIslandRenewableItemIds() internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreCore.popFromDynamicField(_tableId, _keyTuple, 0, 4);
+  }
+
+  /**
+   * @notice Update an element of islandRenewableItemIds at `_index`.
+   */
+  function updateIslandRenewableItemIds(uint256 _index, uint32 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    unchecked {
+      bytes memory _encoded = abi.encodePacked((_element));
+      StoreSwitch.spliceDynamicData(_tableId, _keyTuple, 0, uint40(_index * 4), uint40(_encoded.length), _encoded);
+    }
+  }
+
+  /**
+   * @notice Update an element of islandRenewableItemIds at `_index`.
+   */
+  function _updateIslandRenewableItemIds(uint256 _index, uint32 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    unchecked {
+      bytes memory _encoded = abi.encodePacked((_element));
+      StoreCore.spliceDynamicData(_tableId, _keyTuple, 0, uint40(_index * 4), uint40(_encoded.length), _encoded);
+    }
+  }
+
+  /**
    * @notice Get the full data.
    */
   function get() internal view returns (MapData memory _table) {
@@ -172,11 +402,22 @@ library Map {
   /**
    * @notice Set the full data using individual values.
    */
-  function set(bool existing, bool islandClaimWhitelistEnabled) internal {
-    bytes memory _staticData = encodeStatic(existing, islandClaimWhitelistEnabled);
+  function set(
+    bool existing,
+    bool islandClaimWhitelistEnabled,
+    uint32 islandResourceRenewalQuantity,
+    uint64 islandResourceRenewalTime,
+    uint32[] memory islandRenewableItemIds
+  ) internal {
+    bytes memory _staticData = encodeStatic(
+      existing,
+      islandClaimWhitelistEnabled,
+      islandResourceRenewalQuantity,
+      islandResourceRenewalTime
+    );
 
-    EncodedLengths _encodedLengths;
-    bytes memory _dynamicData;
+    EncodedLengths _encodedLengths = encodeLengths(islandRenewableItemIds);
+    bytes memory _dynamicData = encodeDynamic(islandRenewableItemIds);
 
     bytes32[] memory _keyTuple = new bytes32[](0);
 
@@ -186,11 +427,22 @@ library Map {
   /**
    * @notice Set the full data using individual values.
    */
-  function _set(bool existing, bool islandClaimWhitelistEnabled) internal {
-    bytes memory _staticData = encodeStatic(existing, islandClaimWhitelistEnabled);
+  function _set(
+    bool existing,
+    bool islandClaimWhitelistEnabled,
+    uint32 islandResourceRenewalQuantity,
+    uint64 islandResourceRenewalTime,
+    uint32[] memory islandRenewableItemIds
+  ) internal {
+    bytes memory _staticData = encodeStatic(
+      existing,
+      islandClaimWhitelistEnabled,
+      islandResourceRenewalQuantity,
+      islandResourceRenewalTime
+    );
 
-    EncodedLengths _encodedLengths;
-    bytes memory _dynamicData;
+    EncodedLengths _encodedLengths = encodeLengths(islandRenewableItemIds);
+    bytes memory _dynamicData = encodeDynamic(islandRenewableItemIds);
 
     bytes32[] memory _keyTuple = new bytes32[](0);
 
@@ -201,10 +453,15 @@ library Map {
    * @notice Set the full data using the data struct.
    */
   function set(MapData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.existing, _table.islandClaimWhitelistEnabled);
+    bytes memory _staticData = encodeStatic(
+      _table.existing,
+      _table.islandClaimWhitelistEnabled,
+      _table.islandResourceRenewalQuantity,
+      _table.islandResourceRenewalTime
+    );
 
-    EncodedLengths _encodedLengths;
-    bytes memory _dynamicData;
+    EncodedLengths _encodedLengths = encodeLengths(_table.islandRenewableItemIds);
+    bytes memory _dynamicData = encodeDynamic(_table.islandRenewableItemIds);
 
     bytes32[] memory _keyTuple = new bytes32[](0);
 
@@ -215,10 +472,15 @@ library Map {
    * @notice Set the full data using the data struct.
    */
   function _set(MapData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.existing, _table.islandClaimWhitelistEnabled);
+    bytes memory _staticData = encodeStatic(
+      _table.existing,
+      _table.islandClaimWhitelistEnabled,
+      _table.islandResourceRenewalQuantity,
+      _table.islandResourceRenewalTime
+    );
 
-    EncodedLengths _encodedLengths;
-    bytes memory _dynamicData;
+    EncodedLengths _encodedLengths = encodeLengths(_table.islandRenewableItemIds);
+    bytes memory _dynamicData = encodeDynamic(_table.islandRenewableItemIds);
 
     bytes32[] memory _keyTuple = new bytes32[](0);
 
@@ -228,24 +490,61 @@ library Map {
   /**
    * @notice Decode the tightly packed blob of static data using this table's field layout.
    */
-  function decodeStatic(bytes memory _blob) internal pure returns (bool existing, bool islandClaimWhitelistEnabled) {
+  function decodeStatic(
+    bytes memory _blob
+  )
+    internal
+    pure
+    returns (
+      bool existing,
+      bool islandClaimWhitelistEnabled,
+      uint32 islandResourceRenewalQuantity,
+      uint64 islandResourceRenewalTime
+    )
+  {
     existing = (_toBool(uint8(Bytes.getBytes1(_blob, 0))));
 
     islandClaimWhitelistEnabled = (_toBool(uint8(Bytes.getBytes1(_blob, 1))));
+
+    islandResourceRenewalQuantity = (uint32(Bytes.getBytes4(_blob, 2)));
+
+    islandResourceRenewalTime = (uint64(Bytes.getBytes8(_blob, 6)));
+  }
+
+  /**
+   * @notice Decode the tightly packed blob of dynamic data using the encoded lengths.
+   */
+  function decodeDynamic(
+    EncodedLengths _encodedLengths,
+    bytes memory _blob
+  ) internal pure returns (uint32[] memory islandRenewableItemIds) {
+    uint256 _start;
+    uint256 _end;
+    unchecked {
+      _end = _encodedLengths.atIndex(0);
+    }
+    islandRenewableItemIds = (SliceLib.getSubslice(_blob, _start, _end).decodeArray_uint32());
   }
 
   /**
    * @notice Decode the tightly packed blobs using this table's field layout.
    * @param _staticData Tightly packed static fields.
-   *
-   *
+   * @param _encodedLengths Encoded lengths of dynamic fields.
+   * @param _dynamicData Tightly packed dynamic fields.
    */
   function decode(
     bytes memory _staticData,
-    EncodedLengths,
-    bytes memory
+    EncodedLengths _encodedLengths,
+    bytes memory _dynamicData
   ) internal pure returns (MapData memory _table) {
-    (_table.existing, _table.islandClaimWhitelistEnabled) = decodeStatic(_staticData);
+    (
+      _table.existing,
+      _table.islandClaimWhitelistEnabled,
+      _table.islandResourceRenewalQuantity,
+      _table.islandResourceRenewalTime
+    ) = decodeStatic(_staticData);
+
+    (_table.islandRenewableItemIds) = decodeDynamic(_encodedLengths, _dynamicData);
   }
 
   /**
@@ -270,8 +569,35 @@ library Map {
    * @notice Tightly pack static (fixed length) data using this table's schema.
    * @return The static data, encoded into a sequence of bytes.
    */
-  function encodeStatic(bool existing, bool islandClaimWhitelistEnabled) internal pure returns (bytes memory) {
-    return abi.encodePacked(existing, islandClaimWhitelistEnabled);
+  function encodeStatic(
+    bool existing,
+    bool islandClaimWhitelistEnabled,
+    uint32 islandResourceRenewalQuantity,
+    uint64 islandResourceRenewalTime
+  ) internal pure returns (bytes memory) {
+    return
+      abi.encodePacked(existing, islandClaimWhitelistEnabled, islandResourceRenewalQuantity, islandResourceRenewalTime);
+  }
+
+  /**
+   * @notice Tightly pack dynamic data lengths using this table's schema.
+   * @return _encodedLengths The lengths of the dynamic fields (packed into a single bytes32 value).
+   */
+  function encodeLengths(
+    uint32[] memory islandRenewableItemIds
+  ) internal pure returns (EncodedLengths _encodedLengths) {
+    // Lengths are effectively checked during copy by 2**40 bytes exceeding gas limits
+    unchecked {
+      _encodedLengths = EncodedLengthsLib.pack(islandRenewableItemIds.length * 4);
+    }
+  }
+
+  /**
+   * @notice Tightly pack dynamic (variable length) data using this table's schema.
+   * @return The dynamic data, encoded into a sequence of bytes.
+   */
+  function encodeDynamic(uint32[] memory islandRenewableItemIds) internal pure returns (bytes memory) {
+    return abi.encodePacked(EncodeArray.encode((islandRenewableItemIds)));
   }
 
   /**
@@ -282,12 +608,20 @@ library Map {
    */
   function encode(
     bool existing,
-    bool islandClaimWhitelistEnabled
+    bool islandClaimWhitelistEnabled,
+    uint32 islandResourceRenewalQuantity,
+    uint64 islandResourceRenewalTime,
+    uint32[] memory islandRenewableItemIds
   ) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
-    bytes memory _staticData = encodeStatic(existing, islandClaimWhitelistEnabled);
+    bytes memory _staticData = encodeStatic(
+      existing,
+      islandClaimWhitelistEnabled,
+      islandResourceRenewalQuantity,
+      islandResourceRenewalTime
+    );
 
-    EncodedLengths _encodedLengths;
-    bytes memory _dynamicData;
+    EncodedLengths _encodedLengths = encodeLengths(islandRenewableItemIds);
+    bytes memory _dynamicData = encodeDynamic(islandRenewableItemIds);
 
     return (_staticData, _encodedLengths, _dynamicData);
   }

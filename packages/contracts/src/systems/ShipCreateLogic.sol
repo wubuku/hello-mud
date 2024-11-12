@@ -7,6 +7,7 @@ import { ShipData } from "../codegen/index.sol";
 library ShipCreateLogic {
   function verify(
     uint256 id,
+    uint32 shipItemId,
     uint256 rosterIdPlayerId,
     uint32 rosterIdSequenceNumber,
     uint32 healthPoints,
@@ -16,7 +17,7 @@ library ShipCreateLogic {
     uint32[] memory buildingExpensesItemIds,
     uint32[] memory buildingExpensesQuantities
   ) internal pure returns (ShipCreated memory) {
-    return ShipCreated(id, rosterIdPlayerId, rosterIdSequenceNumber, healthPoints, attack, protection, speed, buildingExpensesItemIds, buildingExpensesQuantities);
+    return ShipCreated(id, shipItemId, rosterIdPlayerId, rosterIdSequenceNumber, healthPoints, attack, protection, speed, buildingExpensesItemIds, buildingExpensesQuantities);
   }
 
   function mutate(

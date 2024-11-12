@@ -13,22 +13,22 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { IAppSystemErrors } from "./IAppSystemErrors.sol";
 
 contract ShipFriendSystem is System, IAppSystemErrors {
-  event ShipCreatedEvent(uint256 indexed id, uint256 rosterIdPlayerId, uint32 rosterIdSequenceNumber, uint32 healthPoints, uint32 attack, uint32 protection, uint32 speed, uint32[] buildingExpensesItemIds, uint32[] buildingExpensesQuantities);
+  event ShipCreatedEvent(uint256 indexed id, uint32 shipItemId, uint256 rosterIdPlayerId, uint32 rosterIdSequenceNumber, uint32 healthPoints, uint32 attack, uint32 protection, uint32 speed, uint32[] buildingExpensesItemIds, uint32[] buildingExpensesQuantities);
 
   event ShipInventoryIncreasedEvent(uint256 indexed id);
 
   event ShipInventoryDeductedEvent(uint256 indexed id);
 
-  function shipCreate(uint256 rosterIdPlayerId, uint32 rosterIdSequenceNumber, uint32 healthPoints, uint32 attack, uint32 protection, uint32 speed, uint32[] memory buildingExpensesItemIds, uint32[] memory buildingExpensesQuantities) public returns (uint256) {
+  function shipCreate(uint32 shipItemId, uint256 rosterIdPlayerId, uint32 rosterIdSequenceNumber, uint32 healthPoints, uint32 attack, uint32 protection, uint32 speed, uint32[] memory buildingExpensesItemIds, uint32[] memory buildingExpensesQuantities) public returns (uint256) {
     uint256 id = ShipIdGenerator.get() + 1;
     ShipIdGenerator.set(id);
     ShipData memory shipData = Ship.get(id);
-    if (!(shipData.playerId == uint256(0) && shipData.rosterSequenceNumber == uint32(0) && shipData.healthPoints == uint32(0) && shipData.attack == uint32(0) && shipData.protection == uint32(0) && shipData.speed == uint32(0) && shipData.buildingExpensesItemIds.length == 0 && shipData.buildingExpensesQuantities.length == 0)) {
+    if (!(shipData.shipItemId == uint32(0) && shipData.playerId == uint256(0) && shipData.rosterSequenceNumber == uint32(0) && shipData.healthPoints == uint32(0) && shipData.attack == uint32(0) && shipData.protection == uint32(0) && shipData.speed == uint32(0) && shipData.buildingExpensesItemIds.length == 0 && shipData.buildingExpensesQuantities.length == 0)) {
       revert ShipAlreadyExists(id);
     }
-    ShipCreated memory shipCreated = ShipCreateLogic.verify(id, rosterIdPlayerId, rosterIdSequenceNumber, healthPoints, attack, protection, speed, buildingExpensesItemIds, buildingExpensesQuantities);
+    ShipCreated memory shipCreated = ShipCreateLogic.verify(id, shipItemId, rosterIdPlayerId, rosterIdSequenceNumber, healthPoints, attack, protection, speed, buildingExpensesItemIds, buildingExpensesQuantities);
     shipCreated.id = id;
-    emit ShipCreatedEvent(shipCreated.id, shipCreated.rosterIdPlayerId, shipCreated.rosterIdSequenceNumber, shipCreated.healthPoints, shipCreated.attack, shipCreated.protection, shipCreated.speed, shipCreated.buildingExpensesItemIds, shipCreated.buildingExpensesQuantities);
+    emit ShipCreatedEvent(shipCreated.id, shipCreated.shipItemId, shipCreated.rosterIdPlayerId, shipCreated.rosterIdSequenceNumber, shipCreated.healthPoints, shipCreated.attack, shipCreated.protection, shipCreated.speed, shipCreated.buildingExpensesItemIds, shipCreated.buildingExpensesQuantities);
     ShipData memory newShipData = ShipCreateLogic.mutate(shipCreated);
     Ship.set(id, newShipData);
     return id;
@@ -36,7 +36,7 @@ contract ShipFriendSystem is System, IAppSystemErrors {
 
   function shipIncreaseShipInventory(uint256 id, ItemIdQuantityPair[] memory items) public {
     ShipData memory shipData = Ship.get(id);
-    if (shipData.playerId == uint256(0) && shipData.rosterSequenceNumber == uint32(0) && shipData.healthPoints == uint32(0) && shipData.attack == uint32(0) && shipData.protection == uint32(0) && shipData.speed == uint32(0) && shipData.buildingExpensesItemIds.length == 0 && shipData.buildingExpensesQuantities.length == 0) {
+    if (shipData.shipItemId == uint32(0) && shipData.playerId == uint256(0) && shipData.rosterSequenceNumber == uint32(0) && shipData.healthPoints == uint32(0) && shipData.attack == uint32(0) && shipData.protection == uint32(0) && shipData.speed == uint32(0) && shipData.buildingExpensesItemIds.length == 0 && shipData.buildingExpensesQuantities.length == 0) {
       revert ShipDoesNotExist(id);
     }
     ShipInventoryIncreased memory shipInventoryIncreased = ShipIncreaseShipInventoryLogic.verify(id, items, shipData);
@@ -48,7 +48,7 @@ contract ShipFriendSystem is System, IAppSystemErrors {
 
   function shipDeductShipInventory(uint256 id, ItemIdQuantityPair[] memory items) public {
     ShipData memory shipData = Ship.get(id);
-    if (shipData.playerId == uint256(0) && shipData.rosterSequenceNumber == uint32(0) && shipData.healthPoints == uint32(0) && shipData.attack == uint32(0) && shipData.protection == uint32(0) && shipData.speed == uint32(0) && shipData.buildingExpensesItemIds.length == 0 && shipData.buildingExpensesQuantities.length == 0) {
+    if (shipData.shipItemId == uint32(0) && shipData.playerId == uint256(0) && shipData.rosterSequenceNumber == uint32(0) && shipData.healthPoints == uint32(0) && shipData.attack == uint32(0) && shipData.protection == uint32(0) && shipData.speed == uint32(0) && shipData.buildingExpensesItemIds.length == 0 && shipData.buildingExpensesQuantities.length == 0) {
       revert ShipDoesNotExist(id);
     }
     ShipInventoryDeducted memory shipInventoryDeducted = ShipDeductShipInventoryLogic.verify(id, items, shipData);

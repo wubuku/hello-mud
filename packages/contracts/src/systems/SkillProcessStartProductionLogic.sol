@@ -45,7 +45,7 @@ library SkillProcessStartProductionLogic {
       skillProcessId
     );
 
-    if (ItemIds.shouldProduceIndividuals(_itemId)) {
+    if (ItemIds.shouldProduceIndividuals(_itemId)) { // todo check by "ShipItem" config
       revert ItemProducesIndividuals(_itemId);
     }
 

@@ -15,9 +15,12 @@ library MapCreateLogic {
    */
   function verify(
     bool existing,
-    bool islandClaimWhitelistEnabled
+    bool islandClaimWhitelistEnabled,
+    uint32 islandResourceRenewalQuantity,
+    uint64 islandResourceRenewalTime,
+    uint32[] memory islandRenewableItemIds
   ) internal pure returns (MapCreated memory) {
-    return MapCreated(existing, islandClaimWhitelistEnabled);
+    return MapCreated(existing, islandClaimWhitelistEnabled, islandResourceRenewalQuantity, islandResourceRenewalTime, islandRenewableItemIds);
   }
 
   /**

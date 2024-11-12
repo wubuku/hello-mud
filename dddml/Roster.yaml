@@ -287,6 +287,38 @@ aggregates:
         event:
           name: RosterShipInventoryPutIn
 
+      # 
+      # The reason for defining MountShipEquipments/UnmountShipEquipments methods on the Roster aggregate 
+      # instead of the Ship aggregate is that a Ship must belong to a Roster.
+      # And the ship's equipments affects the overall speed of the Roster.
+      #
+      MountShipEquipments:
+        metadata:
+          MudSystemName: RosterShipEquipmentSystem
+        parameters:
+          ShipId:
+            type: u256 # Ship ID
+          MountingPosition:
+            type: ShipMountingPositions # uint8
+          Equipments:
+            itemType: ItemIdQuantityPair
+        event:
+          name: RosterShipEquipmentsMounted
+
+      UnmountShipEquipments:
+        metadata:
+          MudSystemName: RosterShipEquipmentSystem
+        parameters:
+          ShipId:
+            type: u256 # Ship ID
+          MountingPosition:
+            type: ShipMountingPositions # uint8
+          Equipments:
+            itemType: ItemIdQuantityPair
+        event:
+          name: RosterShipEquipmentsUnmounted
+
+
 superObjects:
   RosterTemplate:
     isTemplate: true

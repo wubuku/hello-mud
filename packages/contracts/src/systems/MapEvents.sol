@@ -10,11 +10,17 @@ import { Coordinates } from "./Coordinates.sol";
 struct MapCreated {
   bool existing;
   bool islandClaimWhitelistEnabled;
+  uint32 islandResourceRenewalQuantity;
+  uint64 islandResourceRenewalTime;
+  uint32[] islandRenewableItemIds;
 }
 
 struct MapUpdated {
   bool existing;
   bool islandClaimWhitelistEnabled;
+  uint32 islandResourceRenewalQuantity;
+  uint64 islandResourceRenewalTime;
+  uint32[] islandRenewableItemIds;
 }
 
 struct IslandAdded {

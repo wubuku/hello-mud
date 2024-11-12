@@ -81,8 +81,15 @@ contract PostDeploy is Script {
     createItems(world);
     console.log("Created items");
 
+    // todo 
     bool islandClaimWhitelistEnabled = false; // NOTE: Set to true to enable the island claim whitelist!
-    world.app__mapCreate(true, islandClaimWhitelistEnabled);
+    uint32 islandResourceRenewalQuantity = 100;
+    uint64 islandResourceRenewalTime = 100;
+    uint32[] memory islandRenewableItemIds; // = new uint32[](3); //todo: add renewable item ids
+    //islandRenewableItemIds[0] = ...;
+    //islandRenewableItemIds[1] = ...;
+    //islandRenewableItemIds[2] = ...;
+    world.app__mapCreate(true, islandClaimWhitelistEnabled, islandResourceRenewalQuantity, islandResourceRenewalTime, islandRenewableItemIds);
     console.log("Created map, islandClaimWhitelistEnabled:", islandClaimWhitelistEnabled);
 
     world.app__islandClaimWhitelistAdd(deployerAddress);

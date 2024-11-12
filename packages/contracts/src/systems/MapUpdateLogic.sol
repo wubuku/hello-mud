@@ -17,9 +17,12 @@ library MapUpdateLogic {
   function verify(
     bool existing,
     bool islandClaimWhitelistEnabled,
+    uint32 islandResourceRenewalQuantity, 
+    uint64 islandResourceRenewalTime,
+    uint32[] memory islandRenewableItemIds,
     MapData memory mapData
   ) internal pure returns (MapUpdated memory) {
-    return MapUpdated(existing, islandClaimWhitelistEnabled);
+    return MapUpdated(existing, islandClaimWhitelistEnabled, islandResourceRenewalQuantity, islandResourceRenewalTime, islandRenewableItemIds);
   }
 
   /**

@@ -8,7 +8,7 @@ import { PlayerInventoryUpdateUtil } from "../utils/PlayerInventoryUpdateUtil.so
 import { SkillProcessUtil } from "../utils/SkillProcessUtil.sol";
 import { SkillProcessId } from "../systems/SkillProcessId.sol";
 import { SkillTypeItemIdPair } from "../systems/SkillTypeItemIdPair.sol";
-import { ItemIds, SHIP } from "../utils/ItemIds.sol";
+import { ItemIds, SMALL_SHIP } from "../utils/ItemIds.sol";
 import { Player, ItemProduction } from "../codegen/index.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
 import { SkillPrcMtrlLib } from "./SkillPrcMtrlLib.sol";
@@ -23,7 +23,7 @@ library SkillProcessStartShipProductionLogic {
   error NotEnoughMaterials(uint32 itemId, uint32 required, uint32 provided);
   error ArrayLengthMismatch(uint256 requiredLength, uint256 actualLength);
 
-  uint32 constant SHIP_ITEM_ID = SHIP;
+  //uint32 constant SHIP_ITEM_ID = SMALL_SHIP;
 
   function verify(
     uint8 skillType,
@@ -46,9 +46,9 @@ library SkillProcessStartShipProductionLogic {
     (uint256 _playerId, uint8 _skillType, uint32 _itemId) = SkillProcessUtil
       .assertIdsAreConsistentForStartingProduction(playerId, itemProductionId, skillProcessId);
 
-    if (_itemId != SHIP_ITEM_ID) {
-      revert ItemIdIsNotShip(_itemId, SHIP_ITEM_ID);
-    }
+    // if (_itemId != SHIP_ITEM_ID) { //todo check by "ShipItem" config
+    //   revert ItemIdIsNotShip(_itemId, SHIP_ITEM_ID);
+    // }
 
     if (playerData.level < itemProductionData.requirementsLevel) {
       revert LowerThanRequiredLevel(itemProductionData.requirementsLevel, playerData.level);

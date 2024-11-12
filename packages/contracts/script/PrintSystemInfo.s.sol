@@ -115,8 +115,8 @@ contract PrintSystemInfo is Script {
     (systemAddress, systemPublicAccess) = Systems.get(systemId);
     console.log("address:", systemAddress);
     console.log("publicAccess:", systemPublicAccess);
-    eventHash = keccak256("ShipCreatedEvent(uint256,uint256,uint32,uint32,uint32,uint32,uint32,uint32[],uint32[])");
-    console.log("event ShipCreatedEvent(uint256,uint256,uint32,uint32,uint32,uint32,uint32,uint32[],uint32[]) signature topic:", vm.toString(abi.encodePacked(eventHash)));
+    eventHash = keccak256("ShipCreatedEvent(uint256,uint32,uint256,uint32,uint32,uint32,uint32,uint32,uint32[],uint32[])");
+    console.log("event ShipCreatedEvent(uint256,uint32,uint256,uint32,uint32,uint32,uint32,uint32,uint32[],uint32[]) signature topic:", vm.toString(abi.encodePacked(eventHash)));
     eventHash = keccak256("ShipInventoryIncreasedEvent(uint256)");
     console.log("event ShipInventoryIncreasedEvent(uint256) signature topic:", vm.toString(abi.encodePacked(eventHash)));
     eventHash = keccak256("ShipInventoryDeductedEvent(uint256)");
@@ -215,6 +215,24 @@ contract PrintSystemInfo is Script {
     eventHash = keccak256("RosterShipInventoryPutInEvent(uint256,uint32,uint256,UpdateLocationParams)");
     console.log("event RosterShipInventoryPutInEvent(uint256,uint32,uint256,UpdateLocationParams) signature topic:", vm.toString(abi.encodePacked(eventHash)));
     console.log("// # forge inspect RosterShipInventorySystem errors");
+
+
+    console.log("// -------- RosterShipEquipmentSystem --------");
+    console.log("// Truncated system name: RosterShipEquipm");
+    systemId = WorldResourceIdLib.encode({
+      typeId: RESOURCE_SYSTEM,
+      namespace: "app",
+      name: "RosterShipEquipm"
+    });
+    console.log("resourceId (hex):", vm.toString(ResourceId.unwrap(systemId)));
+    (systemAddress, systemPublicAccess) = Systems.get(systemId);
+    console.log("address:", systemAddress);
+    console.log("publicAccess:", systemPublicAccess);
+    eventHash = keccak256("RosterShipEquipmentsMountedEvent(uint256,uint32,uint256,uint8)");
+    console.log("event RosterShipEquipmentsMountedEvent(uint256,uint32,uint256,uint8) signature topic:", vm.toString(abi.encodePacked(eventHash)));
+    eventHash = keccak256("RosterShipEquipmentsUnmountedEvent(uint256,uint32,uint256,uint8)");
+    console.log("event RosterShipEquipmentsUnmountedEvent(uint256,uint32,uint256,uint8) signature topic:", vm.toString(abi.encodePacked(eventHash)));
+    console.log("// # forge inspect RosterShipEquipmentSystem errors");
 
 
     console.log("// -------- ShipBattleInitiateSystem --------");
@@ -419,10 +437,10 @@ contract PrintSystemInfo is Script {
     (systemAddress, systemPublicAccess) = Systems.get(systemId);
     console.log("address:", systemAddress);
     console.log("publicAccess:", systemPublicAccess);
-    eventHash = keccak256("MapCreatedEvent(bool,bool)");
-    console.log("event MapCreatedEvent(bool,bool) signature topic:", vm.toString(abi.encodePacked(eventHash)));
-    eventHash = keccak256("MapUpdatedEvent(bool,bool)");
-    console.log("event MapUpdatedEvent(bool,bool) signature topic:", vm.toString(abi.encodePacked(eventHash)));
+    eventHash = keccak256("MapCreatedEvent(bool,bool,uint32,uint64,uint32[])");
+    console.log("event MapCreatedEvent(bool,bool,uint32,uint64,uint32[]) signature topic:", vm.toString(abi.encodePacked(eventHash)));
+    eventHash = keccak256("MapUpdatedEvent(bool,bool,uint32,uint64,uint32[])");
+    console.log("event MapUpdatedEvent(bool,bool,uint32,uint64,uint32[]) signature topic:", vm.toString(abi.encodePacked(eventHash)));
     eventHash = keccak256("IslandAddedEvent(uint32,uint32)");
     console.log("event IslandAddedEvent(uint32,uint32) signature topic:", vm.toString(abi.encodePacked(eventHash)));
     eventHash = keccak256("MultiIslandsAddedEvent(uint32[],uint32)");

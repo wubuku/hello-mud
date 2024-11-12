@@ -14,7 +14,7 @@ import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 library ShipDelegatecallLib {
 
-  function create(uint256 rosterIdPlayerId, uint32 rosterIdSequenceNumber, uint32 healthPoints, uint32 attack, uint32 protection, uint32 speed, uint32[] memory buildingExpensesItemIds, uint32[] memory buildingExpensesQuantities) internal returns (uint256) {
+  function create(uint32 shipItemId, uint256 rosterIdPlayerId, uint32 rosterIdSequenceNumber, uint32 healthPoints, uint32 attack, uint32 protection, uint32 speed, uint32[] memory buildingExpensesItemIds, uint32[] memory buildingExpensesQuantities) internal returns (uint256) {
     ResourceId shipFriendSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -27,8 +27,8 @@ library ShipDelegatecallLib {
       0,
       shipFriendSystemAddress,
       abi.encodeWithSignature(
-        "shipCreate(uint256,uint32,uint32,uint32,uint32,uint32,uint32[],uint32[])",
-        rosterIdPlayerId, rosterIdSequenceNumber, healthPoints, attack, protection, speed, buildingExpensesItemIds, buildingExpensesQuantities
+        "shipCreate(uint32,uint256,uint32,uint32,uint32,uint32,uint32,uint32[],uint32[])",
+        shipItemId, rosterIdPlayerId, rosterIdSequenceNumber, healthPoints, attack, protection, speed, buildingExpensesItemIds, buildingExpensesQuantities
       )
     );
     if (!success) revertWithBytes(returnData);

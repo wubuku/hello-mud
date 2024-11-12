@@ -9,7 +9,7 @@ import { ShipUtil } from "../utils/ShipUtil.sol";
 import { TsRandomUtil } from "../utils/TsRandomUtil.sol";
 import { ShipDelegatecallLib } from "./ShipDelegatecallLib.sol";
 import { SortedVectorUtil } from "../utils/SortedVectorUtil.sol";
-import { COPPER_ORE, NORMAL_LOGS, COTTONS } from "../utils/ItemIds.sol";
+import { COPPER_ORE, NORMAL_LOGS, COTTONS, SMALL_SHIP } from "../utils/ItemIds.sol";
 
 library RosterCreateEnvironmentRosterLogic {
   error InvalidShipResourceQuantity(uint32 shipResourceQuantity, uint32 shipBaseResourceQuantity);
@@ -98,6 +98,7 @@ library RosterCreateEnvironmentRosterLogic {
       );
 
       uint256 shipId = ShipDelegatecallLib.create(
+        SMALL_SHIP,
         playerId,
         rosterSeqNumber,
         healthPoints,
