@@ -9,6 +9,7 @@ import { MapData } from "../codegen/index.sol";
  * @dev Implements the Map.Create method.
  */
 library MapCreateLogic {
+  error MapAlreadyExists();
   /**
    * @notice Verifies the Map.Create command.
    * @return A MapCreated event struct.
@@ -20,7 +21,17 @@ library MapCreateLogic {
     uint64 islandResourceRenewalTime,
     uint32[] memory islandRenewableItemIds
   ) internal pure returns (MapCreated memory) {
-    return MapCreated(existing, islandClaimWhitelistEnabled, islandResourceRenewalQuantity, islandResourceRenewalTime, islandRenewableItemIds);
+    // if (existing) {
+    //   revert MapAlreadyExists();
+    // }
+    return
+      MapCreated(
+        existing,
+        islandClaimWhitelistEnabled,
+        islandResourceRenewalQuantity,
+        islandResourceRenewalTime,
+        islandRenewableItemIds
+      );
   }
 
   /**
@@ -29,12 +40,13 @@ library MapCreateLogic {
    * @param mapCreated The MapCreated event struct from the verify function.
    * @return The new state of the Map.
    */
-  function mutate(
-    MapCreated memory mapCreated
-  ) internal pure returns (MapData memory) {
+  function mutate(MapCreated memory mapCreated) internal pure returns (MapData memory) {
     MapData memory mapData;
     mapData.existing = mapCreated.existing;
     mapData.islandClaimWhitelistEnabled = mapCreated.islandClaimWhitelistEnabled;
+    mapData.islandRenewableItemIds = mapCreated.islandRenewableItemIds;
+    mapData.islandResourceRenewalQuantity = mapCreated.islandResourceRenewalQuantity;
+    mapData.islandResourceRenewalTime = mapCreated.islandResourceRenewalTime;
     return mapData;
   }
 }

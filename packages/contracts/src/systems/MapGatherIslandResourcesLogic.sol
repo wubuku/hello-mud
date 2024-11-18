@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.24;
 
+import { console } from "forge-std/console.sol";
 import { IslandResourcesGathered } from "./MapEvents.sol";
-import { MapData, MapLocation, MapLocationData } from "../codegen/index.sol";
+import { Map, MapData, MapLocation, MapLocationData } from "../codegen/index.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { MapLocationType } from "./MapLocationType.sol";
 import { TsRandomUtil } from "../utils/TsRandomUtil.sol";
@@ -28,20 +29,20 @@ library MapGatherIslandResourcesLogic {
     uint32 resourcesQuantity = MapUtil.getIslandResourcesQuantityToGather(coordinatesX, coordinatesY, nowTime);
     if (resourcesQuantity == 0) revert ResourceNotRegeneratedYet();
 
-    uint32[] memory resourceItemIds = new uint32[](3);
-    resourceItemIds[0] = RESOURCE_TYPE_MINING;
-    resourceItemIds[1] = RESOURCE_TYPE_WOODCUTTING;
-    resourceItemIds[2] = COTTON_SEEDS;
-
     bytes memory randSeed = abi.encodePacked(coordinatesX, coordinatesY, playerId, nowTime);
 
-    uint64[] memory randomResourceQuantities = TsRandomUtil.divideInt(randSeed, resourcesQuantity, 3);
-
-    ItemIdQuantityPair[] memory resources = new ItemIdQuantityPair[](3);
-    for (uint i = 0; i < 3; i++) {
-      resources[i] = ItemIdQuantityPair(resourceItemIds[i], uint32(randomResourceQuantities[i]));
+    uint64[] memory randomResourceQuantities = TsRandomUtil.divideInt(
+      randSeed,
+      resourcesQuantity,
+      uint64(mapData.islandRenewableItemIds.length)
+    );
+    // for (uint i = 0; i < randomResourceQuantities.length; i++) {
+    //   console.log("RandomResourceQuantities[%d] = %d", i, randomResourceQuantities[i]);
+    // }
+    ItemIdQuantityPair[] memory resources = new ItemIdQuantityPair[](mapData.islandRenewableItemIds.length);
+    for (uint i = 0; i < mapData.islandRenewableItemIds.length; i++) {
+      resources[i] = ItemIdQuantityPair(mapData.islandRenewableItemIds[i], uint32(randomResourceQuantities[i]));
     }
-
     return IslandResourcesGathered(playerId, nowTime, coordinatesX, coordinatesY, resources);
   }
 
@@ -51,7 +52,12 @@ library MapGatherIslandResourcesLogic {
   ) internal returns (ItemIdQuantityPair[] memory, MapData memory) {
     uint32 coordinatesX = islandResourcesGathered.coordinatesX;
     uint32 coordinatesY = islandResourcesGathered.coordinatesY;
-
+    // uint32[] memory resouceItemIds = new uint32[](islandResourcesGathered.resources.length);
+    // uint32[] memory resourcesQuantities = new uint32[](islandResourcesGathered.resources.length);
+    // for (uint i = 0; i < islandResourcesGathered.resources.length; i++) {
+    //   resouceItemIds[i] = islandResourcesGathered.resources[i].itemId;
+    //   resourcesQuantities[i] = islandResourcesGathered.resources[i].quantity;
+    // }
     // Clear resources and update gathered time
     MapLocation.setResourcesItemIds(coordinatesX, coordinatesY, new uint32[](0));
     MapLocation.setResourcesQuantities(coordinatesX, coordinatesY, new uint32[](0));

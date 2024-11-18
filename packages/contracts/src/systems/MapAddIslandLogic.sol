@@ -25,10 +25,7 @@ library MapAddIslandLogic {
     return IslandAdded(coordinatesX, coordinatesY, resources);
   }
 
-  function mutate(
-    IslandAdded memory islandAdded,
-    MapData memory mapData
-  ) internal returns (MapData memory) {
+  function mutate(IslandAdded memory islandAdded, MapData memory mapData) internal returns (MapData memory) {
     uint32 coordinatesX = islandAdded.coordinatesX;
     uint32 coordinatesY = islandAdded.coordinatesY;
 
@@ -46,7 +43,7 @@ library MapAddIslandLogic {
     }
     MapLocation.setResourcesItemIds(coordinatesX, coordinatesY, itemIds);
     MapLocation.setResourcesQuantities(coordinatesX, coordinatesY, quantities);
-    MapLocation.setExisting(coordinatesX, coordinatesY, true);
+    //MapLocation.setExisting(coordinatesX, coordinatesY, true);
     // Set initial gathered_at to 0
     MapLocation.setGatheredAt(coordinatesX, coordinatesY, 0);
 

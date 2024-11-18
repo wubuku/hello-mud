@@ -31,10 +31,7 @@ library ItemUpdateLogic {
    * @param itemData The current state of the Item.
    * @return The new state of the Item.
    */
-  function mutate(
-    ItemUpdated memory itemUpdated,
-    ItemData memory itemData
-  ) internal pure returns (ItemData memory) {
+  function mutate(ItemUpdated memory itemUpdated, ItemData memory itemData) internal pure returns (ItemData memory) {
     itemData.requiredForCompletion = itemUpdated.requiredForCompletion;
     itemData.sellsFor = itemUpdated.sellsFor;
     itemData.name = itemUpdated.name;

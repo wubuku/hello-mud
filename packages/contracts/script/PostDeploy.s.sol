@@ -10,7 +10,7 @@ import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 
 import { IWorld } from "../src/codegen/world/IWorld.sol";
 import { Energy } from "../src/tokens/Energy.sol";
-import { EnergyToken, ItemCreationData, ItemCreation, ItemProductionData, ItemProduction } from "../src/codegen/index.sol";
+import { Map, MapLocationData, MapLocation, IslandRenewableItem, EnergyToken, ItemCreationData, ItemCreation, ItemProductionData, ItemProduction, PlayerInventoryCount, PlayerInventory } from "../src/codegen/index.sol";
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
@@ -19,8 +19,35 @@ import { PlayerIdGenerator } from "../src/codegen/index.sol";
 import { ItemIdQuantityPair } from "../src/systems/ItemIdQuantityPair.sol";
 import { Coordinates } from "../src/systems/Coordinates.sol";
 import { PlayerInventoryUpdateUtil } from "../src/utils/PlayerInventoryUpdateUtil.sol";
+import { MapUtil } from "../src/utils/MapUtil.sol";
 
 contract PostDeploy is Script {
+  //Item ids
+  uint32 constant UNUSED_ITEM_ID = 0;
+  uint32 constant POTATO_SEEDS_ITEM_ID = 1;
+  uint32 constant POTATOES_ITEM_ID = 101;
+  uint32 constant COTTON_SEEDS_ITEM_ID = 2;
+  uint32 constant COTTONS_ITEM_ID = 102;
+  uint32 constant BRONZE_BAR_ITEM_ID = 1001;
+  uint32 constant NORMAL_LOGS_ITEM_ID = 200;
+  uint32 constant OAK_LOGS_ITEM_ID = 201;
+  uint32 constant SHIP_ITEM_ID = 1000000001;
+  uint32 constant FLUYT_ITEM_ID = 1000000002;
+  uint32 constant COPPER_ORE_ITEM_ID = 301;
+  uint32 constant TIN_ORE_ITEM_ID = 302;
+  uint32 constant MINION_ITEM_ID = 401;
+  uint32 constant SMALL_SAIL_ITEM_ID = 402;
+  uint32 constant RESOURCE_TYPE_WOODCUTTING_ITEM_ID = 2000000001;
+  uint32 constant RESOURCE_TYPE_FISHING_ITEM_ID = 2000000002;
+  uint32 constant RESOURCE_TYPE_MINING_ITEM_ID = 2000000003;
+
+  //Quantity weights
+
+  uint32 resourceWoodCuttingQuantity = 100;
+  uint32 resourceMinningQuantity = 200;
+  uint32 resoucePotatoSeedsQuantity = 300;
+  uint32 resouceCottonSeedsQuantity = 400;
+
   function run(address worldAddress) external {
     // Specify a store so that you can use tables directly in PostDeploy
     StoreSwitch.setStoreAddress(worldAddress);
@@ -77,20 +104,54 @@ contract PostDeploy is Script {
     console.log("Requested energy drop");
     // -------------------------------------------------------
 
-    // Create items
-    createItems(world);
-    console.log("Created items");
-
-    // todo 
     bool islandClaimWhitelistEnabled = false; // NOTE: Set to true to enable the island claim whitelist!
-    uint32 islandResourceRenewalQuantity = 100;
-    uint64 islandResourceRenewalTime = 100;
-    uint32[] memory islandRenewableItemIds; // = new uint32[](3); //todo: add renewable item ids
-    //islandRenewableItemIds[0] = ...;
-    //islandRenewableItemIds[1] = ...;
-    //islandRenewableItemIds[2] = ...;
-    world.app__mapCreate(true, islandClaimWhitelistEnabled, islandResourceRenewalQuantity, islandResourceRenewalTime, islandRenewableItemIds);
+    uint32 islandResourceRenewalQuantity = 1000;
+    uint64 islandResourceRenewalTime = 1; //Only 1S // 24 * 60 * 60; //One day=24hours * 60 mins * 60 seconds
+    uint32[] memory islandRenewableItemIds = new uint32[](4); //todo: add renewable item ids
+    islandRenewableItemIds[0] = RESOURCE_TYPE_WOODCUTTING_ITEM_ID;
+    islandRenewableItemIds[1] = RESOURCE_TYPE_MINING_ITEM_ID;
+    islandRenewableItemIds[2] = POTATO_SEEDS_ITEM_ID;
+    islandRenewableItemIds[3] = COTTON_SEEDS_ITEM_ID;
+    world.app__mapCreate(
+      true,
+      islandClaimWhitelistEnabled,
+      islandResourceRenewalQuantity,
+      islandResourceRenewalTime,
+      islandRenewableItemIds
+    );
     console.log("Created map, islandClaimWhitelistEnabled:", islandClaimWhitelistEnabled);
+
+    // Island Resource and The weight of the quantity
+    ItemIdQuantityPair[] memory islandResources = createIslandResources();
+    for (uint i = 0; i < islandResources.length; i++) {
+      world.app__islandRenewableItemCreate(islandResources[i].itemId, islandResources[i].quantity);
+    }
+
+    uint32[] memory islandRenewableItemIdsFromMap = Map.getIslandRenewableItemIds();
+    for (uint i = 0; i < islandRenewableItemIdsFromMap.length; i++) {
+      console.log("Item Id:%d", islandRenewableItemIdsFromMap[i]);
+      uint32 quantityWeight = IslandRenewableItem.getQuantityWeight(islandRenewableItemIdsFromMap[i]);
+      console.log("Quantity weight:%d", quantityWeight);
+      if (islandRenewableItemIdsFromMap[i] == RESOURCE_TYPE_WOODCUTTING_ITEM_ID) {
+        if (quantityWeight != resourceWoodCuttingQuantity) {
+          console.log("Resouce Wood Cutting quantity weight should be:%d", resourceWoodCuttingQuantity);
+        }
+      } else if (islandRenewableItemIdsFromMap[i] == RESOURCE_TYPE_MINING_ITEM_ID) {
+        if (quantityWeight != resourceMinningQuantity) {
+          console.log("Resouce Mining quantity weight should be:%d", resourceMinningQuantity);
+        }
+      } else if (islandRenewableItemIdsFromMap[i] == POTATO_SEEDS_ITEM_ID) {
+        if (quantityWeight != resoucePotatoSeedsQuantity) {
+          console.log("Resouce Potato Seeds quantity weight should be:%d", resoucePotatoSeedsQuantity);
+        }
+      } else if (islandRenewableItemIdsFromMap[i] == COTTON_SEEDS_ITEM_ID) {
+        if (quantityWeight != resouceCottonSeedsQuantity) {
+          console.log("Resouce Cotton Seeds quantity weight should be:%d", resouceCottonSeedsQuantity);
+        }
+      } else {
+        console.log("Unrecognized Item id:%d", islandRenewableItemIdsFromMap[i]);
+      }
+    }
 
     world.app__islandClaimWhitelistAdd(deployerAddress);
     console.log("Added deployer address to the island claim whitelist");
@@ -99,21 +160,24 @@ contract PostDeploy is Script {
     uint32 firstIslandY = 2147483647;
     addIsland(world, firstIslandX, firstIslandY);
 
-    uint32 secondIslandX = 2147483647 + 10000;
-    uint32 secondIslandY = 2147483647 + 10000;
-    addIsland(world, secondIslandX, secondIslandY);
+    // uint32 secondIslandX = 2147483647 + 10000;
+    // uint32 secondIslandY = 2147483647 + 10000;
+    // addIsland(world, secondIslandX, secondIslandY);
 
-    // Test add multi islands
-    uint32 resourceSubtotal = 600;
-    uint islandCount = 5;
-    uint32[] memory multiCoordinatesX = new uint32[](islandCount);
-    uint32[] memory multiCoordinatesY = new uint32[](islandCount);
-    for (uint i = 0; i < islandCount; i++) {
-      multiCoordinatesX[i] = secondIslandX + 10000 * uint32(i + 1);
-      multiCoordinatesY[i] = secondIslandY + 10000 * uint32(i + 1);
-    }
-    addMultiIslands(world, multiCoordinatesX, multiCoordinatesY, resourceSubtotal);
+    // // Test add multi islands
+    // uint32 resourceSubtotal = 600;
+    // uint islandCount = 5;
+    // uint32[] memory multiCoordinatesX = new uint32[](islandCount);
+    // uint32[] memory multiCoordinatesY = new uint32[](islandCount);
+    // for (uint i = 0; i < islandCount; i++) {
+    //   multiCoordinatesX[i] = secondIslandX + 10000 * uint32(i + 1);
+    //   multiCoordinatesY[i] = secondIslandY + 10000 * uint32(i + 1);
+    // }
+    // addMultiIslands(world, multiCoordinatesX, multiCoordinatesY, resourceSubtotal);
 
+    // Create items
+    createItems(world);
+    console.log("Created items");
     //Create Item Creations(Mining & Cutting)
     createItemCreations(world);
     console.log("Created item creations");
@@ -136,67 +200,105 @@ contract PostDeploy is Script {
     uint256 playerId = PlayerIdGenerator.getId();
     console.log("Created test player, playerId:", playerId);
 
+    MapLocationData memory location = MapLocation.get(firstIslandX, firstIslandY);
+    console.log("Before claimed,gather at:%d", location.gatheredAt);
+    //Player claim island
     world.app__playerClaimIsland(playerId, firstIslandX, firstIslandY);
     console.log("An island claimed by test player");
+    location = MapLocation.get(firstIslandX, firstIslandY);
+    console.log("After claimed,gather at:%d", location.gatheredAt);
 
-    // Airdrop items to the test player
-    world.app__playerAirdrop(playerId, 1, 200); // 200 PotatoSeeds
-    world.app__playerAirdrop(playerId, 2, 200); // 200 CottonSeeds
-    world.app__playerAirdrop(playerId, 200, 200); // 200 NormalLogs
-    world.app__playerAirdrop(playerId, 301, 200); // 200 CopperOre
-    world.app__playerAirdrop(playerId, 302, 200); // 200 TinOre
-    world.app__playerAirdrop(playerId, 102, 200); // 200 Cottons
-    console.log("Airdropped items to test player");
+    uint256 startTime = block.timestamp;
 
-    world.app__uniApiStartCreation(uint8(SkillType.MINING), playerId, 0, 301, 1);
-    console.log("Started mining of 1 CopperOre");
-
-    uint32 cottonSeedsItemId = 2;
-    uint32 cottonItemId = 102;
-    uint32 beforeFarmingCottonSeedsQuantity = PlayerInventoryUpdateUtil.getItemQuantity(playerId, cottonSeedsItemId);
-    console.log("Before farming,cotton seeds quantity:", beforeFarmingCottonSeedsQuantity);
-    uint8 skillProcessSequenceNumber = 1;
-
-    uint32 batchSize = 100;
-
-    ItemProductionData memory itemProductionData = ItemProduction.get(SkillType.FARMING, cottonItemId);
-    console.log("itemProductionData.energyCost:", itemProductionData.energyCost);
-    uint256 energyCost = uint256(itemProductionData.energyCost) * batchSize;
-    console.log("itemProductionData.energyCost * batchSize=", energyCost);
-
-    world.app__uniApiStartProduction(SkillType.FARMING, playerId, skillProcessSequenceNumber, cottonItemId, batchSize); // Cotton
-    console.log("Started farming of %d Cotton", batchSize);
-    uint32 afterFarmingCottonSeedsQuantity = PlayerInventoryUpdateUtil.getItemQuantity(playerId, cottonSeedsItemId);
-    console.log("After farming,cotton seeds quantity:", afterFarmingCottonSeedsQuantity);
-    if (beforeFarmingCottonSeedsQuantity - afterFarmingCottonSeedsQuantity != batchSize) {
-      console.log("After farming,cotton seeds quantity error");
+    //Before gather island resources
+    console.log("Before gather resources-------------------------------------");
+    uint64 playerInventoryCount1 = PlayerInventoryCount.get(playerId); // same as getCount(playerId)
+    console.log("Player's Inventory count1:%d(By get(playerId))", playerInventoryCount1);
+    for (uint64 i = 0; i < playerInventoryCount1; i++) {
+      uint32 itemId = PlayerInventory.getInventoryItemId(playerId, i);
+      uint32 quantity = PlayerInventory.getInventoryQuantity(playerId, i);
+      console.log("Item Id:%d,Quantity:%d", itemId, quantity);
+    }
+    //将上次收集资源的时间减少5秒，以便可以测试 app__playerGatherIslandResources
+    MapLocation.setGatheredAt(firstIslandX, firstIslandY, location.gatheredAt - islandResourceRenewalTime);
+    location = MapLocation.get(firstIslandX, firstIslandY);
+    console.log("After change GatherAt,gather at to->:%d", location.gatheredAt);
+    uint64 islandResourceRenewalTimeFromMap = Map.getIslandResourceRenewalTime();
+    console.log("islandResourceRenewalTime=%d", islandResourceRenewalTimeFromMap);
+    uint32 islandResourceRenewalQuantityFromMap = Map.getIslandResourceRenewalQuantity();
+    console.log("islandResourceRenewalQuantity=%d", islandResourceRenewalQuantityFromMap);
+    console.log("current time-gatheredAt:%d", startTime - location.gatheredAt);
+    if (startTime - location.gatheredAt < islandResourceRenewalTime) {
+      console.log("startTime - location.gatheredAt < islandResourceRenewalTime!!!!");
+    }
+    world.app__playerGatherIslandResources(playerId);
+    console.log("After gather resources-------------------------------------");
+    playerInventoryCount1 = PlayerInventoryCount.get(playerId);
+    console.log("Player's Inventory count1:%d(By get(playerId))", playerInventoryCount1);
+    for (uint64 i = 0; i < playerInventoryCount1; i++) {
+      uint32 itemId = PlayerInventory.getInventoryItemId(playerId, i);
+      uint32 quantity = PlayerInventory.getInventoryQuantity(playerId, i);
+      console.log("Item Id:%d,Quantity:%d", itemId, quantity);
     }
 
-    ItemIdQuantityPair[] memory shipProductionMaterials = new ItemIdQuantityPair[](3);
-    shipProductionMaterials[0] = ItemIdQuantityPair(102, 5); // Cotton
-    shipProductionMaterials[1] = ItemIdQuantityPair(200, 5); // NormalLogs
-    shipProductionMaterials[2] = ItemIdQuantityPair(301, 5); // CopperOre
-    world.app__uniApiStartShipProduction(uint8(SkillType.CRAFTING), playerId, 0, 1000000001, shipProductionMaterials);
-    console.log("Started ship production");
+    // // Airdrop items to the test player
+    // world.app__playerAirdrop(playerId, 1, 200); // 200 PotatoSeeds
+    // world.app__playerAirdrop(playerId, 2, 200); // 200 CottonSeeds
+    // world.app__playerAirdrop(playerId, 200, 200); // 200 NormalLogs
+    // world.app__playerAirdrop(playerId, 301, 200); // 200 CopperOre
+    // world.app__playerAirdrop(playerId, 302, 200); // 200 TinOre
+    // world.app__playerAirdrop(playerId, 102, 200); // 200 Cottons
+    // console.log("Airdropped items to test player");
 
-    uint256 environmentRosterPlayerId = type(uint256).max;
-    uint32 environmentRosterSequenceNumber = 1;
-    uint32 environmentRosterCoordinatesX = firstIslandX + 300;
-    uint32 environmentRosterCoordinatesY = firstIslandY + 300;
-    uint32 environmentRosterShipResourceQuantity = 15;
-    uint32 environmentRosterShipBaseResourceQuantity = 3;
-    uint32 environmentRosterBaseExperience = 10;
+    // world.app__uniApiStartCreation(uint8(SkillType.MINING), playerId, 0, 301, 1);
+    // console.log("Started mining of 1 CopperOre");
 
-    world.app__rosterCreateEnvironmentRoster(
-      environmentRosterPlayerId,
-      environmentRosterSequenceNumber,
-      environmentRosterCoordinatesX,
-      environmentRosterCoordinatesY,
-      environmentRosterShipResourceQuantity,
-      environmentRosterShipBaseResourceQuantity,
-      environmentRosterBaseExperience
-    );
-    console.log("Created an environment roster");
+    // uint32 cottonSeedsItemId = 2;
+    // uint32 cottonItemId = 102;
+    // uint32 beforeFarmingCottonSeedsQuantity = PlayerInventoryUpdateUtil.getItemQuantity(playerId, cottonSeedsItemId);
+    // console.log("Before farming,cotton seeds quantity:", beforeFarmingCottonSeedsQuantity);
+    // uint8 skillProcessSequenceNumber = 1;
+
+    // uint32 batchSize = 100;
+
+    // ItemProductionData memory itemProductionData = ItemProduction.get(SkillType.FARMING, cottonItemId);
+    // console.log("itemProductionData.energyCost:", itemProductionData.energyCost);
+    // uint256 energyCost = uint256(itemProductionData.energyCost) * batchSize;
+    // console.log("itemProductionData.energyCost * batchSize=", energyCost);
+
+    // world.app__uniApiStartProduction(SkillType.FARMING, playerId, skillProcessSequenceNumber, cottonItemId, batchSize); // Cotton
+    // console.log("Started farming of %d Cotton", batchSize);
+    // uint32 afterFarmingCottonSeedsQuantity = PlayerInventoryUpdateUtil.getItemQuantity(playerId, cottonSeedsItemId);
+    // console.log("After farming,cotton seeds quantity:", afterFarmingCottonSeedsQuantity);
+    // if (beforeFarmingCottonSeedsQuantity - afterFarmingCottonSeedsQuantity != batchSize) {
+    //   console.log("After farming,cotton seeds quantity error");
+    // }
+
+    // ItemIdQuantityPair[] memory shipProductionMaterials = new ItemIdQuantityPair[](3);
+    // shipProductionMaterials[0] = ItemIdQuantityPair(102, 5); // Cotton
+    // shipProductionMaterials[1] = ItemIdQuantityPair(200, 5); // NormalLogs
+    // shipProductionMaterials[2] = ItemIdQuantityPair(301, 5); // CopperOre
+    // world.app__uniApiStartShipProduction(uint8(SkillType.CRAFTING), playerId, 0, 1000000001, shipProductionMaterials);
+    // console.log("Started ship production");
+
+    // uint256 environmentRosterPlayerId = type(uint256).max;
+    // uint32 environmentRosterSequenceNumber = 1;
+    // uint32 environmentRosterCoordinatesX = firstIslandX + 300;
+    // uint32 environmentRosterCoordinatesY = firstIslandY + 300;
+    // uint32 environmentRosterShipResourceQuantity = 15;
+    // uint32 environmentRosterShipBaseResourceQuantity = 3;
+    // uint32 environmentRosterBaseExperience = 10;
+
+    // world.app__rosterCreateEnvironmentRoster(
+    //   environmentRosterPlayerId,
+    //   environmentRosterSequenceNumber,
+    //   environmentRosterCoordinatesX,
+    //   environmentRosterCoordinatesY,
+    //   environmentRosterShipResourceQuantity,
+    //   environmentRosterShipBaseResourceQuantity,
+    //   environmentRosterBaseExperience
+    // );
+    // console.log("Created an environment roster");
 
     // You need to wait for the creation time to complete...
     // Then execute the ManualSmokeTest script
@@ -229,11 +331,12 @@ contract PostDeploy is Script {
     console.log("Multi-islands added successfully.");
   }
 
-  function createIslandResources() internal pure returns (ItemIdQuantityPair[] memory) {
-    ItemIdQuantityPair[] memory resources = new ItemIdQuantityPair[](3);
-    resources[0] = ItemIdQuantityPair(2, 200); // CottonSeeds
-    resources[1] = ItemIdQuantityPair(2000000001, 100); // ResourceTypeWoodcutting
-    resources[2] = ItemIdQuantityPair(2000000003, 200); // ResourceTypeMining
+  function createIslandResources() internal view returns (ItemIdQuantityPair[] memory) {
+    ItemIdQuantityPair[] memory resources = new ItemIdQuantityPair[](4);
+    resources[0] = ItemIdQuantityPair(COTTON_SEEDS_ITEM_ID, resouceCottonSeedsQuantity); // CottonSeeds
+    resources[1] = ItemIdQuantityPair(RESOURCE_TYPE_WOODCUTTING_ITEM_ID, resourceWoodCuttingQuantity); // ResourceTypeWoodcutting
+    resources[2] = ItemIdQuantityPair(RESOURCE_TYPE_MINING_ITEM_ID, resourceMinningQuantity); // ResourceTypeMining
+    resources[3] = ItemIdQuantityPair(POTATO_SEEDS_ITEM_ID, resoucePotatoSeedsQuantity); // PotatoSeeds
     return resources;
   }
 
@@ -260,9 +363,13 @@ contract PostDeploy is Script {
     world.app__itemCreate(102, true, 1, "Cottons");
     world.app__itemCreate(1001, true, 1, "BronzeBar");
     world.app__itemCreate(200, true, 1, "NormalLogs");
+    world.app__itemCreate(201, true, 1, "OakLogs");
     world.app__itemCreate(1000000001, true, 1, "Ship");
+    world.app__itemCreate(1000000002, true, 1, "Fluyt");
     world.app__itemCreate(301, true, 1, "CopperOre");
     world.app__itemCreate(302, true, 1, "TinOre");
+    world.app__itemCreate(401, true, 1, "Minion");
+    world.app__itemCreate(402, true, 1, "SmallSail");
     world.app__itemCreate(2000000001, true, 1, "ResourceTypeWoodcutting");
     world.app__itemCreate(2000000002, true, 1, "ResourceTypeFishing");
     world.app__itemCreate(2000000003, true, 1, "ResourceTypeMining");

@@ -13,10 +13,8 @@ library IslandRenewableItemCreateLogic {
    * @param quantityWeight The current state the IslandRenewableItem.
    * @return A IslandRenewableItemCreated event struct.
    */
-  function verify(
-    uint32 itemId,
-    uint32 quantityWeight
-  ) internal pure returns (IslandRenewableItemCreated memory) {
+  function verify(uint32 itemId, uint32 quantityWeight) internal pure returns (IslandRenewableItemCreated memory) {
+    require(quantityWeight > 0, "Quantity weight must greater than 0.");
     return IslandRenewableItemCreated(itemId, quantityWeight);
   }
 
@@ -26,9 +24,7 @@ library IslandRenewableItemCreateLogic {
    * @param islandRenewableItemCreated The IslandRenewableItemCreated event struct from the verify function.
    * @return The new state of the IslandRenewableItem.
    */
-  function mutate(
-    IslandRenewableItemCreated memory islandRenewableItemCreated
-  ) internal pure returns (uint32) {
+  function mutate(IslandRenewableItemCreated memory islandRenewableItemCreated) internal pure returns (uint32) {
     uint32 quantityWeight;
     quantityWeight = islandRenewableItemCreated.quantityWeight;
     return quantityWeight;

@@ -18,6 +18,7 @@ library IslandRenewableItemUpdateLogic {
     uint32 quantityWeight,
     uint32 s_quantityWeight
   ) internal pure returns (IslandRenewableItemUpdated memory) {
+    require(quantityWeight > 0, "Quantity weight must greater than 0.");
     return IslandRenewableItemUpdated(itemId, quantityWeight);
   }
 
