@@ -3,7 +3,7 @@ pragma solidity >=0.8.24;
 
 import { EnergyDropRequested } from "./EnergyDropEvents.sol";
 import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
-import { EnergyToken } from "../codegen/index.sol";
+import { EnergyToken, EnergyTokenData } from "../codegen/index.sol";
 import { SafeERC20, IERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 /**
@@ -13,8 +13,8 @@ import { SafeERC20, IERC20 } from "@openzeppelin/contracts/token/ERC20/utils/Saf
 library EnergyDropRequestLogic {
   using SafeERC20 for IERC20;
 
-  uint256 constant A_DROP_AMOUNT = 200 * 10 ** 18; // 200 ENERGY tokens?
-  uint256 constant TIME_INTERVAL = 24 * 60 * 60; // 24 hours in seconds
+  uint256 constant DEFAULT_DROP_AMOUNT = 200 * 10 ** 18; // 200 ENERGY tokens?
+  uint64 constant DEFAULT_DROP_INTERVAL = 24 * 60 * 60; // 24 hours in seconds
 
   error InvalidTokenAddress(address tokenAddress);
   error InsufficientBalance(uint256 balance, uint256 requiredAmount);
@@ -32,9 +32,18 @@ library EnergyDropRequestLogic {
    * @return A EnergyDropRequested event struct.
    */
   function verify(address accountAddress, uint64 lastDroppedAt) internal view returns (EnergyDropRequested memory) {
-    address tokenAddress = EnergyToken.get();
+    EnergyTokenData memory energyTokenData = EnergyToken.get();
+    address tokenAddress = energyTokenData.tokenAddress;
+    uint256 faucetDropAmount = energyTokenData.faucetDropAmount;
+    uint64 faucetDropInterval = energyTokenData.faucetDropInterval;
     if (tokenAddress == address(0)) {
       revert InvalidTokenAddress(tokenAddress);
+    }
+    if (faucetDropAmount == 0) {
+      faucetDropAmount = DEFAULT_DROP_AMOUNT;
+    }
+    if (faucetDropInterval == uint64(0)) {
+      faucetDropInterval = DEFAULT_DROP_INTERVAL;
     }
 
     if (accountAddress != WorldContextConsumerLib._msgSender()) {
@@ -43,16 +52,16 @@ library EnergyDropRequestLogic {
 
     IERC20 token = IERC20(tokenAddress);
     uint256 balance = token.balanceOf(address(this));
-    if (balance < A_DROP_AMOUNT) {
-      revert InsufficientBalance(balance, A_DROP_AMOUNT);
+    if (balance < faucetDropAmount) {
+      revert InsufficientBalance(balance, faucetDropAmount);
     }
 
     uint256 currentTime = block.timestamp;
-    if (currentTime - lastDroppedAt < TIME_INTERVAL) {
+    if (currentTime - lastDroppedAt < faucetDropInterval) {
       revert InsufficientTimeInterval(lastDroppedAt, currentTime);
     }
 
-    return EnergyDropRequested({ accountAddress: accountAddress, amount: A_DROP_AMOUNT });
+    return EnergyDropRequested({ accountAddress: accountAddress, amount: faucetDropAmount });
   }
 
   /**
@@ -63,7 +72,7 @@ library EnergyDropRequestLogic {
    * @return The new state of the EnergyDrop.
    */
   function mutate(EnergyDropRequested memory energyDropRequested, uint64 lastDroppedAt) internal returns (uint64) {
-    address tokenAddress = EnergyToken.get();
+    address tokenAddress = EnergyToken.getTokenAddress();
     require(tokenAddress != address(0), "Invalid token address");
 
     IERC20 token = IERC20(tokenAddress);

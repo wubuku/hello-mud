@@ -351,6 +351,8 @@ export default defineWorld({
     EnergyToken: {
       schema: {
         tokenAddress: "address",
+        faucetDropAmount: "uint256",
+        faucetDropInterval: "uint64",
       },
       key: [],
     },

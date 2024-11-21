@@ -27,7 +27,7 @@ contract AggregatorServiceSystem is System {
   ) public {
     ItemCreationData memory itemCreationData = ItemCreation.get(skillType, itemId);
     uint256 energyCost = uint256(itemCreationData.energyCost) * batchSize;
-    address tokenAddress = EnergyToken.get();
+    address tokenAddress = EnergyToken.getTokenAddress();
     if (tokenAddress == address(0)) {
       revert InvalidTokenAddress(tokenAddress);
     }
@@ -50,7 +50,7 @@ contract AggregatorServiceSystem is System {
   ) public {
     ItemProductionData memory itemProductionData = ItemProduction.get(skillType, itemId);
     uint256 energyCost = uint256(itemProductionData.energyCost) * batchSize;
-    address tokenAddress = EnergyToken.get();
+    address tokenAddress = EnergyToken.getTokenAddress();
     if (tokenAddress == address(0)) {
       revert InvalidTokenAddress(tokenAddress);
     }
@@ -73,7 +73,7 @@ contract AggregatorServiceSystem is System {
   ) public {
     ItemProductionData memory itemProductionData = ItemProduction.get(skillType, itemId);
     uint256 energyCost = itemProductionData.energyCost;
-    address tokenAddress = EnergyToken.get();
+    address tokenAddress = EnergyToken.getTokenAddress();
     if (tokenAddress == address(0)) {
       revert InvalidTokenAddress(tokenAddress);
     }
@@ -116,7 +116,7 @@ contract AggregatorServiceSystem is System {
     if (requiredEnergy > energyAmount) {
       revert InsufficientEnergy(requiredEnergy, energyAmount);
     }
-    address tokenAddress = EnergyToken.get();
+    address tokenAddress = EnergyToken.getTokenAddress();
     if (tokenAddress == address(0)) {
       revert InvalidTokenAddress(tokenAddress);
     }

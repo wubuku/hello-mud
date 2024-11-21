@@ -5,9 +5,13 @@ pragma solidity >=0.8.24;
 
 struct EnergyTokenCreated {
   address tokenAddress;
+  uint256 faucetDropAmount;
+  uint64 faucetDropInterval;
 }
 
 struct EnergyTokenUpdated {
   address tokenAddress;
+  uint256 faucetDropAmount;
+  uint64 faucetDropInterval;
 }
 

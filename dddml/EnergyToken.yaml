@@ -7,6 +7,10 @@ singletonObjects:
     properties:
       TokenAddress:
         type: address
+      FaucetDropAmount:
+        type: uint256
+      FaucetDropInterval:
+        type: uint64
     methods:
       Create:
         requiredPermission: __NamespaceOwner__ # "__Publisher__"

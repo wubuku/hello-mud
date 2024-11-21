@@ -12,5 +12,12 @@ library BattleStatus {
     return v == IN_PROGRESS || v == ENDED || v == LOOTED;
   }
 
+  function allValidValues() internal pure returns (uint8[] memory) {
+    uint8[] memory values = new uint8[](3);
+    values[0] = IN_PROGRESS;
+    values[1] = ENDED;
+    values[2] = LOOTED;
+    return values;
+  }
 }
 

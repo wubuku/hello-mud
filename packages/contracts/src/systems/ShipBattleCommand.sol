@@ -12,5 +12,12 @@ library ShipBattleCommand {
     return v == ATTACK || v == SWAP_POSITIONS || v == PASS;
   }
 
+  function allValidValues() internal pure returns (uint8[] memory) {
+    uint8[] memory values = new uint8[](3);
+    values[0] = ATTACK;
+    values[1] = SWAP_POSITIONS;
+    values[2] = PASS;
+    return values;
+  }
 }
 

@@ -10,7 +10,7 @@ import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 
 import { IWorld } from "../src/codegen/world/IWorld.sol";
 import { Energy } from "../src/tokens/Energy.sol";
-import { EnergyToken, ItemCreationData, ItemCreation, ItemProductionData, ItemProduction } from "../src/codegen/index.sol";
+import { EnergyToken, EnergyTokenData, ItemCreationData, ItemCreation, ItemProductionData, ItemProduction } from "../src/codegen/index.sol";
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
@@ -21,6 +21,10 @@ import { Coordinates } from "../src/systems/Coordinates.sol";
 import { PlayerInventoryUpdateUtil } from "../src/utils/PlayerInventoryUpdateUtil.sol";
 
 contract PostDeploy is Script {
+
+  uint256 constant DEFAULT_DROP_AMOUNT = 200 * 10 ** 18; // 200 ENERGY tokens?
+  uint64 constant DEFAULT_DROP_INTERVAL = 24 * 60 * 60; // 24 hours in seconds
+
   function run(address worldAddress) external {
     // Specify a store so that you can use tables directly in PostDeploy
     StoreSwitch.setStoreAddress(worldAddress);
@@ -57,7 +61,11 @@ contract PostDeploy is Script {
     console.log("Approved AggregatorServiceSystem to spend ENERGY tokens");
 
     IWorld world = IWorld(worldAddress);
-    world.app__energyTokenCreate(energyTokenAddress);
+    world.app__energyTokenCreate(
+      energyTokenAddress,
+      DEFAULT_DROP_AMOUNT,
+      DEFAULT_DROP_INTERVAL
+    );
     console.log("Set ENERGY token address for the world");
 
     // ------------------ ENERGY faucet test ------------------

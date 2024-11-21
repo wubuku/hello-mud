@@ -16,17 +16,23 @@ import { Schema } from "@latticexyz/store/src/Schema.sol";
 import { EncodedLengths, EncodedLengthsLib } from "@latticexyz/store/src/EncodedLengths.sol";
 import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 
+struct EnergyTokenData {
+  address tokenAddress;
+  uint256 faucetDropAmount;
+  uint64 faucetDropInterval;
+}
+
 library EnergyToken {
   // Hex below is the result of `WorldResourceIdLib.encode({ namespace: "app", name: "EnergyToken", typeId: RESOURCE_TABLE });`
   ResourceId constant _tableId = ResourceId.wrap(0x74626170700000000000000000000000456e65726779546f6b656e0000000000);
 
   FieldLayout constant _fieldLayout =
-    FieldLayout.wrap(0x0014010014000000000000000000000000000000000000000000000000000000);
+    FieldLayout.wrap(0x003c030014200800000000000000000000000000000000000000000000000000);
 
   // Hex-encoded key schema of ()
   Schema constant _keySchema = Schema.wrap(0x0000000000000000000000000000000000000000000000000000000000000000);
-  // Hex-encoded value schema of (address)
-  Schema constant _valueSchema = Schema.wrap(0x0014010061000000000000000000000000000000000000000000000000000000);
+  // Hex-encoded value schema of (address, uint256, uint64)
+  Schema constant _valueSchema = Schema.wrap(0x003c0300611f0700000000000000000000000000000000000000000000000000);
 
   /**
    * @notice Get the table's key field names.
@@ -41,8 +47,10 @@ library EnergyToken {
    * @return fieldNames An array of strings with the names of value fields.
    */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
-    fieldNames = new string[](1);
+    fieldNames = new string[](3);
     fieldNames[0] = "tokenAddress";
+    fieldNames[1] = "faucetDropAmount";
+    fieldNames[2] = "faucetDropInterval";
   }
 
   /**
@@ -80,26 +88,6 @@ library EnergyToken {
   }
 
   /**
-   * @notice Get tokenAddress.
-   */
-  function get() internal view returns (address tokenAddress) {
-    bytes32[] memory _keyTuple = new bytes32[](0);
-
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
-    return (address(bytes20(_blob)));
-  }
-
-  /**
-   * @notice Get tokenAddress.
-   */
-  function _get() internal view returns (address tokenAddress) {
-    bytes32[] memory _keyTuple = new bytes32[](0);
-
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
-    return (address(bytes20(_blob)));
-  }
-
-  /**
    * @notice Set tokenAddress.
    */
   function setTokenAddress(address tokenAddress) internal {
@@ -118,21 +106,190 @@ library EnergyToken {
   }
 
   /**
-   * @notice Set tokenAddress.
+   * @notice Get faucetDropAmount.
    */
-  function set(address tokenAddress) internal {
+  function getFaucetDropAmount() internal view returns (uint256 faucetDropAmount) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((tokenAddress)), _fieldLayout);
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
+    return (uint256(bytes32(_blob)));
   }
 
   /**
-   * @notice Set tokenAddress.
+   * @notice Get faucetDropAmount.
    */
-  function _set(address tokenAddress) internal {
+  function _getFaucetDropAmount() internal view returns (uint256 faucetDropAmount) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((tokenAddress)), _fieldLayout);
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
+    return (uint256(bytes32(_blob)));
+  }
+
+  /**
+   * @notice Set faucetDropAmount.
+   */
+  function setFaucetDropAmount(uint256 faucetDropAmount) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((faucetDropAmount)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set faucetDropAmount.
+   */
+  function _setFaucetDropAmount(uint256 faucetDropAmount) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((faucetDropAmount)), _fieldLayout);
+  }
+
+  /**
+   * @notice Get faucetDropInterval.
+   */
+  function getFaucetDropInterval() internal view returns (uint64 faucetDropInterval) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
+    return (uint64(bytes8(_blob)));
+  }
+
+  /**
+   * @notice Get faucetDropInterval.
+   */
+  function _getFaucetDropInterval() internal view returns (uint64 faucetDropInterval) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
+    return (uint64(bytes8(_blob)));
+  }
+
+  /**
+   * @notice Set faucetDropInterval.
+   */
+  function setFaucetDropInterval(uint64 faucetDropInterval) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((faucetDropInterval)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set faucetDropInterval.
+   */
+  function _setFaucetDropInterval(uint64 faucetDropInterval) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((faucetDropInterval)), _fieldLayout);
+  }
+
+  /**
+   * @notice Get the full data.
+   */
+  function get() internal view returns (EnergyTokenData memory _table) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    (bytes memory _staticData, EncodedLengths _encodedLengths, bytes memory _dynamicData) = StoreSwitch.getRecord(
+      _tableId,
+      _keyTuple,
+      _fieldLayout
+    );
+    return decode(_staticData, _encodedLengths, _dynamicData);
+  }
+
+  /**
+   * @notice Get the full data.
+   */
+  function _get() internal view returns (EnergyTokenData memory _table) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    (bytes memory _staticData, EncodedLengths _encodedLengths, bytes memory _dynamicData) = StoreCore.getRecord(
+      _tableId,
+      _keyTuple,
+      _fieldLayout
+    );
+    return decode(_staticData, _encodedLengths, _dynamicData);
+  }
+
+  /**
+   * @notice Set the full data using individual values.
+   */
+  function set(address tokenAddress, uint256 faucetDropAmount, uint64 faucetDropInterval) internal {
+    bytes memory _staticData = encodeStatic(tokenAddress, faucetDropAmount, faucetDropInterval);
+
+    EncodedLengths _encodedLengths;
+    bytes memory _dynamicData;
+
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreSwitch.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData);
+  }
+
+  /**
+   * @notice Set the full data using individual values.
+   */
+  function _set(address tokenAddress, uint256 faucetDropAmount, uint64 faucetDropInterval) internal {
+    bytes memory _staticData = encodeStatic(tokenAddress, faucetDropAmount, faucetDropInterval);
+
+    EncodedLengths _encodedLengths;
+    bytes memory _dynamicData;
+
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreCore.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData, _fieldLayout);
+  }
+
+  /**
+   * @notice Set the full data using the data struct.
+   */
+  function set(EnergyTokenData memory _table) internal {
+    bytes memory _staticData = encodeStatic(_table.tokenAddress, _table.faucetDropAmount, _table.faucetDropInterval);
+
+    EncodedLengths _encodedLengths;
+    bytes memory _dynamicData;
+
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreSwitch.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData);
+  }
+
+  /**
+   * @notice Set the full data using the data struct.
+   */
+  function _set(EnergyTokenData memory _table) internal {
+    bytes memory _staticData = encodeStatic(_table.tokenAddress, _table.faucetDropAmount, _table.faucetDropInterval);
+
+    EncodedLengths _encodedLengths;
+    bytes memory _dynamicData;
+
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreCore.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData, _fieldLayout);
+  }
+
+  /**
+   * @notice Decode the tightly packed blob of static data using this table's field layout.
+   */
+  function decodeStatic(
+    bytes memory _blob
+  ) internal pure returns (address tokenAddress, uint256 faucetDropAmount, uint64 faucetDropInterval) {
+    tokenAddress = (address(Bytes.getBytes20(_blob, 0)));
+
+    faucetDropAmount = (uint256(Bytes.getBytes32(_blob, 20)));
+
+    faucetDropInterval = (uint64(Bytes.getBytes8(_blob, 52)));
+  }
+
+  /**
+   * @notice Decode the tightly packed blobs using this table's field layout.
+   * @param _staticData Tightly packed static fields.
+   *
+   *
+   */
+  function decode(
+    bytes memory _staticData,
+    EncodedLengths,
+    bytes memory
+  ) internal pure returns (EnergyTokenData memory _table) {
+    (_table.tokenAddress, _table.faucetDropAmount, _table.faucetDropInterval) = decodeStatic(_staticData);
   }
 
   /**
@@ -157,8 +314,12 @@ library EnergyToken {
    * @notice Tightly pack static (fixed length) data using this table's schema.
    * @return The static data, encoded into a sequence of bytes.
    */
-  function encodeStatic(address tokenAddress) internal pure returns (bytes memory) {
-    return abi.encodePacked(tokenAddress);
+  function encodeStatic(
+    address tokenAddress,
+    uint256 faucetDropAmount,
+    uint64 faucetDropInterval
+  ) internal pure returns (bytes memory) {
+    return abi.encodePacked(tokenAddress, faucetDropAmount, faucetDropInterval);
   }
 
   /**
@@ -167,8 +328,12 @@ library EnergyToken {
    * @return The lengths of the dynamic fields (packed into a single bytes32 value).
    * @return The dynamic (variable length) data, encoded into a sequence of bytes.
    */
-  function encode(address tokenAddress) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
-    bytes memory _staticData = encodeStatic(tokenAddress);
+  function encode(
+    address tokenAddress,
+    uint256 faucetDropAmount,
+    uint64 faucetDropInterval
+  ) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
+    bytes memory _staticData = encodeStatic(tokenAddress, faucetDropAmount, faucetDropInterval);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;

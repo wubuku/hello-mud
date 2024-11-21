@@ -18,5 +18,18 @@ library SkillType {
     return v == FARMING || v == WOODCUTTING || v == FISHING || v == MINING || v == SMITHING || v == COOKING || v == CRAFTING || v == TOWNSHIP || v == SAILING;
   }
 
+  function allValidValues() internal pure returns (uint8[] memory) {
+    uint8[] memory values = new uint8[](9);
+    values[0] = FARMING;
+    values[1] = WOODCUTTING;
+    values[2] = FISHING;
+    values[3] = MINING;
+    values[4] = SMITHING;
+    values[5] = COOKING;
+    values[6] = CRAFTING;
+    values[7] = TOWNSHIP;
+    values[8] = SAILING;
+    return values;
+  }
 }
 

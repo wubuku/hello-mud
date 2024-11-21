@@ -480,10 +480,10 @@ contract PrintSystemInfo is Script {
     (systemAddress, systemPublicAccess) = Systems.get(systemId);
     console.log("address:", systemAddress);
     console.log("publicAccess:", systemPublicAccess);
-    eventHash = keccak256("EnergyTokenCreatedEvent(address)");
-    console.log("event EnergyTokenCreatedEvent(address) signature topic:", vm.toString(abi.encodePacked(eventHash)));
-    eventHash = keccak256("EnergyTokenUpdatedEvent(address)");
-    console.log("event EnergyTokenUpdatedEvent(address) signature topic:", vm.toString(abi.encodePacked(eventHash)));
+    eventHash = keccak256("EnergyTokenCreatedEvent(address,uint256,uint64)");
+    console.log("event EnergyTokenCreatedEvent(address,uint256,uint64) signature topic:", vm.toString(abi.encodePacked(eventHash)));
+    eventHash = keccak256("EnergyTokenUpdatedEvent(address,uint256,uint64)");
+    console.log("event EnergyTokenUpdatedEvent(address,uint256,uint64) signature topic:", vm.toString(abi.encodePacked(eventHash)));
     console.log("// # forge inspect EnergyTokenSystem errors");
 
 

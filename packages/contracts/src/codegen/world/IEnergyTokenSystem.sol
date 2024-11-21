@@ -9,7 +9,7 @@ pragma solidity >=0.8.24;
  * @dev This interface is automatically generated from the corresponding system contract. Do not edit manually.
  */
 interface IEnergyTokenSystem {
-  function app__energyTokenCreate(address tokenAddress) external;
+  function app__energyTokenCreate(address tokenAddress, uint256 faucetDropAmount, uint64 faucetDropInterval) external;
 
-  function app__energyTokenUpdate(address tokenAddress) external;
+  function app__energyTokenUpdate(address tokenAddress, uint256 faucetDropAmount, uint64 faucetDropInterval) external;
 }
