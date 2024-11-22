@@ -13,7 +13,7 @@ import { SafeERC20, IERC20 } from "@openzeppelin/contracts/token/ERC20/utils/Saf
 library EnergyDropRequestLogic {
   using SafeERC20 for IERC20;
 
-  uint256 constant A_DROP_AMOUNT = 200 * 10 ** 18; // 200 ENERGY tokens?
+  uint256 constant A_DROP_AMOUNT = 100 * 10 ** 18; // 200 ENERGY tokens?
   uint256 constant TIME_INTERVAL = 24 * 60 * 60; // 24 hours in seconds
 
   error InvalidTokenAddress(address tokenAddress);
