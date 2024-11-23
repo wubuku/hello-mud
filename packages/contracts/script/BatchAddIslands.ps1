@@ -1,12 +1,14 @@
 $startLocation = $PSScriptRoot; 
 
 $privateKey = "0x0dcf6503b3fa4c2b9f529da422e0d56ed19a08dd6246f22500a756d9fe6d3201"
-$worldAddress = "0x385298664c9386101eb0aed153269717008fdeee"
+$worldAddress = "0x63381030dda22c888f2548436c73146ef835ab9e"
+#$rpc_url= "https://testnet.storyrpc.io/"
+$rpc_url = "https://odyssey.storyrpc.io/"
 
 #释放的块序号
-$seqNo = 1
+$seqNo = 16
 
-$logPath=$startLocation+"\BatchAddIslands\$worldAddress"
+$logPath = $startLocation + "\BatchAddIslands\$worldAddress"
 if (-Not (Test-Path $logPath)) {
     # 如果不存在，则创建目录
     New-Item -ItemType Directory -Path $logPath
@@ -15,7 +17,7 @@ if (-Not (Test-Path $logPath)) {
 
 $now = Get-Date
 $formattedNow = $now.ToString('yyyyMMddHHmmss')
-$logFile = "$logPath\$formattedNow"+"_$seqNo.log"
+$logFile = "$logPath\$formattedNow" + "_$seqNo.log"
 
 "开辟第: $seqNo 块区域..." | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Yellow
 
@@ -35,8 +37,8 @@ $island_width = 10000
 $island_height = 10000
 
 
-$block_width = 100000
-$block_height = 100000
+$block_width = 90000
+$block_height = 90000
 
 if ($block_width -lt $island_width -or $block_height -lt $island_height) {
     "分配区域的尺寸不能小于岛屿的尺寸" | Tee-Object -FilePath $logFile -Append | Write-Host -ForegroundColor Red
@@ -305,31 +307,32 @@ for ($i = 0; $i -lt $column; $i++) {
 
 
 "`n开始添加岛屿" | Tee-Object -FilePath $logFile -Append | Write-Host -ForegroundColor Blue
-$islandResourceItemIds="[2, 2000000001, 2000000003]"
+$islandResourceItemIds = "[2, 2000000001, 2000000003]"
 #批量添加
-$islandCoordinatesParameter="["
-$index=0
+$islandCoordinatesParameter = "["
+$index = 0
 foreach ($coordinate in $coordinates) {
     "初始坐标($($coordinate.InitX),$($coordinate.InitY))，实际坐标($($coordinate.RandomX),$($coordinate.RandomY))" | Tee-Object -FilePath $logFile -Append  |  Write-Host -ForegroundColor Yellow
-    $islandCoordinatesParameter+="("+$($coordinate.RandomX)+","+$($coordinate.RandomY)+")"
-        if($index -ne $coordinates.Count-1){
-        $islandCoordinatesParameter+=","
-        }
-        $index++
+    $islandCoordinatesParameter += "(" + $($coordinate.RandomX) + "," + $($coordinate.RandomY) + ")"
+    if ($index -ne $coordinates.Count - 1) {
+        $islandCoordinatesParameter += ","
+    }
+    $index++
 }
-$islandCoordinatesParameter+="]"
+$islandCoordinatesParameter += "]"
 "岛屿坐标列表:$islandCoordinatesParameter" | Tee-Object -FilePath $logFile -Append  |  Write-Host -ForegroundColor Green
-    try {
-    $command = "cast send $worldAddress ""app__mapAddMultiIslands((uint32,uint32)[],uint32[],uint32)"" ""$islandCoordinatesParameter"" ""$islandResourceItemIds"" 600 --rpc-url ""https://testnet.storyrpc.io"" --private-key $privateKey --json"
+try {
+    $command = "cast send $worldAddress ""app__mapAddMultiIslands((uint32,uint32)[],uint32[],uint32)"" ""$islandCoordinatesParameter"" ""$islandResourceItemIds"" 600 --rpc-url ""$rpc_url"" --private-key $privateKey --json"
     $command | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Blue
     $result = Invoke-Expression -Command $command
     $resultObj = $result | ConvertFrom-Json  
-    if($resultObj.status -eq "0x1"){
-    "成功添加岛屿 $($coordinates.Count) 个。`n" | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Green 
+    if ($resultObj.status -eq "0x1") {
+        "成功添加岛屿 $($coordinates.Count) 个。`n" | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Green 
     
-    "`n$result`n" | Tee-Object -FilePath $logFile -Append 
+        "`n$result`n" | Tee-Object -FilePath $logFile -Append 
 
-    }else{
+    }
+    else {
         "添加岛屿时发生错误`n" | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Green 
     }
 }
