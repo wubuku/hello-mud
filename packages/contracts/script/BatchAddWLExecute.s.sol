@@ -20,7 +20,7 @@ import { SystemCallData } from "@latticexyz/world/src/modules/init/types.sol";
 contract BatchCall is Script {
   function run(address worldAddress) external {
     StoreSwitch.setStoreAddress(worldAddress);
-    IWorld world = IWorld(worldAddress);
+    //IWorld world = IWorld(worldAddress);
 
     // Load the private key from the `PRIVATE_KEY` environment variable (in .env)
     uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
@@ -34,10 +34,11 @@ contract BatchCall is Script {
       name: "IslandClaimWhite"
     });
     address[3] memory walletAddresses = [
-      0x269E2038cb7b084830f3c12c5041A5c52677d525,
-      0x79785B77EE18F14BcE7006d9583D26279A39bAF7,
-      0xc173bB17b5D2C7BCEd8a6f50E6F9c1bD6bde48DD
+      address(0x269E2038cb7b084830f3c12c5041A5c52677d525),
+      address(0x79785B77EE18F14BcE7006d9583D26279A39bAF7),
+      address(0xc173bB17b5D2C7BCEd8a6f50E6F9c1bD6bde48DD)
     ];
+
     SystemCallData[] memory calls = new SystemCallData[](walletAddresses.length);
     for (uint i = 0; i < walletAddresses.length; i++) {
       calls[i].systemId = systemId;
