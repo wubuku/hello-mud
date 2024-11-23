@@ -48,6 +48,12 @@ contract PostDeploy is Script {
   uint32 resoucePotatoSeedsQuantity = 300;
   uint32 resouceCottonSeedsQuantity = 400;
 
+  // Island resouces renewal information
+  uint32 constant ISLAND_RESOURCES_RENEWAL_QUANTITY = 1000;
+  uint32 islandResourceRenewalQuantity = 1000;
+  uint32 constant ISLAND_RESOURCES_RENEWAL_TIME = 1;
+  uint64 islandResourceRenewalTime = 1; //Only 1S // 24 * 60 * 60; //One day=24hours * 60 mins * 60 second
+
   function run(address worldAddress) external {
     // Specify a store so that you can use tables directly in PostDeploy
     StoreSwitch.setStoreAddress(worldAddress);
@@ -104,9 +110,7 @@ contract PostDeploy is Script {
     console.log("Requested energy drop");
     // -------------------------------------------------------
 
-    bool islandClaimWhitelistEnabled = false; // NOTE: Set to true to enable the island claim whitelist!
-    uint32 islandResourceRenewalQuantity = 1000;
-    uint64 islandResourceRenewalTime = 1; //Only 1S // 24 * 60 * 60; //One day=24hours * 60 mins * 60 seconds
+    bool islandClaimWhitelistEnabled = false; // NOTE: Set to true to enable the island claim whitelist!s
     uint32[] memory islandRenewableItemIds = new uint32[](4); //todo: add renewable item ids
     islandRenewableItemIds[0] = RESOURCE_TYPE_WOODCUTTING_ITEM_ID;
     islandRenewableItemIds[1] = RESOURCE_TYPE_MINING_ITEM_ID;
@@ -115,8 +119,8 @@ contract PostDeploy is Script {
     world.app__mapCreate(
       true,
       islandClaimWhitelistEnabled,
-      islandResourceRenewalQuantity,
-      islandResourceRenewalTime,
+      ISLAND_RESOURCES_RENEWAL_QUANTITY,
+      ISLAND_RESOURCES_RENEWAL_TIME,
       islandRenewableItemIds
     );
     console.log("Created map, islandClaimWhitelistEnabled:", islandClaimWhitelistEnabled);
@@ -219,17 +223,19 @@ contract PostDeploy is Script {
       uint32 quantity = PlayerInventory.getInventoryQuantity(playerId, i);
       console.log("Item Id:%d,Quantity:%d", itemId, quantity);
     }
-    //将上次收集资源的时间减少5秒，以便可以测试 app__playerGatherIslandResources
-    MapLocation.setGatheredAt(firstIslandX, firstIslandY, location.gatheredAt - islandResourceRenewalTime);
+    //将上次收集资源的时间减少 ISLAND_RESOURCES_RENEWAL_TIME 秒，以便可以测试 app__playerGatherIslandResources
+    MapLocation.setGatheredAt(firstIslandX, firstIslandY, location.gatheredAt - ISLAND_RESOURCES_RENEWAL_TIME);
     location = MapLocation.get(firstIslandX, firstIslandY);
     console.log("After change GatherAt,gather at to->:%d", location.gatheredAt);
+
     uint64 islandResourceRenewalTimeFromMap = Map.getIslandResourceRenewalTime();
     console.log("islandResourceRenewalTime=%d", islandResourceRenewalTimeFromMap);
     uint32 islandResourceRenewalQuantityFromMap = Map.getIslandResourceRenewalQuantity();
     console.log("islandResourceRenewalQuantity=%d", islandResourceRenewalQuantityFromMap);
     console.log("current time-gatheredAt:%d", startTime - location.gatheredAt);
-    if (startTime - location.gatheredAt < islandResourceRenewalTime) {
-      console.log("startTime - location.gatheredAt < islandResourceRenewalTime!!!!");
+    if (startTime - location.gatheredAt < islandResourceRenewalTimeFromMap) {
+      console.log("startTime - location.gatheredAt < islandResourceRenewalTimeFromMap!!!!");
+      return;
     }
     world.app__playerGatherIslandResources(playerId);
     console.log("After gather resources-------------------------------------");
@@ -357,7 +363,7 @@ contract PostDeploy is Script {
 
   function createItems(IWorld world) internal {
     world.app__itemCreate(0, false, 1, "UNUSED_ITEM");
-    world.app__itemCreate(1, false, 1, "PotatoSeeds");
+    world.app__itemCreate(1, false, 5, "PotatoSeeds");
     world.app__itemCreate(101, true, 1, "Potatoes");
     world.app__itemCreate(2, true, 5, "CottonSeeds");
     world.app__itemCreate(102, true, 1, "Cottons");
@@ -415,13 +421,33 @@ contract PostDeploy is Script {
       uint8(SkillType.FARMING), // skillType (farming)
       102, // itemId (Cottons)
       1, // requirementsLevel
-      1, // baseQuantity
+      5, // baseQuantity
       0, // baseExperience
       15, // baseCreationTime
       5 * 10 ** 18, // energyCost
       100, // successRate
       cottonMaterialItemIds,
       cottonMaterialItemQuantities
+    );
+
+    // Farming (Potato Seeds to Potatoes)
+    uint32[] memory potatoMaterialItemIds = new uint32[](1);
+    potatoMaterialItemIds[0] = POTATO_SEEDS_ITEM_ID; // ItemPotatoSeeds.ItemId
+
+    uint32[] memory potatoMaterialItemQuantities = new uint32[](1);
+    potatoMaterialItemQuantities[0] = 1;
+
+    world.app__itemProductionCreate(
+      uint8(SkillType.FARMING), // skillType (farming)
+      POTATOES_ITEM_ID, // itemId (Potatoes)
+      1, // requirementsLevel
+      5, // baseQuantity
+      0, // baseExperience
+      15, // baseCreationTime
+      5 * 10 ** 18, // energyCost
+      100, // successRate
+      potatoMaterialItemIds,
+      potatoMaterialItemQuantities
     );
 
     // Ship crafting
@@ -437,7 +463,7 @@ contract PostDeploy is Script {
 
     world.app__itemProductionCreate(
       uint8(SkillType.CRAFTING),
-      1000000001, // itemId (Ship)
+      SHIP_ITEM_ID, // itemId (Ship)
       1, // requirementsLevel
       1, // baseQuantity
       0, // baseExperience (adjusted to 0 as per the script)
@@ -446,6 +472,30 @@ contract PostDeploy is Script {
       100, // successRate
       shipMaterialItemIds,
       shipMaterialItemQuantities
+    );
+
+    // Fluyt crafting
+    uint32[] memory fluytMaterialItemIds = new uint32[](3);
+    fluytMaterialItemIds[0] = POTATOES_ITEM_ID; // Potatoes
+    fluytMaterialItemIds[1] = OAK_LOGS_ITEM_ID; // OkaLogs
+    fluytMaterialItemIds[2] = TIN_ORE_ITEM_ID; // TinOre
+
+    uint32[] memory fluytMaterialItemQuantities = new uint32[](3);
+    fluytMaterialItemQuantities[0] = 3; // 3 Potatoes
+    fluytMaterialItemQuantities[1] = 3; // 3 OkaLogs
+    fluytMaterialItemQuantities[2] = 3; // 3 TinOre
+
+    world.app__itemProductionCreate(
+      uint8(SkillType.CRAFTING),
+      FLUYT_ITEM_ID, // itemId (Fluyt)
+      1, // requirementsLevel
+      1, // baseQuantity
+      0, // baseExperience (adjusted to 0 as per the script)
+      15, // baseCreationTime
+      5 * 10 ** 18, // energyCost (adjusted to match the script)
+      100, // successRate
+      fluytMaterialItemIds,
+      fluytMaterialItemQuantities
     );
   }
 }
