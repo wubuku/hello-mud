@@ -56,24 +56,21 @@ contract BatchCall is Script {
       namespace: "app",
       name: "MapSystem" //mapAddIsland方法所在的合约的名称的前16位
     });
-
-    uint32[1] memory coordinatesX = [uint32(2147483647)];
-    uint32[1] memory coordinatesY = [uint32(2147483647)];
-
-    // uint32[2] memory coordinatesX = [uint32(0), uint32(50)];
-    // uint32[2] memory coordinatesY = [uint32(0), uint32(50)];
+    //每次修改以下这两个数组即可，coordinatesX：岛屿 X 坐标数组，coordinatesY：岛屿 Y 坐标数组
+    uint32[2] memory coordinatesX = [uint32(0), uint32(50)];
+    uint32[2] memory coordinatesY = [uint32(0), uint32(50)];
 
     ItemIdQuantityPair[] memory islandResources = createIslandResources();
-    logIslandResources(islandResources);
+    //logIslandResources(islandResources);
 
     SystemCallData[] memory calls = new SystemCallData[](coordinatesX.length);
     for (uint i = 0; i < coordinatesX.length; i++) {
       calls[i].systemId = systemId;
       calls[i].callData = abi.encodeWithSignature(
-        "mapAddIsland(uint32, uint32, (uint32,uint32)[])",
+        "mapAddIsland(uint32,uint32,(uint32,uint32)[])",
         coordinatesX[i],
         coordinatesY[i],
-        islandResources[i]
+        islandResources
       );
     }
     bytes[] memory returnData = IWorld(worldAddress).batchCall(calls);
