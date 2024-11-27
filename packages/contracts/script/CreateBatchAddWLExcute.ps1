@@ -1,5 +1,5 @@
-$worldAddress = "0xf2e66c3edbe7fac5b65a071b667ca82d536b2da6"
-$rpc_url = "http://127.0.0.1:8545"
+$worldAddress = "0x63381030dda22c888f2548436c73146ef835ab9e"
+$rpc_url = "https://odyssey.storyrpc.io/"
 
 $startLocation = $PSScriptRoot; 
 Set-Location $startLocation

@@ -6,7 +6,11 @@ pragma solidity >=0.8.24;
 import { SailIntPoint, SailIntPointCount, SailIntPointData } from "../codegen/index.sol";
 
 library SailIntPointLib {
-  function addSailIntermediatePoint(uint256 playerId, uint32 sequenceNumber, SailIntPointData memory sailIntermediatePoint) internal {
+  function addSailIntermediatePoint(
+    uint256 playerId,
+    uint32 sequenceNumber,
+    SailIntPointData memory sailIntermediatePoint
+  ) internal {
     uint64 count = SailIntPointCount.get(playerId, sequenceNumber);
     SailIntPoint.set(playerId, sequenceNumber, count, sailIntermediatePoint);
     SailIntPointCount.set(playerId, sequenceNumber, count + 1);
@@ -19,7 +23,12 @@ library SailIntPointLib {
     SailIntPoint.deleteRecord(playerId, sequenceNumber, count - 1);
   }
 
-  function insertSailIntermediatePoint(uint256 playerId, uint32 sequenceNumber, uint64 index, SailIntPointData memory sailIntermediatePoint) internal {
+  function insertSailIntermediatePoint(
+    uint256 playerId,
+    uint32 sequenceNumber,
+    uint64 index,
+    SailIntPointData memory sailIntermediatePoint
+  ) internal {
     uint64 count = SailIntPointCount.get(playerId, sequenceNumber);
     require(index <= count, "Invalid index");
 
@@ -43,7 +52,12 @@ library SailIntPointLib {
     SailIntPointCount.set(playerId, sequenceNumber, count - 1);
   }
 
-  function updateSailIntermediatePoint(uint256 playerId, uint32 sequenceNumber, uint64 index, SailIntPointData memory sailIntermediatePoint) internal {
+  function updateSailIntermediatePoint(
+    uint256 playerId,
+    uint32 sequenceNumber,
+    uint64 index,
+    SailIntPointData memory sailIntermediatePoint
+  ) internal {
     uint64 count = SailIntPointCount.get(playerId, sequenceNumber);
     require(index < count, "Invalid index");
     SailIntPoint.set(playerId, sequenceNumber, index, sailIntermediatePoint);
@@ -51,14 +65,18 @@ library SailIntPointLib {
 
   function truncateSailIntermediatePoints(uint256 playerId, uint32 sequenceNumber, uint64 newCount) internal {
     uint64 currentCount = SailIntPointCount.get(playerId, sequenceNumber);
-    require(newCount <= currentCount, "New count must be less than or equal to current count");    
+    require(newCount <= currentCount, "New count must be less than or equal to current count");
     for (uint64 i = newCount; i < currentCount; i++) {
       SailIntPoint.deleteRecord(playerId, sequenceNumber, i);
     }
     SailIntPointCount.set(playerId, sequenceNumber, newCount);
   }
 
-  function updateAllSailIntermediatePoints(uint256 playerId, uint32 sequenceNumber, SailIntPointData[] memory sailIntermediatePoints) internal {
+  function updateAllSailIntermediatePoints(
+    uint256 playerId,
+    uint32 sequenceNumber,
+    SailIntPointData[] memory sailIntermediatePoints
+  ) internal {
     uint64 currentCount = SailIntPointCount.get(playerId, sequenceNumber);
     for (uint64 i = 0; i < sailIntermediatePoints.length; i++) {
       SailIntPoint.set(playerId, sequenceNumber, i, sailIntermediatePoints[i]);
@@ -71,7 +89,10 @@ library SailIntPointLib {
     SailIntPointCount.set(playerId, sequenceNumber, uint64(sailIntermediatePoints.length));
   }
 
-  function getAllSailIntermediatePoints(uint256 playerId, uint32 sequenceNumber) internal view returns (SailIntPointData[] memory) {
+  function getAllSailIntermediatePoints(
+    uint256 playerId,
+    uint32 sequenceNumber
+  ) internal view returns (SailIntPointData[] memory) {
     uint64 count = SailIntPointCount.get(playerId, sequenceNumber);
     SailIntPointData[] memory sailIntermediatePoints = new SailIntPointData[](count);
     for (uint64 i = 0; i < count; i++) {
@@ -84,7 +105,11 @@ library SailIntPointLib {
     return SailIntPointCount.get(playerId, sequenceNumber);
   }
 
-  function getSailIntermediatePointByIndex(uint256 playerId, uint32 sequenceNumber, uint64 index) internal view returns (SailIntPointData memory) {
+  function getSailIntermediatePointByIndex(
+    uint256 playerId,
+    uint32 sequenceNumber,
+    uint64 index
+  ) internal view returns (SailIntPointData memory) {
     return SailIntPoint.get(playerId, sequenceNumber, index);
   }
 }

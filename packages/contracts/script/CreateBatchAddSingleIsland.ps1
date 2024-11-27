@@ -1,13 +1,13 @@
 $startLocation = $PSScriptRoot; 
 
 # $privateKey = "0x0dcf6503b3fa4c2b9f529da422e0d56ed19a08dd6246f22500a756d9fe6d3201"
-$rpc_url = "http://127.0.0.1:8545"
-$worldAddress = "0x8d8b6b8414e1e3dcfd4168561b9be6bd3bf6ec4b"
+$rpc_url = "https://odyssey.storyrpc.io/"
+$worldAddress = "0x8c913c14c115bf63f4a270bd8b8c017951249476"
 
 # 该脚本用来生成 BatchAddSingleIsland.s.sol 中所使用的 X 坐标和 Y 坐标数组
 
 #释放的块序号
-$seqNo = 16
+$seqNo = 6
 
 $logPath = $startLocation + "\BatchAddIslands\$worldAddress"
 if (-Not (Test-Path $logPath)) {

@@ -33,11 +33,7 @@ contract BatchCall is Script {
       namespace: "app",
       name: "IslandClaimWhite"
     });
-    address[3] memory walletAddresses = [
-      address(0x269E2038cb7b084830f3c12c5041A5c52677d525),
-      address(0x79785B77EE18F14BcE7006d9583D26279A39bAF7),
-      address(0xc173bB17b5D2C7BCEd8a6f50E6F9c1bD6bde48DD)
-    ];
+    address[1] memory walletAddresses = [address(0x7aAB7C324e56E3d5e839863f5737701a910D0bd3)];
 
     SystemCallData[] memory calls = new SystemCallData[](walletAddresses.length);
     for (uint i = 0; i < walletAddresses.length; i++) {
