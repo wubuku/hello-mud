@@ -86,7 +86,7 @@ library RosterCleanUpBattleDestroyedShipsLogic {
     RosterData memory loserRoster,
     uint8 choice
   ) internal returns (uint256[] memory, ItemIdQuantityPair[] memory) {
-    uint256[] memory remainingShipIds = new uint256[](0);
+    uint256[] memory destroyedShipIds = new uint256[](0);
     ItemIdQuantityPair[] memory loot = new ItemIdQuantityPair[](0);
 
     for (uint i = 0; i < loserRoster.shipIds.length; i++) {
@@ -99,10 +99,11 @@ library RosterCleanUpBattleDestroyedShipsLogic {
         ItemIdQuantityPair[] memory shipLoot = SortedVectorUtil.newItemIdQuantityPairs(itemIds, itemQuantities);
         loot = SortedVectorUtil.mergeItemIdQuantityPairs(loot, shipLoot);
       }
+      destroyedShipIds = ShipIdUtil.addShipIdToEnd(destroyedShipIds, loserRoster.shipIds[i]);
       Ship.deleteRecord(loserRoster.shipIds[i]);
     }
 
-    return (remainingShipIds, loot);
+    return (destroyedShipIds, loot);
   }
 
   function removeDestroyedWinnerShips(RosterData memory winnerRoster) internal returns (uint256[] memory, uint32) {

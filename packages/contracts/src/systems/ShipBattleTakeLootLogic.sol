@@ -75,7 +75,9 @@ library ShipBattleTakeLootLogic {
     );
     winnerRoster.shipIds = cleanUpResult.winnerRemainingShipIds;
     winnerRoster.speed = cleanUpResult.winnerNewSpeed;
-    //loserRoster.shipIds = cleanUpResult.loserDestroyedShipIds;
+    // Don't use cleanUpResult.loserDestroyedShipIds;
+    uint256[] memory loserRemainingShipIds = new uint256[](0);
+    loserRoster.shipIds = loserRemainingShipIds;
     ItemIdQuantityPair[] memory loot = cleanUpResult.loot;
 
     uint64 lootedAt = uint64(block.timestamp);
