@@ -14,6 +14,8 @@ import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 
 import { SystemCallData } from "@latticexyz/world/src/modules/init/types.sol";
 
+import { IslandClaimWhitelistData, IslandClaimWhitelist } from "../src/codegen/index.sol";
+
 // 添加到白名单 forge script BatchAddWL.s.sol:BatchAddWL --sig "run(address)" 0x63381030dda22c888f2548436c73146ef835ab9e --broadcast --rpc-url https://odyssey.storyrpc.io/
 // 从白名单移除：cast send 0xe271ed2e37a0926a70f824ca7dc1bc74d1d586e7 "app__islandClaimWhitelistUpdate(address,bool)" "0x20C22dC5022Aeabbd30c8b594bfd44fB167abE70" false --rpc-url "http://127.0.0.1:8545" --private-key xxx --json
 // cast send {worldAddress} "app__islandClaimWhitelistUpdate(address,bool)" "walletAddress" false --rpc-url "http://127.0.0.1:8545" --private-key xxx --json
@@ -1037,12 +1039,28 @@ walletAddresses[989] = address(0xFffbaB481D29E25E4457f8977291Ed5c0165D7a2);
         }
         uint256 currentBatchSize = endIdx - startIdx;
         
-        SystemCallData[] memory calls = new SystemCallData[](currentBatchSize);
+        // 创建一个动态数组来存储需要处理的地址
+        address[] memory addressesToProcess = new address[](currentBatchSize);
+        uint256 validCount = 0;
+
+        // 第一次遍历，同时记录有效地址和计数
         for (uint256 i = 0; i < currentBatchSize; i++) {
+            IslandClaimWhitelistData memory islandClaimWhitelistData = IslandClaimWhitelist.get(walletAddresses[startIdx + i]);
+            if (islandClaimWhitelistData.existing == false && islandClaimWhitelistData.allowed == false) {
+                addressesToProcess[validCount] = walletAddresses[startIdx + i];
+                validCount++;
+            }
+        }
+
+        // 创建正确大小的调用数组
+        SystemCallData[] memory calls = new SystemCallData[](validCount);
+
+        // 填充调用数组
+        for (uint256 i = 0; i < validCount; i++) {
             calls[i].systemId = systemId;
             calls[i].callData = abi.encodeWithSignature(
                 "islandClaimWhitelistAdd(address)", 
-                walletAddresses[startIdx + i]
+                addressesToProcess[i]
             );
         }
         
