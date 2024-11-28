@@ -118,7 +118,7 @@ library RosterCleanUpBattleDestroyedShipsLogic {
       }
     }
 
-    uint32 newSpeed = winnerRoster.calculateRosterSpeed();
+    uint32 newSpeed = winnerRoster.calculateRosterSpeed(remainingShipIds);
     return (remainingShipIds, newSpeed);
   }
 }

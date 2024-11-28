@@ -96,6 +96,15 @@ library RosterDataInstance {
     return totalSpeed / uint32(shipIds.length);
   }
 
+  function calculateRosterSpeed(RosterData memory roster, uint256[] memory shipIds) internal view returns (uint32) {
+    uint32 totalSpeed = 0;
+    for (uint256 i = 0; i < shipIds.length; i++) {
+      ShipData memory ship = getShipAndValidate(shipIds[i]);
+      totalSpeed += ship.speed;
+    }
+    return totalSpeed / uint32(shipIds.length);
+  }
+
   function isDestroyed(RosterData memory roster) internal view returns (bool) {
     uint256[] memory shipIds = roster.shipIds;
     for (uint256 i = 0; i < shipIds.length; i++) {

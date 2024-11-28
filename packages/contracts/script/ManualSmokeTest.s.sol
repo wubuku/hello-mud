@@ -60,7 +60,7 @@ contract ManualSmokeTest is Script {
     "app__skillProcessCompleteCreation(uint8,uint256,uint8)" \
     '3' '1' '0'
     */
-    world.app__skillProcessCompleteCreation(uint8(SkillType.MINING), playerId, 0);
+    world.app__skillProcessCompleteCreation(uint8(SkillType.MINING), playerId, 0); // skill type 3 is MINING
     console.log("Completed skill process creation for MINING");
 
     /*
@@ -69,7 +69,7 @@ contract ManualSmokeTest is Script {
     "app__skillProcessCompleteProduction(uint8,uint256,uint8)" \
     '0' '1' '0'
     */
-    world.app__skillProcessCompleteProduction(uint8(SkillType.FARMING), playerId, 0);
+    world.app__skillProcessCompleteProduction(uint8(SkillType.FARMING), playerId, 0); // skill type 0 is FARMING
     console.log("Completed skill process production for FARMING");
 
     /*
@@ -78,7 +78,7 @@ contract ManualSmokeTest is Script {
     "app__skillProcessCompleteShipProduction(uint8,uint256,uint8)" \
     '6' '1' '0'
     */
-    world.app__skillProcessCompleteShipProduction(uint8(SkillType.CRAFTING), playerId, 0);
+    world.app__skillProcessCompleteShipProduction(uint8(SkillType.CRAFTING), playerId, 0); // skill type 6 is CRAFTING
     console.log("Completed skill process ship production for CRAFTING");
 
     uint256 playerShipId = ShipIdGenerator.get();
