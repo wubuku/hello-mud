@@ -1051,7 +1051,10 @@ walletAddresses[989] = address(0xFffbaB481D29E25E4457f8977291Ed5c0165D7a2);
                 validCount++;
             }
         }
-
+        if (validCount == 0) {
+          console.log("No valid addresses found in this batch");
+          continue;
+        }
         // 创建正确大小的调用数组
         SystemCallData[] memory calls = new SystemCallData[](validCount);
 
