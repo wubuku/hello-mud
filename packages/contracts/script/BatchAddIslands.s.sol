@@ -39,7 +39,7 @@ contract BatchAddIslands is Script {
   //Quantity weights
 
   uint32 resourceWoodCuttingQuantity = 200;
-  uint32 resourceMinningQuantity = 200;
+  uint32 resourceMiningQuantity = 200;
   uint32 resourcePotatoSeedsQuantity = 200;
   uint32 resourceCottonSeedsQuantity = 200;
   function run(address worldAddress) external {
@@ -2291,7 +2291,7 @@ contract BatchAddIslands is Script {
     ItemIdQuantityPair[] memory resources = new ItemIdQuantityPair[](4);
     resources[0] = ItemIdQuantityPair(COTTON_SEEDS_ITEM_ID, resourceCottonSeedsQuantity); // CottonSeeds
     resources[1] = ItemIdQuantityPair(RESOURCE_TYPE_WOODCUTTING_ITEM_ID, resourceWoodCuttingQuantity); // ResourceTypeWoodcutting
-    resources[2] = ItemIdQuantityPair(RESOURCE_TYPE_MINING_ITEM_ID, resourceMinningQuantity); // ResourceTypeMining
+    resources[2] = ItemIdQuantityPair(RESOURCE_TYPE_MINING_ITEM_ID, resourceMiningQuantity); // ResourceTypeMining
     resources[3] = ItemIdQuantityPair(POTATO_SEEDS_ITEM_ID, resourcePotatoSeedsQuantity); // PotatoSeeds
     return resources;
   }
