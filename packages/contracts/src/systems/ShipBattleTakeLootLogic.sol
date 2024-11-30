@@ -81,17 +81,14 @@ library ShipBattleTakeLootLogic {
     ItemIdQuantityPair[] memory loot = cleanUpResult.loot;
 
     uint64 lootedAt = uint64(block.timestamp);
-    winnerRoster = updateWinnerRosterStatus(winnerRosterId, winnerRoster, lootedAt);
-    loserRoster = updateLoserRosterStatus(
-      loserRosterId.sequenceNumber,
+    updateWinnerRosterStatus(winnerRosterId, winnerRoster, lootedAt);
+    updateLoserRosterStatus(
+      loserRosterId,
       loserRoster,
       Player.get(loserPlayerId),
       lootedAt
     );
     shipBattleData.status = uint8(BattleStatus.LOOTED);
-
-    Roster.set(winnerRosterId.playerId, winnerRosterId.sequenceNumber, winnerRoster);
-    Roster.set(loserRosterId.playerId, loserRosterId.sequenceNumber, loserRoster);
 
     return
       createShipBattleLootTaken(
@@ -305,7 +302,7 @@ library ShipBattleTakeLootLogic {
     RosterId memory winnerRosterId,
     RosterData memory winnerRoster,
     uint64 lootedAt
-  ) private returns (RosterData memory) {
+  ) private {
     winnerRoster.shipBattleId = 0;
     if (
       winnerRoster.targetCoordinatesX != 0 &&
@@ -339,6 +336,9 @@ library ShipBattleTakeLootLogic {
         updatedSailSegment: 0,
         updatedAt: lootedAt
       });
+      // Update first!
+      Roster.set(winnerRosterId.playerId, winnerRosterId.sequenceNumber, winnerRoster);
+      // Then call the setSail function!
       RosterDelegatecallLib.setSail(
         winnerRosterId.playerId,
         winnerRosterId.sequenceNumber,
@@ -350,20 +350,20 @@ library ShipBattleTakeLootLogic {
       );
     } else {
       winnerRoster.status = uint8(RosterStatus.AT_ANCHOR);
+      Roster.set(winnerRosterId.playerId, winnerRosterId.sequenceNumber, winnerRoster);
     }
-    return winnerRoster;
   }
 
   function updateLoserRosterStatus(
-    uint32 loserRosterSequenceNumber,
+    RosterId memory loserRosterId,
     RosterData memory loserRoster,
     PlayerData memory loserPlayer,
     uint64 lootedAt
-  ) private pure returns (RosterData memory) {
+  ) private {
     if (loserRoster.environmentOwned) {
-      return loserRoster;
+      return; //loserRoster;
     }
-
+    uint32 loserRosterSequenceNumber = loserRosterId.sequenceNumber;
     if (loserPlayer.claimedIslandX == 0 && loserPlayer.claimedIslandY == 0) {
       revert PlayerHasNoClaimedIsland();
     }
@@ -378,6 +378,7 @@ library ShipBattleTakeLootLogic {
     loserRoster.updatedCoordinatesY = y;
     loserRoster.coordinatesUpdatedAt = lootedAt;
     loserRoster.status = uint8(RosterStatus.AT_ANCHOR);
-    return loserRoster;
+    
+    Roster.set(loserRosterId.playerId, loserRosterId.sequenceNumber, loserRoster);
   }
 }
