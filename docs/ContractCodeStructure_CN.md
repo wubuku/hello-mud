@@ -162,11 +162,12 @@ aggregates:
 我们使用 `CRUD_IT` 预处理器来生成 Create 和 Update 方法的代码，但是禁止了 Delete 方法的生成。
 
 - MUD 工具生成的 DAL 代码在：`src/codegen/tables/Item.sol`。
-- 这个模型对应的 System 合约文件在：`src/systems/ItemSystem.sol`。
+- 这个模型对应的 System 合约文件在：`src/systems/ItemSystem.sol`。每个 MUD System 是一个无状态的 Solidity 合约。
 - Create 和 Update 方法对应的“业务逻辑”的实现在：
   - `src/systems/ItemCreateLogic.sol`
   - `src/systems/ItemUpdateLogic.sol`
   - 如果在模型中定义的方法不是 CRUD，那么开发者需要在 `{EntityName}{MethodName}Logic.sol` 中填充“业务逻辑”的实现代码，但是这里的两个文件并不需要。
+
 
 #### 代码之间的调用关系
 
@@ -202,6 +203,71 @@ contract ItemSystem is System, IAppSystemErrors {
 
 
 ### 其他对象模型以及生成的代码
+
+#### 值对象
+
+##### 示例：`ItemIdQuantityPair`
+
+模型文件：
+
+```yaml
+valueObjects:
+  ItemIdQuantityPair:
+    properties:
+      ItemId:
+        type: u32 # 物品的 ID
+      Quantity:
+        type: u32 # 物品的数量
+```
+
+对应的 Solidity 代码在 `src/Systems/ItemIdQuantityPair.sol`。
+
+##### 示例：`SkillProcessId`
+
+模型文件：
+
+```yaml
+valueObjects:
+  SkillProcessId:
+    properties:
+      SkillType:
+        type: SkillType
+      PlayerId:
+        type: u256
+      SequenceNumber:
+        type: u8
+```
+
+对应的 Solidity 代码在 `src/Systems/SkillProcessId.sol`。
+
+
+#### 服务
+
+##### 示例：`AggregatorService`
+
+```yaml
+services:
+  AggregatorService:
+    metadata:
+      GlobalFunctionNamePrefix: "UniApi" # Unified API
+    methods:
+      StartCreation:
+        parameters:
+          SkillType:
+            type: u8
+          PlayerId:
+            type: u256
+          SkillProcessSequenceNumber:
+            type: u8
+          ItemId:
+            type: u32
+          BatchSize:
+            type: u32
+      # ...
+```
+
+对应的 Solidity 代码在 `src/Systems/AggregatorService.sol`。
+
 
 
 [待补充具体内容]
