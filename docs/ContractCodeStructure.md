@@ -26,7 +26,7 @@ For an introductory reference on using DDDML and related tools for MUD applicati
      │                                         │
      ▼                                         ▼
 MUD Data Model                          MUD Systems
-(mud.config.ts)                    (*System.sol / *Logic.sol)
+(mud.config.ts)                    (*System.sol & *Logic.sol)
      │                                         │
      │ mud tablegen                            │ mud worldgen
      ▼                                         ▼
@@ -43,7 +43,7 @@ Tables (DAL)                          Interfaces
 
 This diagram illustrates the transformation process from DDDML models to final contract code:
 
-1. DDDML models (*.yaml files) represent the highest level of abstraction, describing the domain model
+1. DDDML models (`*.yaml` files) represent the highest level of abstraction, describing the domain model
 2. The dddappp tool (MUD version) converts DDDML models into:
    - MUD data model (in `mud.config.ts`)
    - MUD Systems (Solidity contracts) and the "business logic" scaffolding code for the methods defined in the models
@@ -134,8 +134,8 @@ And we add comments in the output to explain the purpose of each directory and f
 ## Mapping DDDML Models to Contract Code
 
 
-> Note: *Aggregate*、*Aggregate Root*、*Entity* are concepts in DDD. You can spend a few minutes to google and understand the concepts of DDD, this will help you understand this article.
-> If you don't have time, you can just remember: *Aggregate Root* is a kind of *Entity*.
+> Note: *Aggregate*, *Aggregate Root*, *Entity* are concepts in DDD. You can spend a few minutes to google and understand the concepts of DDD, this will help you understand this article.
+> If you want to scroll down first, just remember: *Aggregate Root* is a kind of *Entity*.
 > *Entity* is a concept that most people with technical backgrounds are already familiar with, usually it can be understood as: an object with a unique identifier.
 
 
@@ -240,7 +240,7 @@ valueObjects:
 In the Infinite Seas game model, many places (object properties, method parameters) need to use combinations like "item ID and quantity".
 We can directly use the `ItemIdQuantityPair` type in these places, which makes the model description more concise and clear.
 
-The corresponding Solidity code is in `src/Systems/ItemIdQuantityPair.sol`.
+The corresponding Solidity code is in `src/systems/ItemIdQuantityPair.sol`.
 
 ```solidity
 // ...
@@ -397,7 +397,7 @@ export default defineWorld({
 });
 ```
 
-##### Contract Size Limit
+#### Contract Size Limit
 
 Placing "common" code in library code in the `utils` directory can achieve code reuse, but it doesn't effectively reduce the size of the compiled contracts.
 

@@ -24,7 +24,7 @@ DDDML 是我们基于 DDD 的理念创建的一门领域专用语言（DSL）。
      │                                         │
      ▼                                         ▼
 MUD Data Model                          MUD Systems
-(mud.config.ts)                    (*System.sol / *Logic.sol)
+(mud.config.ts)                    (*System.sol & *Logic.sol)
      │                                         │
      │ mud tablegen                            │ mud worldgen
      ▼                                         ▼
@@ -131,7 +131,7 @@ tree .
 ## DDDML 模型到合约代码的映射
 
 > 注：下文所说的*聚合*、*聚合根*、*实体*是 DDD 中的概念。你可以花一些时间去搜索并了解 DDD 的概念，这对你理解本文会有帮助。
-> 如果你实在没有时间，那么你可以先记住：*聚合根*是实体的一种。
+> 如果你不想分心，想先往下看，那么可以记住：*聚合根*是实体的一种。
 > 而实体是大部分有技术背景的人已经比较熟悉的一个概念，通常可以理解为：一个具有唯一标识的对象。
 
 
@@ -233,7 +233,7 @@ valueObjects:
 在 Infinite Seas 游戏的模型中，很多地方（对象的属性、方法的参数）都需要用到“物品的 ID 和数量”这样的组合。
 我们在这些地方可以直接使用 `ItemIdQuantityPair` 这个类型，这让模型的表述更加简洁明了。
 
-对应的 Solidity 代码在 `src/Systems/ItemIdQuantityPair.sol`。
+对应的 Solidity 代码在 `src/systems/ItemIdQuantityPair.sol`。
 
 ```solidity
 // ...
@@ -393,7 +393,7 @@ export default defineWorld({
 });
 ```
 
-##### 合约大小限制
+#### 合约大小限制
 
 将“公用”的代码放置在 `utils` 目录的库代码中，虽然可以实现代码的复用，但是并不能有效减少编译出来的合约的大小。
 
