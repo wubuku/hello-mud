@@ -178,7 +178,7 @@ aggregates:
 contract ItemSystem is System, IAppSystemErrors {
    // ...
   function itemCreate(uint32 itemId, bool requiredForCompletion, uint32 sellsFor, string memory name) public {
-    _requireNamespaceOwner();
+    _requireNamespaceOwner(); // 检查调用者是否是命名空间的所有者
     ItemData memory itemData = Item.get(itemId); // 使用 MUD 生成的 DAL 库读取数据
     if (!(itemData.requiredForCompletion == false && itemData.sellsFor == uint32(0) && bytes(itemData.name).length == 0)) {
       revert ItemAlreadyExists(itemId);
@@ -206,6 +206,8 @@ contract ItemSystem is System, IAppSystemErrors {
 
 #### 值对象
 
+值对象是一些简单的数据结构。不会为它们生成对应的 MUD tables。
+
 ##### 示例：`ItemIdQuantityPair`
 
 模型文件：
@@ -220,7 +222,19 @@ valueObjects:
         type: u32 # 物品的数量
 ```
 
+在 Infinite Seas 游戏的模型中，很多地方（对象的属性、方法的参数）都需要用到“物品的 ID 和数量”这样的组合。
+我们在这些地方可以直接使用 `ItemIdQuantityPair` 这个类型，这让模型的表述更加简洁明了。
+
 对应的 Solidity 代码在 `src/Systems/ItemIdQuantityPair.sol`。
+
+```solidity
+// ...
+struct ItemIdQuantityPair {
+  uint32 itemId;
+  uint32 quantity;
+}
+```
+
 
 ##### 示例：`SkillProcessId`
 
@@ -242,6 +256,8 @@ valueObjects:
 
 
 #### 服务
+
+服务一般来说，不应该包含过于复杂的业务逻辑，它们应该通过使用一些“胶水”代码组合调用“实体的方法”来实现功能。
 
 ##### 示例：`AggregatorService`
 
@@ -266,11 +282,26 @@ services:
       # ...
 ```
 
-对应的 Solidity 代码在 `src/Systems/AggregatorService.sol`。
+我们的工具会为 Service 生成对应的 MUD System 合约。
+定义这个 Service 的意图之一，是将需要花费 ENERGY 代币的函数都集中在这里，这样用户只需要批准这个合约使用 ENERGY 代币就可以了，而不需要批准多个合约。
 
+对应的 Solidity 代码在 `src/Systems/AggregatorService.sol`。这个文件中的函数体需要开发者填充。
 
-
-[待补充具体内容]
+```solidity
+contract AggregatorServiceSystem is System {
+  // ...
+  function uniApiStartCreation(
+    uint8 skillType,
+    uint256 playerId,
+    uint8 skillProcessSequenceNumber,
+    uint32 itemId,
+    uint32 batchSize
+  ) public {
+    // ...
+    SkillProcessDelegatecallLib.startCreation(skillType, playerId, skillProcessSequenceNumber, itemId, batchSize);
+  }
+}
+```
 
 
 ### 模型中的关键声明以及对生成的代码的影响

@@ -185,7 +185,7 @@ Taking the `Create` method of the `Item` entity as an example. Here's a code sni
 contract ItemSystem is System, IAppSystemErrors {
    // ...
   function itemCreate(uint32 itemId, bool requiredForCompletion, uint32 sellsFor, string memory name) public {
-    _requireNamespaceOwner();
+    _requireNamespaceOwner(); // Check if the caller is the namespace owner
     ItemData memory itemData = Item.get(itemId); // Use MUD-generated DAL library to read data
     if (!(itemData.requiredForCompletion == false && itemData.sellsFor == uint32(0) && bytes(itemData.name).length == 0)) {
       revert ItemAlreadyExists(itemId);
@@ -209,12 +209,106 @@ contract ItemSystem is System, IAppSystemErrors {
 ```
 
 
-
 ### Other Object Models and Generated Code
 
-[Content to be added]
+
+#### Value Objects
+
+Value objects are simple data structures. No corresponding MUD tables will be generated for them.
+
+##### Example: `ItemIdQuantityPair`
+
+Model file:
+
+```yaml
+valueObjects:
+  ItemIdQuantityPair:
+    properties:
+      ItemId:
+        type: u32 # ID of the item
+      Quantity:
+        type: u32 # Quantity of the item
+```
+
+In the Infinite Seas game model, many places (object properties, method parameters) need to use combinations like "item ID and quantity".
+We can directly use the `ItemIdQuantityPair` type in these places, which makes the model description more concise and clear.
+
+The corresponding Solidity code is in `src/Systems/ItemIdQuantityPair.sol`.
+
+```solidity
+// ...
+struct ItemIdQuantityPair {
+  uint32 itemId;
+  uint32 quantity;
+}
+```
+
+##### Example: `SkillProcessId`
+
+Model file:
+
+```yaml
+valueObjects:
+  SkillProcessId:
+    properties:
+      SkillType:
+        type: SkillType
+      PlayerId:
+        type: u256
+      SequenceNumber:
+        type: u8
+```
+
+The corresponding Solidity code is in `src/Systems/SkillProcessId.sol`.
+
+#### Services
+
+Generally speaking, services should not contain overly complex business logic. They should implement functionality by combining calls to "entity methods" using some "glue" code.
+
+##### Example: `AggregatorService`
+
+```yaml
+services:
+  AggregatorService:
+    metadata:
+      GlobalFunctionNamePrefix: "UniApi" # Unified API
+    methods:
+      StartCreation:
+        parameters:
+          SkillType:
+            type: u8
+          PlayerId:
+            type: u256
+          SkillProcessSequenceNumber:
+            type: u8
+          ItemId:
+            type: u32
+          BatchSize:
+            type: u32
+      # ...
+```
+
+Our tool generates corresponding MUD System contracts for Services.
+One of the intentions of defining this Service is to centralize functions that consume ENERGY tokens here, so users only need to approve this contract to use ENERGY tokens (rather than approving multiple contracts).
+
+The corresponding Solidity code is in `src/Systems/AggregatorService.sol`. The function bodies in this file need to be filled in by developers.
+
+```solidity
+contract AggregatorServiceSystem is System {
+  // ...
+  function uniApiStartCreation(
+    uint8 skillType,
+    uint256 playerId,
+    uint8 skillProcessSequenceNumber,
+    uint32 itemId,
+    uint32 batchSize
+  ) public {
+    // ...
+    SkillProcessDelegatecallLib.startCreation(skillType, playerId, skillProcessSequenceNumber, itemId, batchSize);
+  }
+}
+```
 
 ### Key Declarations in Models and Their Impact on Generated Code
 
-[Content to be added]
 
