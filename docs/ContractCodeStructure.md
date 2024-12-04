@@ -4,8 +4,9 @@
 ## Prerequisites for Readers
 
 * Basic understanding of the MUD framework and the structure of MUD-based Dapps
-* General familiarity with DDDML concepts
+* General familiarity with DDD (Domain-Driven Design) and DDDML concepts
 
+DDDML is a domain-specific language (DSL) we created based on the philosophy of DDD.
 For an introductory reference on using DDDML and related tools for MUD application development, see: https://hackmd.io/GjSU_oWvTlCtMBtIA28SiA
 
 
@@ -132,11 +133,17 @@ And we add comments in the output to explain the purpose of each directory and f
 
 ## Mapping DDDML Models to Contract Code
 
+
+> Note: *Aggregate*、*Aggregate Root*、*Entity* are concepts in DDD. You can spend a few minutes to google and understand the concepts of DDD, this will help you understand this article.
+> If you don't have time, you can just remember: *Aggregate Root* is a kind of *Entity*.
+> *Entity* is a concept that most people with technical backgrounds are already familiar with, usually it can be understood as: an object with a unique identifier.
+
+
 ### Example Entity Model and Generated Code
 
 #### Example: `Item`
 
-Model file:
+This is the DDDML model file for the `Item` aggregate root:
 
 ```yaml
 aggregates:
@@ -310,5 +317,15 @@ contract AggregatorServiceSystem is System {
 ```
 
 ### Key Declarations in Models and Their Impact on Generated Code
+
+
+#### Dividing Code into Systems
+
+
+
+##### Contract Size Limit
+
+Ethereum contracts are limited in size, you can use a public library to work around that limit.
+
 
 

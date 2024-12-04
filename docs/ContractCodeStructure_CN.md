@@ -3,8 +3,9 @@
 ## 对本文读者的要求
 
 * 对 MUD 框架，以及使用 MUD 框架开发的 Dapp 的结构有基本的了解。
-* 对 DDDML 有大致的概念。
+* 对 DDD（领域驱动设计）以及 DDDML 有大致的概念。
 
+DDDML 是我们基于 DDD 的理念创建的一门领域专用语言（DSL）。
 这里有一篇关于使用 DDDML 以及相关工具进行 MUD 应用开发的入门参考文章：https://hackmd.io/GjSU_oWvTlCtMBtIA28SiA
 
 
@@ -127,11 +128,16 @@ tree .
 
 ## DDDML 模型到合约代码的映射
 
+> 注：下文所说的*聚合*、*聚合根*、*实体*是 DDD 中的概念。你可以花一些时间去搜索并了解 DDD 的概念，这对你理解本文会有帮助。
+> 如果你实在没有时间，那么你可以先记住：*聚合根*是实体的一种。
+> 而实体是大部分有技术背景的人已经比较熟悉的一个概念，通常可以理解为：一个具有唯一标识的对象。
+
+
 ### 典型的实体模型以及生成的代码
 
 #### 示例：`Item`
 
-模型文件：
+这是聚合根 `Item` 的 DDDML 模型文件：
 
 ```yaml
 aggregates:
@@ -303,8 +309,94 @@ contract AggregatorServiceSystem is System {
 }
 ```
 
-
 ### 模型中的关键声明以及对生成的代码的影响
+
+
+#### 将代码拆分为 Systems
+
+在默认情况下，dddappp 工具会为每个实体（聚合根）生成对应的 System 合约。
+
+- 实体的方法默认会放置在文件名为 `{EntityName}System.sol` 的合约中。
+- 实体的 `IsOnlyOpenToFriends` 属性为 `true` 的方法默认会放置在文件名为 `{EntityName}FriendSystem.sol` 的合约中。
+
+我们还可以通过在模型中使用 `MudSystemName` 属性来控制为某个方法生成的代码放置在哪个 System 合约中。
+
+这是 `Roster` 聚合根的 DDDML 模型文件中的代码片段：
+
+```yaml
+aggregates:
+  Roster:
+    # ...
+    methods:
+      Create:
+        metadata:
+          IsOnlyOpenToFriends: true
+          # 这个方法默认会生成在 `RosterFriendSystem` 合约中
+        isCreationCommand: true
+        parameters:
+          # ...
+
+      SetSail:
+        metadata:
+          IsOnlyOpenToFriends: true
+          MudSystemName: RosterSailingSystem
+          DisableFlatteningForParameters: ["UpdateLocationParams"]
+        parameters:
+          # ...
+
+      CleanUpBattleDestroyedShips:
+        metadata:
+          IsOnlyOpenToFriends: true
+          MudSystemName: RosterCleaningSystem
+        parameters:
+          # ...
+
+
+      TransferShip:
+        # IsOnlyOpenToFriends 默认是 false。
+        # 这个方法默认会生成在 `RosterSystem` 合约中
+        parameters:
+          ShipId:
+            type: u256
+          # ...
+        event:
+          name: RosterShipTransferred
+          # ...
+```
+
+这里需要说明的是：放置在同一个系统中的方法，它们的 `IsOnlyOpenToFriends` 属性必须相同。
+
+当一个系统（中的所有方法）的 `IsOnlyOpenToFriends` 属性为 `true` 时，在 MUD 配置文件 `mud.config.ts` 中，它的 `openAccess` 属性会被设置为 `false`。这意味着这个系统中的函数默认是不能从外部进行调用的。
+（正如之前所说，这个 MUD 配置文件是 dddappp 工具根据模型文件生成的。）
+
+
+```typescript
+export default defineWorld({
+  namespace: "app",
+  // ...
+  systems: {
+    // ...
+    RosterFriendSystem: {
+      openAccess: false,
+    },
+    RosterSailingSystem: {
+      openAccess: false,
+    },
+    RosterCleaningSystem: {
+      openAccess: false,
+    },
+    // ...
+  },
+  // ...
+});
+```
+
+##### 合约大小限制
+
+将“公用”的代码放置在 `utils` 目录的库代码中，虽然可以实现代码的复用，但是并不能有效减少编译出来的合约的大小。
+
+Ethereum 合约的大小是有限制的。一般的做法是使用公共库来绕过这个限制。
+
 
 
 [待补充具体内容]
