@@ -34,80 +34,148 @@ $maxErrorTimes = 5
 
 
 # GraphQL API 的 URL
-$graphqlUrl = "https://api.goldsky.com/api/public/project_cm2zy4z44jz7v01zje54g17b1/subgraphs/infinite-seas-odyssey-testnet/1.0.0/gn"
+$graphqlUrl = "https://api.goldsky.com/api/public/project_cm3zj9u61wxu901wog58adpjp/subgraphs/game-odyssey-testnet/1.0.0/gn"
 
 # 定义 GraphQL 查询 获取所有的岛屿列表
-$query = @"
-{
-   islands {
-    coordinatesX
-    coordinatesY
-  }
-}
-"@
-# 构建请求体
-$body = @{
-    query = $query
-}
-
-$locations = $null
-$quntity = $null
+$pageSize = 100
+$allIslands = @()
 $islandCoordinates = @()
-try {
+$hasMore = $true
+$skip = 0
+while ($hasMore) {
+    $query = @"
+    {
+        islands(first: $pageSize, skip: $skip) {
+            coordinatesX
+            coordinatesY
+        }
+    }
+"@
+    # 构建请求体
+    $body = @{
+        query = $query
+    }
+    $locations = $null
+    #$quntity = $null
+    try {
     
-    # 发送请求
-    $locations = Invoke-RestMethod -Uri $graphqlUrl -Method Post -Body ($body | ConvertTo-Json) -ContentType "application/json"
-    foreach ($location in $locations.data.islands) {        
-        $islandCoordinates += $location
-        "$($location.coordinatesX),$($location.coordinatesY)" | Write-Host -ForegroundColor Green
+        # 发送请求
+        $locations = Invoke-RestMethod -Uri $graphqlUrl -Method Post -Body ($body | ConvertTo-Json) -ContentType "application/json"
+        
+        # 获取当前页的数据
+        $currentPageData = $locations.data.islands
+        foreach ($location in $currentPageData) {        
+            $islandCoordinates += $location
+            "$($location.coordinatesX),$($location.coordinatesY)" | Write-Host -ForegroundColor Green
+        }        
+        # 如果返回的数据少于页大小，说明已经是最后一页
+        $hasMore = $currentPageData.Length -eq $pageSize
+        
+        # 添加到结果集
+        $allIslands += $currentPageData
+        
+        # 更新skip
+        $skip += $pageSize
+
+        "本页存在 :$($currentPageData.Length) 个岛屿..." | Tee-Object -FilePath $logFile -Append  |  Write-Host -ForegroundColor Blue
+        "已获取 $($allIslands.Count) 个岛屿..." | Write-Host -ForegroundColor Green
+        # 如果当前页没有数据，退出循环
+        if ($currentPageData.Length -eq 0) {
+            break
+        }
     }
-    $quntity = $locations.data.islands.Length;
-    "地图存在 :$quntity 个岛屿..." | Tee-Object -FilePath $logFile -Append  |  Write-Host -ForegroundColor Blue
-}
-catch {
-    "查询地图失败: $($_.Exception.Message)" | Write-Host -ForegroundColor Red
-    "返回的结果为:$locations" | Tee-Object -FilePath $logFile -Append  |  Write-Host 
-    return    
-}
-if ($null -eq $quntity) {
-    "无法获取岛屿数量。" | Tee-Object -FilePath $logFile -Append  |  Write-Host -ForegroundColor Red
-    return
-}
-
-# 如果环境船队也从链上查找的话效率太低了，所以使用链下服务接口吧。
-
-
-$getAllEnviornmentRostersResult = $null
-$rosterCoordinates = @()
-#从Indexer获得的所有的【未损毁的】环境船队
-$rosterIdsFromIndexer = @()
-try {
-    $getAllEnviornmentRostersUrl = $serverUrl + "/api/rosterExtends/getAllEnvironmentRosters"
-    #按说应该使用 status=ne(3),但是powershell会报错所以先用status=0吧，毕竟野船队目前不动
-    #$getAllEnviornmentRostersUrl = $serverUrl + "/api/Rosters?environmentOwned=true&status=0"
-    #$command = "curl -X GET '" + $getAllEnviornmentRostersUrl + "' -H 'accept: application/json'"
-    $command = "Invoke-WebRequest -Uri '" + $getAllEnviornmentRostersUrl + "' -Method Get -ContentType 'application/json'"
-    # $getAllIslandResult = curl -X GET $getAllIslandUrl -H "accept: application/json"   
-    $command | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Blue
-    $getAllEnviornmentRostersResult = Invoke-Expression -Command $command 
-    if ($getAllEnviornmentRostersResult.StatusCode -ne 200) {
-        "请求失败，状态码: $($getAllEnviornmentRostersResult.StatusCode),返回信息:$($getAllEnviornmentRostersResult.Content)" | Write-Host  -ForegroundColor Red
-        return
-    }
-    $getAllEnviornmentRostersResultObj = $getAllEnviornmentRostersResult.Content | ConvertFrom-Json
-    "目前一共有 $($getAllEnviornmentRostersResultObj.Count) 个活着的环境船队..." | Tee-Object -FilePath $logFile -Append  |  Write-Host  -ForegroundColor Yellow   
-    foreach ($roster in $getAllEnviornmentRostersResultObj) {
-        $rosterCoordinates += $roster
-        $rosterIdsFromIndexer += $roster
-        #"coordinates:($($roster.x),$($roster.y))" |  Write-Host 
-        #"coordinates:($($roster.updatedCoordinates.x-$u32MaxHalf),$($roster.updatedCoordinates.y-$u32MaxHalf))" |  Write-Host 
+    catch {
+        "查询地图失败: $($_.Exception.Message)" | Write-Host -ForegroundColor Red
+        "返回的结果为:$locations" | Tee-Object -FilePath $logFile -Append  |  Write-Host 
+        return    
     }
 }
-catch {
-    "获取环境船队列表失败: $($_.Exception.Message)" | Write-Host -ForegroundColor Red
-    "返回的结果为:$getAllEnviornmentRostersResult" | Tee-Object -FilePath $logFile -Append  |  Write-Host 
-    return    
+
+
+#使用GraphQL来查询船队（环境船队）的位置
+
+$allRosters = @()
+$currentPageData = $null 
+$hasMore = $true
+while ($hasMore) {
+    $query = @"
+    {
+        rosters(first: $pageSize, skip: $skip) {
+            coordinatesX
+            coordinatesY
+        }
+    }
+"@
+    # 构建请求体
+    $body = @{
+        query = $query
+    }
+    $response = $null
+    #$quntity = $null
+    try {
+    
+        # 发送请求
+        $response = Invoke-RestMethod -Uri $graphqlUrl -Method Post -Body ($body | ConvertTo-Json) -ContentType "application/json"
+        
+        # 获取当前页的数据
+        $currentPageData = $response.data.rosters
+        foreach ($roster in $currentPageData) {        
+            $islandCoordinates += $roster
+            "$($roster.coordinatesX),$($roster.coordinatesY)" | Write-Host -ForegroundColor Green
+        }        
+        # 如果返回的数据少于页大小，说明已经是最后一页
+        $hasMore = $currentPageData.Length -eq $pageSize
+        
+        # 添加到结果集
+        $allRosters += $currentPageData
+        
+        # 更新skip
+        $skip += $pageSize
+
+        "本页存在 :$($currentPageData.Length) 个船队..." | Tee-Object -FilePath $logFile -Append  |  Write-Host -ForegroundColor Blue
+        "已获取 $($allRosters.Count) 个船队..." | Write-Host -ForegroundColor Green
+        # 如果当前页没有数据，退出循环
+        if ($currentPageData.Length -eq 0) {
+            break
+        }
+    }
+    catch {
+        "查询船队失败: $($_.Exception.Message)" | Write-Host -ForegroundColor Red
+        "返回的结果为:$locations" | Tee-Object -FilePath $logFile -Append  |  Write-Host 
+        return    
+    }
 }
+# $getAllEnviornmentRostersResult = $null
+# $rosterCoordinates = @()
+# #从Indexer获得的所有的【未损毁的】环境船队
+# $rosterIdsFromIndexer = @()
+# try {
+#     $getAllEnviornmentRostersUrl = $serverUrl + "/api/rosterExtends/getAllEnvironmentRosters"
+#     #按说应该使用 status=ne(3),但是powershell会报错所以先用status=0吧，毕竟野船队目前不动
+#     #$getAllEnviornmentRostersUrl = $serverUrl + "/api/Rosters?environmentOwned=true&status=0"
+#     #$command = "curl -X GET '" + $getAllEnviornmentRostersUrl + "' -H 'accept: application/json'"
+#     $command = "Invoke-WebRequest -Uri '" + $getAllEnviornmentRostersUrl + "' -Method Get -ContentType 'application/json'"
+#     # $getAllIslandResult = curl -X GET $getAllIslandUrl -H "accept: application/json"   
+#     $command | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Blue
+#     $getAllEnviornmentRostersResult = Invoke-Expression -Command $command 
+#     if ($getAllEnviornmentRostersResult.StatusCode -ne 200) {
+#         "请求失败，状态码: $($getAllEnviornmentRostersResult.StatusCode),返回信息:$($getAllEnviornmentRostersResult.Content)" | Write-Host  -ForegroundColor Red
+#         return
+#     }
+#     $getAllEnviornmentRostersResultObj = $getAllEnviornmentRostersResult.Content | ConvertFrom-Json
+#     "目前一共有 $($getAllEnviornmentRostersResultObj.Count) 个活着的环境船队..." | Tee-Object -FilePath $logFile -Append  |  Write-Host  -ForegroundColor Yellow   
+#     foreach ($roster in $getAllEnviornmentRostersResultObj) {
+#         $rosterCoordinates += $roster
+#         $rosterIdsFromIndexer += $roster
+#         #"coordinates:($($roster.x),$($roster.y))" |  Write-Host 
+#         #"coordinates:($($roster.updatedCoordinates.x-$u32MaxHalf),$($roster.updatedCoordinates.y-$u32MaxHalf))" |  Write-Host 
+#     }
+# }
+# catch {
+#     "获取环境船队列表失败: $($_.Exception.Message)" | Write-Host -ForegroundColor Red
+#     "返回的结果为:$getAllEnviornmentRostersResult" | Tee-Object -FilePath $logFile -Append  |  Write-Host 
+#     return    
+# }
 
 
 "目前岛屿所占海域大小为:{$islandWidth,$islandHeight}" | Tee-Object -FilePath $logFile -Append  |  Write-Host 
