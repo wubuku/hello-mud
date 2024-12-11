@@ -6,11 +6,6 @@ import { MapData } from "../codegen/index.sol";
 import { MapLocation } from "../codegen/index.sol";
 import { MapLocationType } from "./MapLocationType.sol";
 
-//import { WorldContextConsumerLib } from "@latticexyz/world/src/WorldContext.sol";
-//import { MapLocationData } from "../codegen/index.sol";
-//import { MapLocation } from "../codegen/index.sol";
-// You may need to use the MapLocation library to access and modify the state (MapLocationData) of the MapLocation entity within the Map aggregate
-
 /**
  * @title MapAirdropLogic Library
  * @dev Implements the Map.Airdrop method.

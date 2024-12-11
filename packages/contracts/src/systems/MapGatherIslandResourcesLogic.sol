@@ -20,29 +20,40 @@ library MapGatherIslandResourcesLogic {
     uint32 coordinatesY,
     MapData memory mapData
   ) internal view returns (IslandResourcesGathered memory) {
-    assertPlayerIsIslandOwner(playerId, coordinatesX, coordinatesY);
+    //assertPlayerIsIslandOwner(playerId, coordinatesX, coordinatesY);
+    MapLocationData memory location = MapLocation.get(coordinatesX, coordinatesY);
+    if (location.occupiedBy == uint256(0)) revert IslandNotOccupied(coordinatesX, coordinatesY);
+    if (location.occupiedBy != playerId) revert PlayerIsNotIslandOwner(playerId, coordinatesX, coordinatesY);
+    if (
+      location.resourcesItemIds.length > 0 && location.resourcesItemIds.length == location.resourcesQuantities.length
+    ) {
+      ItemIdQuantityPair[] memory resources = new ItemIdQuantityPair[](location.resourcesItemIds.length);
+      for (uint i = 0; i < location.resourcesItemIds.length; i++) {
+        resources[i] = ItemIdQuantityPair(location.resourcesItemIds[i], uint32(location.resourcesQuantities[i]));
+      }
+      return IslandResourcesGathered(playerId, location.gatheredAt, coordinatesX, coordinatesY, resources);
+    } else {
+      uint64 nowTime = uint64(block.timestamp);
+      // MapUtil will check if the location exists and is an island
+      uint32 resourcesQuantity = MapUtil.getIslandResourcesQuantityToGather(coordinatesX, coordinatesY, nowTime);
+      if (resourcesQuantity == 0) revert ResourceNotRegeneratedYet();
 
-    uint64 nowTime = uint64(block.timestamp);
+      uint32[] memory resourceItemIds = new uint32[](3);
+      resourceItemIds[0] = RESOURCE_TYPE_MINING;
+      resourceItemIds[1] = RESOURCE_TYPE_WOODCUTTING;
+      resourceItemIds[2] = COTTON_SEEDS;
 
-    // MapUtil will check if the location exists and is an island
-    uint32 resourcesQuantity = MapUtil.getIslandResourcesQuantityToGather(coordinatesX, coordinatesY, nowTime);
-    if (resourcesQuantity == 0) revert ResourceNotRegeneratedYet();
+      bytes memory randSeed = abi.encodePacked(coordinatesX, coordinatesY, playerId, nowTime);
 
-    uint32[] memory resourceItemIds = new uint32[](3);
-    resourceItemIds[0] = RESOURCE_TYPE_MINING;
-    resourceItemIds[1] = RESOURCE_TYPE_WOODCUTTING;
-    resourceItemIds[2] = COTTON_SEEDS;
+      uint64[] memory randomResourceQuantities = TsRandomUtil.divideInt(randSeed, resourcesQuantity, 3);
 
-    bytes memory randSeed = abi.encodePacked(coordinatesX, coordinatesY, playerId, nowTime);
+      ItemIdQuantityPair[] memory resources = new ItemIdQuantityPair[](3);
+      for (uint i = 0; i < 3; i++) {
+        resources[i] = ItemIdQuantityPair(resourceItemIds[i], uint32(randomResourceQuantities[i]));
+      }
 
-    uint64[] memory randomResourceQuantities = TsRandomUtil.divideInt(randSeed, resourcesQuantity, 3);
-
-    ItemIdQuantityPair[] memory resources = new ItemIdQuantityPair[](3);
-    for (uint i = 0; i < 3; i++) {
-      resources[i] = ItemIdQuantityPair(resourceItemIds[i], uint32(randomResourceQuantities[i]));
+      return IslandResourcesGathered(playerId, nowTime, coordinatesX, coordinatesY, resources);
     }
-
-    return IslandResourcesGathered(playerId, nowTime, coordinatesX, coordinatesY, resources);
   }
 
   function mutate(
