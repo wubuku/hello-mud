@@ -15,8 +15,12 @@ import { UpdateLocationParams } from "./UpdateLocationParams.sol";
 import { RosterCleanUpBattleResult } from "./RosterCleanUpBattleResult.sol";
 
 library RosterDelegatecallLib {
-
-  function create(uint256 playerId, uint32 sequenceNumber, uint32 coordinatesX, uint32 coordinatesY) internal returns (uint256, uint32) {
+  function create(
+    uint256 playerId,
+    uint32 sequenceNumber,
+    uint32 coordinatesX,
+    uint32 coordinatesY
+  ) internal returns (uint256, uint32) {
     ResourceId rosterFriendSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -30,7 +34,10 @@ library RosterDelegatecallLib {
       rosterFriendSystemAddress,
       abi.encodeWithSignature(
         "rosterCreate(uint256,uint32,uint32,uint32)",
-        playerId, sequenceNumber, coordinatesX, coordinatesY
+        playerId,
+        sequenceNumber,
+        coordinatesX,
+        coordinatesY
       )
     );
     if (!success) revertWithBytes(returnData);
@@ -52,14 +59,24 @@ library RosterDelegatecallLib {
       rosterFriendSystemAddress,
       abi.encodeWithSignature(
         "rosterAddShip(uint256,uint32,uint256,uint64)",
-        playerId, sequenceNumber, shipId, position
+        playerId,
+        sequenceNumber,
+        shipId,
+        position
       )
     );
     if (!success) revertWithBytes(returnData);
-
   }
 
-  function setSail(uint256 playerId, uint32 sequenceNumber, uint32 targetCoordinatesX, uint32 targetCoordinatesY, uint64 sailDuration, UpdateLocationParams memory updateLocationParams, Coordinates[] memory intermediatePoints) internal {
+  function setSail(
+    uint256 playerId,
+    uint32 sequenceNumber,
+    uint32 targetCoordinatesX,
+    uint32 targetCoordinatesY,
+    uint64 sailDuration,
+    UpdateLocationParams memory updateLocationParams,
+    Coordinates[] memory intermediatePoints
+  ) internal {
     ResourceId rosterSailingSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -73,14 +90,23 @@ library RosterDelegatecallLib {
       rosterSailingSystemAddress,
       abi.encodeWithSignature(
         "rosterSetSail(uint256,uint32,uint32,uint32,uint64,((uint32,uint32),uint16,uint64),(uint32,uint32)[])",
-        playerId, sequenceNumber, targetCoordinatesX, targetCoordinatesY, sailDuration, updateLocationParams, intermediatePoints
+        playerId,
+        sequenceNumber,
+        targetCoordinatesX,
+        targetCoordinatesY,
+        sailDuration,
+        updateLocationParams,
+        intermediatePoints
       )
     );
     if (!success) revertWithBytes(returnData);
-
   }
 
-  function updateLocation(uint256 playerId, uint32 sequenceNumber, UpdateLocationParams memory updateLocationParams) internal {
+  function updateLocation(
+    uint256 playerId,
+    uint32 sequenceNumber,
+    UpdateLocationParams memory updateLocationParams
+  ) internal {
     ResourceId rosterSailingSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -94,14 +120,21 @@ library RosterDelegatecallLib {
       rosterSailingSystemAddress,
       abi.encodeWithSignature(
         "rosterUpdateLocation(uint256,uint32,((uint32,uint32),uint16,uint64))",
-        playerId, sequenceNumber, updateLocationParams
+        playerId,
+        sequenceNumber,
+        updateLocationParams
       )
     );
     if (!success) revertWithBytes(returnData);
-
   }
 
-  function cleanUpBattleDestroyedShips(uint256 playerId, uint32 sequenceNumber, uint256 loserRosterIdPlayerId, uint32 loserRosterIdSequenceNumber, uint8 choice) internal returns (RosterCleanUpBattleResult memory) {
+  function cleanUpBattleDestroyedShips(
+    uint256 playerId,
+    uint32 sequenceNumber,
+    uint256 loserRosterIdPlayerId,
+    uint32 loserRosterIdSequenceNumber,
+    uint8 choice
+  ) internal returns (RosterCleanUpBattleResult memory) {
     ResourceId rosterCleaningSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -115,12 +148,15 @@ library RosterDelegatecallLib {
       rosterCleaningSystemAddress,
       abi.encodeWithSignature(
         "rosterCleanUpBattleDestroyedShips(uint256,uint32,uint256,uint32,uint8)",
-        playerId, sequenceNumber, loserRosterIdPlayerId, loserRosterIdSequenceNumber, choice
+        playerId,
+        sequenceNumber,
+        loserRosterIdPlayerId,
+        loserRosterIdSequenceNumber,
+        choice
       )
     );
     if (!success) revertWithBytes(returnData);
 
     return abi.decode(returnData, (RosterCleanUpBattleResult));
   }
-
 }

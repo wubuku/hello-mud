@@ -365,7 +365,7 @@ contract PostDeploy is Script {
     world.app__itemCreate(0, false, 1, "UNUSED_ITEM");
     world.app__itemCreate(1, false, 5, "PotatoSeeds");
     world.app__itemCreate(101, true, 1, "Potatoes");
-    world.app__itemCreate(2, true, 5, "CottonSeeds");
+    world.app__itemCreate(2, false, 5, "CottonSeeds");
     world.app__itemCreate(102, true, 1, "Cottons");
     world.app__itemCreate(1001, true, 1, "BronzeBar");
     world.app__itemCreate(200, true, 1, "NormalLogs");
@@ -376,16 +376,16 @@ contract PostDeploy is Script {
     world.app__itemCreate(302, true, 1, "TinOre");
     world.app__itemCreate(401, true, 1, "Minion");
     world.app__itemCreate(402, true, 1, "SmallSail");
-    world.app__itemCreate(2000000001, true, 1, "ResourceTypeWoodcutting");
-    world.app__itemCreate(2000000002, true, 1, "ResourceTypeFishing");
-    world.app__itemCreate(2000000003, true, 1, "ResourceTypeMining");
+    world.app__itemCreate(2000000001, false, 1, "ResourceTypeWoodcutting");
+    world.app__itemCreate(2000000002, false, 1, "ResourceTypeFishing");
+    world.app__itemCreate(2000000003, false, 1, "ResourceTypeMining");
   }
 
   function createItemCreations(IWorld world) internal {
-    // Mining
+    // Mining Cooper Ore
     world.app__itemCreationCreate(
       uint8(SkillType.MINING), // skillType (mining)
-      301, // itemId (CopperOre)
+      COPPER_ORE_ITEM_ID, // itemId (CopperOre)
       1, // requirementsLevel
       1, // baseQuantity
       0, // baseExperience
@@ -395,10 +395,39 @@ contract PostDeploy is Script {
       1 // resourceCost
     );
 
-    // Woodcutting
+    // Mining Tin Ore
+    //Let's switch "bronze" to "tin". Tin is a new resource that belongs to Mining.
+    //If a player chooses to mine "Tin," the Mine resources on the island will be reduced similarly to copper.
+    //However, the energy cost of mining "Tin" will be 1.5 for each unit mined, and the mining time will be 5 seconds per unit.
+    world.app__itemCreationCreate(
+      uint8(SkillType.MINING), // skillType (mining)
+      TIN_ORE_ITEM_ID, // itemId (Tin ore)
+      1, // requirementsLevel
+      1, // baseQuantity
+      0, // baseExperience
+      5, // baseCreationTime
+      1.5 * 10 ** 18, // energyCost
+      100, // successRate
+      1 // resourceCost
+    );
+
+    // Woodcutting NormalLogs
     world.app__itemCreationCreate(
       uint8(SkillType.WOODCUTTING), // skillType (woodcutting)
-      200, // itemId (NormalLogs)
+      NORMAL_LOGS_ITEM_ID, // itemId (NormalLogs)
+      1, // requirementsLevel
+      1, // baseQuantity
+      0, // baseExperience
+      3, // baseCreationTime
+      1 * 10 ** 18, // energyCost
+      100, // successRate
+      1 // resourceCost
+    );
+
+    // Woodcutting Oaklogs
+    world.app__itemCreationCreate(
+      uint8(SkillType.WOODCUTTING), // skillType (woodcutting)
+      OAK_LOGS_ITEM_ID, // itemId (Oaklogs)
       1, // requirementsLevel
       1, // baseQuantity
       0, // baseExperience
@@ -412,14 +441,14 @@ contract PostDeploy is Script {
   function createItemProductions(IWorld world) internal {
     // Farming (Cotton Seeds to Cotton)
     uint32[] memory cottonMaterialItemIds = new uint32[](1);
-    cottonMaterialItemIds[0] = 2; // ItemCottonSeeds.ItemId
+    cottonMaterialItemIds[0] = COTTON_SEEDS_ITEM_ID; // ItemCottonSeeds.ItemId
 
     uint32[] memory cottonMaterialItemQuantities = new uint32[](1);
     cottonMaterialItemQuantities[0] = 1;
 
     world.app__itemProductionCreate(
       uint8(SkillType.FARMING), // skillType (farming)
-      102, // itemId (Cottons)
+      COTTONS_ITEM_ID, // itemId (Cottons)
       1, // requirementsLevel
       5, // baseQuantity
       0, // baseExperience
@@ -452,9 +481,9 @@ contract PostDeploy is Script {
 
     // Ship crafting
     uint32[] memory shipMaterialItemIds = new uint32[](3);
-    shipMaterialItemIds[0] = 102; // Cottons
-    shipMaterialItemIds[1] = 200; // NormalLogs
-    shipMaterialItemIds[2] = 301; // CopperOre
+    shipMaterialItemIds[0] = COTTONS_ITEM_ID; // Cottons
+    shipMaterialItemIds[1] = NORMAL_LOGS_ITEM_ID; // NormalLogs
+    shipMaterialItemIds[2] = COPPER_ORE_ITEM_ID; // CopperOre
 
     uint32[] memory shipMaterialItemQuantities = new uint32[](3);
     shipMaterialItemQuantities[0] = 3; // 3 Cottons
