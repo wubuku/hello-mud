@@ -3,7 +3,7 @@ pragma solidity >=0.8.24;
 
 import { console } from "forge-std/console.sol";
 import { IslandResourcesGathered } from "./MapEvents.sol";
-import { Map, MapData, MapLocation, MapLocationData } from "../codegen/index.sol";
+import { Map, MapData, MapLocation, MapLocationData, IslandRenewableItem } from "../codegen/index.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { MapLocationType } from "./MapLocationType.sol";
 import { TsRandomUtil } from "../utils/TsRandomUtil.sol";
@@ -29,19 +29,33 @@ library MapGatherIslandResourcesLogic {
     uint32 resourcesQuantity = MapUtil.getIslandResourcesQuantityToGather(coordinatesX, coordinatesY, nowTime);
     if (resourcesQuantity == 0) revert ResourceNotRegeneratedYet();
 
-    bytes memory randSeed = abi.encodePacked(coordinatesX, coordinatesY, playerId, nowTime);
+    uint32 itemTotalQuantityWeight = 0;
+    uint32[] memory itemQuantities = new uint32[](mapData.islandRenewableItemIds.length);
 
-    uint64[] memory randomResourceQuantities = TsRandomUtil.divideInt(
-      randSeed,
-      resourcesQuantity,
-      uint64(mapData.islandRenewableItemIds.length)
-    );
-    // for (uint i = 0; i < randomResourceQuantities.length; i++) {
-    //   console.log("RandomResourceQuantities[%d] = %d", i, randomResourceQuantities[i]);
-    // }
+    // Calculate total weight
+    for (uint i = 0; i < mapData.islandRenewableItemIds.length; i++) {
+      uint32 itemId = mapData.islandRenewableItemIds[i];
+      uint32 weight = IslandRenewableItem.getQuantityWeight(itemId);
+      itemTotalQuantityWeight += weight;
+      itemQuantities[i] = weight;
+    }
+
+    // Calculate quantities with rounding
+    uint32 remainingQuantity = resourcesQuantity;
+    for (uint i = 0; i < itemQuantities.length - 1; i++) {
+      // Use multiplication before division to maintain precision
+      uint32 quantity = uint32(
+        (uint64(resourcesQuantity) * itemQuantities[i] + itemTotalQuantityWeight / 2) / itemTotalQuantityWeight
+      );
+      itemQuantities[i] = quantity;
+      remainingQuantity -= quantity;
+    }
+    // Last item gets the remaining quantity to ensure total equals resourcesQuantity
+    itemQuantities[itemQuantities.length - 1] = remainingQuantity;
+
     ItemIdQuantityPair[] memory resources = new ItemIdQuantityPair[](mapData.islandRenewableItemIds.length);
     for (uint i = 0; i < mapData.islandRenewableItemIds.length; i++) {
-      resources[i] = ItemIdQuantityPair(mapData.islandRenewableItemIds[i], uint32(randomResourceQuantities[i]));
+      resources[i] = ItemIdQuantityPair(mapData.islandRenewableItemIds[i], itemQuantities[i]);
     }
     return IslandResourcesGathered(playerId, nowTime, coordinatesX, coordinatesY, resources);
   }
@@ -52,13 +66,17 @@ library MapGatherIslandResourcesLogic {
   ) internal returns (ItemIdQuantityPair[] memory, MapData memory) {
     uint32 coordinatesX = islandResourcesGathered.coordinatesX;
     uint32 coordinatesY = islandResourcesGathered.coordinatesY;
-    // uint32[] memory resouceItemIds = new uint32[](islandResourcesGathered.resources.length);
-    // uint32[] memory resourcesQuantities = new uint32[](islandResourcesGathered.resources.length);
-    // for (uint i = 0; i < islandResourcesGathered.resources.length; i++) {
-    //   resouceItemIds[i] = islandResourcesGathered.resources[i].itemId;
-    //   resourcesQuantities[i] = islandResourcesGathered.resources[i].quantity;
-    // }
+    uint32[] memory resouceItemIds = new uint32[](islandResourcesGathered.resources.length);
+    uint32[] memory resourcesQuantities = new uint32[](islandResourcesGathered.resources.length);
+    for (uint i = 0; i < islandResourcesGathered.resources.length; i++) {
+      resouceItemIds[i] = islandResourcesGathered.resources[i].itemId;
+      resourcesQuantities[i] = islandResourcesGathered.resources[i].quantity;
+    }
     // Clear resources and update gathered time
+    // 这里是将收集岛屿之后的资源重新设置为0，其实自从玩家占领岛屿时，是能看到岛屿有多少可收集的资源的，
+    // 但是自动第一次收集完之后，从界面上看岛屿的可收集资源一直是0，因为并没有一个后台服务来更新岛屿的可收集资源（耗费gas）
+    // 只能是超过一段时间之后，玩家可以收集资源时，合约根据 islandResourceRenewalQuantity 和权重重新计算可收集的资源
+    // 也就是 islandResourcesGathered.resources
     MapLocation.setResourcesItemIds(coordinatesX, coordinatesY, new uint32[](0));
     MapLocation.setResourcesQuantities(coordinatesX, coordinatesY, new uint32[](0));
     MapLocation.setGatheredAt(coordinatesX, coordinatesY, islandResourcesGathered.gatheredAt);
