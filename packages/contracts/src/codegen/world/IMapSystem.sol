@@ -23,4 +23,11 @@ interface IMapSystem {
     uint32[] memory resourceItemIds,
     uint32 resourceSubtotal
   ) external;
+
+  function app__mapAirdrop(
+    uint32 coordinatesX,
+    uint32 coordinatesY,
+    uint32[] memory resourcesItemIds,
+    uint32[] memory resourcesQuantities
+  ) external;
 }

@@ -74,3 +74,16 @@ struct IslandResourcesGathered {
   ItemIdQuantityPair[] resources;
 }
 
+struct IslandResourcesAirdropped {
+  /**
+   * @dev The X of the Coordinates. Coordinates: The coordinates of the island to airdrop resources to
+   */
+  uint32 coordinatesX;
+  /**
+   * @dev The Y of the Coordinates. Coordinates: The coordinates of the island to airdrop resources to
+   */
+  uint32 coordinatesY;
+  uint32[] resourcesItemIds;
+  uint32[] resourcesQuantities;
+}
+

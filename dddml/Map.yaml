@@ -117,3 +117,17 @@ singletonObjects:
               type: Coordinates
             Resources:
               itemType: ItemIdQuantityPair
+
+      Airdrop:
+        requiredPermission: __NamespaceOwner__ # "__Publisher__"
+        #requiredPermission: AdminCap
+        parameters:
+          Coordinates:
+            type: Coordinates
+            description: The coordinates of the island to airdrop resources to
+          ResourcesItemIds:
+            type: uint32[]
+          ResourcesQuantities:
+            type: uint32[]
+        event:
+          name: IslandResourcesAirdropped

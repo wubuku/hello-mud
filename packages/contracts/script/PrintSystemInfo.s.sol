@@ -427,6 +427,8 @@ contract PrintSystemInfo is Script {
     console.log("event IslandAddedEvent(uint32,uint32) signature topic:", vm.toString(abi.encodePacked(eventHash)));
     eventHash = keccak256("MultiIslandsAddedEvent(uint32[],uint32)");
     console.log("event MultiIslandsAddedEvent(uint32[],uint32) signature topic:", vm.toString(abi.encodePacked(eventHash)));
+    eventHash = keccak256("IslandResourcesAirdroppedEvent(uint32,uint32,uint32[],uint32[])");
+    console.log("event IslandResourcesAirdroppedEvent(uint32,uint32,uint32[],uint32[]) signature topic:", vm.toString(abi.encodePacked(eventHash)));
     console.log("// # forge inspect MapSystem errors");
 
 

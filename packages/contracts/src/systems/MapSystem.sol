@@ -5,11 +5,12 @@ pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
 import { Map, MapData } from "../codegen/index.sol";
-import { MapCreated, MapUpdated, IslandAdded, MultiIslandsAdded } from "./MapEvents.sol";
+import { MapCreated, MapUpdated, IslandAdded, MultiIslandsAdded, IslandResourcesAirdropped } from "./MapEvents.sol";
 import { MapCreateLogic } from "./MapCreateLogic.sol";
 import { MapUpdateLogic } from "./MapUpdateLogic.sol";
 import { MapAddIslandLogic } from "./MapAddIslandLogic.sol";
 import { MapAddMultiIslandsLogic } from "./MapAddMultiIslandsLogic.sol";
+import { MapAirdropLogic } from "./MapAirdropLogic.sol";
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 import { Coordinates } from "./Coordinates.sol";
 import { SystemRegistry } from "@latticexyz/world/src/codegen/tables/SystemRegistry.sol";
@@ -27,6 +28,8 @@ contract MapSystem is System, IAppSystemErrors {
   event IslandAddedEvent(uint32 coordinatesX, uint32 coordinatesY);
 
   event MultiIslandsAddedEvent(uint32[] resourceItemIds, uint32 resourceSubtotal);
+
+  event IslandResourcesAirdroppedEvent(uint32 coordinatesX, uint32 coordinatesY, uint32[] resourcesItemIds, uint32[] resourcesQuantities);
 
   function _requireNamespaceOwner() internal view {
     ResourceId _thisSystemId = SystemRegistry.get(address(this));
@@ -81,6 +84,18 @@ contract MapSystem is System, IAppSystemErrors {
     MultiIslandsAdded memory multiIslandsAdded = MapAddMultiIslandsLogic.verify(coordinates, resourceItemIds, resourceSubtotal, mapData);
     emit MultiIslandsAddedEvent(multiIslandsAdded.resourceItemIds, multiIslandsAdded.resourceSubtotal);
     MapData memory updatedMapData = MapAddMultiIslandsLogic.mutate(multiIslandsAdded, mapData);
+    Map.set(updatedMapData);
+  }
+
+  function mapAirdrop(uint32 coordinatesX, uint32 coordinatesY, uint32[] memory resourcesItemIds, uint32[] memory resourcesQuantities) public {
+    _requireNamespaceOwner();
+    MapData memory mapData = Map.get();
+    if (mapData.existing == false && mapData.islandClaimWhitelistEnabled == false) {
+      revert MapDoesNotExist();
+    }
+    IslandResourcesAirdropped memory islandResourcesAirdropped = MapAirdropLogic.verify(coordinatesX, coordinatesY, resourcesItemIds, resourcesQuantities, mapData);
+    emit IslandResourcesAirdroppedEvent(islandResourcesAirdropped.coordinatesX, islandResourcesAirdropped.coordinatesY, islandResourcesAirdropped.resourcesItemIds, islandResourcesAirdropped.resourcesQuantities);
+    MapData memory updatedMapData = MapAirdropLogic.mutate(islandResourcesAirdropped, mapData);
     Map.set(updatedMapData);
   }
 
