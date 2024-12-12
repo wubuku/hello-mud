@@ -148,18 +148,18 @@ contract PostDeploy is Script {
       console.log("    ItemId: %d, Quantity: %d", playerInventory.inventoryItemId, playerInventory.inventoryQuantity);
     }
 
-    try world.app__playerGatherIslandResources(playerId) {
-      console.log("Player gathered island resource(respawn) again. Now they have resources:");
-      inventoryCount = PlayerInventoryLib.getInventoryCount(playerId);
-      for (uint64 i = 0; i < inventoryCount; i++) {
-        PlayerInventoryData memory playerInventory = PlayerInventory.get(playerId, i);
-        console.log("    ItemId: %d, Quantity: %d", playerInventory.inventoryItemId, playerInventory.inventoryQuantity);
-      }
-    } catch Error(string memory reason) {
-      console.log("Failed to gather resource(respawn): %s", reason);
-    } catch (bytes memory lowLevelData) {
-      console.log("Failed to gather resource: low-level error");
-    }
+    // try world.app__playerGatherIslandResources(playerId) {
+    //   console.log("Player gathered island resource(respawn) again. Now they have resources:");
+    //   inventoryCount = PlayerInventoryLib.getInventoryCount(playerId);
+    //   for (uint64 i = 0; i < inventoryCount; i++) {
+    //     PlayerInventoryData memory playerInventory = PlayerInventory.get(playerId, i);
+    //     console.log("    ItemId: %d, Quantity: %d", playerInventory.inventoryItemId, playerInventory.inventoryQuantity);
+    //   }
+    // } catch Error(string memory reason) {
+    //   console.log("Failed to gather resource(respawn): %s", reason);
+    // } catch (bytes memory lowLevelData) {
+    //   console.log("Failed to gather resource: low-level error");
+    // }
 
     // Test add multi islands
     // uint32 resourceSubtotal = 600;
