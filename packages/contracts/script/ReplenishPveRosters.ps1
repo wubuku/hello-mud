@@ -1,8 +1,20 @@
 $startLocation = $PSScriptRoot
 
+# test
 $worldAddress = "0x593ad505023ea24371f8f628b251e0667308840f"
+#$worldAddress = "0x63381030dda22c888f2548436c73146ef835ab9e"
+$privateKey = "0x0dcf6503b3fa4c2b9f529da422e0d56ed19a08dd6246f22500a756d9fe6d3201"
+
+#product
+# $worldAddress = "0x776086899eab4ee3953b7c037b2c0a13c7a1deed"
+# $privateKey = "0x70fc6e2715bfd632dcdbe86657bc9b38e3f48b6d866171ed61ae60f3d42a57e1"
+
 $rpcUrl = "https://odyssey.storyrpc.io/"
-$privateKey = "0x70fc6e2715bfd632dcdbe86657bc9b38e3f48b6d866171ed61ae60f3d42a57e1"
+
+
+# GraphQL API 的 URL
+$graphqlUrl = "https://api.goldsky.com/api/public/project_cm3zj9u61wxu901wog58adpjp/subgraphs/game-odyssey-testnet/1.0.1/gn"
+
 
 $logPath = $startLocation + "\ReplenishPveRosters\$worldAddress"
 if (-Not (Test-Path $logPath)) {
@@ -43,8 +55,6 @@ $environmentQuntityPerIsland = 3
 #添加船队时，最大出错次数不能超过$maxErrorTimes
 $maxErrorTimes = 5
 
-# GraphQL API 的 URL
-$graphqlUrl = "https://api.goldsky.com/api/public/project_cm3zj9u61wxu901wog58adpjp/subgraphs/game-odyssey-testnet/1.0.1/gn"
 
 # 测试！！！！！
 # $islandCoordinates = @(
@@ -124,8 +134,7 @@ $body = @{
 }
 $response = $null
 #$quntity = $null
-try {
-    
+try {    
     # 发送请求
     $response = Invoke-RestMethod -Uri $graphqlUrl -Method Post -Body ($body | ConvertTo-Json) -ContentType "application/json"        
     # 获取当前页的数据
