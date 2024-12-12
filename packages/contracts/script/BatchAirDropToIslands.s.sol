@@ -43,10 +43,16 @@ contract BatchCall is Script {
   uint32 resoucePotatoSeedsQuantity = 88;
   function run(address worldAddress) external {
     StoreSwitch.setStoreAddress(worldAddress);
-    //IWorld world = IWorld(worldAddress);
+    IWorld world = IWorld(worldAddress);
 
     // Load the private key from the `PRIVATE_KEY` environment variable (in .env)
     uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+    address deployerAddress = vm.addr(deployerPrivateKey);
+
+    console.log("Deploying contracts with the account:", deployerAddress);
+
+    uint256 balance = deployerAddress.balance;
+    console.log("Account balance:", balance);
 
     // Start broadcasting transactions from the deployer account
     vm.startBroadcast(deployerPrivateKey);
@@ -476,8 +482,10 @@ contract BatchCall is Script {
     //   }
     // }
 
-    uint32[1] memory coordinatesX = [uint32(2147483647)];
-    uint32[1] memory coordinatesY = [uint32(2147483647)];
+    uint32[] memory coordinatesX = new uint32[](1);
+    coordinatesX[0] = uint32(2147483647);
+    uint32[] memory coordinatesY = new uint32[](1);
+    coordinatesY[0] = uint32(2147483647);
 
     ItemIdQuantityPair[] memory toAirDropResoures = createIslandResources();
     uint32[] memory resourcesItemIds = new uint32[](toAirDropResoures.length);
@@ -488,21 +496,24 @@ contract BatchCall is Script {
       console.log("    ItemId: %d, Quantity: %d", resourcesItemIds[i], resourcesQuantities[i]);
     }
 
-    SystemCallData[] memory calls = new SystemCallData[](coordinatesX.length);
+    // SystemCallData[] memory calls = new SystemCallData[](coordinatesX.length);
+    // for (uint i = 0; i < coordinatesX.length; i++) {
+    //   calls[i].systemId = systemId;
+    //   calls[i].callData = abi.encodeWithSignature(
+    //     "mapAirdrop(uint32,uint32,uint32[],uint32[])",
+    //     coordinatesX[i],
+    //     coordinatesY[i],
+    //     resourcesItemIds,
+    //     resourcesQuantities
+    //   );
+    // }
+    // bytes[] memory returnData = IWorld(worldAddress).batchCall(calls);
+    // for (uint i = 0; i < returnData.length; i++) {
+    //   console.log("The return value is:");
+    //   console.logBytes(returnData[i]);
+    // }
     for (uint i = 0; i < coordinatesX.length; i++) {
-      calls[i].systemId = systemId;
-      calls[i].callData = abi.encodeWithSignature(
-        "mapAirdrop(uint32,uint32,uint32[],uint32[])",
-        coordinatesX[i],
-        coordinatesY[i],
-        resourcesItemIds,
-        resourcesQuantities
-      );
-    }
-    bytes[] memory returnData = IWorld(worldAddress).batchCall(calls);
-    for (uint i = 0; i < returnData.length; i++) {
-      console.log("The return value is:");
-      console.logBytes(returnData[i]);
+      world.app__mapAirdrop(coordinatesX[i], coordinatesY[i], resourcesItemIds, resourcesQuantities);
     }
     vm.stopBroadcast();
   }
