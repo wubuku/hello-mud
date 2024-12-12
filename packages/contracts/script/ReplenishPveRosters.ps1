@@ -12,7 +12,7 @@ $privateKey = "0x70fc6e2715bfd632dcdbe86657bc9b38e3f48b6d866171ed61ae60f3d42a57e
 $rpcUrl = "https://odyssey.storyrpc.io/"
 
 # GraphQL API 的 URL
-$graphqlUrl = "https://api.goldsky.com/api/public/project_cm3zj9u61wxu901wog58adpjp/subgraphs/game-odyssey-testnet/1.0.1/gn"
+$graphqlUrl = "https://api.goldsky.com/api/public/project_cm3zj9u61wxu901wog58adpjp/subgraphs/game-odyssey-testnet/1.0.2/gn"
 
 
 $logPath = $startLocation + "\ReplenishPveRosters\$worldAddress"
@@ -394,20 +394,21 @@ foreach ($equipment in $equipments) {
         #$rosterId = ""
         $createEnvironmentRosterResult = ""
         try {
-            #$command = "sui client call --package $($dataInfo.main.PackageId) --module roster_aggregate --function create_environment_roster --args  $($dataInfo.main.EnvironmentPlayId) $LastRosterIdSequenceNumber $($dataInfo.main.Publisher) $($randomPoint.X) $($randomPoint.Y) $ship_resource_quantity $ship_base_resource_quantity $base_experience $clock $($dataInfo.main.RosterTable) --gas-budget 42000000 --json"
             $command = "cast send $worldAddress ""app__rosterCreateEnvironmentRoster(uint256, uint32, uint32, uint32, uint32, uint32, uint32)"" $pveRosterPlayerId $LastRosterIdSequenceNumber $($randomPoint.X) $($randomPoint.Y) $ship_resource_quantity $ship_base_resource_quantity $base_experience --rpc-url ""$rpcUrl"" --private-key $privateKey --json"
             $command | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Blue
-            $createEnvironmentRosterResult = Invoke-Expression -Command $command
+            $createEnvironmentRosterResult = Invoke-Expression -Command "$command 2>&1"
+            $LastRosterIdSequenceNumber++ #只要执行过就加1
+            $createEnvironmentRosterResultObj = $createEnvironmentRosterResult | ConvertFrom-Json
+            
+            # 检查是否包含错误信息
+            if ($createEnvironmentRosterResult -match "error" -or $createEnvironmentRosterResult -match "failed") {
+                throw "Cast command failed: $createEnvironmentRosterResult"
+            }
+    
             $createEnvironmentRosterResultObj = $createEnvironmentRosterResult | ConvertFrom-Json
             if (-not $createEnvironmentRosterResultObj.status) {
-                "创建环境船队时返回信息 $createEnvironmentRosterResult" | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Red
-                $errorTimes++
-                if ($errorTimes -ge $maxErrorTimes) {
-                    "创建环境船队出错次数:$errorTimes,已经达到上限:$maxErrorTimes,退出..." | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Red
-                    return
-                }
-                continue
-            }
+                throw "Transaction failed: $createEnvironmentRosterResult"
+            }    
             "创建环境船队成功， 交易哈希: $($createEnvironmentRosterResultObj.transactionHash),blockNumber:$($createEnvironmentRosterResultObj.blockNumber)`n" | Tee-Object -FilePath $logFile -Append | Write-Host -ForegroundColor Green
             "船队RosterId={$pveRosterPlayerId,$LastRosterIdSequenceNumber}" | Write-Host -ForegroundColor Blue
             "已经补充 $($roster_id_sequence_number) 只环境船队" | Tee-Object -FilePath $logFile -Append | Write-Host -ForegroundColor Yellow
@@ -415,14 +416,16 @@ foreach ($equipment in $equipments) {
             $equipment.Rosters.Add($randomPoint)
         }
         catch {
-            "创建环境船队失败: $($_.Exception.Message) `n" | Tee-Object -FilePath $logFile -Append | Write-Host -ForegroundColor Red
-            "返回的结果为:$createEnvironmentRosterResult" | Tee-Object -FilePath $logFile -Append  |  Write-Host 
+            $errorMessage = if ($_.Exception.Message) { $_.Exception.Message } else { $_ }
+            "创建环境船队失败: $errorMessage `n" | Tee-Object -FilePath $logFile -Append | Write-Host -ForegroundColor Red
+            "完整错误信息: $createEnvironmentRosterResult" | Tee-Object -FilePath $logFile -Append | Write-Host -ForegroundColor Red
+    
             $errorTimes++
             if ($errorTimes -ge $maxErrorTimes) {
-                "创建环境船队出错次数:$errorTimes,已经达到上限:$maxErrorTimes,退出..." | Tee-Object -FilePath $logFile -Append | Write-Host  -ForegroundColor Red
+                "创建环境船队出错次数:$errorTimes,已经达到上限:$maxErrorTimes,退出..." | Tee-Object -FilePath $logFile -Append | Write-Host -ForegroundColor Red
                 return
             }
-            continue    
+            continue   
         }
     }
 }
