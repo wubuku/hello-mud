@@ -2,6 +2,7 @@
 pragma solidity >=0.8.24;
 
 import "@openzeppelin/contracts/utils/math/Math.sol";
+import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import "../systems/Coordinates.sol";
 import "./DirectRouteUtil.sol";
 
@@ -32,7 +33,7 @@ library RouteUtil {
   ) internal pure returns (bool) {
     // Check if currentTime is within allowed range
     if (
-      updateTime < segmentStartTime - ALLOWED_TIME_DEVIATION || updateTime > segmentEndTime + ALLOWED_TIME_DEVIATION
+      updateTime + ALLOWED_TIME_DEVIATION < segmentStartTime || updateTime > segmentEndTime + ALLOWED_TIME_DEVIATION
     ) {
       return false;
     }
@@ -78,20 +79,37 @@ library RouteUtil {
     Coordinates memory b,
     Coordinates memory p
   ) internal pure returns (bool isWithinSegment, Coordinates memory intersection) {
-    // Calculate vectors
-    int256 abX = int256(uint256(b.x)) - int256(uint256(a.x));
-    int256 abY = int256(uint256(b.y)) - int256(uint256(a.y));
-    int256 apX = int256(uint256(p.x)) - int256(uint256(a.x));
-    int256 apY = int256(uint256(p.y)) - int256(uint256(a.y));
+    // Calculate vectors using SafeCast to prevent overflow
+    int256 abX = SafeCast.toInt256(uint256(b.x)) - SafeCast.toInt256(uint256(a.x));
+    int256 abY = SafeCast.toInt256(uint256(b.y)) - SafeCast.toInt256(uint256(a.y));
+    int256 apX = SafeCast.toInt256(uint256(p.x)) - SafeCast.toInt256(uint256(a.x));
+    int256 apY = SafeCast.toInt256(uint256(p.y)) - SafeCast.toInt256(uint256(a.y));
 
-    // Calculate dot products
-    int256 dotProductAP_AB = apX * abX + apY * abY;
-    int256 dotProductAB_AB = abX * abX + abY * abY;
+    // Calculate dot products with reduced precision to prevent overflow
+    int256 prod1 = (apX * abX) / 1e4;  // Reduce precision to prevent overflow
+    int256 prod2 = (apY * abY) / 1e4;
+    int256 dotProductAP_AB = (prod1 + prod2) * 1e4;
 
-    // Calculate the projection point regardless of whether it's on the segment
-    uint256 t = uint256((dotProductAP_AB * 1e9) / dotProductAB_AB);
-    intersection.x = a.x + uint32((uint256(abX) * t) / 1e9);
-    intersection.y = a.y + uint32((uint256(abY) * t) / 1e9);
+    int256 prod3 = (abX * abX) / 1e4;
+    int256 prod4 = (abY * abY) / 1e4;
+    int256 dotProductAB_AB = (prod3 + prod4) * 1e4;
+
+    // Handle division by zero case
+    if (dotProductAB_AB == 0) {
+        intersection = a;
+        isWithinSegment = true;
+        return (isWithinSegment, intersection);
+    }
+
+    // Calculate projection point with reduced precision
+    uint256 t = uint256((dotProductAP_AB * 1e5) / dotProductAB_AB);
+    
+    // Safely calculate final coordinates
+    uint256 deltaX = (uint256(abX >= 0 ? abX : -abX) * t) / 1e5;
+    uint256 deltaY = (uint256(abY >= 0 ? abY : -abY) * t) / 1e5;
+    
+    intersection.x = abX >= 0 ? a.x + uint32(deltaX) : a.x - uint32(deltaX);
+    intersection.y = abY >= 0 ? a.y + uint32(deltaY) : a.y - uint32(deltaY);
 
     // Determine if the projection is within the segment
     isWithinSegment = (dotProductAP_AB >= 0 && dotProductAP_AB <= dotProductAB_AB);
@@ -110,5 +128,7 @@ library RouteUtil {
       intersection.y = 0;
     }
     */
+
+    return (isWithinSegment, intersection);
   }
 }
