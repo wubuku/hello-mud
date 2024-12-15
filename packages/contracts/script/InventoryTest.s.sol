@@ -14,13 +14,13 @@ import { Energy } from "../src/tokens/Energy.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import { SkillType } from "../src/systems/SkillType.sol";
-import { PlayerData, AccountPlayer, Player, PlayerIdGenerator, ShipIdGenerator, ShipBattleIdGenerator, RosterData, Roster, ShipInventory, Ship, ShipData, MapLocationData, MapLocation, Map, MapData } from "../src/codegen/index.sol";
+import { ShipInventoryData, ShipInventoryCount, PlayerData, AccountPlayer, Player, PlayerIdGenerator, ShipIdGenerator, ShipBattleIdGenerator, RosterData, Roster, ShipInventory, Ship, ShipData, MapLocationData, MapLocation, Map, MapData } from "../src/codegen/index.sol";
 import { ItemIdQuantityPair } from "../src/systems/ItemIdQuantityPair.sol";
 import { RosterUtil } from "../src/utils/RosterUtil.sol";
 
-contract CreatePlayerTest is Script {
+contract InventoryTest is Script {
   //
-  // forge script script/CreatePlayerTest.s.sol:CreatePlayerTest --sig "run(address)" <WORLD_ADDRESS> --broadcast --rpc-url http://localhost:8545
+  // forge script InventoryTest.s.sol:InventoryTest --sig "run(address)" 0xc600b6fcdd37be933e2d296852d5b50a5d20f096 --broadcast --rpc-url "https://odyssey.storyrpc.io/"
   //
   function run(address worldAddress) external {
     // Specify a store so that you can use tables directly in PostDeploy
@@ -50,7 +50,15 @@ contract CreatePlayerTest is Script {
     MapLocationData memory mapLocationData = MapLocation.get(playerData.claimedIslandX, playerData.claimedIslandY);
     if (!mapLocationData.existing) {
       console.log("Map location data is not exist!");
+      vm.stopBroadcast();
       return;
+    } else {
+      console.log(
+        "existing:%s,gatheredAt:%d,occupiedBy:%d",
+        mapLocationData.existing,
+        mapLocationData.gatheredAt,
+        mapLocationData.occupiedBy
+      );
     }
     uint32[] memory itemIds;
     uint32[] memory quantities;
@@ -62,11 +70,49 @@ contract CreatePlayerTest is Script {
         itemIds[i] = resources[i].itemId;
         quantities[i] = resources[i].quantity;
       }
-      world.app__mapAirdrop(playerData.claimedIslandX, playerData.claimedIslandY, itemIds, quantities);
+      //world.app__mapAirdrop(playerData.claimedIslandX, playerData.claimedIslandY, itemIds, quantities);
+      console.log("Airdrop to the island...");
+      MapLocation.set(
+        playerData.claimedIslandX,
+        playerData.claimedIslandY,
+        0,
+        playerId,
+        mapLocationData.gatheredAt,
+        true,
+        itemIds,
+        quantities
+      );
+      console.log("...Done");
     } else {
       itemIds = mapLocationData.resourcesItemIds;
       quantities = mapLocationData.resourcesQuantities;
     }
+    console.log("The resources of the island:");
+    for (uint i = 0; i < itemIds.length; i++) {
+      console.log("Item id:%d,quantity:%d", itemIds[i], quantities[i]);
+    }
+    //ShipInventory.get(shipId, inventoryIndex);
+    // 查询当前账户编号为 1（索引为 0）的船队
+    uint32 sequenceNumber = 0;
+    RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
+    if (rosterData.shipIds.length < 1) {
+      console.log("Roster%d has no ships", sequenceNumber + 1);
+      vm.stopBroadcast();
+      return;
+    }
+    console.log("Roster%d has %d ships", sequenceNumber + 1, rosterData.shipIds.length);
+    uint256 lastShipInTheRoster = rosterData.shipIds[rosterData.shipIds.length - 1];
+    uint64 shipInventoryCount = ShipInventoryCount.get(lastShipInTheRoster);
+    if (shipInventoryCount < 1) {
+      console.log("Ship id:%d has no inventory", lastShipInTheRoster);
+    } else {
+      for (uint64 i = 0; i < shipInventoryCount - 1; i++) {
+        ShipInventoryData memory shipInventoryData = ShipInventory.get(lastShipInTheRoster, i);
+        console.log("Item Id:%d,Quantity:%d", shipInventoryData.inventoryItemId, shipInventoryData.inventoryQuantity);
+      }
+    }
+
+    //world.app__rosterPutInShipInventory(playerId, sequenceNumber, shipId, itemIdQuantityPairs, updateLocationParams);
     vm.stopBroadcast();
   }
 
