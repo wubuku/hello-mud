@@ -22,7 +22,7 @@ import { SpeedUtil } from "../src/utils/SpeedUtil.sol";
 
 contract ManualSmokeTest is Script {
   //
-  // forge script script/ManualSmokeTest.s.sol:ManualSmokeTest --sig "run(address)" <WORLD_ADDRESS> --broadcast --rpc-url http://localhost:8545
+  // forge script ManualSmokeTest.s.sol:ManualSmokeTest --sig "run(address)" 0x8d8b6b8414e1e3dcfd4168561b9be6bd3bf6ec4b --broadcast --rpc-url http://127.0.0.1:8545
   //
   function run(address worldAddress) external {
     // Specify a store so that you can use tables directly in PostDeploy
@@ -69,8 +69,8 @@ contract ManualSmokeTest is Script {
     "app__skillProcessCompleteProduction(uint8,uint256,uint8)" \
     '0' '1' '0'
     */
-    world.app__skillProcessCompleteProduction(uint8(SkillType.FARMING), playerId, 0); // skill type 0 is FARMING
-    console.log("Completed skill process production for FARMING");
+    // world.app__skillProcessCompleteProduction(uint8(SkillType.FARMING), playerId, 0); // skill type 0 is FARMING
+    // console.log("Completed skill process production for FARMING");
 
     /*
     cast send --private-key __YOUR_PRIVATE_KEY__ \

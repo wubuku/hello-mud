@@ -19,11 +19,13 @@ import { ItemIdQuantityPair } from "../src/systems/ItemIdQuantityPair.sol";
 import { RosterUtil } from "../src/utils/RosterUtil.sol";
 import { SpeedUtil } from "../src/utils/SpeedUtil.sol";
 import { Coordinates } from "../src/systems/Coordinates.sol";
+import { EnergyToken } from "../src/codegen/tables/EnergyToken.sol";
 import { UpdateLocationParams } from "../src/systems/UpdateLocationParams.sol";
 
 contract RosterSetSailTest is Script {
   //
-  // forge script script/RosterSetSailTest.s.sol:RosterSetSailTest --sig "run(address)" <WORLD_ADDRESS> --broadcast --rpc-url http://localhost:8545
+  // forge script RosterSetSailTest.s.sol:RosterSetSailTest --sig "run(address)" 0x8d8b6b8414e1e3dcfd4168561b9be6bd3bf6ec4b --broadcast --rpc-url http://127.0.0.1:8545
+  // forge script RosterSetSailTest.s.sol:RosterSetSailTest --sig "run(address)" 0x776086899eab4ee3953b7c037b2c0a13c7a1deed --broadcast --rpc-url https://odyssey.storyrpc.io
   //
   function run(address worldAddress) external {
     // Specify a store so that you can use tables directly in PostDeploy
@@ -48,6 +50,14 @@ contract RosterSetSailTest is Script {
     // IERC20 energyIErc20 = IERC20(energyTokenAddress);
     // energyIErc20.approve(systemAddress, 10000 * 10 ** 18);
     // console.log("Approved AggregatorServiceSystem to spend ENERGY tokens");
+
+    address tokenAddress = EnergyToken.getTokenAddress();
+    if (tokenAddress == address(0)) {
+      vm.stopBroadcast();
+      console.log("Error token address");
+      return;
+    }
+    console.log("The contract address of ENERGY is:", tokenAddress);
 
     IWorld world = IWorld(worldAddress);
     uint256 currentTimestamp = block.timestamp;
@@ -86,6 +96,15 @@ contract RosterSetSailTest is Script {
       intermediatePoints
     );
     console.log("Sail duration:", sailDuration);
+
+    IERC20 token = IERC20(tokenAddress);
+    uint256 balanceOfBeforeSailing = token.balanceOf(deployerAddress);
+    if (balance < 0) {
+      console.log("The balance of ENERGY is ZERO!!!");
+      vm.stopBroadcast();
+      return;
+    }
+    console.log("Before sailing,The balance of ENERGY is:%d", balanceOfBeforeSailing);
     uint64 energyAmount = 100000000000;
     UpdateLocationParams memory updateLocationParams; //empty
     world.app__uniApiRosterSetSail(
@@ -99,6 +118,10 @@ contract RosterSetSailTest is Script {
       intermediatePoints
     );
     console.log("Set sail a roster to target coordinates:", targetCoordinatesX, targetCoordinatesY);
+    uint256 balanceOfAfterSailing = token.balanceOf(deployerAddress);
+    console.log("After sailing,The balance of ENERGY is:%d", balanceOfAfterSailing);
+
+    console.log("Before-After:%d", balanceOfBeforeSailing - balanceOfAfterSailing);
 
     vm.stopBroadcast();
   }

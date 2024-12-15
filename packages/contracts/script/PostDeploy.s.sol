@@ -91,9 +91,9 @@ contract PostDeploy is Script {
     uint32 firstIslandY = 2147483647;
     addIsland(world, firstIslandX, firstIslandY);
 
-    uint32 secondIslandX = 2147483647 + 10000;
-    uint32 secondIslandY = 2147483647 + 10000;
-    addIsland(world, secondIslandX, secondIslandY);
+    // uint32 secondIslandX = 2147483647 + 10000;
+    // uint32 secondIslandY = 2147483647 + 10000;
+    // addIsland(world, secondIslandX, secondIslandY);
 
     world.app__playerCreate("TestPlayer");
     uint256 playerId = PlayerIdGenerator.getId();
@@ -101,52 +101,52 @@ contract PostDeploy is Script {
 
     world.app__playerClaimIsland(playerId, firstIslandX, firstIslandY);
     console.log("An island claimed by test player!");
-    console.log("Before airdrop resources to island,the island has resources:");
-    MapLocationData memory mapLocationData = MapLocation.get(firstIslandX, firstIslandY);
-    if (mapLocationData.resourcesItemIds.length < 1) {
-      console.log("Not any resource on the island.");
-    } else {
-      for (uint i = 0; i < mapLocationData.resourcesItemIds.length; i++) {
-        console.log(
-          "    ItemId: %d, Quantity: %d",
-          mapLocationData.resourcesItemIds[i],
-          mapLocationData.resourcesQuantities[i]
-        );
-      }
-    }
-    ItemIdQuantityPair[] memory toAirDropResoures = createAirDropIslandResources();
-    console.log("Airdrop resources to island:");
-    logIslandResources(toAirDropResoures);
-    uint32[] memory resourcesItemIds = new uint32[](toAirDropResoures.length);
-    uint32[] memory resourcesQuantities = new uint32[](toAirDropResoures.length);
-    for (uint i = 0; i < toAirDropResoures.length; i++) {
-      resourcesItemIds[i] = toAirDropResoures[i].itemId;
-      resourcesQuantities[i] = toAirDropResoures[i].quantity;
-    }
-    world.app__mapAirdrop(firstIslandX, firstIslandY, resourcesItemIds, resourcesQuantities);
-    mapLocationData = MapLocation.get(firstIslandX, firstIslandY);
-    console.log("After airdropped resource to the island,the island has resources:");
-    for (uint i = 0; i < mapLocationData.resourcesItemIds.length; i++) {
-      console.log(
-        "    ItemId: %d, Quantity: %d",
-        mapLocationData.resourcesItemIds[i],
-        mapLocationData.resourcesQuantities[i]
-      );
-    }
-    console.log("Before player gather island resource,player has resources:");
-    uint64 inventoryCount = PlayerInventoryLib.getInventoryCount(playerId);
-    for (uint64 i = 0; i < inventoryCount; i++) {
-      PlayerInventoryData memory playerInventory = PlayerInventory.get(playerId, i);
-      console.log("    ItemId: %d, Quantity: %d", playerInventory.inventoryItemId, playerInventory.inventoryQuantity);
-    }
-    console.log("Player gather island resource....");
-    world.app__playerGatherIslandResources(playerId);
-    console.log("Player gathered island resource(Airdrop).Now he has resources:");
-    inventoryCount = PlayerInventoryLib.getInventoryCount(playerId);
-    for (uint64 i = 0; i < inventoryCount; i++) {
-      PlayerInventoryData memory playerInventory = PlayerInventory.get(playerId, i);
-      console.log("    ItemId: %d, Quantity: %d", playerInventory.inventoryItemId, playerInventory.inventoryQuantity);
-    }
+    // console.log("Before airdrop resources to island,the island has resources:");
+    // MapLocationData memory mapLocationData = MapLocation.get(firstIslandX, firstIslandY);
+    // if (mapLocationData.resourcesItemIds.length < 1) {
+    //   console.log("Not any resource on the island.");
+    // } else {
+    //   for (uint i = 0; i < mapLocationData.resourcesItemIds.length; i++) {
+    //     console.log(
+    //       "    ItemId: %d, Quantity: %d",
+    //       mapLocationData.resourcesItemIds[i],
+    //       mapLocationData.resourcesQuantities[i]
+    //     );
+    //   }
+    // }
+    // ItemIdQuantityPair[] memory toAirDropResoures = createAirDropIslandResources();
+    // console.log("Airdrop resources to island:");
+    // logIslandResources(toAirDropResoures);
+    // uint32[] memory resourcesItemIds = new uint32[](toAirDropResoures.length);
+    // uint32[] memory resourcesQuantities = new uint32[](toAirDropResoures.length);
+    // for (uint i = 0; i < toAirDropResoures.length; i++) {
+    //   resourcesItemIds[i] = toAirDropResoures[i].itemId;
+    //   resourcesQuantities[i] = toAirDropResoures[i].quantity;
+    // }
+    // world.app__mapAirdrop(firstIslandX, firstIslandY, resourcesItemIds, resourcesQuantities);
+    // mapLocationData = MapLocation.get(firstIslandX, firstIslandY);
+    // console.log("After airdropped resource to the island,the island has resources:");
+    // for (uint i = 0; i < mapLocationData.resourcesItemIds.length; i++) {
+    //   console.log(
+    //     "    ItemId: %d, Quantity: %d",
+    //     mapLocationData.resourcesItemIds[i],
+    //     mapLocationData.resourcesQuantities[i]
+    //   );
+    // }
+    // console.log("Before player gather island resource,player has resources:");
+    // uint64 inventoryCount = PlayerInventoryLib.getInventoryCount(playerId);
+    // for (uint64 i = 0; i < inventoryCount; i++) {
+    //   PlayerInventoryData memory playerInventory = PlayerInventory.get(playerId, i);
+    //   console.log("    ItemId: %d, Quantity: %d", playerInventory.inventoryItemId, playerInventory.inventoryQuantity);
+    // }
+    // console.log("Player gather island resource....");
+    // world.app__playerGatherIslandResources(playerId);
+    // console.log("Player gathered island resource(Airdrop).Now he has resources:");
+    // inventoryCount = PlayerInventoryLib.getInventoryCount(playerId);
+    // for (uint64 i = 0; i < inventoryCount; i++) {
+    //   PlayerInventoryData memory playerInventory = PlayerInventory.get(playerId, i);
+    //   console.log("    ItemId: %d, Quantity: %d", playerInventory.inventoryItemId, playerInventory.inventoryQuantity);
+    // }
 
     // try world.app__playerGatherIslandResources(playerId) {
     //   console.log("Player gathered island resource(respawn) again. Now they have resources:");
@@ -183,27 +183,27 @@ contract PostDeploy is Script {
     world.app__experienceTableAddLevel(3, 174, 91);
     console.log("Added levels to experience table");
 
-    // // Create items
-    // createItems(world);
-    // console.log("Created items");
-    // //Create Item Creations(Mining & Cutting)
-    // createItemCreations(world);
-    // console.log("Created item creations");
-    // //Create Item Productions(Planting Cottons & Crafting Ship)
-    // createItemProductions(world);
-    // console.log("Created item productions");
+    // Create items
+    createItems(world);
+    console.log("Created items");
+    //Create Item Creations(Mining & Cutting)
+    createItemCreations(world);
+    console.log("Created item creations");
+    //Create Item Productions(Planting Cottons & Crafting Ship)
+    createItemProductions(world);
+    console.log("Created item productions");
 
-    // // Airdrop items to the test player
-    // world.app__playerAirdrop(playerId, 1, 200); // 200 PotatoSeeds
-    // world.app__playerAirdrop(playerId, 2, 200); // 200 CottonSeeds
-    // world.app__playerAirdrop(playerId, 200, 200); // 200 NormalLogs
-    // world.app__playerAirdrop(playerId, 301, 200); // 200 CopperOre
-    // world.app__playerAirdrop(playerId, 302, 200); // 200 TinOre
-    // world.app__playerAirdrop(playerId, 102, 200); // 200 Cottons
-    // console.log("Airdropped items to test player");
+    // Airdrop items to the test player
+    world.app__playerAirdrop(playerId, 1, 200); // 200 PotatoSeeds
+    world.app__playerAirdrop(playerId, 2, 200); // 200 CottonSeeds
+    world.app__playerAirdrop(playerId, 200, 200); // 200 NormalLogs
+    world.app__playerAirdrop(playerId, 301, 200); // 200 CopperOre
+    world.app__playerAirdrop(playerId, 302, 200); // 200 TinOre
+    world.app__playerAirdrop(playerId, 102, 200); // 200 Cottons
+    console.log("Airdropped items to test player");
 
-    // world.app__uniApiStartCreation(uint8(SkillType.MINING), playerId, 0, 301, 1);
-    // console.log("Started mining of 1 CopperOre");
+    world.app__uniApiStartCreation(uint8(SkillType.MINING), playerId, 0, 301, 1);
+    console.log("Started mining of 1 CopperOre");
 
     // uint32 cottonSeedsItemId = 2;
     // uint32 cottonItemId = 102;
@@ -226,12 +226,12 @@ contract PostDeploy is Script {
     //   console.log("After farming,cotton seeds quantity error");
     // }
 
-    // ItemIdQuantityPair[] memory shipProductionMaterials = new ItemIdQuantityPair[](3);
-    // shipProductionMaterials[0] = ItemIdQuantityPair(102, 5); // Cotton
-    // shipProductionMaterials[1] = ItemIdQuantityPair(200, 5); // NormalLogs
-    // shipProductionMaterials[2] = ItemIdQuantityPair(301, 5); // CopperOre
-    // world.app__uniApiStartShipProduction(uint8(SkillType.CRAFTING), playerId, 0, 1000000001, shipProductionMaterials);
-    // console.log("Started ship production");
+    ItemIdQuantityPair[] memory shipProductionMaterials = new ItemIdQuantityPair[](3);
+    shipProductionMaterials[0] = ItemIdQuantityPair(102, 5); // Cotton
+    shipProductionMaterials[1] = ItemIdQuantityPair(200, 5); // NormalLogs
+    shipProductionMaterials[2] = ItemIdQuantityPair(301, 5); // CopperOre
+    world.app__uniApiStartShipProduction(uint8(SkillType.CRAFTING), playerId, 0, 1000000001, shipProductionMaterials);
+    console.log("Started ship production");
 
     // uint256 environmentRosterPlayerId = type(uint256).max;
     // uint32 environmentRosterSequenceNumber = 1;

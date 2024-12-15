@@ -65,7 +65,7 @@ $maxErrorTimes = 5
 
 
 #定义 GraphQL 查询 获取所有岛屿列表
-$pageSize = 500
+$pageSize = 1000
 $islandCoordinates = @()
 $hasMore = $true
 $skip = 0

@@ -16,6 +16,8 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { SkillType } from "../src/systems/SkillType.sol";
 import { ShipInventoryData, ShipInventoryCount, PlayerData, AccountPlayer, Player, PlayerIdGenerator, ShipIdGenerator, ShipBattleIdGenerator, RosterData, Roster, ShipInventory, Ship, ShipData, MapLocationData, MapLocation, Map, MapData } from "../src/codegen/index.sol";
 import { ItemIdQuantityPair } from "../src/systems/ItemIdQuantityPair.sol";
+import { UpdateLocationParams } from "../src/systems/UpdateLocationParams.sol";
+import { Coordinates } from "../src/systems/Coordinates.sol";
 import { RosterUtil } from "../src/utils/RosterUtil.sol";
 
 contract InventoryTest is Script {
@@ -63,6 +65,7 @@ contract InventoryTest is Script {
     uint32[] memory itemIds;
     uint32[] memory quantities;
     if (mapLocationData.resourcesItemIds.length < 1) {
+      console.log("There are nothing on the island.");
       ItemIdQuantityPair[] memory resources = createIslandResources();
       itemIds = new uint32[](resources.length);
       quantities = new uint32[](resources.length);
@@ -71,7 +74,7 @@ contract InventoryTest is Script {
         quantities[i] = resources[i].quantity;
       }
       //world.app__mapAirdrop(playerData.claimedIslandX, playerData.claimedIslandY, itemIds, quantities);
-      console.log("Airdrop to the island...");
+      console.log("So airdrop some resources to the island...");
       MapLocation.set(
         playerData.claimedIslandX,
         playerData.claimedIslandY,
@@ -92,8 +95,8 @@ contract InventoryTest is Script {
       console.log("Item id:%d,quantity:%d", itemIds[i], quantities[i]);
     }
     //ShipInventory.get(shipId, inventoryIndex);
-    // 查询当前账户编号为 1（索引为 0）的船队
-    uint32 sequenceNumber = 0;
+    // 查询当前账户编号为 1（索引为 0 的为 unsigned）的船队
+    uint32 sequenceNumber = 1;
     RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
     if (rosterData.shipIds.length < 1) {
       console.log("Roster%d has no ships", sequenceNumber + 1);
@@ -104,23 +107,47 @@ contract InventoryTest is Script {
     uint256 lastShipInTheRoster = rosterData.shipIds[rosterData.shipIds.length - 1];
     uint64 shipInventoryCount = ShipInventoryCount.get(lastShipInTheRoster);
     if (shipInventoryCount < 1) {
-      console.log("Ship id:%d has no inventory", lastShipInTheRoster);
+      console.log("Ship id(%d): has no inventory", lastShipInTheRoster);
     } else {
       for (uint64 i = 0; i < shipInventoryCount - 1; i++) {
         ShipInventoryData memory shipInventoryData = ShipInventory.get(lastShipInTheRoster, i);
         console.log("Item Id:%d,Quantity:%d", shipInventoryData.inventoryItemId, shipInventoryData.inventoryQuantity);
       }
     }
+    ItemIdQuantityPair[] memory itemIdQuantityPairs = new ItemIdQuantityPair[](itemIds.length);
+    for (uint i = 0; i < itemIds.length; i++) {
+      itemIdQuantityPairs[i] = ItemIdQuantityPair(itemIds[i], quantities[i]);
+    }
+    console.log(
+      "Transfer resources from island to ship(Roster:%d,Index:%d,ShipId:%d)",
+      sequenceNumber + 1,
+      rosterData.shipIds.length - 1,
+      lastShipInTheRoster
+    );
+    Coordinates memory coordinates = Coordinates(0, 0);
+    UpdateLocationParams memory updateLocationParams = UpdateLocationParams(coordinates, 0, 0);
+    world.app__rosterPutInShipInventory(
+      playerId,
+      sequenceNumber,
+      lastShipInTheRoster,
+      itemIdQuantityPairs,
+      updateLocationParams
+    );
 
-    //world.app__rosterPutInShipInventory(playerId, sequenceNumber, shipId, itemIdQuantityPairs, updateLocationParams);
+    console.log("Transferring resources from island to ship is done,now the ship has:");
+    shipInventoryCount = ShipInventoryCount.get(lastShipInTheRoster);
+    for (uint64 i = 0; i < shipInventoryCount - 1; i++) {
+      ShipInventoryData memory shipInventoryData = ShipInventory.get(lastShipInTheRoster, i);
+      console.log("Item Id:%d,Quantity:%d", shipInventoryData.inventoryItemId, shipInventoryData.inventoryQuantity);
+    }
     vm.stopBroadcast();
   }
 
   function createIslandResources() internal pure returns (ItemIdQuantityPair[] memory) {
     ItemIdQuantityPair[] memory resources = new ItemIdQuantityPair[](3);
-    resources[0] = ItemIdQuantityPair(2, 200); // CottonSeeds
-    resources[1] = ItemIdQuantityPair(2000000001, 200); // ResourceTypeWoodcutting
-    resources[2] = ItemIdQuantityPair(2000000003, 200); // ResourceTypeMining
+    resources[0] = ItemIdQuantityPair(2, 101); // CottonSeeds
+    resources[1] = ItemIdQuantityPair(2000000001, 101); // ResourceTypeWoodcutting
+    resources[2] = ItemIdQuantityPair(2000000003, 101); // ResourceTypeMining
     return resources;
   }
 }
