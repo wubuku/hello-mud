@@ -39,6 +39,8 @@ library ShipBattleInitiateBattleLogic {
     // uint32 responderCoordinatesX;
     // uint32 responderCoordinatesY;
     // uint16 updatedResponderSailSeg;
+
+    // Get player's information
     PlayerData memory playerData = Player.get(playerId);
     if (
       playerData.owner == address(0) &&
@@ -50,14 +52,19 @@ library ShipBattleInitiateBattleLogic {
     ) {
       revert PlayerDoesNotExist(playerId);
     }
+    //Initiator Roster
     RosterData memory initiator = Roster.get(initiatorRosterPlayerId, initiatorRosterSequenceNumber);
+    //Responder Roster
     RosterData memory responder = Roster.get(responderRosterPlayerId, responderRosterSequenceNumber);
-
+    //Is the initiaor Roster ready to battle?
     if (!initiator.isStatusBattleReady()) revert InitiatorNotBattleReady();
     if (!responder.isStatusBattleReady()) revert ResponderNotBattleReady();
 
+    //Sender is the player?
     PlayerUtil.assertSenderIsPlayerOwner(playerId);
+    //The player is Roster's owner?
     RosterUtil.assertPlayerIsRosterOwner(playerId, RosterId(initiatorRosterPlayerId, initiatorRosterSequenceNumber));
+    //Initiator Roster Cant be Roster0
     RosterUtil.assertRosterIsNotUnassignedShips(initiatorRosterSequenceNumber);
     RosterUtil.assertRosterIsNotUnassignedShips(responderRosterSequenceNumber);
 

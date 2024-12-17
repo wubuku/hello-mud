@@ -10,6 +10,10 @@ import { RosterUtil } from "../utils/RosterUtil.sol";
 import { RosterId } from "./RosterId.sol";
 import { PlayerUtil } from "../utils/PlayerUtil.sol";
 import { ShipUtil } from "../utils/ShipUtil.sol";
+import { RosterStatus } from "../systems/RosterStatus.sol";
+import { Coordinates } from "../systems/Coordinates.sol";
+import { RosterDelegatecallLib } from "./RosterDelegatecallLib.sol";
+import { UpdateLocationParams } from "./UpdateLocationParams.sol";
 
 library RosterTransferShipLogic {
   error EmptyShipIdsInSourceRoster(uint256 shipId, uint256 rosterPlayerId, uint32 rosterSequenceNumber);
@@ -23,6 +27,9 @@ library RosterTransferShipLogic {
   error ToRosterInBattle(uint256 toRosterPlayerId, uint32 toRosterSequenceNumber, uint256 battleId);
   error RosterNotExists(uint256 rosterPlayerId, uint32 rosterSequenceNumber);
   error ShipNotInRoster(uint256 shipId);
+  //From SequenceNumber should not same as To SequenceNumber
+  error RosterSequenceNumberCantSame(uint32 sequenceNumber);
+  error NotSamePlayer(uint256 playerId, uint256 toRosterPlayerId);
 
   using RosterDataInstance for RosterData;
 
@@ -41,29 +48,81 @@ library RosterTransferShipLogic {
     uint16 locationUpdateParamsToRosterUpdatedSailSeg,
     uint64 locationUpdateParamsUpdatedAt,
     RosterData memory rosterData
-  ) internal view returns (RosterShipTransferred memory) {
-    PlayerUtil.assertSenderIsPlayerOwner(playerId);
-    //RosterUtil.assertPlayerIsRosterOwner(playerId, RosterId(playerId, sequenceNumber));
-    //RosterUtil.assertPlayerIsRosterOwner(playerId, RosterId(toRosterPlayerId, toRosterSequenceNumber));
-    if (!ShipIdUtil.containsShipId(rosterData.shipIds, shipId)) {
-      revert ShipNotInRoster(shipId);
+  ) internal returns (RosterShipTransferred memory) {
+    if (sequenceNumber != RosterSequenceNumber.UNASSIGNED_SHIPS) {
+      rosterData.assertRosterShipsNotFull();
     }
-
-    RosterData memory toRoster = Roster.get(toRosterPlayerId, toRosterSequenceNumber);
-    uint64 currentTimestamp = uint64(block.timestamp);
-    if (!rosterData.areRostersCloseEnoughToTransfer(toRoster)) {
-      revert RostersTooFarAway(playerId, sequenceNumber, toRosterPlayerId, toRosterSequenceNumber);
+    if (sequenceNumber == toRosterSequenceNumber) {
+      revert RosterSequenceNumberCantSame(sequenceNumber);
     }
-
-    if (toRosterSequenceNumber != RosterSequenceNumber.UNASSIGNED_SHIPS) {
-      toRoster.assertRosterShipsNotFull();
-    }
-
+    //Two rosters both can't in battle.
     if (rosterData.shipBattleId != 0) {
       revert RosterInBattle(playerId, sequenceNumber, rosterData.shipBattleId);
     }
+    //通过以下两个判断来断定两个船队同属于一个玩家
+    PlayerUtil.assertSenderIsPlayerOwner(playerId);
+    if (playerId != toRosterPlayerId) {
+      revert NotSamePlayer(playerId, toRosterPlayerId);
+    }
+    //要转移的船只是否在船队中
+    if (!ShipIdUtil.containsShipId(rosterData.shipIds, shipId)) {
+      revert ShipNotInRoster(shipId);
+    }
+    //To Roster's information
+    RosterData memory toRoster = Roster.get(toRosterPlayerId, toRosterSequenceNumber);
+    if (toRosterSequenceNumber != RosterSequenceNumber.UNASSIGNED_SHIPS) {
+      toRoster.assertRosterShipsNotFull();
+    }
     if (toRoster.shipBattleId != 0) {
       revert ToRosterInBattle(toRosterPlayerId, toRosterSequenceNumber, toRoster.shipBattleId);
+    }
+    //只有当船队的序号不是0，并且船队当前是航行状态和传入的相关参数都不是 0 的情况下才需要更新位置
+    if (
+      sequenceNumber != 0 && // 不能是 Roster0
+      rosterData.status == RosterStatus.UNDERWAY && //航行中
+      locationUpdateParamsCoordinatesX != 0 && // 设置了新的坐标
+      locationUpdateParamsCoordinatesY != 0 &&
+      locationUpdateParamsUpdatedAt != 0 // 设置了时间
+    ) {
+      RosterDelegatecallLib.updateLocation(
+        playerId,
+        sequenceNumber,
+        UpdateLocationParams({
+          updatedCoordinates: Coordinates(locationUpdateParamsCoordinatesX, locationUpdateParamsCoordinatesY),
+          updatedSailSegment: locationUpdateParamsUpdatedSailSeg,
+          updatedAt: locationUpdateParamsUpdatedAt
+        })
+      );
+      rosterData = Roster.get(playerId, sequenceNumber);
+    }
+
+    if (
+      toRosterSequenceNumber != 0 && // 不能是 Roster0
+      toRoster.status == RosterStatus.UNDERWAY && //航行中
+      locationUpdateParamsToRosterCoordinatesX != 0 && // 设置了新的坐标
+      locationUpdateParamsToRosterCoordinatesY != 0 &&
+      locationUpdateParamsUpdatedAt != 0 // 设置了时间
+    ) {
+      RosterDelegatecallLib.updateLocation(
+        playerId,
+        sequenceNumber,
+        UpdateLocationParams({
+          updatedCoordinates: Coordinates(
+            locationUpdateParamsToRosterCoordinatesX,
+            locationUpdateParamsToRosterCoordinatesY
+          ),
+          updatedSailSegment: locationUpdateParamsToRosterUpdatedSailSeg,
+          updatedAt: locationUpdateParamsUpdatedAt
+        })
+      );
+      toRoster = Roster.get(toRosterPlayerId, toRosterSequenceNumber);
+    }
+
+    uint64 currentTimestamp = uint64(block.timestamp);
+
+    //两只船队是否足够近
+    if (!rosterData.areRostersCloseEnoughToTransfer(toRoster)) {
+      revert RostersTooFarAway(playerId, sequenceNumber, toRosterPlayerId, toRosterSequenceNumber);
     }
 
     return
@@ -93,9 +152,10 @@ library RosterTransferShipLogic {
       rosterShipTransferred.toRosterPlayerId,
       rosterShipTransferred.toRosterSequenceNumber
     );
-    if (toRoster.status == uint8(0)) {
-      revert RosterNotExists(rosterShipTransferred.toRosterPlayerId, rosterShipTransferred.toRosterSequenceNumber);
-    }
+    //这个判断已经无意义
+    // if (toRoster.status == uint8(0)) {
+    //   revert RosterNotExists(rosterShipTransferred.toRosterPlayerId, rosterShipTransferred.toRosterSequenceNumber);
+    // }
     uint256 shipId = rosterShipTransferred.shipId;
     uint256 playerId = rosterShipTransferred.playerId;
     uint32 sequenceNumber = rosterShipTransferred.sequenceNumber;
@@ -105,10 +165,10 @@ library RosterTransferShipLogic {
 
     uint64 toPosition = rosterShipTransferred.toPosition;
     uint64 transferredAt = rosterShipTransferred.transferredAt;
-
-    if (rosterData.shipIds.length == 0) {
-      revert EmptyShipIdsInSourceRoster(shipId, playerId, sequenceNumber);
-    }
+    //已经判断过了
+    // if (rosterData.shipIds.length == 0) {
+    //   revert EmptyShipIdsInSourceRoster(shipId, playerId, sequenceNumber);
+    // }
     rosterData.shipIds = ShipIdUtil.removeShipId(rosterData.shipIds, shipId);
     rosterData.speed = rosterData.calculateRosterSpeed();
     rosterData.coordinatesUpdatedAt = transferredAt; // Update the coordinatesUpdatedAt timestamp here?
