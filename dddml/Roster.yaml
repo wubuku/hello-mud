@@ -19,7 +19,26 @@ valueObjects:
       Loot:
         itemType: ItemIdQuantityPair
         isList: true
-  
+
+  TwoRostersLocationUpdateParams:
+    properties:
+      Coordinates:
+        # Current roster ("from roster") coordinates
+        type: Coordinates
+      UpdatedSailSeg:
+        # Current roster ("from roster") updated sail segment index
+        type: u16
+      ToRosterCoordinates:
+        # "To roster" coordinates
+        type: Coordinates
+      ToRosterUpdatedSailSeg:
+        # "To roster" updated sail segment index
+        type: u16
+      UpdatedAt:
+        # Updated at timestamp
+        type: u64
+
+
 
 aggregates:
   Roster:
@@ -229,6 +248,8 @@ aggregates:
             type: RosterId
           ToPosition:
             type: u64
+          LocationUpdateParams:
+            type: TwoRostersLocationUpdateParams
         event:
           name: RosterShipTransferred
           properties:
