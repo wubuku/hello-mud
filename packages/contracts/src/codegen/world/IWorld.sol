@@ -24,6 +24,7 @@ import { IRosterCleaningSystem } from "./IRosterCleaningSystem.sol";
 import { IRosterFriendSystem } from "./IRosterFriendSystem.sol";
 import { IRosterSailingSystem } from "./IRosterSailingSystem.sol";
 import { IRosterShipInventorySystem } from "./IRosterShipInventorySystem.sol";
+import { IRosterShipTransferSystem } from "./IRosterShipTransferSystem.sol";
 import { IRosterSystem } from "./IRosterSystem.sol";
 import { IShipBattleInitiateSystem } from "./IShipBattleInitiateSystem.sol";
 import { IShipBattleServiceSystem } from "./IShipBattleServiceSystem.sol";
@@ -63,6 +64,7 @@ interface IWorld is
   IRosterFriendSystem,
   IRosterSailingSystem,
   IRosterShipInventorySystem,
+  IRosterShipTransferSystem,
   IRosterSystem,
   IShipBattleInitiateSystem,
   IShipBattleServiceSystem,

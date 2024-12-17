@@ -14,6 +14,7 @@ import { RosterStatus } from "../systems/RosterStatus.sol";
 import { Coordinates } from "../systems/Coordinates.sol";
 import { RosterDelegatecallLib } from "./RosterDelegatecallLib.sol";
 import { UpdateLocationParams } from "./UpdateLocationParams.sol";
+import { TwoRostersLocationUpdateParams } from "./TwoRostersLocationUpdateParams.sol";
 
 library RosterTransferShipLogic {
   error EmptyShipIdsInSourceRoster(uint256 shipId, uint256 rosterPlayerId, uint32 rosterSequenceNumber);
@@ -40,13 +41,7 @@ library RosterTransferShipLogic {
     uint256 toRosterPlayerId,
     uint32 toRosterSequenceNumber,
     uint64 toPosition,
-    uint32 locationUpdateParamsCoordinatesX,
-    uint32 locationUpdateParamsCoordinatesY,
-    uint16 locationUpdateParamsUpdatedSailSeg,
-    uint32 locationUpdateParamsToRosterCoordinatesX,
-    uint32 locationUpdateParamsToRosterCoordinatesY,
-    uint16 locationUpdateParamsToRosterUpdatedSailSeg,
-    uint64 locationUpdateParamsUpdatedAt,
+    TwoRostersLocationUpdateParams memory locationUpdateParams,
     RosterData memory rosterData
   ) internal returns (RosterShipTransferred memory) {
     if (sequenceNumber != RosterSequenceNumber.UNASSIGNED_SHIPS) {
@@ -80,17 +75,17 @@ library RosterTransferShipLogic {
     if (
       sequenceNumber != 0 && // 不能是 Roster0
       rosterData.status == RosterStatus.UNDERWAY && //航行中
-      locationUpdateParamsCoordinatesX != 0 && // 设置了新的坐标
-      locationUpdateParamsCoordinatesY != 0 &&
-      locationUpdateParamsUpdatedAt != 0 // 设置了时间
+      locationUpdateParams.coordinates.x != 0 && // 设置了新的坐标
+      locationUpdateParams.coordinates.y != 0 &&
+      locationUpdateParams.updatedAt != 0 // 设置了时间
     ) {
       RosterDelegatecallLib.updateLocation(
         playerId,
         sequenceNumber,
         UpdateLocationParams({
-          updatedCoordinates: Coordinates(locationUpdateParamsCoordinatesX, locationUpdateParamsCoordinatesY),
-          updatedSailSegment: locationUpdateParamsUpdatedSailSeg,
-          updatedAt: locationUpdateParamsUpdatedAt
+          updatedCoordinates: Coordinates(locationUpdateParams.coordinates.x, locationUpdateParams.coordinates.y),
+          updatedSailSegment: locationUpdateParams.updatedSailSeg,
+          updatedAt: locationUpdateParams.updatedAt
         })
       );
       rosterData = Roster.get(playerId, sequenceNumber);
@@ -99,20 +94,20 @@ library RosterTransferShipLogic {
     if (
       toRosterSequenceNumber != 0 && // 不能是 Roster0
       toRoster.status == RosterStatus.UNDERWAY && //航行中
-      locationUpdateParamsToRosterCoordinatesX != 0 && // 设置了新的坐标
-      locationUpdateParamsToRosterCoordinatesY != 0 &&
-      locationUpdateParamsUpdatedAt != 0 // 设置了时间
+      locationUpdateParams.toRosterCoordinates.x != 0 && // 设置了新的坐标
+      locationUpdateParams.toRosterCoordinates.y != 0 &&
+      locationUpdateParams.updatedAt != 0 // 设置了时间
     ) {
       RosterDelegatecallLib.updateLocation(
         playerId,
         sequenceNumber,
         UpdateLocationParams({
           updatedCoordinates: Coordinates(
-            locationUpdateParamsToRosterCoordinatesX,
-            locationUpdateParamsToRosterCoordinatesY
+            locationUpdateParams.toRosterCoordinates.x,
+            locationUpdateParams.toRosterCoordinates.y
           ),
-          updatedSailSegment: locationUpdateParamsToRosterUpdatedSailSeg,
-          updatedAt: locationUpdateParamsUpdatedAt
+          updatedSailSegment: locationUpdateParams.toRosterUpdatedSailSeg,
+          updatedAt: locationUpdateParams.updatedAt
         })
       );
       toRoster = Roster.get(toRosterPlayerId, toRosterSequenceNumber);
@@ -125,21 +120,14 @@ library RosterTransferShipLogic {
       revert RostersTooFarAway(playerId, sequenceNumber, toRosterPlayerId, toRosterSequenceNumber);
     }
 
-    return
-      RosterShipTransferred({
+    return RosterShipTransferred({
         playerId: playerId,
         sequenceNumber: sequenceNumber,
         shipId: shipId,
         toRosterPlayerId: toRosterPlayerId,
         toRosterSequenceNumber: toRosterSequenceNumber,
         toPosition: toPosition,
-        locationUpdateParamsCoordinatesX: locationUpdateParamsCoordinatesX,
-        locationUpdateParamsCoordinatesY: locationUpdateParamsCoordinatesY,
-        locationUpdateParamsUpdatedSailSeg: locationUpdateParamsUpdatedSailSeg,
-        locationUpdateParamsToRosterCoordinatesX: locationUpdateParamsToRosterCoordinatesX,
-        locationUpdateParamsToRosterCoordinatesY: locationUpdateParamsToRosterCoordinatesY,
-        locationUpdateParamsToRosterUpdatedSailSeg: locationUpdateParamsToRosterUpdatedSailSeg,
-        locationUpdateParamsUpdatedAt: locationUpdateParamsUpdatedAt,
+        locationUpdateParams: locationUpdateParams,
         transferredAt: currentTimestamp
       });
   }

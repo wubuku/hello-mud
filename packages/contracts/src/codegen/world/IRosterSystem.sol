@@ -25,29 +25,4 @@ interface IRosterSystem {
     uint64[] memory positions,
     uint256[] memory shipIds
   ) external;
-
-  function app__rosterTransferShip(
-    uint256 playerId,
-    uint32 sequenceNumber,
-    uint256 shipId,
-    uint256 toRosterPlayerId,
-    uint32 toRosterSequenceNumber,
-    uint64 toPosition,
-    uint32 locationUpdateParamsCoordinatesX,
-    uint32 locationUpdateParamsCoordinatesY,
-    uint16 locationUpdateParamsUpdatedSailSeg,
-    uint32 locationUpdateParamsToRosterCoordinatesX,
-    uint32 locationUpdateParamsToRosterCoordinatesY,
-    uint16 locationUpdateParamsToRosterUpdatedSailSeg,
-    uint64 locationUpdateParamsUpdatedAt
-  ) external;
-
-  function app__rosterTransferMultiShips(
-    uint256 playerId,
-    uint32 sequenceNumber,
-    uint256[] memory shipIds,
-    uint256 toRosterPlayerId,
-    uint32 toRosterSequenceNumber,
-    uint64 toPosition
-  ) external;
 }

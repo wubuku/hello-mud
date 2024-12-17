@@ -7,6 +7,8 @@ import { UpdateLocationParams } from "./UpdateLocationParams.sol";
 
 import { Coordinates } from "./Coordinates.sol";
 
+import { TwoRostersLocationUpdateParams } from "./TwoRostersLocationUpdateParams.sol";
+
 import { ItemIdQuantityPair } from "./ItemIdQuantityPair.sol";
 
 struct RosterCreated {
@@ -153,34 +155,7 @@ struct RosterShipTransferred {
    */
   uint32 toRosterSequenceNumber;
   uint64 toPosition;
-  /**
-   * @dev The CoordinatesX of the LocationUpdateParams.
-   */
-  uint32 locationUpdateParamsCoordinatesX;
-  /**
-   * @dev The CoordinatesY of the LocationUpdateParams.
-   */
-  uint32 locationUpdateParamsCoordinatesY;
-  /**
-   * @dev The UpdatedSailSeg of the LocationUpdateParams.
-   */
-  uint16 locationUpdateParamsUpdatedSailSeg;
-  /**
-   * @dev The ToRosterCoordinatesX of the LocationUpdateParams.
-   */
-  uint32 locationUpdateParamsToRosterCoordinatesX;
-  /**
-   * @dev The ToRosterCoordinatesY of the LocationUpdateParams.
-   */
-  uint32 locationUpdateParamsToRosterCoordinatesY;
-  /**
-   * @dev The ToRosterUpdatedSailSeg of the LocationUpdateParams.
-   */
-  uint16 locationUpdateParamsToRosterUpdatedSailSeg;
-  /**
-   * @dev The UpdatedAt of the LocationUpdateParams.
-   */
-  uint64 locationUpdateParamsUpdatedAt;
+  TwoRostersLocationUpdateParams locationUpdateParams;
   uint64 transferredAt;
 }
 

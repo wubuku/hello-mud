@@ -240,6 +240,10 @@ aggregates:
 
 
       TransferShip:
+        metadata:
+          DisableFlatteningForParameters: ["LocationUpdateParams"]
+          # To generate a separate system for this method due to contract size limitations
+          MudSystemName: RosterShipTransferSystem
         parameters:
           ShipId:
             type: u256 #ID
@@ -258,6 +262,9 @@ aggregates:
 
       TransferMultiShips:
         description: "Transfer multiple ships from current roster to another roster"
+        metadata:
+          # To generate a separate system for this method due to contract size limitations
+          MudSystemName: RosterShipTransferSystem
         parameters:
           ShipIds:
             type: uint256[]

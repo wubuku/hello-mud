@@ -19,6 +19,7 @@ import { ItemIdQuantityPair } from "../src/systems/ItemIdQuantityPair.sol";
 import { RosterUtil } from "../src/utils/RosterUtil.sol";
 import { Coordinates } from "../src/systems/Coordinates.sol";
 import { SpeedUtil } from "../src/utils/SpeedUtil.sol";
+import { TwoRostersLocationUpdateParams } from "../src/systems/TwoRostersLocationUpdateParams.sol";
 
 contract ManualSmokeTest is Script {
   //
@@ -97,6 +98,13 @@ contract ManualSmokeTest is Script {
     uint16 locationUpdateParamsToRosterUpdatedSailSeg = 0;//todo
     uint64 locationUpdateParamsUpdatedAt = 0;//todo
 
+    TwoRostersLocationUpdateParams memory locationUpdateParams = TwoRostersLocationUpdateParams({
+      coordinates: Coordinates(locationUpdateParamsCoordinatesX, locationUpdateParamsCoordinatesY),
+      updatedSailSeg: locationUpdateParamsUpdatedSailSeg,
+      toRosterCoordinates: Coordinates(locationUpdateParamsToRosterCoordinatesX, locationUpdateParamsToRosterCoordinatesY),
+      toRosterUpdatedSailSeg: locationUpdateParamsToRosterUpdatedSailSeg,
+      updatedAt: locationUpdateParamsUpdatedAt
+    });
     world.app__rosterTransferShip(
       playerId,
       unassignedShipsRosterSequenceNumber,
@@ -104,13 +112,7 @@ contract ManualSmokeTest is Script {
       toRosterPlayerId,
       toRosterSequenceNumber,
       type(uint64).max,
-      locationUpdateParamsCoordinatesX,
-      locationUpdateParamsCoordinatesY,
-      locationUpdateParamsUpdatedSailSeg,
-      locationUpdateParamsToRosterCoordinatesX,
-      locationUpdateParamsToRosterCoordinatesY,
-      locationUpdateParamsToRosterUpdatedSailSeg,
-      locationUpdateParamsUpdatedAt
+      locationUpdateParams
     );
     console.log("Transferred ship from unassigned ships to first roster");
 

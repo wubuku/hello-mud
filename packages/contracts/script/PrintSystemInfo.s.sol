@@ -156,10 +156,6 @@ contract PrintSystemInfo is Script {
     console.log("event EnvironmentRosterCreatedEvent(uint256,uint32,uint32,uint32,uint32,uint32,uint32) signature topic:", vm.toString(abi.encodePacked(eventHash)));
     eventHash = keccak256("RosterShipsPositionAdjustedEvent(uint256,uint32,uint64[],uint256[])");
     console.log("event RosterShipsPositionAdjustedEvent(uint256,uint32,uint64[],uint256[]) signature topic:", vm.toString(abi.encodePacked(eventHash)));
-    eventHash = keccak256("RosterShipTransferredEvent(uint256,uint32,uint256,uint256,uint32,uint64,uint32,uint32,uint16,uint32,uint32,uint16,uint64,uint64)");
-    console.log("event RosterShipTransferredEvent(uint256,uint32,uint256,uint256,uint32,uint64,uint32,uint32,uint16,uint32,uint32,uint16,uint64,uint64) signature topic:", vm.toString(abi.encodePacked(eventHash)));
-    eventHash = keccak256("RosterMultiShipsTransferredEvent(uint256,uint32,uint256[],uint256,uint32,uint64,uint64)");
-    console.log("event RosterMultiShipsTransferredEvent(uint256,uint32,uint256[],uint256,uint32,uint64,uint64) signature topic:", vm.toString(abi.encodePacked(eventHash)));
     console.log("// # forge inspect RosterSystem errors");
 
 
@@ -195,6 +191,24 @@ contract PrintSystemInfo is Script {
     eventHash = keccak256("RosterBattleDestroyedShipsCleanedUpEvent(uint256,uint32,uint256,uint32,uint8)");
     console.log("event RosterBattleDestroyedShipsCleanedUpEvent(uint256,uint32,uint256,uint32,uint8) signature topic:", vm.toString(abi.encodePacked(eventHash)));
     console.log("// # forge inspect RosterCleaningSystem errors");
+
+
+    console.log("// -------- RosterShipTransferSystem --------");
+    console.log("// Truncated system name: RosterShipTransf");
+    systemId = WorldResourceIdLib.encode({
+      typeId: RESOURCE_SYSTEM,
+      namespace: "app",
+      name: "RosterShipTransf"
+    });
+    console.log("resourceId (hex):", vm.toString(ResourceId.unwrap(systemId)));
+    (systemAddress, systemPublicAccess) = Systems.get(systemId);
+    console.log("address:", systemAddress);
+    console.log("publicAccess:", systemPublicAccess);
+    eventHash = keccak256("RosterShipTransferredEvent(uint256,uint32,uint256,uint256,uint32,uint64,TwoRostersLocationUpdateParams,uint64)");
+    console.log("event RosterShipTransferredEvent(uint256,uint32,uint256,uint256,uint32,uint64,TwoRostersLocationUpdateParams,uint64) signature topic:", vm.toString(abi.encodePacked(eventHash)));
+    eventHash = keccak256("RosterMultiShipsTransferredEvent(uint256,uint32,uint256[],uint256,uint32,uint64,uint64)");
+    console.log("event RosterMultiShipsTransferredEvent(uint256,uint32,uint256[],uint256,uint32,uint64,uint64) signature topic:", vm.toString(abi.encodePacked(eventHash)));
+    console.log("// # forge inspect RosterShipTransferSystem errors");
 
 
     console.log("// -------- RosterShipInventorySystem --------");
