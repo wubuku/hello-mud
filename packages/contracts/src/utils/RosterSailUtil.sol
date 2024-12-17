@@ -12,7 +12,7 @@ import { Coordinates } from "../systems/Coordinates.sol";
 library RosterSailUtil {
   using RosterDataInstance for RosterData;
 
-  uint256 private constant ENERGY_AMOUNT_PER_SECOND_PER_SHIP = 1388889;
+  uint256 private constant ENERGY_AMOUNT_PER_SECOND_PER_SHIP = 1388888888888889;
 
   error RosterUnfitToSail(uint8 status);
   error InvalidUpdatedCoordinates(uint32 updatedCoordinatesX, uint32 updatedCoordinatesY);
