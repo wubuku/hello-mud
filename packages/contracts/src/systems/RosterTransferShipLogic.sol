@@ -33,6 +33,13 @@ library RosterTransferShipLogic {
     uint256 toRosterPlayerId,
     uint32 toRosterSequenceNumber,
     uint64 toPosition,
+    uint32 locationUpdateParamsCoordinatesX,
+    uint32 locationUpdateParamsCoordinatesY,
+    uint16 locationUpdateParamsUpdatedSailSeg,
+    uint32 locationUpdateParamsToRosterCoordinatesX,
+    uint32 locationUpdateParamsToRosterCoordinatesY,
+    uint16 locationUpdateParamsToRosterUpdatedSailSeg,
+    uint64 locationUpdateParamsUpdatedAt,
     RosterData memory rosterData
   ) internal view returns (RosterShipTransferred memory) {
     PlayerUtil.assertSenderIsPlayerOwner(playerId);
@@ -67,6 +74,13 @@ library RosterTransferShipLogic {
         toRosterPlayerId: toRosterPlayerId,
         toRosterSequenceNumber: toRosterSequenceNumber,
         toPosition: toPosition,
+        locationUpdateParamsCoordinatesX: locationUpdateParamsCoordinatesX,
+        locationUpdateParamsCoordinatesY: locationUpdateParamsCoordinatesY,
+        locationUpdateParamsUpdatedSailSeg: locationUpdateParamsUpdatedSailSeg,
+        locationUpdateParamsToRosterCoordinatesX: locationUpdateParamsToRosterCoordinatesX,
+        locationUpdateParamsToRosterCoordinatesY: locationUpdateParamsToRosterCoordinatesY,
+        locationUpdateParamsToRosterUpdatedSailSeg: locationUpdateParamsToRosterUpdatedSailSeg,
+        locationUpdateParamsUpdatedAt: locationUpdateParamsUpdatedAt,
         transferredAt: currentTimestamp
       });
   }

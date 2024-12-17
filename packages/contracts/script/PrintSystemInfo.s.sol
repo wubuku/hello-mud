@@ -156,8 +156,8 @@ contract PrintSystemInfo is Script {
     console.log("event EnvironmentRosterCreatedEvent(uint256,uint32,uint32,uint32,uint32,uint32,uint32) signature topic:", vm.toString(abi.encodePacked(eventHash)));
     eventHash = keccak256("RosterShipsPositionAdjustedEvent(uint256,uint32,uint64[],uint256[])");
     console.log("event RosterShipsPositionAdjustedEvent(uint256,uint32,uint64[],uint256[]) signature topic:", vm.toString(abi.encodePacked(eventHash)));
-    eventHash = keccak256("RosterShipTransferredEvent(uint256,uint32,uint256,uint256,uint32,uint64,uint64)");
-    console.log("event RosterShipTransferredEvent(uint256,uint32,uint256,uint256,uint32,uint64,uint64) signature topic:", vm.toString(abi.encodePacked(eventHash)));
+    eventHash = keccak256("RosterShipTransferredEvent(uint256,uint32,uint256,uint256,uint32,uint64,uint32,uint32,uint16,uint32,uint32,uint16,uint64,uint64)");
+    console.log("event RosterShipTransferredEvent(uint256,uint32,uint256,uint256,uint32,uint64,uint32,uint32,uint16,uint32,uint32,uint16,uint64,uint64) signature topic:", vm.toString(abi.encodePacked(eventHash)));
     eventHash = keccak256("RosterMultiShipsTransferredEvent(uint256,uint32,uint256[],uint256,uint32,uint64,uint64)");
     console.log("event RosterMultiShipsTransferredEvent(uint256,uint32,uint256[],uint256,uint32,uint64,uint64) signature topic:", vm.toString(abi.encodePacked(eventHash)));
     console.log("// # forge inspect RosterSystem errors");

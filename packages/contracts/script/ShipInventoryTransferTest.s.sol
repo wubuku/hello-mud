@@ -115,6 +115,7 @@ contract ShipInventoryTransferTest is Script {
     );
     console.log("Put in ship inventory again");
 
+
     world.app__rosterTransferShipInventory(
       toRosterPlayerId,
       toRosterSequenceNumber,
