@@ -1,0 +1,25 @@
+设置环境变量：
+
+export RPC_HTTP_URL=https://odyssey.storyrpc.io
+export DATABASE_URL=postgres://mud:mud@127.0.0.1:5432/mud
+export PORT=8095
+
+运行服务：
+nohup npx -y -p @latticexyz/store-indexer postgres-decoded-indexer &
+nohup npx -y -p @latticexyz/store-indexer postgres-frontend &
+
+测试服务：
+http://ec2-35-88-209-156.us-west-2.compute.amazonaws.com:8095/api/logs?input=%7B%22chainId%22%3A1516%2C%22address%22%3A%220x776086899eab4ee3953b7c037b2c0a13c7a1deed%22%7D
+
+登录数据库
+psql -h 127.0.0.1 -U mud -d mud
+
+切换数据库
+set search_path TO "0x776086899eab4ee3953b7c037b2c0a13c7a1deed";
+
+查询：
+select count(1) from app__map_location where occupied_by <> 0;
+select sum(batch_size) from app__skill_process where item_id=102 and completed is true;  
+select sum(batch_size) from app__skill_process where item_id=301 and completed is true;
+select sum(batch_size) from app__skill_process where item_id=200 and completed is true;  
+select count(1) from app__ship;
