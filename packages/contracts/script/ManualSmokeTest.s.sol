@@ -90,18 +90,21 @@ contract ManualSmokeTest is Script {
     uint32 toRosterSequenceNumber = 1;
     //playerShipId = 11111; // 11111 is a ship id that doesn't exist, just for test fail case
 
-    uint32 locationUpdateParamsCoordinatesX = 0;//todo
-    uint32 locationUpdateParamsCoordinatesY = 0;//todo
-    uint16 locationUpdateParamsUpdatedSailSeg = 0;//todo
-    uint32 locationUpdateParamsToRosterCoordinatesX = 0;//todo
-    uint32 locationUpdateParamsToRosterCoordinatesY = 0;//todo
-    uint16 locationUpdateParamsToRosterUpdatedSailSeg = 0;//todo
-    uint64 locationUpdateParamsUpdatedAt = 0;//todo
+    uint32 locationUpdateParamsCoordinatesX = 0; //todo
+    uint32 locationUpdateParamsCoordinatesY = 0; //todo
+    uint16 locationUpdateParamsUpdatedSailSeg = 0; //todo
+    uint32 locationUpdateParamsToRosterCoordinatesX = 0; //todo
+    uint32 locationUpdateParamsToRosterCoordinatesY = 0; //todo
+    uint16 locationUpdateParamsToRosterUpdatedSailSeg = 0; //todo
+    uint64 locationUpdateParamsUpdatedAt = 0; //todo
 
     TwoRostersLocationUpdateParams memory locationUpdateParams = TwoRostersLocationUpdateParams({
       coordinates: Coordinates(locationUpdateParamsCoordinatesX, locationUpdateParamsCoordinatesY),
       updatedSailSeg: locationUpdateParamsUpdatedSailSeg,
-      toRosterCoordinates: Coordinates(locationUpdateParamsToRosterCoordinatesX, locationUpdateParamsToRosterCoordinatesY),
+      toRosterCoordinates: Coordinates(
+        locationUpdateParamsToRosterCoordinatesX,
+        locationUpdateParamsToRosterCoordinatesY
+      ),
       toRosterUpdatedSailSeg: locationUpdateParamsToRosterUpdatedSailSeg,
       updatedAt: locationUpdateParamsUpdatedAt
     });
@@ -153,22 +156,4 @@ contract ManualSmokeTest is Script {
 
     vm.stopBroadcast();
   }
-  /*
-    % cast sig 'InitiatorNotDestroyed(uint256,uint32)'                  
-    0xf3b52f34
-    % cast sig 'ResponderNotDestroyed(uint256,uint32)'
-    0x6e9fb9f2
-    % cast sig 'InvalidWinner(uint8)'       
-    0x4b08dceb
-    % cast sig 'BattleNotEnded(uint8)'
-    0xe9971ad4
-    % cast sig 'InvalidLoserStatus(uint8)'
-    0x4964fb7c
-    % cast sig 'WinnerNotSet()'
-    0xd5881ca9
-    % cast sig 'PlayerHasNoClaimedIsland()'
-    0x716ae8d5
-    % cast sig 'BattleEndedAtNotSet()'
-    0xe841ff82
-  */
 }
