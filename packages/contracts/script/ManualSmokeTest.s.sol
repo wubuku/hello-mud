@@ -23,7 +23,7 @@ import { TwoRostersLocationUpdateParams } from "../src/systems/TwoRostersLocatio
 
 contract ManualSmokeTest is Script {
   //
-  // forge script ManualSmokeTest.s.sol:ManualSmokeTest --sig "run(address)" 0x8d8b6b8414e1e3dcfd4168561b9be6bd3bf6ec4b --broadcast --rpc-url http://127.0.0.1:8545
+  // forge script ManualSmokeTest.s.sol:ManualSmokeTest --sig "run(address)" 0x60c0e6e750c4667d131bb158c098864b0ffb0bd0 --broadcast --rpc-url http://127.0.0.1:8545
   //
   function run(address worldAddress) external {
     // Specify a store so that you can use tables directly in PostDeploy
