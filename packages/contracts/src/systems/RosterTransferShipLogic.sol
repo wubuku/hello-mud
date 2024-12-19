@@ -9,6 +9,7 @@ import { RosterSequenceNumber } from "./RosterSequenceNumber.sol";
 import { RosterUtil } from "../utils/RosterUtil.sol";
 import { RosterId } from "./RosterId.sol";
 import { PlayerUtil } from "../utils/PlayerUtil.sol";
+import { PlayerData, Player } from "../codegen/index.sol";
 import { ShipUtil } from "../utils/ShipUtil.sol";
 import { RosterStatus } from "../systems/RosterStatus.sol";
 import { Coordinates } from "../systems/Coordinates.sol";
@@ -90,7 +91,6 @@ library RosterTransferShipLogic {
       );
       rosterData = Roster.get(playerId, sequenceNumber);
     }
-
     if (
       toRosterSequenceNumber != 0 && // 不能是 Roster0
       toRoster.status == RosterStatus.UNDERWAY && //航行中
@@ -99,8 +99,8 @@ library RosterTransferShipLogic {
       locationUpdateParams.updatedAt != 0 // 设置了时间
     ) {
       RosterDelegatecallLib.updateLocation(
-        playerId,
-        sequenceNumber,
+        toRosterPlayerId,
+        toRosterSequenceNumber,
         UpdateLocationParams({
           updatedCoordinates: Coordinates(
             locationUpdateParams.toRosterCoordinates.x,
@@ -115,12 +115,29 @@ library RosterTransferShipLogic {
 
     uint64 currentTimestamp = uint64(block.timestamp);
 
-    //两只船队是否足够近
-    if (!rosterData.areRostersCloseEnoughToTransfer(toRoster)) {
+    //两只船队是否足够近，如果其中一只船队是 Roster0，那么将用岛屿的坐标来代替
+    //另一个船队的坐标用 otherX 和 otherY 来表示
+    uint32 otherX = 0;
+    uint32 otherY = 0;
+    if (sequenceNumber == 0) {
+      otherX = toRoster.updatedCoordinatesX;
+      otherY = toRoster.updatedCoordinatesY;
+    }
+    if (toRosterSequenceNumber == 0) {
+      otherX = rosterData.updatedCoordinatesX;
+      otherY = rosterData.updatedCoordinatesY;
+    }
+    //Roster0的坐标用岛屿的坐标来代替
+    PlayerData memory playerData = Player.get(playerId);
+    uint32 roster0X = playerData.claimedIslandX;
+    uint32 roster0Y = playerData.claimedIslandY;
+
+    if (!RosterDataInstance.areRostersCloseEnoughToTransfer(roster0X, roster0Y, otherX, otherY)) {
       revert RostersTooFarAway(playerId, sequenceNumber, toRosterPlayerId, toRosterSequenceNumber);
     }
 
-    return RosterShipTransferred({
+    return
+      RosterShipTransferred({
         playerId: playerId,
         sequenceNumber: sequenceNumber,
         shipId: shipId,

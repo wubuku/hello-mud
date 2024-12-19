@@ -7,7 +7,7 @@ import { SpeedUtil } from "./SpeedUtil.sol";
 import { RosterStatus } from "../systems/RosterStatus.sol";
 
 library RosterDataInstance {
-  uint256 private constant MIN_DISTANCE_TO_TRANSFER = 3000;
+  uint256 private constant MIN_DISTANCE_TO_TRANSFER = 6000;
   uint256 public constant MAX_SHIPS_PER_ROSTER = 4;
 
   error EmptyRosterShipIds();
@@ -33,6 +33,17 @@ library RosterDataInstance {
         roster2.updatedCoordinatesX,
         roster2.updatedCoordinatesY
       ) <= MIN_DISTANCE_TO_TRANSFER;
+  }
+
+  function areRostersCloseEnoughToTransfer(
+    uint32 roster1CoordinatesX,
+    uint32 roster1CoordinatesY,
+    uint32 roster2CoordinatesX,
+    uint32 roster2CoordinatesY
+  ) internal pure returns (bool) {
+    return
+      DirectRouteUtil.getDistance(roster1CoordinatesX, roster1CoordinatesY, roster2CoordinatesX, roster2CoordinatesY) <=
+      MIN_DISTANCE_TO_TRANSFER;
   }
 
   function isDestroyedExceptShip(RosterData memory roster, uint256 shipId) internal view returns (bool) {
