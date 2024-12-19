@@ -206,8 +206,8 @@ contract PrintSystemInfo is Script {
     console.log("publicAccess:", systemPublicAccess);
     eventHash = keccak256("RosterShipTransferredEvent(uint256,uint32,uint256,uint256,uint32,uint64,TwoRostersLocationUpdateParams,uint64)");
     console.log("event RosterShipTransferredEvent(uint256,uint32,uint256,uint256,uint32,uint64,TwoRostersLocationUpdateParams,uint64) signature topic:", vm.toString(abi.encodePacked(eventHash)));
-    eventHash = keccak256("RosterMultiShipsTransferredEvent(uint256,uint32,uint256[],uint256,uint32,uint64,uint64)");
-    console.log("event RosterMultiShipsTransferredEvent(uint256,uint32,uint256[],uint256,uint32,uint64,uint64) signature topic:", vm.toString(abi.encodePacked(eventHash)));
+    eventHash = keccak256("RosterMultiShipsTransferredEvent(uint256,uint32,uint256[],uint256,uint32,uint64,TwoRostersLocationUpdateParams,uint64)");
+    console.log("event RosterMultiShipsTransferredEvent(uint256,uint32,uint256[],uint256,uint32,uint64,TwoRostersLocationUpdateParams,uint64) signature topic:", vm.toString(abi.encodePacked(eventHash)));
     console.log("// # forge inspect RosterShipTransferSystem errors");
 
 

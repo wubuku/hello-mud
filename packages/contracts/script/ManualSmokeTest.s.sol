@@ -128,7 +128,8 @@ contract ManualSmokeTest is Script {
       shipIds,
       playerId,
       unassignedShipsRosterSequenceNumber,
-      type(uint64).max
+      type(uint64).max,
+      locationUpdateParams
     );
     console.log("Transferred ship from first roster to unassigned ships");
 
@@ -138,7 +139,8 @@ contract ManualSmokeTest is Script {
       shipIds,
       toRosterPlayerId,
       toRosterSequenceNumber,
-      type(uint64).max
+      type(uint64).max,
+      locationUpdateParams
     );
     console.log("Transferred ship from unassigned ships to first roster again");
 

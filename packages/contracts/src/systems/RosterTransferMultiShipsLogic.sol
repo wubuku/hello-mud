@@ -9,6 +9,7 @@ import { RosterSequenceNumber } from "./RosterSequenceNumber.sol";
 import { RosterUtil } from "../utils/RosterUtil.sol";
 import { PlayerUtil } from "../utils/PlayerUtil.sol";
 import { ShipUtil } from "../utils/ShipUtil.sol";
+import { TwoRostersLocationUpdateParams } from "./TwoRostersLocationUpdateParams.sol";
 
 library RosterTransferMultiShipsLogic {
   error EmptyShipIdsInSourceRoster(uint256 rosterPlayerId, uint32 rosterSequenceNumber);
@@ -33,6 +34,7 @@ library RosterTransferMultiShipsLogic {
     uint256 toRosterPlayerId,
     uint32 toRosterSequenceNumber,
     uint64 toPosition,
+    TwoRostersLocationUpdateParams memory locationUpdateParams,
     RosterData memory rosterData
   ) internal view returns (RosterMultiShipsTransferred memory) {
     PlayerUtil.assertSenderIsPlayerOwner(playerId);
@@ -70,6 +72,7 @@ library RosterTransferMultiShipsLogic {
         toRosterPlayerId: toRosterPlayerId,
         toRosterSequenceNumber: toRosterSequenceNumber,
         toPosition: toPosition,
+        locationUpdateParams: locationUpdateParams,
         transferredAt: currentTimestamp
       });
   }

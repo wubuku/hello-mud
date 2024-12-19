@@ -27,6 +27,7 @@ interface IRosterShipTransferSystem {
     uint256[] memory shipIds,
     uint256 toRosterPlayerId,
     uint32 toRosterSequenceNumber,
-    uint64 toPosition
+    uint64 toPosition,
+    TwoRostersLocationUpdateParams memory locationUpdateParams
   ) external;
 }

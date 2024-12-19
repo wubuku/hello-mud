@@ -263,6 +263,7 @@ aggregates:
       TransferMultiShips:
         description: "Transfer multiple ships from current roster to another roster"
         metadata:
+          DisableFlatteningForParameters: ["LocationUpdateParams"]
           # To generate a separate system for this method due to contract size limitations
           MudSystemName: RosterShipTransferSystem
         parameters:
@@ -273,6 +274,8 @@ aggregates:
           ToPosition:
             type: u64
             description: "All ships are transferred in or after this position"
+          LocationUpdateParams:
+            type: TwoRostersLocationUpdateParams
         event:
           name: RosterMultiShipsTransferred
           properties:

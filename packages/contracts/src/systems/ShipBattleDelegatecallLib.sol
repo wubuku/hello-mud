@@ -13,14 +13,8 @@ import { Systems } from "@latticexyz/world/src/codegen/tables/Systems.sol";
 import { ShipBattleLocationParams } from "./ShipBattleLocationParams.sol";
 
 library ShipBattleDelegatecallLib {
-  function initiateBattle(
-    uint256 playerId,
-    uint256 initiatorRosterPlayerId,
-    uint32 initiatorRosterSequenceNumber,
-    uint256 responderRosterPlayerId,
-    uint32 responderRosterSequenceNumber,
-    ShipBattleLocationParams memory updateLocationParams
-  ) internal returns (uint256) {
+
+  function initiateBattle(uint256 playerId, uint256 initiatorRosterPlayerId, uint32 initiatorRosterSequenceNumber, uint256 responderRosterPlayerId, uint32 responderRosterSequenceNumber, ShipBattleLocationParams memory updateLocationParams) internal returns (uint256) {
     ResourceId shipBattleInitiateSystemId = WorldResourceIdLib.encode({
       typeId: RESOURCE_SYSTEM,
       namespace: "app",
@@ -34,12 +28,7 @@ library ShipBattleDelegatecallLib {
       shipBattleInitiateSystemAddress,
       abi.encodeWithSignature(
         "initiateShipBattle(uint256,uint256,uint32,uint256,uint32,((uint32,uint32),uint16,(uint32,uint32),uint16,uint64))",
-        playerId,
-        initiatorRosterPlayerId,
-        initiatorRosterSequenceNumber,
-        responderRosterPlayerId,
-        responderRosterSequenceNumber,
-        updateLocationParams
+        playerId, initiatorRosterPlayerId, initiatorRosterSequenceNumber, responderRosterPlayerId, responderRosterSequenceNumber, updateLocationParams
       )
     );
     if (!success) revertWithBytes(returnData);
@@ -59,9 +48,13 @@ library ShipBattleDelegatecallLib {
       WorldContextConsumerLib._msgSender(),
       0,
       shipBattleSystemAddress,
-      abi.encodeWithSignature("shipBattleMakeMove(uint256,uint8)", id, attackerCommand)
+      abi.encodeWithSignature(
+        "shipBattleMakeMove(uint256,uint8)",
+        id, attackerCommand
+      )
     );
     if (!success) revertWithBytes(returnData);
+
   }
 
   function takeLoot(uint256 id, uint8 choice) internal {
@@ -76,8 +69,13 @@ library ShipBattleDelegatecallLib {
       WorldContextConsumerLib._msgSender(),
       0,
       shipBattleTakeLootSystemAddress,
-      abi.encodeWithSignature("shipBattleTakeLoot(uint256,uint8)", id, choice)
+      abi.encodeWithSignature(
+        "shipBattleTakeLoot(uint256,uint8)",
+        id, choice
+      )
     );
     if (!success) revertWithBytes(returnData);
+
   }
+
 }

@@ -19,7 +19,7 @@ contract RosterShipTransferSystem is System, IAppSystemErrors {
 
   event RosterShipTransferredEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256 shipId, uint256 toRosterPlayerId, uint32 toRosterSequenceNumber, uint64 toPosition, TwoRostersLocationUpdateParams locationUpdateParams, uint64 transferredAt);
 
-  event RosterMultiShipsTransferredEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256[] shipIds, uint256 toRosterPlayerId, uint32 toRosterSequenceNumber, uint64 toPosition, uint64 transferredAt);
+  event RosterMultiShipsTransferredEvent(uint256 indexed playerId, uint32 indexed sequenceNumber, uint256[] shipIds, uint256 toRosterPlayerId, uint32 toRosterSequenceNumber, uint64 toPosition, TwoRostersLocationUpdateParams locationUpdateParams, uint64 transferredAt);
 
   function _requireNamespaceOwner() internal view {
     ResourceId _thisSystemId = SystemRegistry.get(address(this));
@@ -42,15 +42,15 @@ contract RosterShipTransferSystem is System, IAppSystemErrors {
     Roster.set(playerId, sequenceNumber, updatedRosterData);
   }
 
-  function rosterTransferMultiShips(uint256 playerId, uint32 sequenceNumber, uint256[] memory shipIds, uint256 toRosterPlayerId, uint32 toRosterSequenceNumber, uint64 toPosition) public {
+  function rosterTransferMultiShips(uint256 playerId, uint32 sequenceNumber, uint256[] memory shipIds, uint256 toRosterPlayerId, uint32 toRosterSequenceNumber, uint64 toPosition, TwoRostersLocationUpdateParams memory locationUpdateParams) public {
     RosterData memory rosterData = Roster.get(playerId, sequenceNumber);
     if (rosterData.status == uint8(0) && rosterData.speed == uint32(0) && rosterData.baseExperience == uint32(0) && rosterData.environmentOwned == false && rosterData.updatedCoordinatesX == uint32(0) && rosterData.updatedCoordinatesY == uint32(0) && rosterData.coordinatesUpdatedAt == uint64(0) && rosterData.targetCoordinatesX == uint32(0) && rosterData.targetCoordinatesY == uint32(0) && rosterData.originCoordinatesX == uint32(0) && rosterData.originCoordinatesY == uint32(0) && rosterData.sailDuration == uint64(0) && rosterData.setSailAt == uint64(0) && rosterData.currentSailSegment == uint16(0) && rosterData.shipBattleId == uint256(0) && rosterData.shipIds.length == 0) {
       revert RosterDoesNotExist(playerId, sequenceNumber);
     }
-    RosterMultiShipsTransferred memory rosterMultiShipsTransferred = RosterTransferMultiShipsLogic.verify(playerId, sequenceNumber, shipIds, toRosterPlayerId, toRosterSequenceNumber, toPosition, rosterData);
+    RosterMultiShipsTransferred memory rosterMultiShipsTransferred = RosterTransferMultiShipsLogic.verify(playerId, sequenceNumber, shipIds, toRosterPlayerId, toRosterSequenceNumber, toPosition, locationUpdateParams, rosterData);
     rosterMultiShipsTransferred.playerId = playerId;
     rosterMultiShipsTransferred.sequenceNumber = sequenceNumber;
-    emit RosterMultiShipsTransferredEvent(rosterMultiShipsTransferred.playerId, rosterMultiShipsTransferred.sequenceNumber, rosterMultiShipsTransferred.shipIds, rosterMultiShipsTransferred.toRosterPlayerId, rosterMultiShipsTransferred.toRosterSequenceNumber, rosterMultiShipsTransferred.toPosition, rosterMultiShipsTransferred.transferredAt);
+    emit RosterMultiShipsTransferredEvent(rosterMultiShipsTransferred.playerId, rosterMultiShipsTransferred.sequenceNumber, rosterMultiShipsTransferred.shipIds, rosterMultiShipsTransferred.toRosterPlayerId, rosterMultiShipsTransferred.toRosterSequenceNumber, rosterMultiShipsTransferred.toPosition, rosterMultiShipsTransferred.locationUpdateParams, rosterMultiShipsTransferred.transferredAt);
     RosterData memory updatedRosterData = RosterTransferMultiShipsLogic.mutate(rosterMultiShipsTransferred, rosterData);
     Roster.set(playerId, sequenceNumber, updatedRosterData);
   }

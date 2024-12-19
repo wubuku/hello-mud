@@ -181,6 +181,7 @@ struct RosterMultiShipsTransferred {
    * @dev All ships are transferred in or after this position
    */
   uint64 toPosition;
+  TwoRostersLocationUpdateParams locationUpdateParams;
   uint64 transferredAt;
 }
 
