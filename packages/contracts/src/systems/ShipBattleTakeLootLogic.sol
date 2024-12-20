@@ -305,6 +305,7 @@ library ShipBattleTakeLootLogic {
   ) private {
     winnerRoster.shipBattleId = 0;
     if (
+      !winnerRoster.environmentOwned //Only player's roster can continue move
       winnerRoster.targetCoordinatesX != 0 &&
       winnerRoster.targetCoordinatesY != 0 &&
       (winnerRoster.targetCoordinatesX != winnerRoster.updatedCoordinatesX ||
