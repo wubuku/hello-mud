@@ -82,12 +82,7 @@ library ShipBattleTakeLootLogic {
 
     uint64 lootedAt = uint64(block.timestamp);
     updateWinnerRosterStatus(winnerRosterId, winnerRoster, lootedAt);
-    updateLoserRosterStatus(
-      loserRosterId,
-      loserRoster,
-      Player.get(loserPlayerId),
-      lootedAt
-    );
+    updateLoserRosterStatus(loserRosterId, loserRoster, Player.get(loserPlayerId), lootedAt);
     shipBattleData.status = uint8(BattleStatus.LOOTED);
 
     return
@@ -305,7 +300,7 @@ library ShipBattleTakeLootLogic {
   ) private {
     winnerRoster.shipBattleId = 0;
     if (
-      !winnerRoster.environmentOwned //Only player's roster can continue move
+      !winnerRoster.environmentOwned && //Only player's roster can continue move
       winnerRoster.targetCoordinatesX != 0 &&
       winnerRoster.targetCoordinatesY != 0 &&
       (winnerRoster.targetCoordinatesX != winnerRoster.updatedCoordinatesX ||
@@ -379,7 +374,7 @@ library ShipBattleTakeLootLogic {
     loserRoster.updatedCoordinatesY = y;
     loserRoster.coordinatesUpdatedAt = lootedAt;
     loserRoster.status = uint8(RosterStatus.AT_ANCHOR);
-    
+
     Roster.set(loserRosterId.playerId, loserRosterId.sequenceNumber, loserRoster);
   }
 }
