@@ -30,7 +30,8 @@ library RosterSetSailLogic {
     Coordinates[] memory intermediatePoints,
     RosterData memory rosterData
   ) internal returns (RosterSetSail memory) {
-    PlayerUtil.assertSenderIsPlayerOwner(playerId);
+    //PlayerUtil.assertSenderIsPlayerOwner(playerId);
+    //这里不能有这个判断，特别是在战斗后【战败方】收集战利品的时候，胜利方可能存在继续航行的需求，战败方不可能驱动对方的船队航行。
     RosterUtil.assertRosterIsNotUnassignedShips(sequenceNumber);
     //
     // NOTE: Before this function is called,
