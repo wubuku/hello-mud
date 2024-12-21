@@ -24,8 +24,8 @@ import { SpeedUtil } from "../src/utils/SpeedUtil.sol";
 
 contract BattleTakeLootTest is Script {
   //
-  // forge script BattleTakeLootTest..s.sol:BattleTakeLootTest. --sig "run(address)" 0x593ad505023ea24371f8f628b251e0667308840f --broadcast --rpc-url https://odyssey.storyrpc.io/
-  // forge script BattleTakeLootTest..s.sol:BattleTakeLootTest. --sig "run(address)" 0x776086899eab4ee3953b7c037b2c0a13c7a1deed --broadcast --rpc-url https://odyssey.storyrpc.io/
+  // forge script BattleTakeLootTest.s.sol:BattleTakeLootTest --sig "run(address)" 0x593ad505023ea24371f8f628b251e0667308840f --broadcast --rpc-url https://odyssey.storyrpc.io/
+  // forge script BattleTakeLootTest.s.sol:BattleTakeLootTest --sig "run(address)" 0x776086899eab4ee3953b7c037b2c0a13c7a1deed --broadcast --rpc-url https://odyssey.storyrpc.io/
   //
   function run(address worldAddress) external {
     // Specify a store so that you can use tables directly in PostDeploy
