@@ -72,6 +72,8 @@ library RosterTakeOutShipInventoryLogic {
     RosterShipInventoryTakenOut memory rosterShipInventoryTakenOut,
     RosterData memory rosterData
   ) internal returns (RosterData memory) {
+    rosterData = Roster.get(rosterShipInventoryTakenOut.playerId, rosterShipInventoryTakenOut.sequenceNumber);
+
     uint256 shipId = rosterShipInventoryTakenOut.shipId;
     ItemIdQuantityPair[] memory itemIdQuantityPairs = rosterShipInventoryTakenOut.itemIdQuantityPairs;
 

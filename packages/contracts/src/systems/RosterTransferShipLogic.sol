@@ -153,6 +153,8 @@ library RosterTransferShipLogic {
     RosterShipTransferred memory rosterShipTransferred,
     RosterData memory rosterData
   ) internal returns (RosterData memory) {
+    //这里必须重读一遍，否则后面使用rosterData的设置都是无用的。
+    rosterData = Roster.get(rosterShipTransferred.playerId, rosterShipTransferred.sequenceNumber);
     RosterData memory toRoster = Roster.get(
       rosterShipTransferred.toRosterPlayerId,
       rosterShipTransferred.toRosterSequenceNumber

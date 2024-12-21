@@ -86,6 +86,7 @@ library RosterPutInShipInventoryLogic {
     RosterShipInventoryPutIn memory rosterShipInventoryPutIn,
     RosterData memory rosterData
   ) internal returns (RosterData memory) {
+    rosterData = Roster.get(rosterShipInventoryPutIn.playerId, rosterShipInventoryPutIn.sequenceNumber);
     uint256 shipId = rosterShipInventoryPutIn.shipId;
     ItemIdQuantityPair[] memory itemIdQuantityPairs = rosterShipInventoryPutIn.itemIdQuantityPairs;
 

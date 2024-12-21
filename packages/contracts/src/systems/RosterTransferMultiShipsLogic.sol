@@ -81,6 +81,7 @@ library RosterTransferMultiShipsLogic {
     RosterMultiShipsTransferred memory rosterMultiShipsTransferred,
     RosterData memory rosterData
   ) internal returns (RosterData memory) {
+    rosterData = Roster.get(rosterShipTransferred.playerId, rosterShipTransferred.sequenceNumber);
     RosterData memory toRoster = Roster.get(
       rosterMultiShipsTransferred.toRosterPlayerId,
       rosterMultiShipsTransferred.toRosterSequenceNumber
