@@ -8,6 +8,7 @@ import { SafeERC20, IERC20 } from "@openzeppelin/contracts/token/ERC20/utils/Saf
 import { SkillProcessDelegatecallLib } from "./SkillProcessDelegatecallLib.sol";
 import { RosterDelegatecallLib } from "./RosterDelegatecallLib.sol";
 import { RosterSailUtil } from "../utils/RosterSailUtil.sol";
+import { PlayerUtil } from "../utils/PlayerUtil.sol";
 import { Coordinates } from "../systems/Coordinates.sol";
 import { UpdateLocationParams } from "./UpdateLocationParams.sol";
 
@@ -130,6 +131,7 @@ contract AggregatorServiceSystem is System {
     //
     // TODO: If roster is already underway, update its location
     //
+    PlayerUtil.assertSenderIsPlayerOwner(playerId);
     RosterDelegatecallLib.setSail(
       playerId,
       rosterSequenceNumber,
