@@ -45,7 +45,7 @@ library RosterTransferMultiShipsLogic {
     uint64 toPosition,
     TwoRostersLocationUpdateParams memory locationUpdateParams,
     RosterData memory rosterData
-  ) internal view returns (RosterMultiShipsTransferred memory) {
+  ) internal returns (RosterMultiShipsTransferred memory) {
     if (sequenceNumber != RosterSequenceNumber.UNASSIGNED_SHIPS) {
       rosterData.assertRosterShipsNotFull();
     }

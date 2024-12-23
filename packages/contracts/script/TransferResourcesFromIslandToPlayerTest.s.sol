@@ -92,6 +92,7 @@ contract TransferResourcesFromIslandToPlayerTest is Script {
       console.log("   ItemId:%d,quantity:%d", itemIdQuantityPairs[i].itemId, itemIdQuantityPairs[i].quantity);
     }
     console.log("Begin transfer");
+
     world.app__rosterPutInShipInventory(playerId, sequenceNumber, shipId, itemIdQuantityPairs, updateLocationParams);
     console.log("Transfer end");
     mapLocationData = MapLocation.get(playerData.claimedIslandX, playerData.claimedIslandY);
