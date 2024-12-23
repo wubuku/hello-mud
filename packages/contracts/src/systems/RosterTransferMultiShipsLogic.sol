@@ -9,6 +9,12 @@ import { RosterSequenceNumber } from "./RosterSequenceNumber.sol";
 import { RosterUtil } from "../utils/RosterUtil.sol";
 import { PlayerUtil } from "../utils/PlayerUtil.sol";
 import { ShipUtil } from "../utils/ShipUtil.sol";
+import { PlayerData, Player } from "../codegen/index.sol";
+import { ShipUtil } from "../utils/ShipUtil.sol";
+import { RosterStatus } from "../systems/RosterStatus.sol";
+import { Coordinates } from "../systems/Coordinates.sol";
+import { RosterDelegatecallLib } from "./RosterDelegatecallLib.sol";
+import { UpdateLocationParams } from "./UpdateLocationParams.sol";
 import { TwoRostersLocationUpdateParams } from "./TwoRostersLocationUpdateParams.sol";
 
 library RosterTransferMultiShipsLogic {
