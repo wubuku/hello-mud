@@ -45,9 +45,9 @@ library RosterTransferShipLogic {
     TwoRostersLocationUpdateParams memory locationUpdateParams,
     RosterData memory rosterData
   ) internal returns (RosterShipTransferred memory) {
-    if (sequenceNumber != RosterSequenceNumber.UNASSIGNED_SHIPS) {
-      rosterData.assertRosterShipsNotFull();
-    }
+    // if (sequenceNumber != RosterSequenceNumber.UNASSIGNED_SHIPS) {
+    //   rosterData.assertRosterShipsNotFull();
+    // }
     if (sequenceNumber == toRosterSequenceNumber) {
       revert RosterSequenceNumberCantSame(sequenceNumber);
     }
