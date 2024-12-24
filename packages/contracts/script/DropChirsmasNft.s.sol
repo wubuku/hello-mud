@@ -5,6 +5,9 @@ import "forge-std/Script.sol";
 import "../src/tokens/ChristmasNFT.sol"; // 导入合约
 
 contract DropChirsmasNft is Script {
+  uint256 public constant COMMON = 0;
+  uint256 public constant RARE = 1;
+  uint256 public constant LEGENDARY = 2;
   //
   // forge script DropChirsmasNft.s.sol:DropChirsmasNft --sig "run(address)" 0x593ad505023ea24371f8f628b251e0667308840f --broadcast --rpc-url https://odyssey.storyrpc.io/
   // forge script DropChirsmasNft.s.sol:DropChirsmasNft --broadcast --rpc-url https://odyssey.storyrpc.io/
@@ -25,22 +28,12 @@ contract DropChirsmasNft is Script {
     ChristmasNFT christmasNFT = new ChristmasNFT(deployerAddress);
     address christmasNFTAddress = address(christmasNFT);
     console.log("ChristmasNFT contract address:%s", christmasNFTAddress);
-    address[] memory recipients = new address[](2);
+    address[] memory recipients = new address[](4);
     recipients[0] = address(0x79785B77EE18F14BcE7006d9583D26279A39bAF7);
     recipients[1] = address(0x8D99E71D8b216038bc114D43E96Ca2028ef70fA6);
-    string[] memory tokenURIs = new string[](2);
-    tokenURIs[0] = "https://www.baidu.com/img/PCfb_5bf082d29588c07f842ccde3f97243ea.png";
-    tokenURIs[1] = "https://pbs.twimg.com/media/GcO4FfObUAA4alp?format=jpg";
-    AirdropInfo[] memory airdropInfos = christmasNFT.airdrop(recipients, tokenURIs);
-    for (uint i = 0; i < airdropInfos.length; i++) {
-      console.log(
-        "Recipient address: %s,  tokenURI: %s,  tokenId: %d",
-        airdropInfos[i].recipient,
-        airdropInfos[i].tokenURI,
-        airdropInfos[i].tokenId
-      );
-    }
-
+    recipients[2] = address(0xe0e2F59e187546985964596407afF445EE4304c3);
+    recipients[3] = address(0x20C22dC5022Aeabbd30c8b594bfd44fB167abE70);
+    christmasNFT.airdrop(recipients, RARE, 1);
     vm.stopBroadcast();
   }
 }

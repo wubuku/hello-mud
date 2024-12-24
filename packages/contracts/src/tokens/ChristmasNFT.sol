@@ -1,41 +1,42 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
-struct AirdropInfo {
-  address recipient;
-  string tokenURI;
-  uint256 tokenId;
-}
-contract ChristmasNFT is ERC721URIStorage, Ownable {
-  uint256 public nextTokenId = 0;
+contract ChristmasNFT is ERC1155, Ownable {
+  using Strings for uint256;
 
-  event Minted(address indexed to, uint256 tokenId, string tokenURI);
-  //event Airdropped(address[] recipients, string[] tokenURIs);
+  uint256 public constant COMMON = 0;
+  uint256 public constant RARE = 1;
+  uint256 public constant LEGENDARY = 2;
 
-  constructor(address initialOwner) ERC721("Infinite Seas Christmas Small Ships", "ISCS") Ownable(initialOwner) {}
-
-  function mint(address to, string calldata tokenURI) public onlyOwner returns (AirdropInfo memory) {
-    _safeMint(to, nextTokenId);
-    _setTokenURI(nextTokenId, tokenURI);
-    emit Minted(to, nextTokenId, tokenURI);
-    AirdropInfo memory newAirdropInfo = AirdropInfo(to, tokenURI, nextTokenId);
-    nextTokenId++;
-    return newAirdropInfo;
+  constructor(
+    address initialOwner
+  )
+    ERC1155("http://ec2-18-236-242-218.us-west-2.compute.amazonaws.com:8097/christmas_nft/{id}.json")
+    Ownable(initialOwner)
+  {
+    // 初始铸造
+    // _mint(msg.sender, COMMON, 7000, "");
+    // _mint(msg.sender, RARE, 2500, "");
+    // _mint(msg.sender, LEGENDARY, 500, "");
   }
 
-  function airdrop(
-    address[] calldata recipients,
-    string[] calldata tokenURIs
-  ) public onlyOwner returns (AirdropInfo[] memory) {
-    require(recipients.length == tokenURIs.length, "Recipients and URIs length mismatch");
-    AirdropInfo[] memory airdropInfos = new AirdropInfo[](recipients.length);
-    for (uint256 i = 0; i < recipients.length; i++) {
-      airdropInfos[i] = mint(recipients[i], tokenURIs[i]);
+  function uri(uint256 id) public pure override returns (string memory) {
+    if (id == 1) {
+      return "http://ec2-18-236-242-218.us-west-2.compute.amazonaws.com:8097/christmas_nft/1.json";
+    } else if (id == 2) {
+      return "http://ec2-18-236-242-218.us-west-2.compute.amazonaws.com:8097/christmas_nft/2.json";
+    } else {
+      return "http://ec2-18-236-242-218.us-west-2.compute.amazonaws.com:8097/christmas_nft/0.json";
     }
-    //emit Airdropped(recipients, tokenURIs);
-    return airdropInfos;
+  }
+
+  function airdrop(address[] calldata recipients, uint256 id, uint256 amount) external onlyOwner {
+    for (uint256 i = 0; i < recipients.length; i++) {
+      _mint(recipients[i], id, amount, "");
+    }
   }
 }
