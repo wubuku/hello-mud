@@ -8,9 +8,8 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 contract ChristmasNFT1155 is ERC1155, Ownable {
   using Strings for uint256;
 
-  uint256 public constant COMMON = 0;
-  uint256 public constant RARE = 1;
-  uint256 public constant LEGENDARY = 2;
+  uint256 public constant LEGENDARY = 1;
+  uint256 public constant RARE = 2;
 
   constructor(
     address initialOwner
@@ -18,23 +17,21 @@ contract ChristmasNFT1155 is ERC1155, Ownable {
     ERC1155("http://ec2-18-236-242-218.us-west-2.compute.amazonaws.com:8097/christmas_nft/{id}.json")
     Ownable(initialOwner)
   {
-    // 初始铸造
     // _mint(msg.sender, COMMON, 7000, "");
     // _mint(msg.sender, RARE, 2500, "");
     // _mint(msg.sender, LEGENDARY, 500, "");
   }
 
   function uri(uint256 id) public pure override returns (string memory) {
-    if (id == 1) {
-      return
-        "http://ec2-18-236-242-218.us-west-2.compute.amazonaws.com:8097/christmas_nft/0000000000000000000000000000000000000000000000000000000000000001.json";
-    } else if (id == 2) {
-      return
-        "http://ec2-18-236-242-218.us-west-2.compute.amazonaws.com:8097/christmas_nft/0000000000000000000000000000000000000000000000000000000000000002.json";
-    } else {
-      return
-        "http://ec2-18-236-242-218.us-west-2.compute.amazonaws.com:8097/christmas_nft/0000000000000000000000000000000000000000000000000000000000000000.json";
-    }
+    // 根据代币 ID 返回相应的 URI
+    return
+      string(
+        abi.encodePacked(
+          "http://ec2-18-236-242-218.us-west-2.compute.amazonaws.com:8097/christmas_nft/",
+          id.toString(),
+          ".json"
+        )
+      );
   }
 
   function airdrop(address[] calldata recipients, uint256 id, uint256 amount) external onlyOwner {
