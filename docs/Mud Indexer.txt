@@ -21,9 +21,9 @@ nohup npx -y -p @latticexyz/store-indexer postgres-decoded-indexer > indexer.log
 nohup npx -y -p @latticexyz/store-indexer postgres-frontend > frontend.log 2>&1 &
 
 测试服务：
-http://ec2-35-88-209-156.us-west-2.compute.amazonaws.com:8095/api/logs?input=%7B%22chainId%22%3A1516%2C%22address%22%3A%220x776086899eab4ee3953b7c037b2c0a13c7a1deed%22%7D
 
 http://ec2-3-91-9-129.compute-1.amazonaws.com:8095/api/logs?input=%7B%22chainId%22%3A1516%2C%22address%22%3A%220x776086899eab4ee3953b7c037b2c0a13c7a1deed%22%7D
+
 登录数据库
 psql -h 127.0.0.1 -U mud -d mud
 
