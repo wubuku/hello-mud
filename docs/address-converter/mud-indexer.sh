@@ -23,7 +23,7 @@ log() {
 check_and_restart_service() {
     SERVICE_NAME=$1
     COMMAND=$2
-    FULL_COMMAND="nohup $COMMAND > \"${SERVICE_NAME}.log\" 2>&1 &"  # 完整命令
+    FULL_COMMAND="nohup $COMMAND >> \"${SERVICE_NAME}.log\" 2>&1 &"  # 完整命令
 
     # 检查服务是否正在运行
     if pgrep -f "$SERVICE_NAME" > /dev/null; then
