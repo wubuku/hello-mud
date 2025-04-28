@@ -1,5 +1,7 @@
 # Developing EVM Dapps using a low-code approach
 
+[![DeepWiki](https://img.shields.io/badge/DeepWiki-Docs-blue?logo=read-the-docs)](https://deepwiki.com/wubuku/hello-mud)
+
 English | [中文版](./README_CN.md)
 
 This is a demonstration for developing dapps with MUD framework in a low-code way.
